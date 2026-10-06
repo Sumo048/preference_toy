@@ -47,7 +47,8 @@ def main():
         for e in extras:
             f.write(json.dumps(e) + "\n")
 
-    num = [c for c in df.columns if c not in KEYS and pd.api.types.is_numeric_dtype(df[c]) and c != "seed"]
+    num = [c for c in df.columns if c not in KEYS and c != "seed" and pd.api.types.is_numeric_dtype(df[c])
+           and not pd.api.types.is_bool_dtype(df[c])]
     g = df.groupby(KEYS)[num]
     mean, sem, cnt = g.mean(), g.sem(), g.size().rename("n_seeds")
     summ = mean.add_suffix("_mean").join(sem.add_suffix("_sem")).join(cnt).reset_index()

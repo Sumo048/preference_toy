@@ -96,6 +96,28 @@ class EvalBank:
         self.ref_retain_x = self.a_ref[torch.from_numpy(np.isin(self.lab_ref, self.retain))]
 
 
+def make_probe(bank: "EvalBank", n: int = 4000):
+    """Cheap per-checkpoint metrics on the first ``n`` common eval noises."""
+    Z, lab_ref = bank.Z[:n], bank.lab_ref[:n]
+    mref = mode_masses(bank.mix, lab_ref)
+    F, R, M = bank.forget, bank.retain, bank.mix.n_modes
+    ref_ret = np.isin(lab_ref, R)
+
+    @torch.no_grad()
+    def probe(policy):
+        a = policy.sample(Z)
+        a = torch.where(torch.isfinite(a), a, torch.full_like(a, 1e6))
+        lab = assign_modes(bank.mix, a)
+        m = mode_masses(bank.mix, lab)
+        pR = m[R] / max(m[R].sum(), 1e-12)
+        qR = mref[R] / max(mref[R].sum(), 1e-12)
+        return {"neg_mass_ratio": float(m[F].sum() / max(mref[F].sum(), 1e-12)),
+                "retain_tv": 0.5 * float(np.abs(pR - qR).sum()),
+                "mass_off": float(m[M]),
+                "retain_noise_flip": float((lab != lab_ref)[ref_ret].mean())}
+    return probe
+
+
 def compute(bank: EvalBank, sampler, policy: Optional[FlowPolicy]) -> (Dict, Dict):
     """-> (flat scalar metrics, nested extras such as the transition matrix)."""
     mix, F, R = bank.mix, bank.forget, bank.retain

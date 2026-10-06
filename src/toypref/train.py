@@ -83,7 +83,7 @@ def train_base(mix: MixtureConfig, pcfg: PolicyConfig, tcfg: BaseTrainConfig, se
 
 
 def finetune(init: FlowPolicy, step_loss: Callable, tcfg: EditTrainConfig, seed: int,
-             log: Callable = None) -> (FlowPolicy, List[Dict]):
+             log: Callable = None, probe: Callable = None) -> (FlowPolicy, List[Dict]):
     """Fine-tune a copy of ``init``. ``step_loss(policy, gen) -> (loss, stats)``.
 
     The minibatch generator is keyed by the experiment seed only, so every arm in a
@@ -116,6 +116,10 @@ def finetune(init: FlowPolicy, step_loss: Callable, tcfg: EditTrainConfig, seed:
             rec = {"step": step, "loss": float(loss.detach()), "grad_norm": float(gn), "lr": lr,
                    "elapsed_s": round(time.time() - t0, 2)}
             rec.update({k: float(v) for k, v in stats.items()})
+            if probe is not None:
+                pol.eval()
+                rec.update({f"probe_{k}": v for k, v in probe(pol).items()})
+                pol.train()
             hist.append(rec)
             if log:
                 log(rec)

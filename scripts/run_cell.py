@@ -21,7 +21,7 @@ from toypref.arms import ARMS, ArmContext, run_arm
 from toypref.config import DEFAULT, RUNS, base_path, cell_name
 from toypref.editset import build_editset, make_pool
 from toypref.flow import load_policy
-from toypref.metrics import EvalBank, compute
+from toypref.metrics import EvalBank, compute, make_probe
 from toypref.mixture import sample_true
 
 
@@ -78,6 +78,7 @@ def main():
     bank = EvalBank(ref, mix, Z, test_x, test_m, ideal_x, es.forget, es.a_neg, es.xi_neg, es.a_pos, s)
     print(f"[{cell}] eval bank {time.time() - t0:.1f}s", flush=True)
 
+    probe = make_probe(bank)
     ctx = ArmContext(
         ref=ref, seed=s, xi_neg=es.xi_neg, a_neg=es.a_neg, neg_pool_idx=es.neg_idx,
         a_pos=es.a_pos, forget=es.forget, mix_cfg=mix, tcfg=tcfg, oracle_a=oracle_a,
@@ -87,7 +88,7 @@ def main():
     for name in todo:
         spec = ARMS[name]
         t1 = time.time()
-        sampler, pol, info = run_arm(spec, ctx)
+        sampler, pol, info = run_arm(spec, ctx, probe=probe)
         t_train = time.time() - t1
         met, extra = compute(bank, sampler, pol)
         with torch.no_grad():

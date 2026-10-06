@@ -326,7 +326,7 @@ class PolicySampler:
 
 
 # =========================================================================
-def run_arm(spec: ArmSpec, ctx: ArmContext, log=None):
+def run_arm(spec: ArmSpec, ctx: ArmContext, log=None, probe=None):
     """-> (sampler, policy or None, info dict)."""
     info: Dict = {"arm": spec.name}
     if spec.kind == "frozen":
@@ -356,17 +356,17 @@ def run_arm(spec: ArmSpec, ctx: ArmContext, log=None):
     else:
         raise ValueError(spec.kind)
 
-    pol, hist = finetune(ctx.ref, fn, ctx.tcfg, ctx.seed, log=log)
+    pol, hist = finetune(ctx.ref, fn, ctx.tcfg, ctx.seed, log=log, probe=probe)
     info["train_history"] = hist
     info["diverged"] = any(h.get("diverged") for h in hist)
 
     if spec.kind == "online":
-        pol, extra = _online_round2(spec, ctx, pol, rows, log)
+        pol, extra = _online_round2(spec, ctx, pol, rows, log, probe)
         info.update(extra)
     return PolicySampler(pol), pol, info
 
 
-def _online_round2(spec, ctx, pi1, rows1, log):
+def _online_round2(spec, ctx, pi1, rows1, log, probe=None):
     """Round 2 of the online loop: roll out pi_1, keep the first n_neg rollouts per
     forget mode that pi_1 still sends there, reroute them against FROZEN pi_ref,
     and retrain from pi_ref on rounds 1+2 together."""
@@ -389,6 +389,6 @@ def _online_round2(spec, ctx, pi1, rows1, log):
                       target=torch.cat([rows1.target, rows2.target]),
                       neg_row=torch.cat([rows1.neg_row, rows2.neg_row + int(rows1.neg_row.max()) + 1]),
                       slot=torch.cat([rows1.slot, rows2.slot]))
-    pi2, hist2 = finetune(ctx.ref, reroute_step_fn(ctx, acc, spec), ctx.tcfg, ctx.seed, log=log)
+    pi2, hist2 = finetune(ctx.ref, reroute_step_fn(ctx, acc, spec), ctx.tcfg, ctx.seed, log=log, probe=probe)
     extra["train_history_r2"] = hist2
     return pi2, extra

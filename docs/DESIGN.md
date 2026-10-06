@@ -22,7 +22,20 @@ Swept: `n_forget in {1,2,3,4}` x `n_neg in {1,2,4,8,16,32}` (per forgotten mode)
 | "rollouts" | xi ~ N(0,I) decoded by pi_ref; 100k-row pool per seed |
 | T_n | first `n_neg` pool rollouts in each forgotten mode (with their logged xi) |
 | T_p | first 512 pool rollouts in retained modes |
-| fine-tune | 5000 steps, AdamW (0.9, 0.95), wd 1e-10, clip 1.0, cosine 500 warmup -> 0.1x peak, no EMA, batch 256 (the preference repo's arm budget; LR from the pilot below) |
+| fine-tune | 5000 steps, AdamW (0.9, 0.95), wd 1e-10, clip 1.0, cosine 500 warmup -> 0.1x peak 1e-4, no EMA, batch 256 (the preference repo's arm budget; LR from the pilot below) |
+| probe | every 500 steps: forget-mass ratio, retain TV, off mass, retain flips on 4000 common noises (`train_history[*].probe_*`) |
+
+### LR pilot (2026-10-06, seed 0, 2 forgotten, 8 neg/mode; `slurm/submit_pilot.sh`)
+
+One peak LR for every arm, chosen before the sweep. At 3e-4 B1, NPO-b10, KTO-b10 and
+R_spread_nhood_* all reach forget ratio <= 0.001, i.e. the forgetting axis saturates and
+only collateral separates arms; at 1e-4 R_ours_both (0.20) and NPO-b10 (0.026) are still
+off the floor. 1e-4 is used. Whatever the LR, the per-500-step probe records each arm's
+whole forgetting-vs-collateral path, so no conclusion depends on the step budget alone.
+The pilot also showed B1 (BC on 512 positives) forgetting almost completely (0.005): with
+an unconditional policy and abundant positives, plain BC on retained samples is nearly the
+oracle, so the `both`-mix arms are judged against a strong B1. The repo's own regime had
+abundant positives too (97k rows).
 
 ## Arms (51), ported from the preference repo's code
 
