@@ -13,4 +13,5 @@ cd /home/soumojib/repos/toypref
 export PYTHONUNBUFFERED=1
 PY=$HOME/miniconda3/envs/pref_pillars/bin/python
 $PY scripts/aggregate.py
+$PY scripts/report.py
 $PY scripts/plot.py

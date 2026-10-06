@@ -3,6 +3,7 @@
 results/all_runs.csv         one row per (seed, n_forget, n_neg, arm), every scalar metric
 results/summary.csv          mean / sem / n over seeds, per (arm, n_forget, n_neg)
 results/paired_vs_B0.csv     per-seed arm minus B0 differences (same eval noises), summarised
+results/probes.csv           per-500-step probe (forget ratio, retain TV, off, flips)
 results/extras.jsonl         mass vectors, transition matrices, per-mode log-density deltas
 """
 
@@ -30,12 +31,18 @@ def main():
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
 
-    rows, extras = [], []
+    rows, extras, probes = [], [], []
     for p in sorted(glob.glob(os.path.join(args.cells, "*", "*.json"))):
         with open(p) as f:
             r = json.load(f)
         extras.append({k: r[k] for k in ("cell", "arm", "seed", "n_forget", "n_neg", "forget")} | {"extra": r["extra"]})
         hist = r.get("train_history") or []
+        for rnd, hh in ((1, hist), (2, r.get("train_history_r2") or [])):
+            for h in hh:
+                if "probe_neg_mass_ratio" in h:
+                    probes.append({"seed": r["seed"], "n_forget": r["n_forget"], "n_neg": r["n_neg"],
+                                   "arm": r["arm"], "round": rnd, "step": h["step"],
+                                   **{k[6:]: v for k, v in h.items() if k.startswith("probe_")}})
         row = {k: v for k, v in r.items() if k not in DROP}
         row["forget"] = "-".join(map(str, r["forget"]))
         if hist:
@@ -43,6 +50,7 @@ def main():
         rows.append(row)
     df = pd.DataFrame(rows)
     df.to_csv(os.path.join(args.out, "all_runs.csv"), index=False)
+    pd.DataFrame(probes).to_csv(os.path.join(args.out, "probes.csv"), index=False)
     with open(os.path.join(args.out, "extras.jsonl"), "w") as f:
         for e in extras:
             f.write(json.dumps(e) + "\n")

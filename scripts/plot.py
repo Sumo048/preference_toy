@@ -136,6 +136,30 @@ def tradeoff(summ, out, x="retain_tv", y="neg_mass_ratio"):
     plt.close(fig)
 
 
+def trajectories(probes, out, k=2, ns=(1, 8, 32)):
+    """Seed-mean probe path of each key arm: collateral (x) vs forgetting (y) over training."""
+    ns = [n for n in ns if n in set(probes.n_neg)]
+    if not ns:
+        return
+    fig, axes = plt.subplots(1, len(ns), figsize=(3.4 * len(ns), 3.2), squeeze=False, sharey=True)
+    for ax, n in zip(axes[0], ns):
+        d = probes[(probes.n_forget == k) & (probes.n_neg == n) & (probes["round"] == 1)]
+        for i, arm in enumerate(KEY_ARMS):
+            q = d[d.arm == arm].groupby("step")[["retain_tv", "neg_mass_ratio"]].mean().reset_index()
+            if q.empty:
+                continue
+            ax.plot(q.retain_tv, q.neg_mass_ratio, color=SERIES[i], lw=1.4, marker="o", ms=2.5, label=arm)
+            ax.scatter(q.retain_tv.iloc[-1:], q.neg_mass_ratio.iloc[-1:], s=30, color=SERIES[i], edgecolor=SURF, zorder=4)
+        ax.set_title(f"{k} forgotten, {n} neg/mode", fontsize=9, loc="left")
+        ax.set_xlabel("retain TV vs pi_ref")
+    axes[0, 0].set_ylabel("forget mass ratio")
+    axes[0, -1].legend(fontsize=7, frameon=False, loc="center left", bbox_to_anchor=(1.0, 0.5))
+    fig.suptitle("training paths (dot = final step)", fontsize=9, x=0.01, ha="left")
+    fig.tight_layout()
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+
+
 def samples(cell_dir, out, arms):
     name = os.path.basename(cell_dir)
     s, k, n = (int(p[1:]) for p in name.split("_"))
@@ -184,6 +208,11 @@ def main():
                   ("retain_noise_flip", "retain-noise flip rate"), ("mass_off", "off-mode mass")):
         curves(summ, m, yl, os.path.join(figs, f"curves_{m}.png"))
     tradeoff(summ, os.path.join(figs, "tradeoff.png"))
+    pp = os.path.join(args.results, "probes.csv")
+    if os.path.exists(pp):
+        probes = pd.read_csv(pp)
+        for k in sorted(probes.n_forget.unique()):
+            trajectories(probes, os.path.join(figs, f"trajectories_k{k}.png"), k=k)
     show = ["B0_frozen", "ORACLE_retain_bc", "B1_filtered", "B3_npo_b10", "B3_npo_b100_negonly", "B5_kto_b10",
             "DPO_cpl_b25", "RM_bon8", "R_ours_both", "R_spread_nhood_both", "R_spread_nhood_neg",
             "R_guide_nhood_both", "R_spread_inv_r1.5_both", "R_spread_reach_near_both",
