@@ -117,7 +117,17 @@ def main():
 
     out = ["# Round rw: exploration (decision rule of docs/REROUTE_WINS_PREREG.md)", "",
            f"seeds {sorted(seeds)}, cells n_forget x n_neg = {sorted(grid)}", ""]
-    verdict = []
+    body, verdict = evaluate(regimes)
+    out += body
+    os.makedirs(os.path.dirname(args.out), exist_ok=True)
+    with open(args.out, "w") as f:
+        f.write("\n".join(out) + "\n")
+    print("\n".join(out[-(len(verdict) + 3):]))
+    print("->", args.out)
+
+
+def evaluate(regimes):
+    out, verdict = [], []
     for tag, df in regimes.items():
         df = df.copy()
         df["setting"] = df.arm.map(setting_of)
@@ -165,11 +175,7 @@ def main():
     out.append("|---|---|---|---|---|---|")
     for tag, st, r_, o_, mu, se, ok in verdict:
         out.append(f"| {tag} | {st} | {r_} | {o_} | {mu:+.4f} +- {se:.4f} | {'**YES**' if ok else 'no'} |")
-    os.makedirs(os.path.dirname(args.out), exist_ok=True)
-    with open(args.out, "w") as f:
-        f.write("\n".join(out) + "\n")
-    print("\n".join(out[-(len(verdict) + 3):]))
-    print("->", args.out)
+    return out, verdict
 
 
 if __name__ == "__main__":
