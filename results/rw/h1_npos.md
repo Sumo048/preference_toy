@@ -66,9 +66,7 @@
 | B3_npo_b100_negonly_Anf_dist | 0.062 | 0.042 | 0.034 | 0.037 | nan | nan |
 | R_near_nf_nhood_neg_Anf_dist (R) | 0.063 | 0.014 | 0.040 | 0.034 | 0.00 | 0.01 |
 
-## npos64  (87 arms, 45 runs per complete arm)
-
-incomplete arms (excluded): B0_frozen, B1_filtered, B3_npo_b0.1, B3_npo_b1, B3_npo_b10, B5_kto_b0.1, B5_kto_b1, B5_kto_b10
+## npos64  (120 arms, 45 runs per complete arm)
 
 **NEG** best: `R_near_nf_nhood_neg` tv 0.267 (forget 0.120, retain TV 0.219, off 0.089)
 
@@ -101,6 +99,22 @@ incomplete arms (excluded): B0_frozen, B1_filtered, B3_npo_b0.1, B3_npo_b1, B3_n
 | B3_npo_b100_negonly_Anf_dist | 0.062 | 0.042 | 0.034 | 0.037 | nan | nan |
 | R_near_nf_nhood_neg_Anf_dist (R) | 0.063 | 0.014 | 0.040 | 0.034 | 0.00 | 0.01 |
 | R_spread_nf_log_neg_Anf_dist (R) | 0.116 | 0.013 | 0.083 | 0.053 | 0.00 | 0.00 |
+
+**POS+NEG** best: `DPO_cpl_b1` tv 0.087 (forget 0.000, retain TV 0.078, off 0.019)
+
+- best rerouting `R_near_nf_log_both` 0.111 vs best non-rerouting `DPO_cpl_b1` 0.087: paired diff +0.0242 +- 0.0027 (n=45, rerouting lower in 4); dominated by: B3_npo_b10
+- criteria 1/2/3: N/N/N -> **rerouting not best**
+
+| arm | tv_to_ideal | forget | retain TV | off | target off | target in forget |
+|---|---|---|---|---|---|---|
+| DPO_cpl_b1 | 0.087 | 0.000 | 0.078 | 0.019 | nan | nan |
+| B3_npo_b10 | 0.105 | 0.008 | 0.092 | 0.024 | nan | nan |
+| B3_npo_b1 | 0.108 | 0.000 | 0.102 | 0.016 | nan | nan |
+| B3_npo_b100 | 0.110 | 0.042 | 0.094 | 0.021 | nan | nan |
+| R_near_nf_log_both (R) | 0.111 | 0.009 | 0.099 | 0.025 | 0.00 | 0.01 |
+| R_near_nf_nhood_both (R) | 0.112 | 0.010 | 0.101 | 0.020 | 0.00 | 0.01 |
+| B1_filtered | 0.116 | 0.005 | 0.107 | 0.018 | nan | nan |
+| B5_kto_b10 | 0.131 | 0.059 | 0.077 | 0.076 | nan | nan |
 
 **ALL (POS+NEG+U)** best: `B5_kto_b10_negonly_Anf_dist` tv 0.040 (forget 0.005, retain TV 0.017, off 0.036)
 
@@ -116,11 +130,9 @@ incomplete arms (excluded): B0_frozen, B1_filtered, B3_npo_b0.1, B3_npo_b1, B3_n
 | B3_npo_b10_negonly_Anf_dist | 0.057 | 0.011 | 0.032 | 0.040 | nan | nan |
 | B3_npo_b100_negonly_Anf_dist | 0.062 | 0.042 | 0.034 | 0.037 | nan | nan |
 | R_near_nf_nhood_neg_Anf_dist (R) | 0.063 | 0.014 | 0.040 | 0.034 | 0.00 | 0.01 |
-| R_spread_nf_log_neg_Anf_dist (R) | 0.116 | 0.013 | 0.083 | 0.053 | 0.00 | 0.00 |
+| DPO_cpl_b1 | 0.087 | 0.000 | 0.078 | 0.019 | nan | nan |
 
-## npos16  (115 arms, 45 runs per complete arm)
-
-incomplete arms (excluded): B4_naive_ga, DPO_cpl_b1, DPO_cpl_b25, RM_bon8, R_guide_log_both, R_guide_nhood_both, R_ours_both, R_ours_filt_both, R_spread_filt_log_both, R_spread_filt_nhood_both, R_spread_filt_nhood_neg_kl1, R_spread_inv_r0.5_both, R_spread_inv_r1.5_both, R_spread_inv_r3_both, R_spread_log_both, R_spread_nhood_both, R_spread_nhood_neg_kl0.1, R_spread_nhood_neg_kl0.3, R_spread_nhood_neg_kl1, R_spread_ninv_t0.4_fresh_both, R_spread_ninv_t0.4_mix_both, R_spread_ninv_t0.6_fresh_both, R_spread_ninv_t0.8_fresh_both, R_spread_reach_far_both, R_spread_reach_mid_both, R_spread_reach_near_both
+## npos16  (120 arms, 45 runs per complete arm)
 
 **NEG** best: `R_near_nf_nhood_neg` tv 0.267 (forget 0.120, retain TV 0.219, off 0.089)
 
@@ -154,18 +166,21 @@ incomplete arms (excluded): B4_naive_ga, DPO_cpl_b1, DPO_cpl_b25, RM_bon8, R_gui
 | R_near_nf_nhood_neg_Anf_dist (R) | 0.063 | 0.014 | 0.040 | 0.034 | 0.00 | 0.01 |
 | R_spread_nf_log_neg_Anf_dist (R) | 0.116 | 0.013 | 0.083 | 0.053 | 0.00 | 0.00 |
 
-**POS+NEG** best: `B3_npo_b10` tv 0.157 (forget 0.009, retain TV 0.149, off 0.022)
+**POS+NEG** best: `DPO_cpl_b1` tv 0.145 (forget 0.000, retain TV 0.138, off 0.020)
+
+- best rerouting `R_near_nf_nhood_both` 0.157 vs best non-rerouting `DPO_cpl_b1` 0.145: paired diff +0.0115 +- 0.0067 (n=45, rerouting lower in 20); dominated by: DPO_cpl_b1
+- criteria 1/2/3: N/N/N -> **rerouting not best**
 
 | arm | tv_to_ideal | forget | retain TV | off | target off | target in forget |
 |---|---|---|---|---|---|---|
+| DPO_cpl_b1 | 0.145 | 0.000 | 0.138 | 0.020 | nan | nan |
+| R_near_nf_nhood_both (R) | 0.157 | 0.010 | 0.149 | 0.021 | 0.00 | 0.01 |
 | B3_npo_b10 | 0.157 | 0.009 | 0.149 | 0.022 | nan | nan |
 | B3_npo_b100 | 0.160 | 0.038 | 0.149 | 0.020 | nan | nan |
 | B5_kto_b10 | 0.169 | 0.078 | 0.115 | 0.081 | nan | nan |
+| R_near_nf_log_both (R) | 0.170 | 0.009 | 0.161 | 0.025 | 0.00 | 0.01 |
 | B3_npo_b1 | 0.177 | 0.000 | 0.173 | 0.017 | nan | nan |
 | B1_filtered | 0.182 | 0.006 | 0.176 | 0.019 | nan | nan |
-| B5_kto_b100 | 0.194 | 0.385 | 0.048 | 0.072 | nan | nan |
-| B5_kto_b1 | 0.271 | 0.000 | 0.269 | 0.011 | nan | nan |
-| B3_npo_b0.1 | 0.384 | 0.000 | 0.380 | 0.023 | nan | nan |
 
 **ALL (POS+NEG+U)** best: `B5_kto_b10_negonly_Anf_dist` tv 0.040 (forget 0.005, retain TV 0.017, off 0.036)
 
@@ -183,7 +198,7 @@ incomplete arms (excluded): B4_naive_ga, DPO_cpl_b1, DPO_cpl_b25, RM_bon8, R_gui
 | R_near_nf_nhood_neg_Anf_dist (R) | 0.063 | 0.014 | 0.040 | 0.034 | 0.00 | 0.01 |
 | R_spread_nf_log_neg_Anf_dist (R) | 0.116 | 0.013 | 0.083 | 0.053 | 0.00 | 0.00 |
 
-## npos4  (115 arms, 45 runs per complete arm)
+## npos4  (120 arms, 45 runs per complete arm)
 
 **NEG** best: `R_near_nf_nhood_neg` tv 0.267 (forget 0.120, retain TV 0.219, off 0.089)
 
@@ -219,19 +234,19 @@ incomplete arms (excluded): B4_naive_ga, DPO_cpl_b1, DPO_cpl_b25, RM_bon8, R_gui
 
 **POS+NEG** best: `B5_kto_b100` tv 0.240 (forget 0.289, retain TV 0.143, off 0.089)
 
-- best rerouting `R_ours_both` 0.386 vs best non-rerouting `B5_kto_b100` 0.240: paired diff +0.1468 +- 0.0211 (n=45, rerouting lower in 8); dominated by: -
+- best rerouting `R_near_nf_nhood_both` 0.337 vs best non-rerouting `B5_kto_b100` 0.240: paired diff +0.0977 +- 0.0250 (n=45, rerouting lower in 15); dominated by: -
 - criteria 1/2/3: N/N/Y -> **rerouting not best**
 
 | arm | tv_to_ideal | forget | retain TV | off | target off | target in forget |
 |---|---|---|---|---|---|---|
 | B5_kto_b100 | 0.240 | 0.289 | 0.143 | 0.089 | nan | nan |
 | B5_kto_b10 | 0.330 | 0.029 | 0.297 | 0.111 | nan | nan |
+| R_near_nf_nhood_both (R) | 0.337 | 0.006 | 0.332 | 0.022 | 0.00 | 0.01 |
+| R_ours_nf_both (R) | 0.349 | 0.003 | 0.342 | 0.034 | 0.00 | 0.00 |
+| R_near_nf_log_both (R) | 0.385 | 0.003 | 0.380 | 0.028 | 0.00 | 0.01 |
+| R_spread_nf_log_both (R) | 0.385 | 0.003 | 0.378 | 0.040 | 0.00 | 0.00 |
 | R_ours_both (R) | 0.386 | 0.179 | 0.359 | 0.042 | 0.02 | 0.27 |
 | R_spread_nhood_neg_kl1 (R) | 0.386 | 0.493 | 0.185 | 0.178 | 0.14 | 0.19 |
-| R_spread_ninv_t0.4_fresh_both (R) | 0.397 | 0.188 | 0.353 | 0.079 | 0.14 | 0.19 |
-| R_spread_nhood_both (R) | 0.401 | 0.181 | 0.359 | 0.078 | 0.14 | 0.19 |
-| R_spread_ninv_t0.6_fresh_both (R) | 0.403 | 0.191 | 0.358 | 0.082 | 0.14 | 0.19 |
-| R_spread_reach_mid_both (R) | 0.403 | 0.184 | 0.365 | 0.070 | 0.14 | 0.19 |
 
 **ALL (POS+NEG+U)** best: `B5_kto_b10_negonly_Anf_dist` tv 0.040 (forget 0.005, retain TV 0.017, off 0.036)
 
@@ -259,11 +274,13 @@ incomplete arms (excluded): B4_naive_ga, DPO_cpl_b1, DPO_cpl_b25, RM_bon8, R_gui
 | npos512 | ALL (POS+NEG+U) | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |
 | npos64 | NEG | R_near_nf_nhood_neg | B3_npo_b100_negonly | -0.0225 +- 0.0358 | no |
 | npos64 | NEG+U | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |
+| npos64 | POS+NEG | R_near_nf_log_both | DPO_cpl_b1 | +0.0242 +- 0.0027 | no |
 | npos64 | ALL (POS+NEG+U) | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |
 | npos16 | NEG | R_near_nf_nhood_neg | B3_npo_b100_negonly | -0.0225 +- 0.0358 | no |
 | npos16 | NEG+U | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |
+| npos16 | POS+NEG | R_near_nf_nhood_both | DPO_cpl_b1 | +0.0115 +- 0.0067 | no |
 | npos16 | ALL (POS+NEG+U) | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |
 | npos4 | NEG | R_near_nf_nhood_neg | B3_npo_b100_negonly | -0.0225 +- 0.0358 | no |
 | npos4 | NEG+U | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |
-| npos4 | POS+NEG | R_ours_both | B5_kto_b100 | +0.1468 +- 0.0211 | no |
+| npos4 | POS+NEG | R_near_nf_nhood_both | B5_kto_b100 | +0.0977 +- 0.0250 | no |
 | npos4 | ALL (POS+NEG+U) | R_near_nf_log_neg_Anf_dist | B5_kto_b10_negonly_Anf_dist | +0.0142 +- 0.0022 | no |

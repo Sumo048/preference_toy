@@ -34,6 +34,7 @@ pays retain TV 0.27. The original method `R_ours_neg` scores 0.471.
 | base, 1-2 of 8 forgotten | NPO-b100 (barely edits) | KTO-b10 + nf anchor / pseudo-positive BC | DPO b1 |
 | base, 3 of 8 forgotten | rerouting ties KTO-b100 (+0.013 +- 0.047) | (not tested at 3) | (not tested at 3) |
 | base, 4 of 8 forgotten | **rerouting (confirmed)** | KTO / pseudo-positive BC (pooled) | DPO b1 (pooled) |
+| scarce positives (n_pos 4-64) | as base | as base, and this beats every POS+NEG method | DPO b1 (n_pos >= 16), KTO-b100 (n_pos 4); rerouting 2nd-3rd |
 | positives cover 1/4 or 1/2 of retained modes | as base | as base, and this beats every POS+NEG method | KTO-b100 (BC methods collapse uncovered modes) |
 | 20% contaminated positives | as base | as base | NPO b1 |
 | overlapping modes (std 0.45) | NPO-b100 ~ rerouting (+0.008 +- 0.022) | KTO + nf anchor | DPO b1 |
@@ -61,7 +62,16 @@ pays retain TV 0.27. The original method `R_ours_neg` scores 0.471.
 - **H6, target rules: CONFIRMED.** Nearest + label-free-filtered targets cut target-in-forget
   from 23% to about 1% and target-off-mode from 13% to 0. Both-mix rerouting goes from 0.18 to
   0.070, ahead of NPO and close to B1 (0.063) and DPO (0.056).
-- **H1, scarce positives:** pending the n_pos sweep (jobs 3990444/5; aggregation 3990446).
+- **H1, scarce positives: CONFIRMED, and rerouting is still not best** (`results/rw/h1_npos.md`;
+  jobs 3990444/5 + 3992351, which ran the new both-mix targets at small n_pos).
+  - BC-anchored baselines degrade as T_p shrinks. B1 scores 0.063 / 0.116 / 0.182 / 0.418 at
+    n_pos 512 / 64 / 16 / 4.
+  - The best method overall at every n_pos is a NEG+U arm (KTO-b10 + nf anchor, 0.040).
+  - Within POS+NEG, rerouting with the label-free near target climbs as positives get scarce:
+    - n_pos 64: 0.111, behind DPO's 0.087;
+    - n_pos 16: 0.157, tied with NPO-b10 and behind DPO's 0.145;
+    - n_pos 4: 0.337, ahead of B1, DPO and NPO (about 0.42) but behind KTO-b100 (0.240).
+  - It is never first.
 - **C1, NEG with n_forget >= 3: NOT CONFIRMED as registered.**
   - **n_forget = 4: confirmed**, every comparison passing.
   - **n_forget = 3:** beats NPO-b10 (-0.100 +- 0.039), NPO-b100 (-0.052 +- 0.022) and KTO-b10
