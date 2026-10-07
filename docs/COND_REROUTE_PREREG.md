@@ -65,11 +65,11 @@ Exploration: seeds 0-4, n_forget {1, 2, 4}, n_neg {1, 4, 16, 64}, all arms. Conf
 5-9, the same grid, with the arm list frozen to the exploration winner, the best baseline, B0,
 R_ours_neg and R_own_nhood_neg.
 
-## Exploration outcome and frozen confirmation list (2026-10-07 13:31 EDT)
+## Exploration outcome and frozen confirmation list (2026-10-07 13:29 EDT)
 
 Exploration passed criteria 1-3 only at n_forget = 4, in both NEG and NEG+U, with the same arm:
 `R_hop_bsup_neg`. It scored 0.355, against NPO_b100_neg at 0.516 (paired -0.161 +- 0.032, lower in
-18/20) and NPO_b10_neg_A at 0.403 in NEG+U (paired -0.099 +- 0.025). It did not pass at n_forget 1
+18/20) and NPO_b10_neg_A at 0.455 in NEG+U (paired -0.099 +- 0.025). It did not pass at n_forget 1
 or 2.
 
 Confirmation (seeds 5-9, n_forget {1, 2, 4} x n_neg {1, 4, 16, 64}) uses these frozen arms:
