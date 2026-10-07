@@ -82,9 +82,10 @@ def test_every_support_builds():
     for spec in ARMS.values():
         if spec.kind in ("reroute", "online"):
             rows = build_rows(ref, es.xi_neg, es.a_neg, es.neg_idx, spec.target, spec.support, 0,
-                              mix_cfg=MIX, forget=es.forget)
+                              mix_cfg=MIX, forget=es.forget, d0=1.0)
             assert torch.isfinite(rows.noise).all() and torch.isfinite(rows.target).all(), spec.name
-            n_per = 4 if spec.target.startswith("resample4") else (1 if spec.support == "log" else 5)
+            n_per = 4 if spec.target.startswith("resample4") else (
+                1 if spec.support == "log" else (1 + int(spec.support.split("_")[-1]) if spec.support.startswith("nhoodx_") else 5))
             assert rows.noise.shape[0] == n_per * len(es.neg_idx), spec.name
 
 
@@ -152,3 +153,41 @@ def test_positives_nested_in_n_pos():
     _, big = _ring_editset(2, 2, n_pos=64)
     assert np.array_equal(small.pos_idx, big.pos_idx[:4])
     assert np.array_equal(small.neg_idx, big.neg_idx)
+
+
+def test_label_free_targets_avoid_negatives():
+    for k in (1, 2, 4):
+        ref, es = _ring_editset(k, 4)
+        for tgt in ("near_nf", "spread_nf", "resample4_nf"):
+            rows = build_rows(ref, es.xi_neg, es.a_neg, es.neg_idx, tgt, "log", 0, mix_cfg=MIX,
+                              forget=es.forget, d0=1.0)
+            d = torch.cdist(rows.target, es.a_neg).min(1).values
+            assert bool((d > 1.0).all()), (k, tgt)
+            assert rows.diag["filt_fallback_unfiltered"] == 0
+
+
+def test_near_targets_are_nearest_eligible():
+    from toypref.mixture import assign_modes
+    ref, es = _ring_editset(2, 3)
+    rows = build_rows(ref, es.xi_neg, es.a_neg, es.neg_idx, "near_filt", "log", 0, mix_cfg=MIX, forget=es.forget)
+    assert not np.isin(assign_modes(MIX, rows.target), es.forget).any()
+    far = build_rows(ref, es.xi_neg, es.a_neg, es.neg_idx, "spread_filt", "log", 0, mix_cfg=MIX, forget=es.forget)
+    dn = torch.linalg.norm(rows.target - es.a_neg, dim=1)
+    df = torch.linalg.norm(far.target - es.a_neg, dim=1)
+    assert float(dn.mean()) < float(df.mean())
+
+
+def test_regime_cover_and_contam():
+    from toypref.editset import RolloutPool, apply_regime
+    from toypref.mixture import assign_modes
+    ref = _RingRef()
+    xi = torch.randn(8000, 2, generator=torch.Generator().manual_seed(3))
+    a = ref.sample(xi)
+    pool = RolloutPool(xi=xi, a=a, mode=assign_modes(MIX, a))
+    es = build_editset(pool, MIX, 0, 2, 4, 64)
+    c = apply_regime(build_editset(pool, MIX, 0, 2, 4, 64), pool, MIX, 0, 64, cover=0.5)
+    assert set(np.unique(c.mode_pos)) <= set(c.covered) and len(c.covered) == 3
+    assert np.array_equal(c.neg_idx, es.neg_idx)
+    k = apply_regime(build_editset(pool, MIX, 0, 2, 4, 64), pool, MIX, 0, 64, contam=0.25)
+    assert int(np.isin(k.mode_pos, es.forget).sum()) == 16 and len(k.pos_idx) == 64
+    assert not np.isin(k.pos_idx, es.neg_idx).any()

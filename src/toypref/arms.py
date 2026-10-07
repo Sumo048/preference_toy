@@ -44,6 +44,14 @@ class ArmSpec:
     extra_label_budget: bool = False
     #: uses data no other arm has (oracle reference)
     privileged: bool = False
+    #: unlabelled anchor (round "where does rerouting win"): "" | self_map | self_dist |
+    #: nf_map | nf_dist. self = pi_ref's own samples (unlabelled); nf = those farther
+    #: than d0 from every logged negative. map = pinned (xi, pi_ref(xi)) pairs
+    #: (distils the noise->action map); dist = fresh noise (distils the density).
+    anchor: str = ""
+    lambda_anchor: float = 1.0
+    #: run only by an explicit arm list (kept out of the default "all" sweep)
+    round_: str = ""
 
 
 ARMS: Dict[str, ArmSpec] = {}
@@ -91,7 +99,9 @@ for mix in ("both", "neg"):
 for lk in (0.1, 0.3, 1.0):
     _add(ArmSpec(f"R_spread_nhood_neg_kl{lk:g}", "reroute", "reroute_kl",
                  "R_spread_nhood_neg + lambda_kl (v - v_ref)^2 on a retain loader (T_p)",
-                 target="spread", support="nhood", mix="neg", lambda_kl=lk, negonly=True))
+                 target="spread", support="nhood", mix="neg", lambda_kl=lk, negonly=False))
+    # negonly=False: the KL retain loader is T_p (labelled positives), so these arms
+    # see positive data (corrected 2026-10-07; first reports listed them as neg-only)
 
 # --- spherical nhood and S-select (inv-nhood branch) -----------------------
 for s in (0.485, 0.867):
@@ -138,7 +148,7 @@ for mix in ("both", "neg"):
                      extra_label_budget=True))
 _add(ArmSpec("R_spread_filt_nhood_neg_kl1", "reroute", "reroute_filtered",
              "R_spread_filt_nhood_neg + lambda_kl = 1 on the T_p retain loader",
-             target="spread_filt", support="nhood", mix="neg", lambda_kl=1.0, negonly=True,
+             target="spread_filt", support="nhood", mix="neg", lambda_kl=1.0, negonly=False,
              extra_label_budget=True))
 
 FILTERED_ARMS = [n for n, s in ARMS.items() if s.family == "reroute_filtered"]
@@ -166,6 +176,61 @@ _add(ArmSpec("R_online2_spread_nhood_neg", "online", "reroute_online",
              support="nhood", mix="neg", negonly=True, extra_label_budget=True))
 
 
+# --- round "where does rerouting win" (docs/REROUTE_WINS_PREREG.md) -------
+RW = "rw"
+ANCHORS = ("self_map", "self_dist", "nf_map", "nf_dist")
+_RW_NEG_METHODS = {  # name stem -> ArmSpec kwargs (all negatives-only)
+    "B3_npo_b10_negonly": dict(kind="npo", family="baseline", beta=10.0),
+    "B3_npo_b100_negonly": dict(kind="npo", family="baseline", beta=100.0),
+    "B5_kto_b10_negonly": dict(kind="kto", family="baseline", beta=10.0),
+    "B5_kto_b100_negonly": dict(kind="kto", family="baseline", beta=100.0),
+    "R_ours_neg": dict(kind="reroute", family="reroute", target="resample4", support="log"),
+    "R_spread_log_neg": dict(kind="reroute", family="reroute_grid", target="spread", support="log"),
+    "R_spread_nhood_neg": dict(kind="reroute", family="reroute_grid", target="spread", support="nhood"),
+    "R_ours_nf_neg": dict(kind="reroute", family="reroute_rw", target="resample4_nf", support="log"),
+    "R_spread_nf_log_neg": dict(kind="reroute", family="reroute_rw", target="spread_nf", support="log"),
+    "R_near_nf_log_neg": dict(kind="reroute", family="reroute_rw", target="near_nf", support="log"),
+    "R_near_nf_nhood_neg": dict(kind="reroute", family="reroute_rw", target="near_nf", support="nhood"),
+}
+for stem, kw in _RW_NEG_METHODS.items():
+    kw = dict(kw)
+    kind, fam = kw.pop("kind"), kw.pop("family")
+    mix = "neg"
+    for anc in ANCHORS:
+        _add(ArmSpec(f"{stem}_A{anc}", kind, fam, f"{stem} + unlabelled anchor {anc}",
+                     mix=mix, negonly=True, anchor=anc, round_=RW, **kw))
+# un-anchored versions that do not exist yet
+for stem in ("B3_npo_b10_negonly", "B5_kto_b10_negonly", "R_ours_nf_neg", "R_spread_nf_log_neg",
+             "R_near_nf_log_neg", "R_near_nf_nhood_neg"):
+    kw = dict(_RW_NEG_METHODS[stem])
+    kind, fam = kw.pop("kind"), kw.pop("family")
+    _add(ArmSpec(stem, kind, fam, f"{stem}, no anchor", mix="neg", negonly=True, round_=RW, **kw))
+# the anchors alone: nf = BC on pseudo-positives (pi_ref samples far from every negative)
+for anc in ("nf_map", "nf_dist"):
+    _add(ArmSpec(f"PSEUDO_{anc}", "anchor_only", "baseline",
+                 "label-free baseline: flow-matching on pi_ref samples farther than d0 from every "
+                 "logged negative", negonly=True, anchor=anc, round_=RW))
+# wider / denser neighbourhoods for the label-free near target
+for sup in ("nhoodx_0.6_16", "nhoodx_1.0_16"):
+    for anc in ("self_map", "nf_map"):
+        _add(ArmSpec(f"R_near_nf_{sup}_neg_A{anc}", "reroute", "reroute_rw",
+                     "near_nf target, wide jitter support", target="near_nf", support=sup,
+                     mix="neg", negonly=True, anchor=anc, round_=RW))
+# positives + negatives: new target rules with the T_p anchor
+for stem, tgt, sup, extra in (("R_near_nf_log_both", "near_nf", "log", False),
+                              ("R_near_nf_nhood_both", "near_nf", "nhood", False),
+                              ("R_spread_nf_log_both", "spread_nf", "log", False),
+                              ("R_ours_nf_both", "resample4_nf", "log", False),
+                              ("R_near_filt_log_both", "near_filt", "log", True)):
+    _add(ArmSpec(stem, "reroute", "reroute_rw", f"{tgt} target, S-{sup}, mix both",
+                 target=tgt, support=sup, mix="both", extra_label_budget=extra, round_=RW))
+_add(ArmSpec("R_near_filt_log_neg_Anf_map", "reroute", "reroute_rw",
+             "label-filtered near target + nf_map anchor", target="near_filt", support="log",
+             mix="neg", negonly=True, anchor="nf_map", extra_label_budget=True, round_=RW))
+
+RW_ARMS = [n for n, s_ in ARMS.items() if s_.round_ == RW]
+
+
 # =========================================================================
 @dataclass
 class ArmContext:
@@ -181,6 +246,13 @@ class ArmContext:
     oracle_a: Optional[torch.Tensor] = None
     online_pool_fn: Optional[object] = None   # policy -> RolloutPool
     n_neg_per_mode: int = 0
+    #: unlabelled pi_ref (xi, a) pairs for the anchors, and which are farther than
+    #: d0 from every logged negative ("nf")
+    anchor_xi: Optional[torch.Tensor] = None
+    anchor_a: Optional[torch.Tensor] = None
+    anchor_nf: Optional[torch.Tensor] = None
+    d0: Optional[float] = None
+    typical: Optional[object] = None
 
 
 def _f(x):
@@ -299,6 +371,45 @@ def ga_step_fn(ctx, spec):
     return step
 
 
+def anchor_loss_fn(ctx: ArmContext, anchor: str):
+    """Flow-matching on unlabelled pi_ref samples. ``*_map`` keeps each sample's own
+    noise (distils the map), ``*_dist`` draws fresh noise (distils the density)."""
+    src, kind = anchor.split("_")
+    if src == "self":
+        xi, a = ctx.anchor_xi, ctx.anchor_a
+    elif src == "nf":
+        xi, a = ctx.anchor_xi[ctx.anchor_nf], ctx.anchor_a[ctx.anchor_nf]
+    else:
+        raise ValueError(anchor)
+    if a.shape[0] == 0:
+        raise ValueError("anchor pool empty")
+    B = ctx.tcfg.batch
+
+    def loss(policy, g):
+        idx = _pick(a.shape[0], B, g)
+        noise = xi[idx] if kind == "map" else torch.randn(a[idx].shape, generator=g)
+        if kind not in ("map", "dist"):
+            raise ValueError(anchor)
+        t = FlowPolicy.sample_time(B, g)
+        return policy.flow_loss(a[idx], noise, t).mean()
+    return loss
+
+
+def with_anchor(fn, ctx: ArmContext, spec: ArmSpec):
+    """(l_method + lambda_a l_anchor) / (1 + lambda_a): same normalisation as the
+    lambda_- = 1 balance of the `both` mix."""
+    al = anchor_loss_fn(ctx, spec.anchor)
+    lam = spec.lambda_anchor
+
+    def step(policy, g):
+        l_m, stats = fn(policy, g)
+        l_a = al(policy, g)
+        stats = dict(stats)
+        stats["l_anchor"] = _f(l_a)
+        return (l_m + lam * l_a) / (1 + lam), stats
+    return step
+
+
 # =========================================================================
 class RewardModel(torch.nn.Module):
     """BTRewardHead with the state features removed: standardised action -> 256 ReLU -> 1.
@@ -381,9 +492,12 @@ def run_arm(spec: ArmSpec, ctx: ArmContext, log=None, probe=None):
         data = ctx.oracle_a if spec.privileged else ctx.a_pos
         B = ctx.tcfg.batch
         fn = lambda pol, g: (_bc_loss(pol, data, B, g), {})
+    elif spec.kind == "anchor_only":
+        fn = lambda pol, g: (anchor_loss_fn(ctx, spec.anchor)(pol, g), {})
     elif spec.kind in ("reroute", "online"):
         rows = build_rows(ctx.ref, ctx.xi_neg, ctx.a_neg, ctx.neg_pool_idx, spec.target,
-                          spec.support, ctx.seed, ctx.mix_cfg, ctx.forget)
+                          spec.support, ctx.seed, ctx.mix_cfg, ctx.forget, d0=ctx.d0,
+                          typical=ctx.typical)
         info.update({f"rows_{k}": v for k, v in rows.diag.items()})
         fn = reroute_step_fn(ctx, rows, spec)
     elif spec.kind == "npo":
@@ -396,6 +510,11 @@ def run_arm(spec: ArmSpec, ctx: ArmContext, log=None, probe=None):
         fn = ga_step_fn(ctx, spec)
     else:
         raise ValueError(spec.kind)
+    if spec.anchor and spec.kind != "anchor_only":
+        fn = with_anchor(fn, ctx, spec)
+    if spec.anchor:
+        info["anchor_pool_size"] = int(ctx.anchor_a.shape[0] if spec.anchor.startswith("self")
+                                       else int(ctx.anchor_nf.sum()))
 
     pol, hist = finetune(ctx.ref, fn, ctx.tcfg, ctx.seed, log=log, probe=probe)
     info["train_history"] = hist
@@ -424,7 +543,7 @@ def _online_round2(spec, ctx, pi1, rows1, log, probe=None):
         extra["online_r2_skipped"] = True
         return pi1, extra
     rows2 = build_rows(ctx.ref, pool.xi[new], pool.a[new], new, spec.target, spec.support,
-                       ctx.seed, ctx.mix_cfg, ctx.forget, round_=1)
+                       ctx.seed, ctx.mix_cfg, ctx.forget, round_=1, d0=ctx.d0, typical=ctx.typical)
     from .reroute import RerouteRows
     acc = RerouteRows(noise=torch.cat([rows1.noise, rows2.noise]),
                       target=torch.cat([rows1.target, rows2.target]),

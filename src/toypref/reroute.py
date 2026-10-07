@@ -45,6 +45,7 @@ from . import seeds
 
 N_CANDIDATES = 8
 POOL_M = 256
+NEAR_M = 32
 GUIDE_ALPHA = 0.3
 N_RESAMPLE = 4
 NHOOD_K = 4
@@ -73,7 +74,7 @@ def _retained(mix_cfg, retain, a):
 
 @torch.no_grad()
 def make_targets(ref, xi_log, a_neg, method: str, seed: int, pool_idx, round_: int = 0,
-                 mix_cfg=None, retain=None, filt_stats=None):
+                 mix_cfg=None, retain=None, filt_stats=None, neg_all=None, d0=None, typical=None):
     """(R, n_t, 2) targets per negative: n_t = 4 for resample4[_filt], else 1.
 
     ``*_filt`` methods label every candidate decode with the mode classifier and
@@ -91,10 +92,28 @@ def make_targets(ref, xi_log, a_neg, method: str, seed: int, pool_idx, round_: i
                       it to retained decodes, rerun FPS (seeded away from xi_log)
                       on that subset and pick the farthest (``fallback_pool``)
     """
-    filt = method.endswith("_filt")
-    base = method[:-5] if filt else method
-    if filt and (mix_cfg is None or retain is None):
-        raise ValueError(f"{method} needs mix_cfg and retain")
+    # Eligibility filters (round "where does rerouting win", 2026-10-07):
+    #   _filt  label-based: candidate decode is in a RETAINED mode (needs labels)
+    #   _nf    label-free: candidate decode is farther than d0 from EVERY logged
+    #          negative (uses only the negatives the method already has)
+    # Base "near" (new): nearest-to-a_neg eligible candidate among NEAR_M i.i.d.
+    # prior decodes -- local reassignment instead of farthest-of-8.
+    filt = method.endswith("_filt") or method.endswith("_nf")
+    base = method.rsplit("_", 1)[0] if filt else method
+    if method.endswith("_filt"):
+        if mix_cfg is None or retain is None:
+            raise ValueError(f"{method} needs mix_cfg and retain")
+        elig = lambda a: _retained(mix_cfg, retain, a)
+    elif method.endswith("_nf"):
+        if neg_all is None or d0 is None:
+            raise ValueError(f"{method} needs neg_all and d0")
+        far = lambda a: torch.cdist(a, neg_all).min(1).values > d0
+        # also require the candidate to be TYPICAL under pi_ref (kNN density test on
+        # pi_ref's own samples, label-free): without it, nearest/farthest picks select
+        # pi_ref's low-density bridge samples (smoke test: 50% / 25% of targets off-mode)
+        elig = (lambda a: far(a) & typical(a)) if typical is not None else far
+    else:
+        elig = None
     st = filt_stats if filt_stats is not None else {}
     for k in ("fallback_resample", "fallback_unfiltered", "fallback_pool", "extra_draws"):
         st.setdefault(k, 0)
@@ -102,6 +121,22 @@ def make_targets(ref, xi_log, a_neg, method: str, seed: int, pool_idx, round_: i
     D = xi_log.shape[1]
     for i in range(xi_log.shape[0]):
         g = seeds.row_gen(seed, int(pool_idx[i]), seeds.ROW_CAND if base != "resample4" else seeds.ROW_RESAMPLE, round_)
+        if base == "near":
+            z = torch.randn(NEAR_M, D, generator=g)
+            cand = ref.sample(z)
+            ok = elig(cand) if elig is not None else torch.ones(NEAR_M, dtype=torch.bool)
+            if not bool(ok.any()):
+                st["fallback_pool"] += 1
+                z = torch.randn(POOL_M, D, generator=g)
+                cand = ref.sample(z)
+                ok = elig(cand)
+                if not bool(ok.any()):
+                    st["fallback_unfiltered"] += 1
+                    ok = torch.ones(POOL_M, dtype=torch.bool)
+            cand = cand[ok]
+            d = torch.linalg.norm(cand - a_neg[i].reshape(1, -1), dim=1)
+            out.append(cand[int(torch.argmin(d))].reshape(1, D))
+            continue
         if base == "resample4":
             z = torch.randn(N_RESAMPLE, D, generator=g)
             a = ref.sample(z)
@@ -109,12 +144,12 @@ def make_targets(ref, xi_log, a_neg, method: str, seed: int, pool_idx, round_: i
                 out.append(a)
                 continue
             first = a
-            kept = [a[_retained(mix_cfg, retain, a)]]
+            kept = [a[elig(a)]]
             n_drawn = N_RESAMPLE
             while sum(k.shape[0] for k in kept) < N_RESAMPLE and n_drawn < FILT_MAX_DRAWS:
                 a = ref.sample(torch.randn(N_RESAMPLE, D, generator=g))
                 n_drawn += N_RESAMPLE
-                kept.append(a[_retained(mix_cfg, retain, a)])
+                kept.append(a[elig(a)])
             st["extra_draws"] += n_drawn - N_RESAMPLE
             kept = torch.cat(kept)
             if kept.shape[0] >= N_RESAMPLE:
@@ -136,13 +171,13 @@ def make_targets(ref, xi_log, a_neg, method: str, seed: int, pool_idx, round_: i
         else:
             raise ValueError(method)
         if filt:
-            ok = _retained(mix_cfg, retain, cand)
+            ok = elig(cand)
             if not bool(ok.any()):
                 if base != "spread":
                     raise ValueError(f"no pool fallback defined for {method}")
                 st["fallback_pool"] += 1
                 pa = ref.sample(pool)
-                pok = _retained(mix_cfg, retain, pa)
+                pok = elig(pa)
                 if not bool(pok.any()):
                     st["fallback_unfiltered"] += 1
                     ok = torch.ones_like(ok)
@@ -169,6 +204,10 @@ def make_support(ref, xi_log, a_neg, support: str, seed: int, pool_idx, round_: 
             extra = xi[:0]
         elif support == "nhood":
             extra = xi + NHOOD_SIGMA * torch.randn(NHOOD_K, D, generator=g)
+        elif support.startswith("nhoodx_"):
+            # wider / denser additive neighbourhood: nhoodx_<sigma>_<K>
+            _, sg, kk = support.split("_")
+            extra = xi + float(sg) * torch.randn(int(kk), D, generator=g)
         elif support.startswith("nhood_sph_"):
             s = float(support.split("_")[-1])
             extra = (1 - s * s) ** 0.5 * xi + s * torch.randn(NHOOD_K, D, generator=g)
@@ -219,13 +258,16 @@ class RerouteRows:
 
 @torch.no_grad()
 def build_rows(ref, xi_neg, a_neg, pool_idx, target: str, support: str, seed: int,
-               mix_cfg=None, forget=None, round_: int = 0) -> RerouteRows:
+               mix_cfg=None, forget=None, round_: int = 0, d0: float = None,
+               neg_all=None, typical=None) -> RerouteRows:
     filt_stats = {}
     retain = None
     if forget is not None and mix_cfg is not None:
         retain = [m for m in range(mix_cfg.n_modes) if m not in forget]
     T = make_targets(ref, xi_neg, a_neg, target, seed, pool_idx, round_,
-                     mix_cfg=mix_cfg, retain=retain, filt_stats=filt_stats)      # (R, n_t, 2)
+                     mix_cfg=mix_cfg, retain=retain, filt_stats=filt_stats,
+                     neg_all=a_neg if neg_all is None else neg_all, d0=d0,
+                     typical=typical)      # (R, n_t, 2)
     if target.startswith("resample4"):
         if support != "log":
             raise ValueError("Ours (resample4) is defined on S-log only")
@@ -256,7 +298,7 @@ def build_rows(ref, xi_neg, a_neg, pool_idx, target: str, support: str, seed: in
             torch.linalg.norm(noise - xi_neg[neg_row], dim=1)[slot > 0].mean()
         ) if bool((slot > 0).any()) else 0.0,
     }
-    if target.endswith("_filt"):
+    if target.endswith("_filt") or target.endswith("_nf"):
         diag.update({f"filt_{k}": v for k, v in filt_stats.items()})
     if mix_cfg is not None and forget is not None:
         from .mixture import OFF, assign_modes
@@ -265,3 +307,18 @@ def build_rows(ref, xi_neg, a_neg, pool_idx, target: str, support: str, seed: in
         diag["target_frac_off"] = float((lab == OFF).mean())
         diag["support_decode_frac_in_forget"] = float(np.isin(assign_modes(mix_cfg, ref.sample(noise)), forget).mean())
     return RerouteRows(noise=noise, target=tgt, neg_row=neg_row, slot=slot, diag=diag)
+
+
+def make_typicality(ref_samples: torch.Tensor, k: int = 10, q: float = 0.9):
+    """Label-free density test from pi_ref's own samples: a point is typical if its
+    distance to its k-th nearest reference sample is within the q-quantile of the
+    reference samples' own (leave-one-out) k-NN distances."""
+    d = torch.cdist(ref_samples, ref_samples)
+    d.fill_diagonal_(float("inf"))
+    kth = d.kthvalue(k, dim=1).values
+    thr = float(torch.quantile(kth, q))
+
+    def typical(a):
+        return torch.cdist(a, ref_samples).kthvalue(k, dim=1).values <= thr
+    typical.threshold = thr
+    return typical

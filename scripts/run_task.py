@@ -1,7 +1,7 @@
 """Array-task entry point: run manifest row $SLURM_ARRAY_TASK_ID.
 
 usage: run_task.py [task_id] [manifest.csv]   (default manifest: results/manifest.csv)
-Optional manifest columns ``n_pos`` and ``out`` are passed through to run_cell.py.
+Optional manifest columns ``n_pos``, ``regime`` and ``out`` are passed through to run_cell.py.
 """
 import csv
 import os
@@ -17,6 +17,8 @@ cmd = [sys.executable, os.path.join(ROOT, "scripts", "run_cell.py"), "--seed", r
        "--n_forget", row["n_forget"], "--n_neg", row["n_neg"], "--arms", row["arms"]]
 if row.get("n_pos"):
     cmd += ["--n_pos", row["n_pos"]]
+if row.get("regime"):
+    cmd += ["--regime", row["regime"]]
 if row.get("out"):
     cmd += ["--out", row["out"]]
 print(" ".join(cmd), flush=True)

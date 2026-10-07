@@ -31,6 +31,8 @@ BON = 70_000
 ONLINE_POOL = 80_000
 TEST_SAMPLES = 90_000
 ORACLE_POOL = 100_000
+ANCHOR_POOL = 110_000
+COVER_PERM = 120_000
 
 # per-row streams (target candidates vs support noises are separate streams so
 # that S-nhood draws the same target as S-log, cf. pref_pillars.reroute)

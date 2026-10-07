@@ -81,3 +81,33 @@ def build_editset(pool: RolloutPool, mix: MixtureConfig, seed: int, n_forget: in
         xi_neg=pool.xi[neg_idx], a_neg=pool.a[neg_idx], mode_neg=pool.mode[neg_idx],
         xi_pos=pool.xi[pos_idx], a_pos=pool.a[pos_idx], mode_pos=pool.mode[pos_idx],
     )
+
+
+def apply_regime(es: EditSet, pool: RolloutPool, mix: MixtureConfig, seed: int, n_pos: int,
+                 cover: float = 1.0, contam: float = 0.0) -> EditSet:
+    """Positive-set regimes (round "where does rerouting win").
+
+    cover < 1   T_p comes only from the first ceil(cover * |R|) retained modes of a
+                per-seed permutation (positives that do not cover every retained
+                behaviour, as when successful rollouts visit only some states)
+    contam > 0  the first round(contam * n_pos) rows of T_p are replaced by pool
+                rollouts that landed in a FORGOTTEN mode but are not logged
+                negatives (label noise in the positive set)
+    T_n is untouched. Both are nested in cover / contam at fixed seed.
+    """
+    import math
+    if cover >= 1.0 and contam <= 0.0:
+        return es
+    covered = list(es.retain)
+    if cover < 1.0:
+        perm = seeds.np_rng(seed, seeds.COVER_PERM).permutation(sorted(es.retain))
+        covered = sorted(int(m) for m in perm[:max(1, math.ceil(cover * len(es.retain)))])
+    pos_idx = np.flatnonzero(np.isin(pool.mode, covered))[:n_pos]
+    if contam > 0.0:
+        m = int(round(contam * n_pos))
+        bad = np.flatnonzero(np.isin(pool.mode, es.forget) & ~np.isin(np.arange(len(pool.mode)), es.neg_idx))[:m]
+        pos_idx = np.concatenate([bad, pos_idx[: n_pos - len(bad)]])
+    es.pos_idx = pos_idx
+    es.xi_pos, es.a_pos, es.mode_pos = pool.xi[pos_idx], pool.a[pos_idx], pool.mode[pos_idx]
+    es.covered = covered
+    return es
