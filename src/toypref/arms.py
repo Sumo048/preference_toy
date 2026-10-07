@@ -122,6 +122,43 @@ for mix in ("both", "neg"):
                  "noised partial inversion, e = sqrt(.75) xi + .5 eps", target="spread",
                  support="ninv_0.4_mix", mix=mix, negonly=mix == "neg"))
 
+# --- label-filtered targets (next step 2, launched 2026-10-07) -------------
+# Same arms, but a candidate is eligible as a target only if the mode classifier
+# puts its decode in a RETAINED mode. That label on candidate actions is
+# information the repo's method does not have, hence extra_label_budget.
+for mix in ("both", "neg"):
+    _add(ArmSpec(f"R_ours_filt_{mix}", "reroute", "reroute_filtered",
+                 "Ours with label-filtered resamples (rejection until retained)",
+                 target="resample4_filt", support="log", mix=mix, negonly=mix == "neg",
+                 extra_label_budget=True))
+    for sup in ("log", "nhood"):
+        _add(ArmSpec(f"R_spread_filt_{sup}_{mix}", "reroute", "reroute_filtered",
+                     f"spread farthest-of-8 among RETAINED candidates, S-{sup}",
+                     target="spread_filt", support=sup, mix=mix, negonly=mix == "neg",
+                     extra_label_budget=True))
+_add(ArmSpec("R_spread_filt_nhood_neg_kl1", "reroute", "reroute_filtered",
+             "R_spread_filt_nhood_neg + lambda_kl = 1 on the T_p retain loader",
+             target="spread_filt", support="nhood", mix="neg", lambda_kl=1.0, negonly=True,
+             extra_label_budget=True))
+
+FILTERED_ARMS = [n for n, s in ARMS.items() if s.family == "reroute_filtered"]
+
+
+def depends_on_tp(spec: "ArmSpec") -> bool:
+    """Arms whose training touches T_p (BC/anchor rows, pairs, RM, KL retain loader)."""
+    if spec.kind == "frozen":
+        return True          # kept for pairing, cheap
+    if spec.privileged:
+        return False         # ORACLE uses its own 20k pi_ref retain samples
+    if spec.kind in ("bc", "dpo", "rerank", "ga"):
+        return True
+    if spec.kind in ("npo", "kto"):
+        return not spec.negonly
+    if spec.kind in ("reroute", "online"):
+        return spec.mix == "both" or spec.lambda_kl > 0
+    return False
+
+
 # --- online loop (scripts/m3/online_round.py) ------------------------------
 _add(ArmSpec("R_online2_spread_nhood_neg", "online", "reroute_online",
              "2 rounds: roll out pi_1, add its n_neg/mode new negatives, retrain from pi_ref "

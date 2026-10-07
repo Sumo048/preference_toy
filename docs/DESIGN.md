@@ -121,3 +121,48 @@ sbatch --dependency=afterany:<sweep> slurm/submit_aggregate.sh
 Outputs: `/grogu/datasets/rollout/soumojib/toypref/runs/cells/<cell>/<arm>.json`
 (+ `_samples.npy`), then `results/{all_runs,summary,paired_vs_B0}.csv`,
 `results/extras.jsonl`, `results/figures/`.
+
+## Next steps (launched 2026-10-07)
+
+Both follow from `docs/RESULTS.md`. Outputs never mix with the main sweep's tables:
+aggregation writes only `results/next_steps/` (`all_runs.csv`, `summary.csv`, `probes.csv`,
+`report_tables.md` from `scripts/report_next_steps.py`).
+
+### 1. |T_p| sweep: n_pos in {4, 16, 64} (512 = the main sweep)
+
+`run_cell.py --n_pos N` cuts T_p as the first N pool rollouts in retained modes, so T_p is
+nested across n_pos (`tests/test_fairness.py::test_positives_nested_in_n_pos`); T_n, eval
+noises and every other stream are unchanged. Outputs: `$RUNS/cells_npos{N}/<cell>/`, with
+`n_pos` recorded in every JSON. Arms rerun = every arm whose training touches T_p
+(`arms.depends_on_tp`): B0 (pairing), B1, NPO/KTO beta {0.1,1,10,100}, DPO beta {1,25},
+RM_bon8, B4_naive_ga, every `R_*_both`, the `R_spread_nhood_neg_kl*` arms (their retain
+loader is T_p) and the filtered `_both` / `_kl1` arms: 36 arms. NOT rerun, because they never
+read T_p: ORACLE_retain_bc (own 20k retain samples) and every negatives-only arm (their
+n_pos=512 results are already their results at any n_pos).
+Manifest `results/next_steps/manifest_npos.csv`: 3 n_pos x 120 cells x 2 arm chunks = 720 tasks.
+
+### 2. Label-filtered rerouting targets
+
+The method's candidates are unlabelled pi_ref decodes, and 23-29% of targets landed in a
+forgotten mode. The filtered arms label each candidate decode with the mode classifier and
+allow only RETAINED-mode candidates (`reroute.make_targets`, `*_filt`):
+
+* `resample4_filt` (Ours): blocks of 4 draws from the same per-row stream as `resample4`
+  (block 1 = the unfiltered draw), keeping retained decodes in draw order until 4 are kept;
+  cap 64 draws, then repeat the kept ones (`filt_fallback_resample`), or with none kept use
+  the unfiltered draw (`filt_fallback_unfiltered`).
+* `spread_filt`: farthest-of-8 among the retained FPS candidates (identical to `spread`
+  whenever its pick is already retained). If none of the 8 is retained: decode the whole
+  256-noise pool, restrict to retained decodes, rerun FPS seeded away from xi_log and pick
+  the farthest (`filt_fallback_pool`). Counters are in every JSON as `rows_filt_*`.
+
+Arms (flagged `extra_label_budget`: labels on candidate actions are information the repo's
+method does not have): `R_ours_filt_{both,neg}`, `R_spread_filt_{log,nhood}_{both,neg}`,
+`R_spread_filt_nhood_neg_kl1`. Run on the 120 n_pos=512 cells (new arm files in the existing
+cell dirs; manifest `manifest_filt512.csv`, 120 tasks) and, where they read T_p, in the n_pos
+sweep.
+
+Jobs (all `shubhamlong` CPU except aggregation, `--exclude=grogu-0-25`): filtered arms
+3990444 (`--array=0-119%20`), n_pos sweep 3990445 (`--array=0-719%50`), aggregation 3990446
+(`afterany` on both, `all`). Scripts: `slurm/submit_next.sh`, `slurm/submit_aggregate_next.sh`,
+`scripts/build_manifest_next.py`, `scripts/report_next_steps.py`.

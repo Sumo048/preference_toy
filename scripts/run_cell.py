@@ -33,9 +33,14 @@ def main():
     ap.add_argument("--arms", default="all", help="comma list or 'all'")
     ap.add_argument("--steps", type=int, default=None, help="override fine-tune steps (smoke tests)")
     ap.add_argument("--lr", type=float, default=None, help="override fine-tune peak LR (pilot only)")
-    ap.add_argument("--out", default=os.path.join(RUNS, "cells"))
+    ap.add_argument("--n_pos", type=int, default=None,
+                    help="|T_p| (default config value 512); != 512 writes to $RUNS/cells_npos<N>")
+    ap.add_argument("--out", default=None, help="cells root (default by n_pos, see --n_pos)")
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
+    n_pos = DEFAULT.n_pos if args.n_pos is None else args.n_pos
+    if args.out is None:
+        args.out = os.path.join(RUNS, "cells" if n_pos == DEFAULT.n_pos else f"cells_npos{n_pos}")
 
     torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
     cfg = DEFAULT
@@ -47,7 +52,7 @@ def main():
     ref = load_policy(base_path(s))
 
     pool = make_pool(ref, mix, s, cfg.pool_size)
-    es = build_editset(pool, mix, s, args.n_forget, args.n_neg, cfg.n_pos)
+    es = build_editset(pool, mix, s, args.n_forget, args.n_neg, n_pos)
 
     # oracle data: pi_ref's own samples in retained modes, its own stream
     opool = make_pool(ref, mix, s, cfg.n_oracle * 2, purpose=seeds.ORACLE_POOL)

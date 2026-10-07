@@ -20,27 +20,29 @@ import pandas as pd
 
 from toypref.config import ROOT, RUNS
 
-KEYS = ["arm", "n_forget", "n_neg"]
+KEYS = ["arm", "n_pos", "n_forget", "n_neg"]
 DROP = {"extra", "train_history", "train_history_r2", "config", "online_r2_found_per_mode", "forget"}
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--cells", default=os.path.join(RUNS, "cells"))
+    ap.add_argument("--cells", default=os.path.join(RUNS, "cells"),
+                    help="one cells root, or several separated by commas (e.g. the n_pos roots)")
     ap.add_argument("--out", default=os.path.join(ROOT, "results"))
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
 
     rows, extras, probes = [], [], []
-    for p in sorted(glob.glob(os.path.join(args.cells, "*", "*.json"))):
+    paths = sorted(p for root in args.cells.split(",") for p in glob.glob(os.path.join(root, "*", "*.json")))
+    for p in paths:
         with open(p) as f:
             r = json.load(f)
-        extras.append({k: r[k] for k in ("cell", "arm", "seed", "n_forget", "n_neg", "forget")} | {"extra": r["extra"]})
+        extras.append({k: r[k] for k in ("cell", "arm", "seed", "n_pos", "n_forget", "n_neg", "forget")} | {"extra": r["extra"]})
         hist = r.get("train_history") or []
         for rnd, hh in ((1, hist), (2, r.get("train_history_r2") or [])):
             for h in hh:
                 if "probe_neg_mass_ratio" in h:
-                    probes.append({"seed": r["seed"], "n_forget": r["n_forget"], "n_neg": r["n_neg"],
+                    probes.append({"seed": r["seed"], "n_pos": r["n_pos"], "n_forget": r["n_forget"], "n_neg": r["n_neg"],
                                    "arm": r["arm"], "round": rnd, "step": h["step"],
                                    **{k[6:]: v for k, v in h.items() if k.startswith("probe_")}})
         row = {k: v for k, v in r.items() if k not in DROP}
@@ -55,7 +57,7 @@ def main():
         for e in extras:
             f.write(json.dumps(e) + "\n")
 
-    num = [c for c in df.columns if c not in KEYS and c != "seed" and pd.api.types.is_numeric_dtype(df[c])
+    num = [c for c in df.columns if c not in KEYS and c not in ("seed", "n_pos") and pd.api.types.is_numeric_dtype(df[c])
            and not pd.api.types.is_bool_dtype(df[c])]
     g = df.groupby(KEYS)[num]
     mean, sem, cnt = g.mean(), g.sem(), g.size().rename("n_seeds")
@@ -65,10 +67,11 @@ def main():
     summ = summ.join(meta, on="arm")
     summ.to_csv(os.path.join(args.out, "summary.csv"), index=False)
 
-    b0 = df[df.arm == "B0_frozen"].set_index(["seed", "n_forget", "n_neg"])[num]
+    pkeys = ["seed", "n_pos", "n_forget", "n_neg"]
+    b0 = df[df.arm == "B0_frozen"].set_index(pkeys)[num]
     diffs = []
     for arm, d in df.groupby("arm"):
-        d = d.set_index(["seed", "n_forget", "n_neg"])[num]
+        d = d.set_index(pkeys)[num]
         common = d.index.intersection(b0.index)
         dd = (d.loc[common] - b0.loc[common]).reset_index()
         dd["arm"] = arm
