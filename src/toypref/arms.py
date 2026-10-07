@@ -264,18 +264,22 @@ def ga_step_fn(ctx, spec):
 
 # =========================================================================
 class RewardModel(torch.nn.Module):
-    """BTRewardHead with the state features removed: LayerNorm'd action -> 256 ReLU -> 1."""
+    """BTRewardHead with the state features removed: standardised action -> 256 ReLU -> 1.
+
+    The repo's head LayerNorms its 2048-d prefix features; that LayerNorm is NOT
+    carried over to the action. On a 2-d input a LayerNorm maps every point to
+    roughly sign(x1 - x2) and the RM cannot separate the modes (first sweep: mean
+    training-pair accuracy 0.70, min 0.51; results discarded and rerun)."""
 
     def __init__(self, dim=2, hidden=256):
         super().__init__()
-        self.norm = torch.nn.LayerNorm(dim)
         self.net = torch.nn.Sequential(torch.nn.Linear(dim, hidden), torch.nn.ReLU(),
                                        torch.nn.Linear(hidden, 1))
         self.register_buffer("mu", torch.zeros(dim))
         self.register_buffer("sd", torch.ones(dim))
 
     def forward(self, a):
-        return self.net(self.norm((a - self.mu) / self.sd)).squeeze(-1)
+        return self.net((a - self.mu) / self.sd).squeeze(-1)
 
 
 def train_reward_model(ctx: ArmContext, steps=3000, batch=256, lr=1e-3, wd=1e-4):
