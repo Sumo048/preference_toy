@@ -44,7 +44,7 @@ def main():
     n_pos = DEFAULT.n_pos if args.n_pos is None else args.n_pos
     reg = parse_regime(args.regime)
     if args.out is None:
-        if reg or args.arms_rw:
+        if reg or args.arms_rw or any(ARMS[a].round_ for a in (args.arms.split(",") if args.arms not in ("all", "rw") else [])):
             args.out = os.path.join(RUNS, "rw", regime_tag(args.regime), "cells")
         else:
             args.out = os.path.join(RUNS, "cells" if n_pos == DEFAULT.n_pos else f"cells_npos{n_pos}")

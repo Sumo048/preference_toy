@@ -67,3 +67,27 @@ Exploration phase: seeds 0-4, n_forget in {1, 2, 4}, n_neg in {1, 4, 16} (45 cel
 Only regimes/settings that pass 1-3 in exploration go to confirmation, with the arm list frozen
 (the winning rerouting arm and the best non-rerouting arm, plus B0 and the setting's references).
 Everything is reported whichever way it goes, including the regimes where rerouting loses.
+
+## Confirmation hypothesis C1 (registered 2026-10-07 01:48 EDT, from exploration data)
+
+Exploration (seeds 0-4, base regime) failed the pooled decision rule everywhere it has been
+evaluated so far, but slicing the NEG setting by `n_forget` showed a strong, consistent
+pattern: with 4 of 8 modes forgotten, the four best negatives-only arms are all rerouting
+arms with the label-free `_nf` targets, led by `R_near_nf_nhood_neg` (tv_to_ideal 0.180 vs
+NPO-negonly b100 0.498 and KTO-negonly b100 0.512; paired vs NPO -0.318 +- 0.025), and it is
+best at every n_neg (1, 4, 16). At n_forget 1-2 it loses (+0.169, +0.082). This slice was
+found after looking, so it is a hypothesis, not a result.
+
+**C1.** In the NEG setting (logged negatives only), when a large share of the behaviour is
+forgotten (n_forget >= 3 of 8), `R_near_nf_nhood_neg` has lower tv_to_ideal than EVERY
+non-rerouting negatives-only arm (B3_npo_b10/b100_negonly, B5_kto_b10/b100_negonly), seed-paired
+over (seed, n_neg) with the difference below -2 sem, separately at n_forget = 3 and 4.
+**Side prediction (registered so a loss counts too):** at n_forget = 1 it does NOT beat the
+best non-rerouting arm.
+
+Test: fresh seeds 5-9 (new base policies, job 3991963), n_forget in {1, 2, 3, 4},
+n_neg in {1, 2, 4, 8, 16, 32}. Arms frozen now: R_near_nf_nhood_neg, R_near_nf_log_neg,
+R_ours_nf_neg, R_ours_neg (the original method, reference), B3_npo_b10_negonly,
+B3_npo_b100_negonly, B5_kto_b10_negonly, B5_kto_b100_negonly, B0_frozen. Report the
+non-domination check on (forget ratio, retain TV, off mass) as well. n_forget = 3 never
+appeared in exploration, so it is fully out of sample.
