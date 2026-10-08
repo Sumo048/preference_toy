@@ -76,3 +76,38 @@ Confirmation (seeds 5-9, n_forget {1, 2, 4} x n_neg {1, 4, 16, 64}) uses these f
 R_hop_bsup_neg, NPO_b100_neg (best NEG baseline), NPO_b10_neg_A (best NEG+U baseline), B0_frozen,
 R_ours_neg and R_own_nhood_neg. It passes iff, at n_forget = 4, R_hop_bsup_neg beats each of
 the two baselines by more than 2 sem (seed-paired over seed x n_neg) and is not dominated.
+
+## Round 2: noise veto (registered before running)
+
+**Problem (measured).** 57% of R_hop_bsup_neg's targets land in ANOTHER forgotten behaviour
+(confirmation, n_forget = 4). The hop knows only "same behaviour as this negative".
+
+**Vetoes**, using only OTHER negatives (other conditions), all self-calibrated:
+- `hopV`, noise veto: reject a hop exit whose noise is within rho of any other logged bad
+  noise; rho = 0.5 x the median plain-hop exit distance over the cell's negatives.
+- `hopB`, basin veto: decode the exit noise at every other negative's condition c_j and take
+  the fraction f of those decodes that land in negative j's bad basin. Reject if
+  f >= 0.5 x median_j f_j, where f_j is the same fraction for logged bad noise xi_j. Disabled
+  when there is no other negative.
+- `hopVB`: both.
+
+Candidates are the first decode of each new behaviour along each of the 16 directions (up to 3
+per direction), plus the 0.2 margin, tried in order of noise distance. If all are vetoed, fall
+back to the plain hop and count it. Support = bsup in every case, so only the target changes.
+
+**Predictions.**
+- V1: every veto lowers target-in-forget below plain hop (0.57 at n_forget 4). Basin veto
+  lowers it most.
+- V2: the best veto arm beats R_hop_bsup_neg on tv_to_ideal at n_forget = 4, seed-paired by
+  more than 2 sem.
+- V3: at n_forget = 2, the best veto arm beats the best negatives-only baseline by more than
+  2 sem. Plain hop did not.
+- V4: with n_neg = 1 and n_forget = 1 there is no other negative of another mode, so nothing
+  changes; with one negative per mode, the other modes' negatives drive the veto.
+
+**Decision.**
+- Exploration: seeds 0-4, same grid; new arms R_hopV_bsup_neg, R_hopB_bsup_neg, R_hopVB_bsup_neg.
+  Existing arms are reused (the code for them is unchanged).
+- Confirmation: seeds 5-9. Frozen arms: the best veto arm, R_hop_bsup_neg, NPO_b100_neg,
+  NPO_b10_neg_A and B0.
+- V2 and V3 are tested on the confirmation seeds.
