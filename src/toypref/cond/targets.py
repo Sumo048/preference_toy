@@ -312,3 +312,89 @@ def make_vetoes(ref, seed, uids, c_neg, xi_neg, a_neg, rule, stats):
             return m
         out.append(veto)
     return out
+
+
+class NegBank:
+    """The logged negatives as a label-free 'bad vote' on ANY noise (round 3).
+
+    v(z) = fraction of negatives j for which pi_ref(c_j, z) lands in negative j's bad basin.
+    theta = 0.5 x median_j v_{-j}(xi_j)  (the veto's threshold), or 0.5 with one negative."""
+
+    def __init__(self, ref, seed, uids, c_neg, xi_neg, a_neg):
+        self.ref, self.c = ref, c_neg
+        self.N = len(uids)
+        self.basins = [basins_at(ref, float(c_neg[j]), a_neg[j], row_gen(seed, uids[j], 1))[0]
+                       for j in range(self.N)]
+        if self.N > 1:
+            f = [float(self.rate(xi_neg[j].reshape(1, 2), skip=j)[0]) for j in range(self.N)]
+            med = float(np.median(f))
+            self.theta = 0.5 * med if med > 0 else 0.5
+            self.self_rate_median = med
+        else:
+            self.theta, self.self_rate_median = 0.5, float("nan")
+
+    @torch.no_grad()
+    def rate(self, z, skip=None, chunk=4096):
+        P = z.shape[0]
+        others = [j for j in range(self.N) if j != skip]
+        if not others:
+            return torch.zeros(P)
+        hits = torch.zeros(P)
+        for s in range(0, P, chunk):
+            zc = z[s:s + chunk]
+            p = zc.shape[0]
+            dec = self.ref.sample(zc.repeat(len(others), 1),
+                                  torch.cat([torch.full((p,), float(self.c[j])) for j in others]))
+            for n, j in enumerate(others):
+                lab = self.basins[j].assign(dec[n * p:(n + 1) * p])
+                hits[s:s + p] += torch.from_numpy((lab == self.basins[j].bad).astype(np.float32))
+        return hits / len(others)
+
+    def veto(self, skip=None):
+        return lambda z: self.rate(z, skip=skip) >= self.theta
+
+
+def build_mined(ref, mix, seed, bank: NegBank, c, xi, a, uid_offset, forget=None) -> Rows:
+    """Pseudo-negatives (vote-flagged unlabelled samples) rerouted with hop + basin veto at
+    their own condition, nhood support."""
+    cs, ns, ts = [], [], []
+    stats: Dict = {}
+    veto = bank.veto(skip=None)
+    for i in range(c.shape[0]):
+        uid = uid_offset + i
+        g, gs = row_gen(seed, uid, 1), row_gen(seed, uid, 2)
+        ci = float(c[i])
+        tgt = target_one(ref, "hop", ci, xi[i], a[i], g, stats=stats, veto=veto)
+        sup = torch.cat([xi[i].reshape(1, 2), xi[i] + NHOOD_SIGMA * torch.randn(NHOOD_K, 2, generator=gs)])
+        cs += [ci] * len(sup)
+        ns += list(sup)
+        ts += [tgt] * len(sup)
+    if not cs:
+        return Rows(c=torch.zeros(0), noise=torch.zeros(0, 2), target=torch.zeros(0, 2), diag={"n_rows": 0})
+    C, N, T = torch.tensor(cs, dtype=torch.float32), torch.stack(ns), torch.stack(ts)
+    diag = {"n_rows": int(len(cs)), **{f"stat_{k}": v for k, v in stats.items()}}
+    if forget is not None:
+        diag["target_frac_in_forget"] = float(np.isin(mix.assign(T, C.numpy()), forget).mean())
+        diag["target_frac_off"] = float((mix.assign(T, C.numpy()) == -1).mean())
+    return Rows(c=C, noise=N, target=T, diag=diag)
+
+
+M_LOCAL = 64
+
+
+@torch.no_grad()
+def local_anchor_triplets(ref, seed, uids, c_neg, a_neg):
+    """User's local anchor: at each negative's condition, fresh pi_ref (noise, action) pairs
+    outside the negative's behaviour (its basin), to be kept pinned. Uses only that negative."""
+    cs, zs, acts = [], [], []
+    for j in range(len(uids)):
+        cj = float(c_neg[j])
+        b, _ = basins_at(ref, cj, a_neg[j], row_gen(seed, uids[j], 1))
+        z = torch.randn(M_LOCAL, 2, generator=row_gen(seed, uids[j], 4))
+        dec = ref.sample(z, torch.full((M_LOCAL,), cj))
+        lab = b.assign(dec)
+        keep = torch.from_numpy((lab != b.bad) & (lab != -1))
+        cs.append(torch.full((int(keep.sum()),), cj))
+        zs.append(z[keep])
+        acts.append(dec[keep])
+    return torch.cat(cs), torch.cat(zs), torch.cat(acts)

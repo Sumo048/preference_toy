@@ -78,8 +78,18 @@ def make_pool(ref, seed, n, purpose=P_POOL) -> Pool:
     return Pool(c=c, xi=xi, a=a, mode=MIX.assign(a, c))
 
 
-def forget_modes(seed, k):
-    return sorted(int(m) for m in nprng(seed, P_PERM).permutation(MIX.n_modes)[:k])
+LAYOUTS = {"contig": (0, 1, 2, 3), "alt": (0, 2, 4, 6), "pairs": (0, 1, 4, 5), "b3p1": (0, 1, 2, 5)}
+
+
+def forget_modes(seed, k, layout="random"):
+    """random: first k of a per-seed permutation (rounds 1-3). Otherwise a fixed ring pattern
+    rotated by a per-seed random offset (n_forget = 4 only)."""
+    if layout == "random":
+        return sorted(int(m) for m in nprng(seed, P_PERM).permutation(MIX.n_modes)[:k])
+    pat = LAYOUTS[layout]
+    assert k == len(pat), (layout, k)
+    o = int(nprng(seed, P_PERM + 1).integers(MIX.n_modes))
+    return sorted((o + d) % MIX.n_modes for d in pat)
 
 
 @dataclass
@@ -92,8 +102,8 @@ class Edit:
     a: torch.Tensor
 
 
-def editset(pool: Pool, seed, k, n_neg) -> Edit:
-    F_ = forget_modes(seed, k)
+def editset(pool: Pool, seed, k, n_neg, layout="random") -> Edit:
+    F_ = forget_modes(seed, k, layout)
     idx = np.concatenate([np.flatnonzero(pool.mode == m)[:n_neg] for m in F_])
     return Edit(forget=F_, retain=[m for m in range(MIX.n_modes) if m not in F_], uid=idx,
                 c=pool.c[idx], xi=pool.xi[idx], a=pool.a[idx])
@@ -149,6 +159,8 @@ class Arm:
     support: str = "nhood"
     transplant: bool = False
     anchor: bool = False      # NEG+U: unlabelled pi_ref pairs at random conditions
+    amask: str = ""           # round 3: masked anchor on samples NOT voted bad ("map" | "dist")
+    mine: bool = False        # round 3: reroute vote-flagged unlabelled samples too
     practical: bool = True    # False = uses information a real system lacks (oracle geometry)
 
 
@@ -170,6 +182,25 @@ for a in [Arm("B0_frozen", "frozen"),
           Arm("R_hopV_bsup_neg", "reroute", rule="hopV", support="bsup"),
           Arm("R_hopB_bsup_neg", "reroute", rule="hopB", support="bsup"),
           Arm("R_hopVB_bsup_neg", "reroute", rule="hopVB", support="bsup"),
+          # round 3 (n_forget 1-2): masked anchor and mined pseudo-negatives
+          Arm("R_hopB_bsup_neg_AMmap", "reroute", rule="hopB", support="bsup", amask="map"),
+          Arm("R_hopB_bsup_neg_AMdist", "reroute", rule="hopB", support="bsup", amask="dist"),
+          Arm("R_hopB_bsup_mine_neg_AMmap", "reroute", rule="hopB", support="bsup", amask="map", mine=True),
+          Arm("R_hopB_bsup_mine_neg", "reroute", rule="hopB", support="bsup", mine=True),
+          Arm("NPO_b10_neg_AMmap", "npo", beta=10.0, amask="map"),
+          Arm("NPO_b100_neg_AMmap", "npo", beta=100.0, amask="map"),
+          Arm("NPO_b10_neg_AMdist", "npo", beta=10.0, amask="dist"),
+          Arm("KTO_b10_neg_AMmap", "kto", beta=10.0, amask="map"),
+          Arm("KTO_b100_neg_AMmap", "kto", beta=100.0, amask="map"),
+          # user's local anchor (round 3 amendment)
+          Arm("R_hop_bsup_neg_AL", "reroute", rule="hop", support="bsup", amask="local"),
+          Arm("R_hopB_bsup_neg_AL", "reroute", rule="hopB", support="bsup", amask="local"),
+          Arm("R_hopB_bsup_neg_AML", "reroute", rule="hopB", support="bsup", amask="local+map"),
+          Arm("NPO_b10_neg_AL", "npo", beta=10.0, amask="local"),
+          Arm("NPO_b100_neg_AL", "npo", beta=100.0, amask="local"),
+          Arm("KTO_b10_neg_AL", "kto", beta=10.0, amask="local"),
+          Arm("PSEUDO_vote_map", "pseudo", amask="map"),
+          Arm("PSEUDO_vote_dist", "pseudo", amask="dist"),
           # NEG+U: same methods with an unlabelled self-distillation anchor
           Arm("NPO_b10_neg_A", "npo", beta=10.0, anchor=True),
           Arm("KTO_b10_neg_A", "kto", beta=10.0, anchor=True),
@@ -196,8 +227,60 @@ def _pick(n, k, g):
     return torch.randint(0, n, (k,), generator=g)
 
 
+N_VOTE_POOL = 4096
+N_MINE = 256
+
+
+def get_vote(ctx: "Ctx"):
+    """(bank, unflagged mask over the first N_VOTE_POOL anchor samples, diagnostics); cached."""
+    if getattr(ctx, "_vote", None) is None:
+        bank = TG.NegBank(ctx.ref, ctx.seed, ctx.ed.uid, ctx.ed.c, ctx.ed.xi, ctx.ed.a)
+        P = ctx.anchor
+        v = bank.rate(P.xi[:N_VOTE_POOL])
+        flag = (v >= bank.theta).numpy()
+        bad = np.isin(P.mode[:N_VOTE_POOL], ctx.ed.forget)
+        diag = {"vote_theta": bank.theta, "vote_self_rate_median": bank.self_rate_median,
+                "vote_flag_frac": float(flag.mean()),
+                "vote_precision": float(bad[flag].mean()) if flag.any() else float("nan"),
+                "vote_recall": float(flag[bad].mean()) if bad.any() else float("nan")}
+        ctx._vote = (bank, torch.from_numpy(~flag), diag)
+    return ctx._vote
+
+
+def get_local(ctx: "Ctx"):
+    if getattr(ctx, "_local", None) is None:
+        ctx._local = TG.local_anchor_triplets(ctx.ref, ctx.seed, ctx.ed.uid, ctx.ed.c, ctx.ed.a)
+    return ctx._local
+
+
+def masked_anchor_loss(ctx: "Ctx", kind: str):
+    """kind: map | dist (vote-masked pool), local (user's local anchor, pinned),
+    local+map (both pools, pinned)."""
+    B = ctx.batch
+    parts = []
+    if kind in ("map", "dist", "local+map"):
+        _, keep, _ = get_vote(ctx)
+        P = ctx.anchor
+        parts.append((P.c[:N_VOTE_POOL][keep], P.xi[:N_VOTE_POOL][keep], P.a[:N_VOTE_POOL][keep]))
+    if kind in ("local", "local+map"):
+        parts.append(get_local(ctx))
+    c = torch.cat([p[0] for p in parts])
+    xi = torch.cat([p[1] for p in parts])
+    a = torch.cat([p[2] for p in parts])
+    kind = "dist" if kind == "dist" else "map"
+
+    def loss(pol, g):
+        j = _pick(c.shape[0], B, g)
+        t = FlowPolicy.sample_time(B, g)
+        noise = xi[j] if kind == "map" else torch.randn(a[j].shape, generator=g)
+        return pol.flow_loss(a[j], noise, t, c[j]).mean()
+    return loss
+
+
 def step_fn(arm: Arm, ctx: Ctx, rows=None):
     B, ref, ed = ctx.batch, ctx.ref, ctx.ed
+    if arm.kind == "pseudo":
+        return masked_anchor_loss(ctx, arm.amask)
 
     def method(pol, g):
         if arm.kind == "reroute":
@@ -220,6 +303,12 @@ def step_fn(arm: Arm, ctx: Ctx, rows=None):
             z0 = torch.clamp((ref.flow_loss(ar, nr, t[:k], c[:k]) - pol.flow_loss(ar, nr, t[:k], c[:k])).mean(), min=0.0)
         return (1.0 - torch.sigmoid(arm.beta * (z0 - r))).mean()
 
+    if arm.amask:
+        al = masked_anchor_loss(ctx, arm.amask)
+
+        def masked(pol, g):
+            return 0.5 * (method(pol, g) + al(pol, g))
+        return masked
     if not arm.anchor:
         return method
     P = ctx.anchor
@@ -243,6 +332,22 @@ def train_arm(arm: Arm, ctx: Ctx, probe=None):
                         arm.support, transplant=arm.transplant, tx_conditions=ctx.pool.c[:4096],
                         d0=4 * MIX.mode_std, pu=ctx.pu, forget=ctx.ed.forget)
         info.update({f"rows_{k}": v for k, v in rows.diag.items()})
+        if arm.mine:
+            bank, keep, _ = get_vote(ctx)
+            P = ctx.anchor
+            flagged = torch.nonzero(~keep).flatten()[:N_MINE]
+            mrows = TG.build_mined(ctx.ref, MIX, ctx.seed, bank, P.c[flagged], P.xi[flagged], P.a[flagged],
+                                   uid_offset=50_000_000, forget=ctx.ed.forget)
+            info.update({f"mined_{k}": v for k, v in mrows.diag.items()})
+            if mrows.c.shape[0]:
+                rows = TG.Rows(c=torch.cat([rows.c, mrows.c]), noise=torch.cat([rows.noise, mrows.noise]),
+                               target=torch.cat([rows.target, mrows.target]), diag=rows.diag)
+    if arm.mine or arm.amask in ("map", "dist", "local+map"):
+        info.update(get_vote(ctx)[2])
+    if "local" in arm.amask:
+        lc, _, la = get_local(ctx)
+        info["local_anchor_n"] = int(lc.shape[0])
+        info["local_anchor_frac_in_forget"] = float(np.isin(MIX.assign(la, lc), ctx.ed.forget).mean()) if lc.shape[0] else float("nan")
     fn = step_fn(arm, ctx, rows)
     torch.manual_seed(ctx.seed)
     pol = copy.deepcopy(ctx.ref)

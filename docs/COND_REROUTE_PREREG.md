@@ -162,3 +162,43 @@ theta = 0.5 x median_j v_{-j}(xi_j), or 0.5 when there is only one negative. Usi
   arm (and the best masked-anchor baseline if different), R_hopB_bsup_neg, NPO_b100_neg and B0.
 - R3 needs the n_forget 1 and 2 tests both to pass on the confirmation seeds. If only one
   passes, that is reported as such.
+
+### Round 3 amendment: the user's local anchor (added before any round-3 run)
+
+At each logged negative's condition c_i, draw 64 fresh (c_i, noise, pi_ref(c_i, noise)) triplets
+from the negative's own stream. Label each with the negative's behaviour clustering (the
+basins). Keep the triplets assigned to a cluster other than the negative's (and not to a gap).
+Anchor them pinned ("keep sampling that action at that noise"). This uses no other negative
+and no labels: other forgotten behaviours are unknown, as in practice.
+
+Arms:
+- R_hop_bsup_neg_AL: plain hop + local anchor; uses nothing from other negatives.
+- R_hopB_bsup_neg_AL: hop + basin veto + local anchor.
+- R_hopB_bsup_neg_AML: local + vote-masked anchor pools combined.
+- NPO_b10_neg_AL, NPO_b100_neg_AL, KTO_b10_neg_AL: the same local anchor on baselines.
+
+These join the round-3 non-rerouting pool for R3. The predictions stand. One added prediction:
+- R5: the local anchor cuts retain flips near the logged conditions, but less at other
+  conditions, because it only constrains n_forget x n_neg conditions.
+
+### Forget-set layouts (user request, added before any round-3 run)
+
+Until now the forgotten set was the first n_forget modes of a per-seed random permutation. At
+n_forget = 4 (half the modes) we now also evaluate four fixed layouts, each rotated by a per-seed
+random offset o on the ring:
+- `contig`: o, o+1, o+2, o+3 (one side). The two end modes have 1 retained neighbour; the inner
+  ones have 0.
+- `alt`: o, o+2, o+4, o+6 (alternating). Every forgotten mode has 2 retained neighbours.
+- `pairs`: o, o+1, o+4, o+5 (mix). 1 retained neighbour each.
+- `b3p1`: o, o+1, o+2, o+5 (mix: block of 3 + 1).
+
+Arms: every baseline (B0, NPO/KTO b10/b100 neg-only, NPO_b10_neg_A), R_ours_neg, R_hop_bsup_neg,
+R_hopB_bsup_neg, and every round-3 arm. Seeds 0-4, n_neg {1, 4, 16, 64}.
+
+Predictions:
+- L1: plain hop is worst on `contig`, whose inner modes' nearest exits are forgotten, and best on
+  `alt`. The basin veto's gain over plain hop is largest on `contig`.
+- L2: the confirmed n_forget = 4 win (hopB vs the best neg-only baseline) holds on every layout.
+  Prediction weakest for `contig`.
+
+The confirmation (seeds 5-9) covers every layout whose exploration passes criteria 1-3.

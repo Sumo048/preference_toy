@@ -11,7 +11,10 @@ ap.add_argument("--seed", type=int, required=True); ap.add_argument("--n_forget"
 ap.add_argument("--n_neg", type=int, required=True); ap.add_argument("--arms", default="all")
 ap.add_argument("--steps", type=int, default=5000); ap.add_argument("--out", default=os.path.join(RUNS, "cond", "cells"))
 ap.add_argument("--force", action="store_true")
+ap.add_argument("--layout", default="random", help="forget-set layout (random | contig | alt | pairs | b3p1)")
 args = ap.parse_args()
+if args.layout != "random" and args.out == os.path.join(RUNS, "cond", "cells"):
+    args.out = os.path.join(RUNS, "cond", f"cells_{args.layout}")
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
 s = args.seed
 sd = torch.load(os.path.join(RUNS, "cond_base", f"s{s}", "policy.pt"), map_location="cpu", weights_only=False)
@@ -23,7 +26,7 @@ todo = [n for n in names if args.force or not os.path.exists(os.path.join(od, f"
 if not todo:
     sys.exit(0)
 pool = E.make_pool(ref, s, 200_000)
-ed = E.editset(pool, s, args.n_forget, args.n_neg)
+ed = E.editset(pool, s, args.n_forget, args.n_neg, args.layout)
 assert len(set(ed.c.tolist())) == len(ed.c), "conditions must be unique"
 anchor = E.make_pool(ref, s, 20_000, purpose=E.P_ANCHOR)
 pu = None
@@ -40,7 +43,7 @@ for n in todo:
     pol, info = E.train_arm(arm, ctx, probe=probe)
     met = E.compute(bank, pol)
     rec = {"cell": cell, "seed": s, "n_forget": args.n_forget, "n_neg": args.n_neg, "forget": ed.forget,
-           "arm": n, "kind": arm.kind, "rule": arm.rule, "support": arm.support, "transplant": arm.transplant,
+           "arm": n, "layout": args.layout, "kind": arm.kind, "rule": arm.rule, "support": arm.support, "transplant": arm.transplant,
            "anchor": arm.anchor, "practical": arm.practical, "train_s": round(time.time() - t0, 1),
            **{k: v for k, v in info.items() if k != "train_history"}, **met, "train_history": info.get("train_history")}
     tmp = os.path.join(od, f".{n}.tmp"); json.dump(rec, open(tmp, "w")); os.replace(tmp, os.path.join(od, f"{n}.json"))

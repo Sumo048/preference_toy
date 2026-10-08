@@ -11,7 +11,7 @@ set -eo pipefail
 cd /home/soumojib/repos/toypref-cond
 export OMP_NUM_THREADS=4 PYTHONUNBUFFERED=1
 PY=$HOME/miniconda3/envs/pref_pillars/bin/python
-ROW=$($PY -c "import csv,sys;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['n_forget'],r['n_neg'],r['arms'])")
-read S K N A <<< "$ROW"
-$PY scripts/cond_cell.py --seed $S --n_forget $K --n_neg $N --arms $A
+ROW=$($PY -c "import csv,sys;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['n_forget'],r['n_neg'],r['arms'],r.get('layout') or 'random')")
+read S K N A L <<< "$ROW"
+$PY scripts/cond_cell.py --seed $S --n_forget $K --n_neg $N --arms $A --layout $L
 echo "=== COND TASK $SLURM_ARRAY_TASK_ID DONE ==="
