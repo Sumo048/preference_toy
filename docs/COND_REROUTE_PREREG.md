@@ -118,3 +118,47 @@ Best veto arm: R_hopB_bsup_neg (basin veto). At n_forget 4 it scored 0.314, agai
 did not improve on plain hop (0.260 vs 0.256; 0.193 vs 0.188). The noise veto barely moved
 targets (0.345 at n_forget 4). Confirmation runs R_hopB_bsup_neg on seeds 5-9; the comparators
 already exist there from unchanged code.
+
+## Round 3: making it work at n_forget = 1 and 2 (registered before any code or run)
+
+**Diagnosis (from rounds 1-2, measured).**
+- At n_forget = 1, hopB removes about 75% of the forgotten mass, but pays retain TV 0.13,
+  off-mode 0.09 and retain flips 0.33. Its score is 0.195, against NPO's 0.142 and B0's 0.149.
+- The flips show global drift of the noise -> action map from training on a few pinned rows.
+- The plain self-distillation anchor (`_A` arms) removes the drift but also fights the edit
+  everywhere the forgotten behaviour lives; anchored arms forgot at most ~20%.
+
+**Mechanism: a label-free bad vote on any noise.** v(xi) is the fraction of logged negatives j
+for which pi_ref(c_j, xi) lands in negative j's bad basin; the threshold is the veto's,
+theta = 0.5 x median_j v_{-j}(xi_j), or 0.5 when there is only one negative. Using it on a
+4,096-sample unlabelled pi_ref pool (random conditions):
+- **AM (masked anchor):** distil pi_ref only on pool samples with v < theta. `map` = pinned
+  (xi, pi_ref(xi)); `dist` = fresh noise.
+- **mine:** pool samples with v >= theta (up to 256) become extra rerouting rows, with a hopB
+  target at their own condition and nhood support.
+
+**Arms.**
+- Rerouting: R_hopB_bsup_neg_AMmap, R_hopB_bsup_neg_AMdist, R_hopB_bsup_mine_neg_AMmap,
+  R_hopB_bsup_mine_neg (no anchor).
+- Baselines with the same masked anchor: NPO_b10/b100_neg_AMmap, KTO_b10/b100_neg_AMmap,
+  NPO_b10_neg_AMdist.
+- Label-free pseudo-positive baselines (the masked anchor alone): PSEUDO_vote_map,
+  PSEUDO_vote_dist.
+
+**Predictions.**
+- R1: the masked anchor cuts hopB's retain flips at n_forget 1-2 by at least half, and keeps
+  most of its forgetting (forget ratio within 0.15 of hopB's).
+- R2: mining lowers forgotten mass far from the logged conditions (`neg_still_forget_far`).
+- R3, the main test: at n_forget = 1 AND at n_forget = 2, the best rerouting arm beats the
+  best non-rerouting arm by more than 2 sem, seed-paired over (seed, n_neg). The non-rerouting
+  pool includes the new masked-anchor baselines, PSEUDO and every earlier negatives-only
+  baseline. Prediction: uncertain, because PSEUDO_vote_dist may win outright, as
+  PSEUDO_nf_dist nearly did in the unconditional toy.
+- R4: no regression at n_forget = 4 against R_hopB_bsup_neg.
+
+**Decision.**
+- Exploration: seeds 0-4, n_forget {1, 2, 4}, n_neg {1, 4, 16, 64}.
+- Confirmation: seeds 5-9, with arms frozen to the best rerouting arm, the best non-rerouting
+  arm (and the best masked-anchor baseline if different), R_hopB_bsup_neg, NPO_b100_neg and B0.
+- R3 needs the n_forget 1 and 2 tests both to pass on the confirmation seeds. If only one
+  passes, that is reported as such.
