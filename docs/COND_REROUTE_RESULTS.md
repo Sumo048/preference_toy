@@ -6,8 +6,9 @@ Confirmation: seeds 5-9, job 3993642 (360 runs; `results/cond/confirm.md`).
 
 ## Answer
 
-`R_hop_bsup_neg` is a version of the unconditional winner that needs no second negative at the
-same condition and no labels. It is the best negatives-only method with half the behaviours
+**Update (round 2): the basin-veto version `R_hopB_bsup_neg` supersedes it; see the round 2
+section.** `R_hop_bsup_neg` is a version of the unconditional winner that needs no second negative
+at the same condition and no labels. It is the best negatives-only method with half the behaviours
 forgotten, confirmed on fresh seeds.
 
 **What it does with one logged negative (c_i, xi_i, a_i):**
@@ -55,7 +56,45 @@ forgotten, confirmed on fresh seeds.
 - **Forgetting generalises across conditions, imperfectly.** At conditions far from every logged
   negative, 51% of the forgotten-behaviour mass survives, against 44% at nearby conditions.
 
-## The remaining failure, and the next idea
+## Round 2: basin veto (pre-registered 20:02; confirmed on seeds 5-9, job 3994217)
+
+**How "bad behaviour" is detected.** The hop's only notion of bad is "the same behaviour as this
+negative at this condition": the single-linkage cluster of pi_ref's own decodes at c_i that holds
+a_i. A march step "leaves the bad behaviour" when its decode's nearest clustered decode lies within
+eps and belongs to a different cluster. That cannot see that the other behaviour is forgotten too.
+
+**Basin veto (`R_hopB_bsup_neg`).** It fills that gap with the other negatives, without needing
+any at the same condition.
+- Each candidate exit noise (the first decode of each new behaviour along each direction) is
+  decoded at every OTHER negative's condition c_j.
+- Count how often it lands in negative j's bad cluster there.
+- Veto if that rate is at least half the median rate for the logged bad noises themselves.
+- Take the nearest exit that survives.
+- This needs no count of forgotten behaviours, no labels, and no shared condition. It relies on
+  pi_ref's noise -> behaviour partition being partly stable across conditions (measured: 65%).
+
+**Confirmation, seeds 5-9, n_forget = 4:**
+
+| arm | score | forget ratio | retain TV | off | targets in a forgotten mode |
+|---|---|---|---|---|---|
+| **R_hopB_bsup_neg** | **0.301** | **0.391** | 0.157 | 0.070 | 0.30 |
+| R_hop_bsup_neg | 0.398 | 0.689 | 0.130 | 0.063 | 0.57 |
+| NPO_b10_neg_A | 0.481 | 0.816 | 0.020 | 0.084 | - |
+| NPO_b100_neg | 0.500 | 0.922 | 0.018 | 0.052 | - |
+
+- **V2 confirmed:** it beats plain hop by -0.097 +- 0.026 (lower in 17/20). It removes about 61%
+  of the forgotten mass rather than 31%, at slightly more collateral (retain TV 0.157 vs 0.130).
+- **It beats NPO-b100 by -0.199 +- 0.028 and anchored NPO-b10 by -0.180 +- 0.023.**
+- **V3 not confirmed:** at n_forget = 2 it is best on the mean (0.224 vs NPO-b10_A 0.235) but
+  -0.011 +- 0.018 is not significant.
+- **At n_forget = 1 it loses** (0.195 vs 0.142).
+- **V1 holds:** both vetoes lowered target-in-forget, the basin veto far more (exploration
+  n_forget 4: 0.41 -> 0.22; the noise veto only to 0.37). The noise veto's self-calibrated radius
+  (about 0.21) is too small to cover other bad basins.
+- **Cross-condition reach:** with the veto, 30% of forgotten mass survives near the logged
+  conditions and 51% far from them.
+
+## The remaining failure, and the next idea (written before round 2; kept for the record)
 
 57% of the winner's targets land in ANOTHER forgotten mode (confirmation, n_forget = 4). One
 negative identifies the bad behaviour at its own condition, but not which neighbouring
