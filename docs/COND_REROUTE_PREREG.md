@@ -202,3 +202,35 @@ Predictions:
   Prediction weakest for `contig`.
 
 The confirmation (seeds 5-9) covers every layout whose exploration passes criteria 1-3.
+
+### Round 3 + layouts: exploration outcome and frozen confirmation (before any seed-5-9 run of these arms)
+
+In exploration (`results/cond/r3_exploration.md`) a rerouting arm passed criteria 1-3 in all
+seven settings: random layout at n_forget 1, 2 and 4, and the contig / alt / pairs / b3p1 layouts at
+n_forget 4. The winning arm differed by setting, and per-setting picks over about 20 rerouting
+arms are a selection effect.
+
+**A SINGLE recipe is therefore frozen, chosen by worst case across the seven settings:**
+`R_hopB_bsup_neg_AMdist` = hop + basin veto + basin support + vote-masked density anchor.
+- In exploration it wins 6/7 settings, by -0.009 (random 1), -0.003 (random 2), -0.043
+  (random 4), -0.007 (contig), -0.043 (pairs) and -0.028 (b3p1). It loses on alt (+0.054).
+- Its mean gap to the best other arm is -0.011, and its worst-case gap +0.054 is the
+  smallest of any rerouting arm.
+
+**Confirmation:** seeds 5-9, n_neg {1, 4, 16, 64}, each setting. The frozen comparator is that
+setting's best non-rerouting arm in exploration:
+- random 1: NPO_b10_neg_AMdist;
+- random 2: NPO_b10_neg_AL;
+- random 4: PSEUDO_vote_dist;
+- contig: NPO_b10_neg_AMdist;
+- alt: KTO_b10_neg_AMmap;
+- pairs: PSEUDO_vote_dist;
+- b3p1: PSEUDO_vote_dist.
+
+Pass per setting iff the recipe is lower by more than 2 sem (seed-paired, 20 runs) and is not
+dominated. **"Works at 1-2 forgotten" requires random 1 AND random 2 to pass.**
+
+Secondary arms (reported, not tested): R_hopB_bsup_mine_neg (runner-up), and the user's
+local-anchor arms R_hopB_bsup_neg_AL and R_hop_bsup_neg_AL. NPO_b100_neg and B0 run as references.
+Prediction: random 1, random 2 and contig are likely to FAIL the 2-sem test, since their
+exploration margins were within about 3 sem.
