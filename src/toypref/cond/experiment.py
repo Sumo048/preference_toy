@@ -166,6 +166,10 @@ for a in [Arm("B0_frozen", "frozen"),
           Arm("R_basin_nhood_tx_neg", "reroute", rule="basin", transplant=True),
           Arm("R_basin_bsup_tx_neg", "reroute", rule="basin", support="bsup", transplant=True),
           Arm("R_hop_nhood_tx_neg", "reroute", rule="hop", transplant=True),
+          # round 2: noise veto (docs/COND_REROUTE_PREREG.md)
+          Arm("R_hopV_bsup_neg", "reroute", rule="hopV", support="bsup"),
+          Arm("R_hopB_bsup_neg", "reroute", rule="hopB", support="bsup"),
+          Arm("R_hopVB_bsup_neg", "reroute", rule="hopVB", support="bsup"),
           # NEG+U: same methods with an unlabelled self-distillation anchor
           Arm("NPO_b10_neg_A", "npo", beta=10.0, anchor=True),
           Arm("KTO_b10_neg_A", "kto", beta=10.0, anchor=True),
