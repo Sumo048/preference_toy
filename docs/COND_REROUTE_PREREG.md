@@ -111,3 +111,10 @@ back to the plain hop and count it. Support = bsup in every case, so only the ta
 - Confirmation: seeds 5-9. Frozen arms: the best veto arm, R_hop_bsup_neg, NPO_b100_neg,
   NPO_b10_neg_A and B0.
 - V2 and V3 are tested on the confirmation seeds.
+
+### Round 2 exploration outcome (2026-10-07 20:16 EDT)
+Best veto arm: R_hopB_bsup_neg (basin veto). At n_forget 4 it scored 0.314, against plain hop's
+0.355 and NPO_b100_neg's 0.516; target-in-forget fell from 0.41 to 0.22. At n_forget 2 and 1 it
+did not improve on plain hop (0.260 vs 0.256; 0.193 vs 0.188). The noise veto barely moved
+targets (0.345 at n_forget 4). Confirmation runs R_hopB_bsup_neg on seeds 5-9; the comparators
+already exist there from unchanged code.
