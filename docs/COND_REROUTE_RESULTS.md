@@ -117,3 +117,63 @@ probably are. Not yet run.
   scale where B0 is 0.515.
 - **Fixed constants.** The step size, margin, jitter scale and the eps multiplier were fixed
   before outcomes and never tuned.
+
+## Round 3: working at 1-2 forgotten, and forget-set layouts (confirmed on seeds 5-9, job 3997602)
+
+Pre-registration: `docs/COND_REROUTE_PREREG.md` (round 3 at 13:45, the user's local-anchor
+amendment at 13:52, layouts at 13:56, frozen recipe and comparators at 14:59). Tables:
+`results/cond/r3_exploration.md` and `results/cond/r3_confirm.md`.
+
+**The recipe.** One fixed recipe, frozen by worst case across seven settings before
+confirmation: `R_hopB_bsup_neg_AMdist`.
+- **Targets and support:** hop + basin veto + basin support, as in round 2.
+- **New, the vote-masked density anchor.** The logged negatives cast a "bad vote" on any noise:
+  decode it at each negative's condition and check whether it lands in that negative's bad
+  behaviour. Pinning flow matching on a 4,096-sample unlabelled pi_ref pool is restricted to
+  samples the vote does NOT flag, with fresh noise (density-level).
+- It uses no labels and no same-condition negatives.
+
+**Confirmation (score = tv_to_ideal; comparator = that setting's best non-rerouting arm in exploration):**
+
+| setting | recipe | comparator | B0 | diff | lower in | |
+|---|---|---|---|---|---|---|
+| random, 1 forgotten | 0.107 | 0.113 NPO_b10 + masked anchor | 0.149 | -0.006 +- 0.002 | 15/20 | **pass** |
+| random, 2 forgotten | 0.166 | 0.208 NPO_b10 + local anchor | 0.270 | -0.041 +- 0.016 | 14/20 | **pass** |
+| random, 4 forgotten | 0.265 | 0.283 pseudo-positive BC | 0.515 | -0.018 +- 0.005 | 17/20 | **pass** |
+| pairs (o,o+1,o+4,o+5) | 0.251 | 0.288 pseudo-positive BC | 0.513 | -0.037 +- 0.007 | 18/20 | **pass** |
+| block 3 + 1 | 0.256 | 0.285 pseudo-positive BC | 0.514 | -0.029 +- 0.006 | 18/20 | **pass** |
+| contiguous (one side) | 0.228 | 0.230 NPO_b10 + masked anchor | 0.513 | -0.003 +- 0.003 | 13/20 | fail (tie) |
+| alternating | 0.450 | 0.400 KTO_b10 + masked anchor | 0.516 | +0.050 +- 0.021 | 8/20 | **fail (loses)** |
+
+**"Works at 1-2 forgotten" is CONFIRMED** (both pre-registered tests pass).
+
+**Read with care:**
+- **The masked anchor carries most of the gain.** NPO with the same anchor and the anchor alone
+  (pseudo-positive BC) both reach 0.113 at 1 forgotten. Rerouting's margin over them is small
+  there (0.006) and clearer at 2 forgotten (0.166 vs 0.177 for NPO + the same anchor).
+- **Mechanistically**, the anchor removes the global drift that sank hopB at 1 forgotten: score
+  0.195 -> 0.107, retain TV 0.13 -> 0.07, off-mode 0.09 -> 0.036.
+- **Alternating layout: the vote breaks.** Every retained mode sits between two forgotten ones,
+  and pi_ref's noise -> behaviour partition shifts by about a spacing across conditions, so a
+  bad noise often decodes to a RETAINED behaviour at another condition (vote precision ~0.50).
+  The vote-based anchor and veto then work against you.
+- **Contiguous layout:** the recipe and NPO + masked anchor tie.
+
+**The user's local anchor** (pi_ref triplets at each negative's condition outside its behaviour,
+kept pinned; secondary arms, reported, not tested):
+- **Most conservative variant:** retain TV 0.03-0.06, flips 0.09-0.17.
+- **It forgets less than the masked anchor:** at 2 forgotten, forget ratio 0.53 vs 0.33 and
+  score 0.195 vs 0.166.
+- **Best arm of all on the alternating layout:** plain hop + local anchor `R_hop_bsup_neg_AL` scored
+  0.352, against 0.400 and 0.450, precisely where the vote fails.
+- **Weak on the contiguous layout** (0.38-0.48), where it only constrains the few logged conditions.
+
+**Layout predictions:**
+- **L1 (hop worst on contiguous, best on alternating): confirmed in exploration.** Plain hop
+  scored 0.47 on contig vs 0.26 on alt.
+- **L2 (the win holds on every layout): false.** It fails on alternating and ties on contiguous.
+
+**Practical reading:** no single recipe wins every layout. The vote-masked recipe is the
+default when forgotten behaviours cluster or are few. When the forgotten behaviours interleave
+with retained ones, the local anchor (no cross-condition vote) is the safer choice. Choosing
+between them needs a check of vote precision, which in practice means a small labelled audit.
