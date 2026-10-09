@@ -1,0 +1,363 @@
+<title>Toypref Method Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: one long reading column for prose; setting panels flow in a 1-2 column grid; methods section closes the page. */
+:root {
+  --bg: #f4f5f8; --panel: #ffffff; --ink: #151922; --ink2: #4b5262; --ink3: #7a8191; --rule: #dce0e8;
+  --bar: #39404f; --bar2: #b5651d; --track: #eceef3;
+  --neg: #c2362d; --pos: #22803a; --both: #2a61c4;
+  --neg-bg: #fbe9e7; --pos-bg: #e5f4e8; --both-bg: #e6eefb;
+  --star: #b5651d;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1218; --panel: #171b23; --ink: #edf0f5; --ink2: #aab1c0; --ink3: #7d8597; --rule: #2a303b;
+  --bar: #c8d0dd; --bar2: #e3a25c; --track: #232833;
+  --neg: #f0675c; --pos: #5cc274; --both: #6fa2f4;
+  --neg-bg: #3a1d1b; --pos-bg: #16301e; --both-bg: #1a2640; --star: #e3a25c; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1218; --panel: #171b23; --ink: #edf0f5; --ink2: #aab1c0; --ink3: #7d8597; --rule: #2a303b;
+  --bar: #c8d0dd; --bar2: #e3a25c; --track: #232833;
+  --neg: #f0675c; --pos: #5cc274; --both: #6fa2f4;
+  --neg-bg: #3a1d1b; --pos-bg: #16301e; --both-bg: #1a2640; --star: #e3a25c; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; }
+.prose { max-width: 70ch; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: 2.3rem; font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.55rem; font-weight: 600; margin-top: 2.6rem; }
+h3 { font-size: 1.12rem; font-weight: 600; }
+p { margin: 0.55rem 0; }
+.lede { font-size: 1.05rem; color: var(--ink2); }
+.eyebrow { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.chip { display: inline-flex; align-items: center; gap: 0.3em; font-family: var(--f-mono); font-size: 0.7rem; font-weight: 500;
+  padding: 0.05em 0.45em; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; letter-spacing: 0.02em; }
+.chip.neg { color: var(--neg); background: var(--neg-bg); }
+.chip.pos { color: var(--pos); background: var(--pos-bg); }
+.chip.both { color: var(--both); background: var(--both-bg); }
+.chip.u { color: var(--ink2); background: transparent; border-style: dashed; }
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px 28px; margin: 1.2rem 0 0.4rem; }
+.legend > div { min-width: 0; }
+.legend dt { margin-bottom: 0.15rem; }
+.legend dd { margin: 0; color: var(--ink2); font-size: 0.92rem; }
+.rulebox { border-left: 3px solid var(--rule); padding: 0.2rem 0 0.2rem 1rem; margin: 1rem 0; color: var(--ink2); }
+.confirm { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 0.8rem 1.1rem; margin: 1.2rem 0; }
+.confirm ul { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+.confirm li { margin: 0.2rem 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr)); gap: 18px; margin-top: 1rem; }
+.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px 12px; min-width: 0; }
+.phead { display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: center; margin-bottom: 8px; }
+.phead svg { width: 96px; height: 96px; display: block; }
+.phead p { margin: 0.2rem 0 0; color: var(--ink2); font-size: 0.9rem; }
+.phead .meta { font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink3); margin-top: 0.25rem; }
+.cols, .row { display: grid; grid-template-columns: minmax(0, 1fr) 128px 128px; gap: 10px; align-items: center; }
+.cols { font-family: var(--f-mono); font-size: 0.68rem; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--rule); padding: 4px 0 4px 10px; }
+.fam { font-family: var(--f-display); font-size: 0.8rem; font-weight: 600; color: var(--ink2); padding: 7px 0 1px 10px;
+  display: flex; gap: 6px; align-items: center; }
+.row { padding: 1px 0 1px 10px; border-left: 3px solid transparent; font-size: 0.84rem; }
+.row.neg { border-left-color: var(--neg); } .row.pos { border-left-color: var(--pos); } .row.both { border-left-color: var(--both); }
+.row .name { min-width: 0; overflow-wrap: anywhere; color: var(--ink2); }
+.row .name.fbest { color: var(--ink); font-weight: 600; }
+.row .star { margin-right: 3px; }
+.stari { display: inline-block; vertical-align: -1px; }
+.bar { display: grid; grid-template-columns: 1fr 38px; gap: 5px; align-items: center; }
+.bar .tr { height: 9px; background: var(--track); border-radius: 2px; position: relative; overflow: hidden; }
+.bar .fl { position: absolute; inset: 0 auto 0 0; background: var(--bar); border-radius: 2px; }
+.bar.c .fl { background: var(--bar2); }
+.bar .v { font-family: var(--f-mono); font-size: 0.74rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+.pfoot { font-size: 0.78rem; color: var(--ink3); margin-top: 7px; border-top: 1px solid var(--rule); padding-top: 5px; }
+.methods { display: grid; gap: 16px; margin-top: 1rem; }
+.method { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 18px; min-width: 0; }
+.method h3 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.method p, .method li { max-width: 78ch; }
+.method ul { margin: 0.3rem 0; padding-left: 1.2rem; }
+.math { overflow-x: auto; margin: 0.5rem 0; padding: 0.3rem 0; }
+.math math { font-size: 1.05em; }
+.uses { font-size: 0.86rem; color: var(--ink2); }
+.notation { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; align-items: baseline; }
+.notation > :nth-child(odd) { font-family: var(--f-mono); }
+@media (max-width: 560px) {
+  h1 { font-size: 1.8rem; }
+  .cols, .row { grid-template-columns: minmax(0, 1fr) 84px 84px; gap: 6px; }
+  .bar { grid-template-columns: 1fr 34px; }
+  .phead { grid-template-columns: 72px 1fr; }
+  .phead svg { width: 72px; height: 72px; }
+}
+a { color: var(--both); }
+:focus-visible { outline: 2px solid var(--both); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header class="prose">
+    <div class="eyebrow">toypref · preference editing on a 2-D flow policy</div>
+    <h1>Toypref Method Map</h1>
+    <p class="lede">This page shows every setting we tested. For each setting it shows how each method performs. All settings in one grid show the same list of methods.</p>
+    <p>We train a flow policy on 8 modes that sit on a ring. A <b>mode</b> is one behaviour. We then edit the policy to <b>forget</b> some modes. The other modes are <b>retained</b>. A <b>setting</b> is one data situation. A <b>method</b> is one family of algorithms. A <b>config</b> is one method with fixed hyperparameters and add-ons.</p>
+  </header>
+
+  <dl class="legend">
+    <div><dt><span class="chip both">P+N</span></dt><dd>The method uses positive labels and negative labels.</dd></div>
+    <div><dt><span class="chip pos">P</span></dt><dd>The method uses positive labels only.</dd></div>
+    <div><dt><span class="chip neg">N</span></dt><dd>The method uses negative labels only.</dd></div>
+    <div><dt><span class="chip u">U</span></dt><dd>The config also uses unlabelled samples from the base policy. These samples need no label.</dd></div>
+    <div><dt><span class="mono" style="color:var(--bar)">■</span> Removed</dt><dd>The share of the base policy's mass on forgotten modes that the edit removes. 100% means fully forgotten. Higher is better.</dd></div>
+    <div><dt><span class="mono" style="color:var(--bar2)">■</span> Collateral</dt><dd>The change to everything else: the total-variation distance between the edited and base policies over retained modes plus the region between modes, each renormalised. 0 means no change. Lower is better.</dd></div>
+  </dl>
+
+  <div class="rulebox prose">
+    <p><b>How we pick the method list.</b> For each method and each setting, we select the config with the lowest <b>distance to the ideal</b>. The ideal policy puts equal mass on each retained mode, and no mass on forgotten modes or between modes. Each grid then shows every selected config in every setting. A config is a candidate only if it ran in every setting of its grid.</p>
+    <p><svg class="stari" viewBox="0 0 10 10" width="11" height="11" aria-hidden="true"><path d="M5 0.6 6.3 3.6 9.6 3.9 7.1 6.1 7.8 9.4 5 7.7 2.2 9.4 2.9 6.1 0.4 3.9 3.7 3.6Z" fill="var(--star)"/></svg> marks the config with the lowest distance to the ideal in that setting. <b>Bold</b> marks the best config of its method in that setting. Hover a row to see its distance to the ideal.</p>
+    <p><b>Data.</b> All values are seed means over seeds 0–4 and the stated negatives-per-mode values. We use the same seeds for every config, so all values in a grid are comparable.</p>
+  </div>
+
+  <div class="confirm prose">
+    <div class="eyebrow">Confirmed on fresh seeds 5–9 (pre-registered tests)</div>
+    <ul>
+      <li>Unconditional toy: with positives available, an anchored baseline is best. Rerouting wins only with negatives alone and 4 of 8 modes forgotten (distance to ideal 0.290 against 0.498).</li>
+      <li>Conditional toy: the recipe <code>R_hopB_bsup_neg_AMdist</code> wins at 1 forgotten mode (0.107 against 0.113) and 2 (0.166 against 0.208). It also wins at 4 for the random, pairs and block-of-3-plus-1 layouts. It ties on the contiguous layout and loses on the alternating layout.</li>
+    </ul>
+  </div>
+
+  <section>
+    <h2>Grid 1: unconditional toy</h2>
+    <div class="prose">
+      <p>The policy has no condition. All logged negatives of a mode share the same input. Positives exist in every setting: 512 positive samples unless the setting says otherwise. A method may use them or ignore them.</p>
+      <p>Each setting uses 1, 4 or 16 negatives per forgotten mode. The base settings use one count of forgotten modes. The other settings pool 1, 2 and 4 forgotten modes.</p>
+    </div>
+    <div class="grid" id="grid-u"></div>
+  </section>
+
+  <section>
+    <h2>Grid 2: conditional toy</h2>
+    <div class="prose">
+      <p>The policy takes a condition <i>c</i> in [0, 1). The ring rotates by 1.5 mode spacings and grows as <i>c</i> grows. Every logged sample has its own condition. No two negatives share a condition. This is the practical case for a robot policy.</p>
+      <p>This grid has no positive labels. Every method is a negatives-only method. Each setting uses 1, 4, 16 or 64 negatives per forgotten mode.</p>
+    </div>
+    <div class="grid" id="grid-c"></div>
+  </section>
+
+  <section>
+    <h2>Methods</h2>
+    <div class="prose"><p>This section states what each method computes. Each block names the data it uses.</p></div>
+    <div class="methods" id="methods"></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script>
+const DATA = __DATA__;
+
+const UNC_SETTINGS = [
+  ["base_k1", "Forget 1 of 8 modes", "512 positives.", {k: 1}],
+  ["base_k2", "Forget 2 of 8 modes", "512 positives.", {k: 2}],
+  ["base_k4", "Forget 4 of 8 modes", "512 positives.", {k: 4}],
+  ["npos16", "Scarce positives: 16", "Only 16 positive samples exist. Forget 1, 2 or 4 modes (pooled).", {k: 2, pdots: 2}],
+  ["npos4", "Scarce positives: 4", "Only 4 positive samples exist. Forget 1, 2 or 4 modes (pooled).", {k: 2, pdots: 1}],
+  ["cover0.5", "Biased positives: ½ coverage", "Positives come from half of the retained modes only. Forget 1, 2 or 4 modes (pooled).", {k: 2, cover: 0.5}],
+  ["cover0.25", "Biased positives: ¼ coverage", "Positives come from a quarter of the retained modes only. Forget 1, 2 or 4 modes (pooled).", {k: 2, cover: 0.25}],
+  ["contam0.2", "Contaminated positives: 20%", "One in five positives comes from a forgotten mode. Forget 1, 2 or 4 modes (pooled).", {k: 2, contam: true}],
+  ["std0.45", "Overlapping modes: width 0.45", "Each mode is wider (0.45 against 0.25). Neighbouring modes touch. Forget 1, 2 or 4 modes (pooled).", {k: 2, width: 0.45}],
+  ["std0.6", "Overlapping modes: width 0.6", "Neighbouring modes overlap. Forget 1, 2 or 4 modes (pooled).", {k: 2, width: 0.6}],
+];
+const CON_SETTINGS = [
+  ["k1", "Forget 1 of 8 modes", "The forgotten mode is random per seed.", {k: 1, rot: true}],
+  ["k2", "Forget 2 of 8 modes", "The forgotten modes are random per seed.", {k: 2, rot: true}],
+  ["k4", "Forget 4 of 8 modes, random", "The 4 forgotten modes are random per seed.", {set: [0, 2, 3, 6], rot: true}],
+  ["contig", "Forget 4 adjacent modes", "All forgotten modes sit on one side of the ring.", {set: [0, 1, 2, 3], rot: true}],
+  ["alt", "Forget every second mode", "Each retained mode sits between two forgotten modes.", {set: [0, 2, 4, 6], rot: true}],
+  ["pairs", "Forget two pairs", "Two pairs of adjacent modes, on opposite sides.", {set: [0, 1, 4, 5], rot: true}],
+  ["b3p1", "Forget a block of 3 plus 1", "Three adjacent modes and one separate mode.", {set: [0, 1, 2, 5], rot: true}],
+];
+
+const FAMILY_ORDER = ["BC on positives", "NPO", "KTO", "Flow-DPO", "Reward model + best-of-8", "Rerouting with positives",
+  "NPO, negatives only", "KTO, negatives only", "Pseudo-positive BC", "Rerouting, negatives only"];
+
+const LABEL = {
+  B1_filtered: "BC on all positives",
+  B3_npo_b1: "β = 1, + BC on positives", B3_npo_b10: "β = 10, + BC on positives", B3_npo_b100: "β = 100, + BC on positives",
+  B5_kto_b10: "β = 10", B5_kto_b100: "β = 100",
+  DPO_cpl_b1: "β = 1, + BC on positives", DPO_cpl_b25: "β = 25, + BC on positives",
+  RM_bon8: "Bradley–Terry reward model, best of 8",
+  R_near_nf_log_both: "near-nf target, logged noise, + BC",
+  R_near_nf_nhood_both: "near-nf target, noise jitter, + BC",
+  R_ours_nf_both: "random target with nf filter, + BC",
+  R_spread_log_both: "farthest-of-8 target, logged noise, + BC",
+  R_spread_nhood_neg_kl1: "farthest-of-8 target, jitter, + KL on positives (λ = 1)",
+  B3_npo_b10_negonly_Anf_dist: "β = 10, + nf density anchor",
+  B3_npo_b10_negonly_Anf_map: "β = 10, + nf pinned anchor",
+  B5_kto_b10_negonly_Anf_dist: "β = 10, + nf density anchor",
+  B5_kto_b100_negonly_Anf_map: "β = 100, + nf pinned anchor",
+  PSEUDO_nf_dist: "nf samples, fresh noise",
+  PSEUDO_nf_map: "nf samples, pinned noise",
+  R_near_nf_log_neg_Anf_dist: "near-nf target, + nf density anchor",
+  R_near_nf_log_neg_Anf_map: "near-nf target, + nf pinned anchor",
+  R_ours_neg_Anf_map: "random target (repo's Ours), + nf pinned anchor",
+  NPO_b10_neg_AL: "β = 10, + local anchor", NPO_b10_neg_AMdist: "β = 10, + vote-masked density anchor",
+  KTO_b10_neg_AL: "β = 10, + local anchor", KTO_b10_neg_AMmap: "β = 10, + vote-masked pinned anchor",
+  PSEUDO_vote_dist: "samples the vote does not flag, fresh noise",
+  R_hop_bsup_neg: "hop target, basin support, no anchor",
+  R_hopB_bsup_neg_AMdist: "hop + veto, basin support, + vote-masked density anchor",
+  R_hopB_bsup_mine_neg: "hop + veto, basin support, + mined negatives",
+  R_hopB_bsup_mine_neg_AMmap: "hop + veto, basin support, + mined negatives, + vote-masked pinned anchor",
+};
+const DCHIP = {neg: "N", pos: "P", both: "P+N"};
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c])); }
+
+/* Mini ring diagram of a setting. Forgotten modes: red ring with a cross. Positives: green dots. */
+function ring(o) {
+  const N = 8, cx = 48, cy = 48, R = 31;
+  const forgot = o.set || Array.from({length: o.k}, (_, i) => i);
+  const w = o.width ? 6 + (o.width - 0.25) * 22 : 6;
+  let s = `<svg viewBox="0 0 96 96" role="img" aria-label="ring of 8 modes, ${forgot.length} forgotten">`;
+  if (o.rot) {
+    s += `<path d="M ${cx + 42} ${cy - 10} A 43 43 0 0 1 ${cx + 30} ${cy + 31}" fill="none" stroke="var(--ink3)" stroke-width="1.3"/>`;
+    s += `<path d="M ${cx + 30} ${cy + 31} l 1 -6 l 4 4 z" fill="var(--ink3)"/>`;
+  }
+  const retained = [...Array(N).keys()].filter(j => !forgot.includes(j));
+  let covered = retained;
+  if (o.cover) covered = retained.slice(0, Math.max(1, Math.ceil(o.cover * retained.length)));
+  for (let j = 0; j < N; j++) {
+    const a = -Math.PI / 2 + 2 * Math.PI * j / N, x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+    if (forgot.includes(j)) {
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${w}" fill="var(--neg-bg)" stroke="var(--neg)" stroke-width="1.6"/>`;
+      s += `<path d="M ${x - 3} ${y - 3} L ${x + 3} ${y + 3} M ${x + 3} ${y - 3} L ${x - 3} ${y + 3}" stroke="var(--neg)" stroke-width="1.5"/>`;
+    } else {
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${w}" fill="var(--track)" stroke="var(--ink3)" stroke-width="1" fill-opacity="${o.width ? 0.75 : 1}"/>`;
+    }
+    const showDot = !o.rot && (covered.includes(j) || (o.contam && j === forgot[0]));
+    if (showDot) {
+      const n = o.pdots || 3;
+      for (let d = 0; d < n; d++) {
+        const ax = cx + (R - w - 6 - 0) * Math.cos(a + (d - (n - 1) / 2) * 0.16), ay = cy + (R - w - 6) * Math.sin(a + (d - (n - 1) / 2) * 0.16);
+        s += `<circle cx="${ax.toFixed(1)}" cy="${ay.toFixed(1)}" r="1.7" fill="var(--pos)"/>`;
+      }
+    }
+  }
+  s += `</svg>`;
+  return s;
+}
+
+function panel(grid, sid, title, desc, opt) {
+  const G = DATA[grid], V = G.values[sid], best = G.best_overall[sid], fb = G.best_for[sid];
+  const fbSet = new Set(Object.values(fb));
+  const fams = FAMILY_ORDER.filter(f => G.configs.some(c => c.family === f));
+  let rows = "";
+  for (const f of fams) {
+    const cs = G.configs.filter(c => c.family === f);
+    const d = cs[0].data;
+    rows += `<div class="fam"><span class="chip ${d}">${DCHIP[d]}</span>${esc(f)}</div>`;
+    for (const c of cs) {
+      const v = V[c.arm];
+      const rem = Math.max(0, v.removed) * 100, col = v.collateral;
+      const u = c.unlabelled ? ` <span class="chip u" title="uses unlabelled base-policy samples">U</span>` : "";
+      const tip = `${c.arm}: distance to ideal ${v.tv.toFixed(3)}; removed ${rem.toFixed(1)}% ± ${(100 * v.removed_sem).toFixed(1)}; collateral ${col.toFixed(3)} ± ${v.collateral_sem.toFixed(3)}`;
+      rows += `<div class="row ${c.data}" title="${esc(tip)}">
+        <div class="name ${fbSet.has(c.arm) ? "fbest" : ""}">${c.arm === best ? '<span class="star" title="best in this setting"><svg class=\"stari\" viewBox=\"0 0 10 10\" width=\"11\" height=\"11\" aria-hidden=\"true\"><path d=\"M5 0.6 6.3 3.6 9.6 3.9 7.1 6.1 7.8 9.4 5 7.7 2.2 9.4 2.9 6.1 0.4 3.9 3.7 3.6Z\" fill=\"var(--star)\"/></svg></span>' : ""}${esc(LABEL[c.arm] || c.arm)}${u}</div>
+        <div class="bar"><div class="tr"><div class="fl" style="width:${Math.min(100, rem).toFixed(1)}%"></div></div><div class="v">${rem.toFixed(0)}%</div></div>
+        <div class="bar c"><div class="tr"><div class="fl" style="width:${Math.min(100, col / 0.75 * 100).toFixed(1)}%"></div></div><div class="v">${col.toFixed(2)}</div></div>
+      </div>`;
+    }
+  }
+  const b0 = V["B0_frozen"] ? V["B0_frozen"].tv : null;
+  const oracle = grid === "unconditional" && G.oracle && G.oracle[sid] != null ? G.oracle[sid] : null;
+  return `<article class="panel" id="${grid[0]}-${sid}">
+    <div class="phead">${ring(opt)}<div><h3>${esc(title)}</h3><p>${esc(desc)}</p>
+      <div class="meta">${G.n_runs[sid]} runs per config</div></div></div>
+    <div class="cols"><span>method · config</span><span>removed ↑</span><span>collateral ↓</span></div>
+    ${rows}
+    <div class="pfoot"><svg class="stari" viewBox="0 0 10 10" width="11" height="11" aria-hidden="true"><path d="M5 0.6 6.3 3.6 9.6 3.9 7.1 6.1 7.8 9.4 5 7.7 2.2 9.4 2.9 6.1 0.4 3.9 3.7 3.6Z" fill="var(--star)"/></svg> ${esc(LABEL[best] || best)}: distance to ideal ${V[best].tv.toFixed(3)}.${b0 != null ? ` Base policy, no edit: ${b0.toFixed(3)}.` : ""}${oracle != null ? ` Oracle (privileged BC on 20k retained samples): ${oracle.toFixed(3)}.` : ""} Collateral bar scale: 0 to 0.75.</div>
+  </article>`;
+}
+
+document.getElementById("grid-u").innerHTML = UNC_SETTINGS.map(s => panel("unconditional", ...s)).join("");
+document.getElementById("grid-c").innerHTML = CON_SETTINGS.map(s => panel("conditional", ...s)).join("");
+
+/* ---------------- methods ---------------- */
+const M = [
+  {h: "Notation", chips: [], body: `
+    <div class="notation">
+      <span>π_ref</span><span>The base flow policy, before the edit.</span>
+      <span>π_θ</span><span>The policy we train. Training starts from π_ref.</span>
+      <span>c</span><span>The condition (the state). The unconditional toy has no condition.</span>
+      <span>ξ</span><span>The noise, ξ ~ N(0, I). The policy maps noise to action, a = f_θ(ξ, c). It integrates the velocity v_θ from t = 1 (noise) to t = 0 (action) in 20 Euler steps.</span>
+      <span>T_n</span><span>The logged negatives (c_i, ξ_i, a_i). π_ref produced a_i from ξ_i. A label marks a_i as bad.</span>
+      <span>T_p</span><span>The positives: actions with a good label.</span>
+      <span>U</span><span>Unlabelled samples (c, ξ, f_ref(ξ, c)) from π_ref.</span>
+    </div>
+    <p>The flow-matching loss for action a, noise ξ and time t ~ Beta(1.5, 1):</p>
+    <div class="math" data-tex="\\ell_\\theta(a,\\xi,t)=\\big\\lVert v_\\theta\\big(t\\xi+(1-t)a,\\,t,\\,c\\big)-(\\xi-a)\\big\\rVert^2" data-display="1"></div>
+    <p>The surrogate log-ratio compares π_θ with π_ref at the same (a, ξ, t). r &gt; 0 means π_θ gives a more likelihood than π_ref does.</p>
+    <div class="math" data-tex="r(a)=\\ell_{\\mathrm{ref}}(a,\\xi,t)-\\ell_\\theta(a,\\xi,t)" data-display="1"></div>
+    <p>All methods train for 5,000 steps with the same optimiser, learning rate and batch size.</p>`},
+  {h: "BC on positives", chips: ["pos"], body: `
+    <p class="uses">Uses: T_p.</p>
+    <div class="math" data-tex="L=\\mathbb{E}_{a\\in T_p,\\,\\xi,\\,t}\\;\\ell_\\theta(a,\\xi,t)" data-display="1"></div>
+    <p>The method trains on good actions only. Forgotten modes lose mass because no training action is in them.</p>`},
+  {h: "NPO", chips: ["both", "neg"], body: `
+    <p class="uses">Uses: T_n and T_p. The negatives-only config drops the T_p term.</p>
+    <div class="math" data-tex="L=\\tfrac12\\,\\mathbb{E}_{a\\in T_n}\\Big[\\tfrac{2}{\\beta}\\log\\big(1+e^{\\beta\\, r(a)}\\big)\\Big]+\\tfrac12\\,\\mathbb{E}_{a\\in T_p}\\,\\ell_\\theta(a,\\xi,t)" data-display="1"></div>
+    <p>The first term lowers the likelihood of each negative action. The gradient weight is 2σ(βr). It goes to zero when r is very negative, so the term stops by itself. A large β stops it early.</p>`},
+  {h: "KTO", chips: ["both", "neg"], body: `
+    <p class="uses">Uses: T_n and T_p. The negatives-only config keeps the T_n term only.</p>
+    <div class="math" data-tex="L=\\tfrac12\\,\\mathbb{E}_{a\\in T_p}\\big[1-\\sigma(\\beta(r(a)-z_0))\\big]+\\tfrac12\\,\\mathbb{E}_{a\\in T_n}\\big[1-\\sigma(\\beta(z_0-r(a)))\\big]" data-display="1"></div>
+    <div class="math" data-tex="z_0=\\max\\big(0,\\ \\overline{r}\\ \\text{on mismatched pairs in the batch}\\big)" data-display="1"></div>
+    <p>The method raises the likelihood of positives and lowers it for negatives, relative to the reference point z₀. The sigmoid saturates, so the push stops when an action is far from z₀.</p>`},
+  {h: "Flow-DPO", chips: ["both"], body: `
+    <p class="uses">Uses: T_p and T_n, in pairs (w, l) of one positive and one negative.</p>
+    <div class="math" data-tex="L=\\mathbb{E}_{a\\in T_p}\\,\\ell_\\theta(a,\\xi,t)+\\mathbb{E}_{(w,l)}\\big[-\\log\\sigma\\big(\\beta\\,(r(w)-r(l))\\big)\\big]" data-display="1"></div>
+    <p>The pair term increases the likelihood gap between the positive and the negative. Both members of a pair use the same t.</p>`},
+  {h: "Reward model + best-of-8", chips: ["both"], body: `
+    <p class="uses">Uses: T_p and T_n, to train a reward model. The policy does not change.</p>
+    <div class="math" data-tex="\\min_\\phi\\ \\mathbb{E}_{(w,l)}\\big[-\\log\\sigma\\big(R_\\phi(w)-R_\\phi(l)\\big)\\big],\\qquad a=\\arg\\max_{k\\le 8}R_\\phi\\big(f_{\\mathrm{ref}}(\\xi_k)\\big)" data-display="1"></div>
+    <p>At use time the method draws 8 samples from π_ref and outputs the one with the highest reward. It also ranks retained modes against each other, so it shifts mass between them.</p>`},
+  {h: "Rerouting", chips: ["neg", "both"], body: `
+    <p class="uses">Uses: T_n. The "with positives" configs add a BC term on T_p. Some configs add an anchor on U.</p>
+    <p>Rerouting keeps the logged noise ξ_i. It changes the action that this noise produces. It does not push likelihood down. For each negative it picks a target action a*_i and a support S_i, a set of noises. It then trains ordinary flow matching from those noises to the target:</p>
+    <div class="math" data-tex="L_{\\mathrm{rr}}=\\mathbb{E}_i\\;\\mathbb{E}_{\\xi\\in S_i}\\;\\mathbb{E}_t\\;\\ell_\\theta(a^*_i,\\xi,t)" data-display="1"></div>
+    <p>With positives: L = ½ L_rr + ½ E_{T_p} ℓ_θ. The KL config adds λ E_{a∈T_p} ‖v_θ − v_ref‖² instead of BC.</p>
+    <p><b>Targets a*_i.</b></p>
+    <ul>
+      <li><b>Random (repo's Ours).</b> Four independent π_ref samples at c_i. A target can land in a forgotten mode.</li>
+      <li><b>Farthest-of-8.</b> Draw 8 noises by far-point sampling. Take the decoded action farthest from a_i.</li>
+      <li><b>Near-nf.</b> Take the π_ref sample nearest to a_i that is farther than d₀ from every logged negative, and typical under π_ref. d₀ is 4 mode widths. The filter needs many negatives at the same condition, so it applies to the unconditional toy only.</li>
+      <li><b>Hop.</b> March the noise ξ_i + τu along 16 random directions u. Stop at the first decode outside the bad basin B_i (defined below). Step 0.2 further. Take the closest exit.</li>
+      <li><b>Hop + veto.</b> As hop, but skip an exit noise z when its bad vote v(z) ≥ θ (defined below).</li>
+    </ul>
+    <p><b>Supports S_i.</b> <i>Logged noise</i>: {ξ_i}. <i>Noise jitter</i>: ξ_i plus 4 copies ξ_i + 0.3ε. <i>Basin support</i>: ξ_i plus the copies ξ_i + 0.6ε (up to 8 of 16) that still decode into B_i. <i>Mined negatives</i>: U samples that the bad vote flags become extra negatives, each with its own hop + veto target.</p>`},
+  {h: "Bad basin and bad vote (conditional toy)", chips: ["neg"], body: `
+    <p class="uses">Uses: one logged negative per condition, and π_ref queried at that condition. No labels.</p>
+    <p><b>Bad basin B_i.</b> Draw 128 samples from π_ref at c_i. Remove atypical samples: those whose 5th-nearest-neighbour distance is above the 90th percentile. Link two samples when their distance is below ε = 3 × the median nearest-neighbour distance. B_i is the linked group that contains a_i. A point belongs to B_i when its nearest linked sample is within ε and is in B_i.</p>
+    <p><b>Bad vote.</b> The vote on any noise ξ is the share of logged negatives j whose own basin catches ξ at their own condition:</p>
+    <div class="math" data-tex="v(\\xi)=\\frac1N\\sum_{j=1}^{N}\\mathbf{1}\\big[f_{\\mathrm{ref}}(\\xi,c_j)\\in B_j\\big],\\qquad \\theta=\\tfrac12\\,\\mathrm{median}_j\\;v_{-j}(\\xi_j)" data-display="1"></div>
+    <p>v_{−j} leaves out negative j. A noise is flagged when v(ξ) ≥ θ. The vote works because π_ref maps a noise to the same behaviour at most conditions (about 65% here). It fails when forgotten and retained modes alternate.</p>`},
+  {h: "Anchors", chips: ["neg"], body: `
+    <p class="uses">Uses: U (unlabelled π_ref samples), filtered by information from T_n only.</p>
+    <p>An anchor keeps π_θ close to π_ref on a sample set A. The total loss is L = ½ L_method + ½ L_anchor.</p>
+    <div class="math" data-tex="L^{\\mathrm{pinned}}_{\\mathrm{anchor}}=\\mathbb{E}_{(c,\\xi,a)\\in A}\\,\\ell_\\theta(a,\\xi,t)\\qquad L^{\\mathrm{density}}_{\\mathrm{anchor}}=\\mathbb{E}_{(c,a)\\in A,\\ \\xi'\\sim\\mathcal N(0,I)}\\,\\ell_\\theta(a,\\xi',t)" data-display="1"></div>
+    <p>A <b>pinned</b> anchor keeps each action at its own noise. A <b>density</b> anchor keeps the distribution of actions and lets the noise-to-action map change.</p>
+    <ul>
+      <li><b>nf anchor</b> (unconditional): A = U samples farther than d₀ from every logged negative.</li>
+      <li><b>Vote-masked anchor</b> (conditional): A = U samples whose noise the bad vote does not flag.</li>
+      <li><b>Local anchor</b> (conditional): at each c_i, 64 samples (ξ, f_ref(ξ, c_i)) whose action is outside B_i, kept pinned. It uses no other negative.</li>
+    </ul>`},
+  {h: "Pseudo-positive BC", chips: ["neg"], body: `
+    <p class="uses">Uses: U, filtered by T_n. No positive labels.</p>
+    <p>The method trains on the anchor alone: L = L_anchor on the nf set (unconditional) or the vote-masked set (conditional). The filtered samples act as positives that cost no labels.</p>`},
+];
+document.getElementById("methods").innerHTML = M.map(m => `<article class="method"><h3>${m.chips.map(d => `<span class="chip ${d}">${DCHIP[d]}</span>`).join("")}${esc(m.h)}</h3>${m.body}</article>`).join("");
+
+/* render maths as native MathML (no stylesheet or font downloads needed) */
+document.querySelectorAll(".math").forEach(el => {
+  const tex = el.dataset.tex;
+  try {
+    if (!window.katex) throw new Error("no katex");
+    el.innerHTML = katex.renderToString(tex, {output: "mathml", displayMode: el.dataset.display === "1", throwOnError: false});
+  } catch (e) { el.innerHTML = `<code>${esc(tex)}</code>`; }
+});
+</script>
