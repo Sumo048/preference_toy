@@ -1,5 +1,5 @@
 """Manifest for the robo2d sweep: one row per (seed, arm group). Every arm of a seed writes into
-cells/full/s{seed}/; the hop cache is built once per seed (lock file) and shared.
+cells/full_st{steps}_m64/s{seed}/; the hop cache is built once per seed (lock file) and shared.
 
     python scripts/robo_manifest.py --seeds 0,1,2 --out results/robo/manifest_full.csv
 """

@@ -2,7 +2,7 @@
 
 Same convention as the other toys: x_t = t xi + (1 - t) a (t = 1 noise, t = 0 action),
 target velocity xi - a, Beta(1.5, 1) * 0.999 + 0.001 times, Euler 20 steps 1 -> 0.
-The observation (13-D) enters through an MLP embedding concatenated to the time embedding.
+The observation (OBS_DIM = 15: position, goal offset, 3 obstacles, previous step velocity) enters through an MLP embedding concatenated to the time embedding.
 """
 
 from __future__ import annotations

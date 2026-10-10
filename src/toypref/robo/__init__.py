@@ -2,7 +2,8 @@
 
 A point agent drives from a start to a goal past 1-3 disc obstacles. The policy is a pi0-style
 conditional rectified flow over ACTION CHUNKS (H = 8 consecutive 2-D velocity steps, executed
-open loop, then replan; <= 6 chunks per episode). Expert demos pass every obstacle on the left
+open loop, then replan; <= 6 chunks per episode); the observation carries the last executed step
+velocity (proprio analogue), so chunk-boundary reversals are a state-conditional tail. Expert demos pass every obstacle on the left
 or the right (homotopy classes) and carry two rare weird behaviours injected at a low rate --
 chunks that head into an obstacle (collision tails) and chunks with high-frequency zig-zag
 (jerk) -- so the base policy reproduces them as tails. Whole episodes that collide or exceed the

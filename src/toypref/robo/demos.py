@@ -3,8 +3,8 @@
 A demo passes each obstacle on a chosen side (homotopy class): waypoints at lateral offset
 r + clearance around every obstacle in the canonical frame, Chaikin corner cutting, then
 arc-length resampling with a per-demo speed and a slow speed modulation. Training samples are
-taken at EVERY step k (obs at p_k, chunk = the next H velocities, zero-padded after the goal),
-as chunked VLA policies are trained.
+taken at EVERY step k (obs at p_k with the clean previous step velocity p_k - p_{k-1}, chunk = the
+next H velocities, zero-padded after the goal), as chunked VLA policies are trained.
 
 Injection (the source of the base policy's tails), per training sample:
   collision  with prob ``q_col`` among samples whose nearest obstacle is ahead and within
@@ -23,8 +23,8 @@ import numpy as np
 
 from . import env as E
 
-Q_COL = 0.03          # calibrated (base_calib): collision ~7%, jerk ~8%, success ~93% of episodes
-Q_JERK = 0.012
+Q_COL = 0.015         # calibrated (base_calib_v2, s0): collision 8.7% (5.8% at Q_COL = 0: imitation error), jerk 6.9%, success 91%
+Q_JERK = 0.025
 CLEAR_MIN = 0.03
 SMOOTH_SIGMA = 0.12
 MAX_TURN = 0.06        # rad per 0.01 of arc length (curvature <= 6)
@@ -32,7 +32,7 @@ MAX_TURN = 0.06        # rad per 0.01 of arc length (curvature <= 6)
 
 @dataclass
 class DemoSet:
-    obs: np.ndarray        # (N, 13)
+    obs: np.ndarray        # (N, OBS_DIM)
     act: np.ndarray        # (N, 16) normalised
     kind: np.ndarray       # (N,) 0 clean, 1 collision-injected, 2 jerk-injected (diagnostic only)
     setup: np.ndarray      # (N,)
@@ -151,8 +151,9 @@ def make_demos(st: E.Setups, n_per_setup: int, rng: np.random.Generator, q_col=Q
             if T > E.T_MAX - 2:
                 continue
             p = P[:T]
+            pv = np.concatenate([np.zeros((1, 2)), np.diff(P[:T], axis=0)]) / E.V_SCALE   # last executed step
             o = E.observe(p, np.repeat(st.goal[s:s + 1], T, 0), np.repeat(st.centre[s:s + 1], T, 0),
-                          np.repeat(st.radius[s:s + 1], T, 0))
+                          np.repeat(st.radius[s:s + 1], T, 0), pv)
             a = chunks_from(P)
             kd = np.zeros(T, dtype=int)
             # collision injection: nearest obstacle ahead and within one chunk's reach

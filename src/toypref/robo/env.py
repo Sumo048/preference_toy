@@ -8,6 +8,12 @@ Episodes are batched: every array has a leading episode axis E. Absent obstacles
 fewer than 3) are padded with radius 0 and a far-away centre; in the observation they are
 zero-padded.
 
+The observation ends with the LAST EXECUTED STEP VELOCITY (normalised like the actions; zero at
+the start), the analogue of proprioceptive velocity. Without it a chunk cannot see which way the
+previous chunk was moving, and a velocity reversal at a chunk boundary (the base switching
+homotopy between two independently decoded chunks) is not a property of the chunk's own state:
+an observation-conditioned edit could then only remove it by collapsing multimodality.
+
 The LABELLER (``label``) is the source of the trajectory-level labels (collision, jerk). Methods
 never call it: they only see the logged negative rows. Metrics and diagnostics may use it.
 """
@@ -25,7 +31,8 @@ T_MAX = H * N_CHUNKS
 V_SCALE = 0.05         # action units: normalised velocity * V_SCALE = displacement per step
 ACT_DIM = 2 * H
 MAX_OBS = 3
-OBS_DIM = 4 + 3 * MAX_OBS
+OBS_VEL = 4 + 3 * MAX_OBS     # observation slice [OBS_VEL, OBS_VEL + 2): last executed step velocity
+OBS_DIM = OBS_VEL + 2
 GOAL_TOL = 0.10
 MAX_STEP = 0.20        # per-step displacement clip (4x nominal); edited policies cannot teleport
 FAR = 1.0e3
@@ -96,9 +103,9 @@ def sample_setups(rng: np.random.Generator, n: int, sid0: int = 0) -> Setups:
     return Setups(np.arange(sid0, sid0 + n), S, G, C, R, K)
 
 
-def observe(p, goal, centre, radius) -> np.ndarray:
-    """(E, 13): position, goal - position, 3 nearest obstacles (centre - position, radius) by
-    surface distance; absent obstacles are zero-padded."""
+def observe(p, goal, centre, radius, vel) -> np.ndarray:
+    """(E, 15): position, goal - position, 3 nearest obstacles (centre - position, radius) by
+    surface distance (absent obstacles zero-padded), last executed step velocity / V_SCALE."""
     rel = centre - p[:, None, :]
     present = radius > 0
     surf = np.where(present, np.linalg.norm(rel, axis=-1) - radius, np.inf)
@@ -109,7 +116,7 @@ def observe(p, goal, centre, radius) -> np.ndarray:
     rel = np.where(pres[..., None], rel, 0.0)
     rad = np.where(pres, rad, 0.0)
     obst = np.concatenate([rel, rad[..., None]], -1).reshape(len(p), -1)
-    return np.concatenate([p, goal - p, obst], -1).astype(np.float32)
+    return np.concatenate([p, goal - p, obst, vel], -1).astype(np.float32)
 
 
 def seg_disc_hit(a, b, centre, radius) -> np.ndarray:
@@ -134,6 +141,7 @@ class Episodes:
         self.pos = np.full((E, T_MAX + 1, 2), np.nan)
         self.pos[:, 0] = self.start
         self.p = self.start.copy()
+        self.v = np.zeros_like(self.p)                # last executed step / V_SCALE
         self.t = np.zeros(E, dtype=int)
         self.alive = np.ones(E, dtype=bool)
         self.collided = np.zeros(E, dtype=bool)
@@ -143,7 +151,7 @@ class Episodes:
         self.clipped = np.zeros(E, dtype=int)
 
     def obs(self):
-        return observe(self.p, self.goal, self.centre, self.radius)
+        return observe(self.p, self.goal, self.centre, self.radius, self.v)
 
     def execute(self, act: np.ndarray, chunk: int):
         """Run one normalised chunk (E, 16) open loop for the alive episodes."""
@@ -165,6 +173,7 @@ class Episodes:
             self.col_chunk[hit] = chunk
             mv = a & ~hit
             self.p[mv] = new[mv]
+            self.v[mv] = st[mv] / V_SCALE
             self.t[mv] += 1
             self.pos[mv, self.t[mv]] = self.p[mv]
             reach = mv & (np.linalg.norm(self.p - self.goal, axis=-1) < GOAL_TOL)
@@ -197,11 +206,31 @@ def jerk_score(pos: np.ndarray) -> np.ndarray:
     return out
 
 
-def chunk_jerk(act: np.ndarray) -> np.ndarray:
-    """(N,) jerk score of a single normalised chunk executed in free space."""
+def chunk_jerk(act: np.ndarray, prev_vel: np.ndarray = None) -> np.ndarray:
+    """(N,) jerk score of a single normalised chunk executed in free space.
+
+    With ``prev_vel`` (N, 2) (normalised, as in the observation) the boundary second difference
+    with the previous step is included, except where it is zero (episode start: the label has no
+    position before the start either)."""
     vel = act.reshape(-1, H, 2) * V_SCALE
     pos = np.concatenate([np.zeros((len(vel), 1, 2)), np.cumsum(vel, 1)], 1)
+    if prev_vel is not None:
+        pv = np.asarray(prev_vel, np.float64) * V_SCALE
+        before = np.where((np.abs(pv) > 0).any(-1, keepdims=True), -pv, np.nan)
+        pos = np.concatenate([before[:, None, :], pos], 1)
     return jerk_score(pos)
+
+
+def chunk_jerk_executed(pos: np.ndarray) -> np.ndarray:
+    """(E, N_CHUNKS) jerk score of each chunk from its EXECUTED positions only (no boundary second
+    difference with the previous chunk; steps never executed are NaN and ignored)."""
+    out = np.zeros((pos.shape[0], N_CHUNKS))
+    for c in range(N_CHUNKS):
+        seg = pos[:, c * H: c * H + H + 1]
+        if seg.shape[1] < 3:
+            continue
+        out[:, c] = np.nan_to_num(jerk_score(seg), nan=0.0)
+    return out
 
 
 def homotopy(st: Setups, idx, pos) -> np.ndarray:

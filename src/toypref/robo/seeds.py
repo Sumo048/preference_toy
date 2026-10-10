@@ -14,6 +14,7 @@ import torch
 # purposes
 P_BASE_SETUPS = 1_000      # setups the base policy's demos come from (disjoint from the experiment setups)
 P_BASE_DEMOS = 2_000
+P_BASE_DEMOS_TRAIN = 2_500   # base demos on the experiment TRAINING setups (held-out never)
 P_BASE_TRAIN = 3_000       # minibatch / noise / time stream of base training
 P_SETUPS = 10_000          # the 160 training + 40 held-out experiment setups
 P_NONEG = 11_000           # which training setups carry no negatives

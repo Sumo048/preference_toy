@@ -1,12 +1,18 @@
 """CRN evaluation: every policy of a seed is rolled out on the same setups with the same noise
 sequences, so per-noise outcome flips are paired.
 
-Groups: ``neg`` training setups that logged negatives, ``noneg`` training setups without
-negatives, ``held`` held-out setups. The env labeller is used here (metrics only).
+Groups: ``neg`` training setups that logged negatives, ``noneg`` the pre-registered training
+setups without negatives, ``held`` held-out setups (new to the base), and -- only when non-empty --
+``neg_missing`` training setups that wanted negatives but logged none. The env labeller is used
+here (metrics only).
+
+``base_hash`` fingerprints the frozen base's CRN rollout; every paired metric (bad_fixed,
+good_broken, hom_tv, retained_disp) is relative to it, so all arms of a seed must share it.
 """
 
 from __future__ import annotations
 
+import hashlib
 from typing import Dict
 
 import numpy as np
@@ -28,9 +34,12 @@ def concat(a: E.Setups, b: E.Setups) -> E.Setups:
 class EvalSet:
     def __init__(self, ref, seed, train: E.Setups, held: E.Setups, log: DT.LogResult, M=DT.M_EVAL, groups=None):
         self.st = concat(train, held)
-        g_neg, g_noneg = DT.setup_groups(seed, log, train)
-        g_held = np.arange(len(train), len(train) + len(held))
-        self.groups = {"neg": g_neg, "noneg": g_noneg, "held": g_held} if groups is None else groups
+        if groups is None:
+            gr = DT.setup_groups(seed, log, train)
+            groups = {"neg": gr["neg"], "noneg": gr["noneg"], "held": np.arange(len(train), len(train) + len(held))}
+            if len(gr["neg_missing"]):
+                groups["neg_missing"] = gr["neg_missing"]
+        self.groups = groups
         sel = np.unique(np.concatenate(list(self.groups.values())))
         self.idx = np.repeat(sel, M)
         self.noise = torch.cat([torch.randn(M, E.N_CHUNKS, E.ACT_DIM, generator=S.gen(seed, S.P_EVAL + int(self.st.sid[s])))
@@ -40,6 +49,10 @@ class EvalSet:
         self.base = DT.rollout(ref, self.st, self.idx, self.noise)
         self.base_hom = E.homotopy(self.st, self.idx, self.base.pos)
         self.base_good = (~self.base.negative) & self.base.success
+        h = hashlib.sha1()
+        for x in (self.idx, self.base.negative, self.base.success, self.base.act, self.base.ran):
+            h.update(np.ascontiguousarray(x).tobytes())
+        self.base_hash = h.hexdigest()
         self.ref = ref
         # replay of the logged negative episodes with their logged noise sequences
         self.rep_idx = log.episodes["setup"]
@@ -50,11 +63,11 @@ class EvalSet:
         ro = self.base if pol is self.ref else DT.rollout(pol, self.st, self.idx, self.noise)
         hom = self.base_hom if pol is self.ref else E.homotopy(self.st, self.idx, ro.pos)
         b = self.base
-        out: Dict = {}
+        out: Dict = {"base_hash": self.base_hash}
         plen = E.path_length(ro.pos)
         # jerk inside a single executed chunk (zig-zag) vs only at chunk boundaries (replanning)
-        cj = E.chunk_jerk(ro.act.reshape(-1, E.ACT_DIM)).reshape(ro.act.shape[0], E.N_CHUNKS)
-        intra = ((cj > E.JERK_THR) & ro.ran).any(1)
+        # (scored on EXECUTED positions: steps cut by the goal / a collision never count)
+        intra = (E.chunk_jerk_executed(ro.pos) > E.JERK_THR).any(1)
         for gname, gs in self.groups.items():
             m = np.isin(self.idx, gs)
             if not m.any():
@@ -66,6 +79,7 @@ class EvalSet:
             out[p + "jerk_intra"] = float((ro.jerky & intra)[m].mean())
             out[p + "jerk_boundary_only"] = float((ro.jerky & ~intra)[m].mean())
             out[p + "bad"] = float(ro.negative[m].mean())
+            out[p + "bad_col_or_intra"] = float((ro.collided | (ro.jerky & intra))[m].mean())
             out[p + "success"] = float(ro.success[m].mean())
             out[p + "success_clean"] = float((ro.success & ~ro.negative)[m].mean())
             out[p + "timeout"] = float((~ro.success & ~ro.collided)[m].mean())

@@ -53,12 +53,24 @@ for s in np.unique(ev.idx):
 n_classes = np.array([len(v) for v in hom_split.values()])
 maxshare = np.array([max(v.values()) / sum(v.values()) for v in hom_split.values() if v])
 ps = log.per_setup
-g_neg, g_noneg = DT.setup_groups(args.seed, log, train)
+gr = DT.setup_groups(args.seed, log, train)
+g_neg, g_noneg = gr["neg"], gr["noneg"]
+# what the logged negatives are: collision, jerk inside one executed chunk, or jerk only across a
+# chunk boundary (replanning), from a replay of the logged noise sequences
+rp = DT.rollout(ref, train, log.episodes["setup"], torch.from_numpy(log.episodes["noise"]))
+assert rp.negative.all(), "replay of the logged negatives must reproduce them"
+rp_intra = (E.chunk_jerk_executed(rp.pos) > E.JERK_THR).any(1)
+all_intra = (E.chunk_jerk_executed(b.pos) > E.JERK_THR).any(1)
 rep = {"seed": args.seed, "q_col": ck.get("q_col"), "q_jerk": ck.get("q_jerk"), "steps": ck.get("steps"),
        "demo_stats": ck.get("demo_stats"),
        "all_success": float(b.success.mean()), "all_collision": float(b.collided.mean()),
        "all_jerk": float(b.jerky.mean()), "all_bad": float(b.negative.mean()),
        "all_timeout": float((~b.success & ~b.collided).mean()),
+       "all_jerk_intra": float((b.jerky & all_intra).mean()), "all_jerk_boundary_only": float((b.jerky & ~all_intra).mean()),
+       "all_bad_col_or_intra": float((b.collided | (b.jerky & all_intra)).mean()),
+       "neg_episodes_collided": float(rp.collided.mean()),
+       "neg_episodes_intra_jerk_no_collision": float((~rp.collided & rp.jerky & rp_intra).mean()),
+       "neg_episodes_boundary_only_jerk": float((~rp.collided & rp.jerky & ~rp_intra).mean()),
        "jerk_score_pcts": [float(x) for x in np.percentile(b.jerk, [50, 90, 99])],
        "hom_classes_per_setup_mean": float(n_classes.mean()), "hom_max_share_mean": float(maxshare.mean()),
        "hom_setups_multimodal": float((n_classes >= 2).mean()),
@@ -67,9 +79,12 @@ rep = {"seed": args.seed, "q_col": ck.get("q_col"), "q_jerk": ck.get("q_jerk"), 
        "neg_ep_collided": float(np.mean([log.diag.ep_collided[log.rows.episode == e][0] for e in range(len(log.episodes["setup"]))])),
        "neg_ep_jerky": float(np.mean([log.diag.ep_jerky[log.rows.episode == e][0] for e in range(len(log.episodes["setup"]))])),
        "setups_with_neg": int(len(g_neg)), "setups_without_neg": int(len(g_noneg)),
-       "setups_wanted_but_none_found": int(((ps["wanted"] > 0) & (ps["n_kept"] == 0)).sum()),
+       "setups_wanted_but_none_found": int(len(gr["neg_missing"])),
        "setups_short": int((ps["n_kept"] < ps["wanted"]).sum()),
        "logged_rollouts": int(ps["n_logged"].sum()), "log_bad_rate": float(ps["n_neg_seen"].sum() / max(ps["n_logged"].sum(), 1)),
        **met, "time_s": round(time.time() - t0, 1)}
 json.dump(rep, open(os.path.join(od, "base_rates.json"), "w"), indent=1)
+if len(gr["neg_missing"]):
+    print(f"WARNING: {len(gr['neg_missing'])} setups wanted negatives but logged none; they form the "
+          "'neg_missing' eval group, not part of 'noneg'", flush=True)
 print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in rep.items()}), flush=True)

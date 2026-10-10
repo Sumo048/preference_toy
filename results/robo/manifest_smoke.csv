@@ -1,0 +1,5 @@
+seed,arms,steps
+0,"B0_frozen,NPO_b10_neg,NPO_b100_neg,KTO_b10_neg,KTO_b100_neg",1000
+0,"R_hop_bsup_neg,R_hop_bsup_neg_AL,R_ours_neg",1000
+0,"SDPO_hop_pin_b1,SDPO_fresh_b1,SDPO_fresh_b25",1000
+0,"SDPO_pin_b1,SDPO_pin_b25",1000

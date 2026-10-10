@@ -1,5 +1,13 @@
 """Experiment setups, base training, rollouts and the logged negatives.
 
+Eval groups (``setup_groups``): ``neg`` training setups with logged negatives, ``noneg`` the
+pre-registered 20% of training setups without negatives, ``held`` held-out setups. The base is
+trained on the 160 training setups' demos (8 each, among 4000 other base setups) and never on the
+held-out ones. No method reads anything from a no-negative setup, so ``noneg`` differs from
+``held`` only by base familiarity; with 8 demos among ~33k that effect is small (seeds 0-2 base:
+noneg_bad 0.143 / 0.153 / 0.147 vs held_bad 0.158 / 0.132 / 0.147), so in practice ``noneg`` is a
+second unseen-by-the-methods replicate and the headline contrast is ``neg`` vs (``noneg``, ``held``).
+
 What a METHOD may read is exactly ``NegRows`` (observation, logged noise, logged action and ids
 of every chunk of every logged negative episode) plus the frozen base policy, which it may query
 at any observation. ``NegDiag`` holds privileged per-row facts (which chunk actually crashed or
@@ -70,9 +78,20 @@ def n_keep(seed: int) -> np.ndarray:
 
 
 # ------------------------------------------------------------------ base
-def base_demos(seed: int, q_col=D.Q_COL, q_jerk=D.Q_JERK, n_setups=N_BASE_SETUPS) -> D.DemoSet:
+def base_demos(seed: int, q_col=D.Q_COL, q_jerk=D.Q_JERK, n_setups=N_BASE_SETUPS, include_train=True) -> D.DemoSet:
+    """Base training demos: ``n_setups`` base-only setups plus (``include_train``) the 160 experiment
+    TRAINING setups, DEMOS_PER_SETUP demos each. The 40 held-out setups are never in base training,
+    so the eval groups differ in what the base has seen: training setups with negatives (seen by the
+    base, negatives logged), training setups without negatives (seen by the base, nothing logged)
+    and held-out setups (new to the base and to every method)."""
     st = feasible_setups(S.nprng(seed, S.P_BASE_SETUPS), n_setups, 1_000_000)
-    return D.make_demos(st, DEMOS_PER_SETUP, S.nprng(seed, S.P_BASE_DEMOS), q_col=q_col, q_jerk=q_jerk)
+    ds = D.make_demos(st, DEMOS_PER_SETUP, S.nprng(seed, S.P_BASE_DEMOS), q_col=q_col, q_jerk=q_jerk)
+    if not include_train:
+        return ds
+    train, _ = experiment_setups(seed)
+    dt = D.make_demos(train, DEMOS_PER_SETUP, S.nprng(seed, S.P_BASE_DEMOS_TRAIN), q_col=q_col, q_jerk=q_jerk)
+    dt.demo = dt.demo + ds.demo.max() + 1
+    return D.DemoSet(*[np.concatenate([getattr(ds, f), getattr(dt, f)]) for f in D.DemoSet.__dataclass_fields__])
 
 
 def train_base(seed: int, ds: D.DemoSet, steps=30_000, batch=1024, lr=1e-3, log=print, **kw) -> ChunkFlow:
@@ -106,7 +125,7 @@ def train_base(seed: int, ds: D.DemoSet, steps=30_000, batch=1024, lr=1e-3, log=
 @dataclass
 class Rollouts:
     idx: np.ndarray          # (E,) setup index
-    obs: np.ndarray          # (E, 6, 13) observation at each chunk start (valid where ran)
+    obs: np.ndarray          # (E, 6, OBS_DIM) observation at each chunk start (valid where ran)
     noise: np.ndarray        # (E, 6, 16)
     act: np.ndarray          # (E, 6, 16) decoded chunk
     ran: np.ndarray          # (E, 6) chunk was executed
@@ -165,7 +184,7 @@ def chunk_jerk_in_episode(pos: np.ndarray, ran: np.ndarray) -> np.ndarray:
 @dataclass
 class NegRows:
     """Everything a method may read about the logged negatives (one row per chunk)."""
-    obs: torch.Tensor        # (N, 13)
+    obs: torch.Tensor        # (N, OBS_DIM)
     xi: torch.Tensor         # (N, 16) logged noise
     a: torch.Tensor          # (N, 16) logged (decoded) chunk
     uid: np.ndarray          # (N,) setup * 10_000 + logged episode * 10 + chunk
@@ -255,8 +274,16 @@ def log_negatives(ref: ChunkFlow, seed: int, train: E.Setups) -> LogResult:
     return LogResult(rows, diag, {"setup": np.array(ep_setup), "noise": np.stack(ep_noise), "log_id": np.array(ep_log)}, stats)
 
 
-def setup_groups(seed: int, log: LogResult, train: E.Setups):
-    """(with-negatives, without-negatives) training-setup indices."""
+def setup_groups(seed: int, log: LogResult, train: E.Setups) -> Dict[str, np.ndarray]:
+    """Training-setup groups by DESIGN, not by what logging happened to find:
+      neg         setups that logged >= 1 negative episode
+      noneg       the pre-registered 20% without negatives (``noneg_setups``)
+      neg_missing setups that wanted 1-3 negatives but found none in LOG_ROUNDS x LOG_BATCH
+                  rollouts (the base rarely fails there); reported apart, never merged into noneg."""
+    nn = noneg_setups(seed)
     has = np.zeros(len(train), bool)
     has[np.unique(log.rows.setup)] = True
-    return np.flatnonzero(has), np.flatnonzero(~has)
+    assert not has[nn].any(), "a pre-registered no-negative setup logged rows"
+    wanted = np.ones(len(train), bool)
+    wanted[nn] = False
+    return {"neg": np.flatnonzero(has), "noneg": nn, "neg_missing": np.flatnonzero(wanted & ~has)}

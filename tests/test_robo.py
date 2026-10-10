@@ -73,9 +73,42 @@ def test_execute_collision_success_and_observation():
         ep2.execute(np.tile([1.4, 0.0], E.H)[None].astype(np.float32), c)
     assert ep2.success[0] and not ep2.collided[0]
     # observation: absent obstacles zero-padded, nearest first
-    o = E.observe(np.array([[0.0, -0.5]]), st2.goal, st2.centre, st2.radius)
+    o = E.observe(np.array([[0.0, -0.5]]), st2.goal, st2.centre, st2.radius, np.array([[0.3, -0.4]]))
     assert o.shape == (1, E.OBS_DIM)
-    assert np.allclose(o[0, 4:7], [0.0, 1.1, 0.2]) and np.allclose(o[0, 7:], 0.0)
+    assert np.allclose(o[0, 4:7], [0.0, 1.1, 0.2]) and np.allclose(o[0, 7:E.OBS_VEL], 0.0)
+    assert np.allclose(o[0, E.OBS_VEL:], [0.3, -0.4])
+
+
+def test_observation_carries_last_executed_velocity():
+    st = one_setup(centre=(0.0, 0.6))
+    ep = E.Episodes(st, [0, 0])
+    assert np.allclose(ep.obs()[:, E.OBS_VEL:], 0.0)                     # at rest at the start
+    a = np.stack([np.tile([1.0, 0.0], E.H), np.concatenate([np.tile([1.0, 0.0], E.H - 1), [0.0, 1.5]])]).astype(np.float32)
+    ep.execute(a, 0)
+    assert np.allclose(ep.obs()[:, E.OBS_VEL:], [[1.0, 0.0], [0.0, 1.5]])
+    # step clipping is reflected (executed, not commanded)
+    ep2 = E.Episodes(st, [0])
+    ep2.execute(np.tile([10.0, 0.0], E.H)[None].astype(np.float32), 0)
+    assert np.allclose(ep2.obs()[0, E.OBS_VEL:], [E.MAX_STEP / E.V_SCALE, 0.0])
+
+
+def test_chunk_jerk_boundary_and_executed():
+    # a reversal at the chunk boundary is invisible without the previous velocity, visible with it
+    v = np.tile([1.2, 0.0], E.H)[None]
+    assert E.chunk_jerk(v)[0] < E.JERK_THR
+    assert E.chunk_jerk(v, np.array([[-1.2, 0.0]]))[0] > E.JERK_THR
+    assert E.chunk_jerk(v, np.array([[1.2, 0.0]]))[0] < E.JERK_THR
+    assert E.chunk_jerk(v, np.array([[0.0, 0.0]]))[0] == E.chunk_jerk(v)[0]    # episode start: no boundary
+    # executed-position chunk jerk ignores steps that never ran (zig-zag after termination)
+    pos = np.full((2, E.T_MAX + 1, 2), np.nan)
+    line = np.stack([np.arange(E.H + 1) * 0.06, np.zeros(E.H + 1)], -1)
+    pos[:, :E.H + 1] = line
+    zz = line.copy(); zz[4:, 1] += 0.03 * (-1.0) ** np.arange(E.H - 3)
+    pos[1, :E.H + 1] = zz
+    cj = E.chunk_jerk_executed(pos)
+    assert cj[0, 0] < E.JERK_THR < cj[1, 0] and (cj[:, 1:] == 0).all()
+    pos[1, 4:E.H + 1] = np.nan                                              # terminated before the zig-zag ran
+    assert E.chunk_jerk_executed(pos)[1, 0] < E.JERK_THR
 
 
 def test_jerk_detection():
@@ -135,6 +168,19 @@ def test_setups_and_noneg(setups):
     assert (k[nn] == 0).all() and set(np.unique(np.delete(k, nn))) <= {1, 2, 3}
 
 
+def test_base_demos_cover_train_not_heldout():
+    ds = DT.base_demos(0, n_setups=2)
+    tr, he = DT.experiment_setups(0)
+    sids = set(np.unique(ds.setup).tolist())
+    assert set(tr.sid.tolist()) <= sids and not set(he.sid.tolist()) & sids
+    assert ds.obs.shape[1] == E.OBS_DIM and len(np.unique(ds.demo)) == ds.demo.max() + 1
+    # demo observations carry the clean previous step velocity
+    m = ds.demo == ds.demo[-1]
+    o = ds.obs[m]
+    assert np.allclose(o[0, E.OBS_VEL:], 0.0)
+    assert np.allclose((o[1:, :2] - o[:-1, :2]) / E.V_SCALE, o[1:, E.OBS_VEL:], atol=1e-4)
+
+
 def test_logging_labels_and_eval_crn(setups):
     tr, he = setups
     pol = GoalPolicy()
@@ -156,11 +202,26 @@ def test_logging_labels_and_eval_crn(setups):
     # rows identical across two runs (seeded)
     log2 = DT.log_negatives(pol, 0, tr)
     assert np.array_equal(log2.rows.uid, R.uid) and torch.equal(log2.rows.xi, R.xi)
+    # groups by design: noneg is exactly the pre-registered 20%, setups that found nothing are apart
+    gr = DT.setup_groups(0, log, tr)
+    assert np.array_equal(gr["noneg"], DT.noneg_setups(0))
+    assert not set(gr["neg_missing"]) & set(gr["noneg"]) and not set(gr["neg_missing"]) & set(gr["neg"])
+    assert len(gr["neg"]) + len(gr["noneg"]) + len(gr["neg_missing"]) == len(tr)
     # CRN: two eval sets share noises, and the frozen base scores identically
     ev1 = EV.EvalSet(pol, 0, tr, he, log, M=4)
     ev2 = EV.EvalSet(pol, 0, tr, he, log, M=4)
     assert torch.equal(ev1.noise, ev2.noise)
     assert ev1.compute(pol)["neg_bad"] == ev2.compute(pol)["neg_bad"]
+    assert ev1.base_hash == ev2.base_hash == ev1.compute(pol)["base_hash"]
+
+
+def test_setup_groups_keep_missing_apart():
+    tr, _ = DT.experiment_setups(0)
+    log = DT.log_negatives(GoalPolicy(), 0, tr)
+    drop = np.unique(log.rows.setup)[:3]                       # pretend these found nothing
+    rows = log.rows.take(~np.isin(log.rows.setup, drop))
+    gr = DT.setup_groups(0, DT.LogResult(rows, log.diag, log.episodes, log.per_setup), tr)
+    assert np.array_equal(gr["neg_missing"], drop) and np.array_equal(gr["noneg"], DT.noneg_setups(0))
 
 
 def _rows(n_setups=3):

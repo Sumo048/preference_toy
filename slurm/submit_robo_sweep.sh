@@ -8,7 +8,8 @@
 #SBATCH --partition=shubhamlong
 #SBATCH --exclude=grogu-0-25
 # MANIFEST=results/robo/manifest_full.csv ; one task per (seed, arm group); per-arm outputs are
-# skip-if-exists, so a rerun only does what is missing. Optional env: SMOKE=N (restrict setups).
+# skip-if-exists (same base policy sha, steps, m_eval), so a rerun only does what is missing. Every arm
+# JSON records base_hash (the CRN base rollout); robo_report.py refuses seeds whose arms disagree. Optional env: SMOKE=N (restrict setups).
 set -eo pipefail
 cd /home/soumojib/repos/toypref-robo
 export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 MKL_DYNAMIC=FALSE MKL_CBWR=AVX2 ATEN_CPU_CAPABILITY=avx2 PYTHONUNBUFFERED=1

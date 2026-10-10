@@ -1,9 +1,12 @@
 """Run robo2d arms for one seed; one JSON per arm (skip-if-exists).
 
-    python scripts/robo_cell.py --seed 0 --arms all                 # full cell
+    python scripts/robo_cell.py --seed 0 --arms all                 # full cell -> cells/full_st5000_m64/s0
     python scripts/robo_cell.py --seed 0 --arms all --smoke 8 --steps 300   # smoke: 8 setups per group
+
+The output tag carries steps and m_eval, and an arm JSON is only skipped when it was produced
+from the same base policy file (sha1 of policy.pt), so reruns never mix settings or bases.
 """
-import argparse, json, os, sys, time
+import argparse, hashlib, json, os, sys, time
 # Reproducible float math: MKL's dynamic threading and per-CPU kernels change the last bits of
 # GEMMs between runs / nodes, and closed-loop rollouts amplify those bits into flipped outcomes.
 os.environ.setdefault("MKL_CBWR", "AVX2")
@@ -27,20 +30,43 @@ ap.add_argument("--force", action="store_true")
 args = ap.parse_args()
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
 s = args.seed
-tag = f"smoke{args.smoke}_st{args.steps}" if args.smoke else "full"
+tag = (f"smoke{args.smoke}_st{args.steps}" if args.smoke else f"full_st{args.steps}") + f"_m{args.m_eval}"
 od = args.out or os.path.join(ROBO, "cells", tag, f"s{s}")
 os.makedirs(od, exist_ok=True)
-names = list(MT.ARMS) if args.arms == "all" else ([] if args.arms == "none" else args.arms.split(","))
-todo = [n for n in names if args.force or not os.path.exists(os.path.join(od, f"{n}.json"))]
-if not todo and os.path.exists(os.path.join(od, "separability.json")):
-    sys.exit(0)
 bd = os.path.join(args.base, f"s{s}")
+policy_sha = hashlib.sha1(open(os.path.join(bd, "policy.pt"), "rb").read()).hexdigest()
+sep_path = os.path.join(od, "separability.json")
+
+
+def done(n):
+    f = os.path.join(od, f"{n}.json")
+    if not os.path.exists(f):
+        return False
+    r = json.load(open(f))
+    if r.get("base_policy_sha") != policy_sha or r.get("steps") != args.steps or r.get("m_eval") != args.m_eval:
+        print(f"[s{s}] {n}: existing JSON is from another base / setting; recomputing", flush=True)
+        return False
+    return True
+
+
+def write_json(obj, path):
+    tmp = f"{path}.{os.getpid()}.tmp"
+    with open(tmp, "w") as fh:
+        json.dump(obj, fh, indent=1)
+    os.replace(tmp, path)
+
+
+names = list(MT.ARMS) if args.arms == "all" else ([] if args.arms == "none" else args.arms.split(","))
+todo = [n for n in names if args.force or not done(n)]
+if not todo and os.path.exists(sep_path) and json.load(open(sep_path)).get("base_policy_sha") == policy_sha:
+    sys.exit(0)
 ref = load(os.path.join(bd, "policy.pt"))
 lg = torch.load(os.path.join(bd, "log.pt"), map_location="cpu", weights_only=False)
 rows, diag = lg["rows"], lg["diag"]
 log = DT.LogResult(rows, diag, lg["episodes"], lg["per_setup"])
 train, held = DT.experiment_setups(s)
-g_neg, g_noneg = DT.setup_groups(s, log, train)
+gr = DT.setup_groups(s, log, train)
+g_neg, g_noneg = gr["neg"], gr["noneg"]
 groups = None
 if args.smoke:
     keep_setups = g_neg[:args.smoke]
@@ -57,34 +83,58 @@ ctx = MT.Ctx(ref=ref, seed=s, rows=rows, steps=args.steps)
 need_cache = any(MT.ARMS[n].rule == "hop" or MT.ARMS[n].local or MT.ARMS[n].pos == "hop" for n in todo)
 cp = os.path.join(od, "hop_cache.pt")
 t0 = time.time()
-if need_cache or not os.path.exists(os.path.join(od, "separability.json")):
-    # one builder per cell: an O_EXCL lock file; other jobs wait for the cache (stale locks > 3 h are taken over)
+
+
+def separability(cache):
+    sep = DG.separability(ref, s, rows, diag, cache)
+    sep.update({"n_rows": len(rows), "n_bad_chunk_rows": int(diag.bad_chunk.sum()),
+                "n_episodes": int(len(np.unique(rows.episode))), "n_setups": int(len(np.unique(rows.setup))),
+                "base_policy_sha": policy_sha})
+    write_json(sep, sep_path)
+    print(f"[s{s}] separability {json.dumps({k: round(v, 3) if isinstance(v, float) else v for k, v in sep.items()})}", flush=True)
+
+
+def stale(path):
+    """True when the cache / separability file exists but was built from another base."""
+    if path.endswith(".json"):
+        return os.path.exists(path) and json.load(open(path)).get("base_policy_sha") != policy_sha
+    return os.path.exists(path) and getattr(torch.load(path, map_location="cpu", weights_only=False), "base_sha", None) != policy_sha
+
+
+if need_cache or not os.path.exists(sep_path):
+    # one builder per cell: an O_EXCL lock file; the builder also writes separability.json (atomically),
+    # other jobs wait for the cache (stale locks > 3 h are taken over)
     lock = cp + ".lock"
-    while not os.path.exists(cp):
+    while not os.path.exists(cp) or stale(cp):
         try:
             fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
             os.close(fd)
         except FileExistsError:
-            if time.time() - os.path.getmtime(lock) > 3 * 3600:
-                os.remove(lock)
+            try:
+                if time.time() - os.path.getmtime(lock) > 3 * 3600:
+                    os.remove(lock)
+            except FileNotFoundError:
+                pass                                     # the builder just released it
             time.sleep(30)
             continue
         try:
+            if os.path.exists(cp) and not stale(cp):
+                break                                    # another job finished between our checks
             cache = TG.build_hop_cache(ref, s, rows)
+            cache.base_sha = policy_sha
             tmp = cp + f".{os.getpid()}.tmp"
             torch.save(cache, tmp)
             os.replace(tmp, cp)
             print(f"[s{s}] hop cache for {len(rows)} rows ({time.time() - t0:.0f}s)", flush=True)
+            separability(cache)
         finally:
-            if os.path.exists(lock):
+            try:
                 os.remove(lock)
+            except FileNotFoundError:
+                pass
     ctx.cache = torch.load(cp, map_location="cpu", weights_only=False)
-if not os.path.exists(os.path.join(od, "separability.json")):
-    sep = DG.separability(ref, s, rows, diag, ctx.cache)
-    sep.update({"n_rows": len(rows), "n_bad_chunk_rows": int(diag.bad_chunk.sum()),
-                "n_episodes": int(len(np.unique(rows.episode))), "n_setups": int(len(np.unique(rows.setup)))})
-    json.dump(sep, open(os.path.join(od, "separability.json"), "w"), indent=1)
-    print(f"[s{s}] separability {json.dumps({k: round(v, 3) if isinstance(v, float) else v for k, v in sep.items()})}", flush=True)
+if not os.path.exists(sep_path) or stale(sep_path):
+    separability(ctx.cache)                              # deterministic; atomic write, so a race is harmless
 print(f"[s{s}] rows {len(rows)} eval episodes {len(ev.idx)} arms {todo}", flush=True)
 for n in todo:
     arm = MT.ARMS[n]
@@ -92,11 +142,10 @@ for n in todo:
     pol, info = MT.train_arm(arm, ctx)
     met = ev.compute(pol)
     rec = {"seed": s, "arm": n, "kind": arm.kind, "beta": arm.beta, "steps": args.steps, "smoke": args.smoke,
+           "m_eval": args.m_eval, "base_policy_sha": policy_sha,
            "train_s": round(time.time() - t0, 1), **{k: v for k, v in info.items() if k != "train_history"},
            **met, "train_history": info.get("train_history")}
-    tmp = os.path.join(od, f".{n}.tmp")
-    json.dump(rec, open(tmp, "w"))
-    os.replace(tmp, os.path.join(od, f"{n}.json"))
+    write_json(rec, os.path.join(od, f"{n}.json"))
     f = lambda k: met.get(k, float("nan"))
     print(f"[s{s}] {n:20s} neg bad {f('neg_bad'):.3f} col {f('neg_collision'):.3f} jerk {f('neg_jerk'):.3f} "
           f"succ {f('neg_success'):.3f} homTV {f('neg_hom_tv'):.3f} disp {f('neg_retained_disp'):.3f} | "

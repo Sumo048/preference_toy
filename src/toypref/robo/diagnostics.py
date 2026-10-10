@@ -2,8 +2,9 @@
 the oracle quality of rerouting targets.
 
 oracle_chunk_bad(obs, act): execute a chunk open loop from the state encoded in ``obs`` (the
-observation carries the position and all <= 3 obstacles) and flag a collision or a chunk-level
-jerk above the threshold. Boundary jerk with the previous chunk is not included.
+observation carries the position, all <= 3 obstacles and the previous step velocity) and flag a
+collision or a chunk-level jerk above the threshold. The boundary second difference with the
+previous step is included (the observation now carries that velocity), except at the episode start.
 """
 
 from __future__ import annotations
@@ -20,7 +21,7 @@ from .data import NegDiag, NegRows
 
 def _geometry(obs: np.ndarray):
     p = obs[:, :2].astype(np.float64)
-    ob = obs[:, 4:].reshape(-1, E.MAX_OBS, 3).astype(np.float64)
+    ob = obs[:, 4:E.OBS_VEL].reshape(-1, E.MAX_OBS, 3).astype(np.float64)
     rad = ob[..., 2]
     cen = np.where(rad[..., None] > 0, ob[..., :2] + p[:, None, :], E.FAR)
     return p, cen, rad
@@ -38,7 +39,7 @@ def oracle_chunk_bad(obs, act) -> (np.ndarray, np.ndarray):
         new = q + vel[:, h]
         hit |= E.seg_disc_hit(q, new, cen, rad)
         q = new
-    jerk = E.chunk_jerk(act) > E.JERK_THR
+    jerk = E.chunk_jerk(act, obs[:, E.OBS_VEL:E.OBS_VEL + 2]) > E.JERK_THR
     return hit, jerk
 
 
