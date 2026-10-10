@@ -188,6 +188,20 @@ a { color: var(--both); }
     </table></div>
   </section>
 
+  <section id="sdpo">
+    <h2>Self-paired DPO: results and controls</h2>
+    <div class="prose">
+      <p>Self-paired DPO is the user's idea. It pairs each logged negative with a fresh π_ref sample at the same state, used as the winner. We tested it in every earlier setting of both toys, plus controls that isolate each part of the loss.</p>
+      <p><b>Unconditional toy.</b> Fresh noise with β = 1 is the strongest method that uses only the negatives (no unlabelled anchor) at 2 and 3 forgotten modes. It beats NPO-negatives-only by 0.11 to 0.14 (lower in 28 to 30 of 30 paired runs), and it beats Ours in every setting. At 1 forgotten mode it ties NPO. At 4 forgotten modes near-nf rerouting wins (0.180 against 0.374). The anchored KTO stays best overall.</p>
+      <p><b>Conditional toy.</b> It beats NPO-negatives-only and Ours in most settings. It never beats the round-3 recipe, and it never beats tracking.</p>
+      <p><b>What the controls show.</b> The ungated push destroys the policy. The gate makes the push safe, but only when it closes early (fixed β = 25). A calibrated, later-closing gate (βH = 1, 3, 10) does worse. The gated push beats plain hop only at 1 forgotten mode. At 4 forgotten modes it adds off-mode mass and loses. BC on the hop winners alone collapses the map.</p>
+    </div>
+    <h3 style="margin-top:1rem">Conditional toy, distance to the ideal (seeds 0–9 pooled, lower is better)</h3>
+    <div class="tests" id="sdpo-table"></div>
+    <h3>Diagnostics (conditional toy, mean over settings)</h3>
+    <div class="tests" id="sdpo-diag"></div>
+  </section>
+
   <section>
     <h2>Methods</h2>
     <div class="prose"><p>This section states what each method computes. Each block names the data it uses.</p></div>
@@ -222,7 +236,7 @@ const CON_SETTINGS = [
 ];
 
 const FAMILY_ORDER = ["BC on positives", "NPO", "KTO", "Flow-DPO", "Reward model + best-of-8", "Rerouting with positives",
-  "NPO, negatives only", "KTO, negatives only", "Pseudo-positive BC", "Rerouting, negatives only"];
+  "NPO, negatives only", "KTO, negatives only", "Self-paired DPO", "Pseudo-positive BC", "Rerouting, negatives only"];
 
 const LABEL = {
   B1_filtered: "BC on all positives",
@@ -247,6 +261,9 @@ const LABEL = {
   NPO_b10_neg_AL: "β = 10, + local anchor", NPO_b10_neg_AMdist: "β = 10, + vote-masked density anchor",
   KTO_b10_neg_AL: "β = 10, + local anchor", KTO_b10_neg_AMmap: "β = 10, + vote-masked pinned anchor",
   PSEUDO_vote_dist: "samples the vote does not flag, fresh noise",
+  SDPO_fresh_b1: "β = 1, fresh noise, random winner", SDPO_fresh_b10: "β = 10, fresh noise, random winner",
+  SDPO_fresh_b25: "β = 25, fresh noise, random winner", SDPO_pin_b25: "β = 25, logged noise, random winner",
+  SDPO_hop_pin_b25: "β = 25, logged noise, hop-target winner",
   R_hop_bsup_neg: "hop target, basin support, no anchor",
   R_hopB_bsup_neg_AMdist: "hop + veto, basin support, + vote-masked density anchor",
   R_hopB_bsup_mine_neg: "hop + veto, basin support, + mined negatives",
@@ -343,6 +360,39 @@ document.querySelectorAll(".toggle").forEach(g => g.addEventListener("click", e 
   render();
 }));
 
+(function () {
+  const S = DATA.sdpo_section, sets = [["k1", "1 of 8"], ["k2", "2 of 8"], ["k4", "4, random"], ["contig", "4, contiguous"], ["alt", "4, alternating"], ["pairs", "4, pairs"], ["b3p1", "4, block 3 + 1"]];
+  const groups = [
+    ["Self-paired DPO, fresh noise (literal)", ["SDPO_fresh_b1", "SDPO_fresh_b10", "SDPO_fresh_b25", "SDPO_fresh_b100"]],
+    ["Self-paired DPO, logged noise, random winner", ["SDPO_pin_b1", "SDPO_pin_b25"]],
+    ["Self-paired DPO, logged noise, hop winner", ["SDPO_hop_pin_b1", "SDPO_hop_pin_b25", "SDPO_hop_pin_bH1", "SDPO_hop_pin_bH3", "SDPO_hop_pin_bH10"]],
+    ["Controls", ["CTRL_hop_GA", "CTRL_synB1_hop"]],
+    ["Relatives and references", ["NPO_b100_neg", "R_ours_neg", "R_hop_bsup_neg", "R_hopB_bsup_neg_AMdist", "B0_frozen"]],
+  ];
+  const NAME = {SDPO_fresh_b1: "β = 1", SDPO_fresh_b10: "β = 10", SDPO_fresh_b25: "β = 25", SDPO_fresh_b100: "β = 100",
+    SDPO_pin_b1: "β = 1", SDPO_pin_b25: "β = 25", SDPO_hop_pin_b1: "β = 1", SDPO_hop_pin_b25: "β = 25",
+    SDPO_hop_pin_bH1: "β·H = 1 (calibrated)", SDPO_hop_pin_bH3: "β·H = 3 (calibrated)", SDPO_hop_pin_bH10: "β·H = 10 (calibrated)",
+    CTRL_hop_GA: "hop winner + push, no gate", CTRL_synB1_hop: "BC on hop winners only (no loser)",
+    NPO_b100_neg: "NPO β = 100, negatives only", R_ours_neg: "rerouting, Ours", R_hop_bsup_neg: "plain hop, basin support",
+    R_hopB_bsup_neg_AMdist: "round-3 recipe (hop + veto + vote-masked anchor)", B0_frozen: "base policy, no edit"};
+  let h = "<table><tr><th>config</th>" + sets.map(s => `<th>${s[1]}</th>`).join("") + "</tr>";
+  for (const [g, arms] of groups) {
+    h += `<tr><td colspan="${sets.length + 1}" style="font-weight:600;color:var(--ink2)">${g}</td></tr>`;
+    for (const a of arms) {
+      const vals = sets.map(([sid]) => S[sid] && S[sid][a] ? S[sid][a].tv : null);
+      const best = sets.map(([sid]) => Math.min(...Object.entries(S[sid] || {}).filter(([k]) => k !== "B0_frozen").map(([, v]) => v.tv)));
+      h += `<tr><td>${esc(NAME[a] || a)}</td>` + vals.map((v, i) => `<td class="num"${v != null && Math.abs(v - best[i]) < 1e-9 ? ' style="font-weight:700"' : ""}>${v == null ? "–" : v.toFixed(3)}</td>`).join("") + "</tr>";
+    }
+  }
+  document.getElementById("sdpo-table").innerHTML = h + "</table><p style=\"font-size:0.8rem;color:var(--ink3)\">Bold: lowest in the column among these configs.</p>";
+  const D = ["SDPO_fresh_b10", "SDPO_pin_b25", "SDPO_hop_pin_b25", "SDPO_hop_pin_bH3", "CTRL_hop_GA"];
+  const avg = (a, k) => { const v = sets.map(([sid]) => S[sid] && S[sid][a] ? S[sid][a][k] : null).filter(x => x != null); return v.length ? v.reduce((p, c) => p + c, 0) / v.length : null; };
+  const f = x => x == null ? "–" : x.toFixed(2);
+  let q = "<table><tr><th>config</th><th>winners in a forgotten mode</th><th>gate weight, contaminated pairs</th><th>gate weight, clean pairs</th><th>logged noise still decodes to a forgotten mode</th><th>off-mode mass</th></tr>";
+  for (const a of D) q += `<tr><td>${esc(NAME[a] || a)}</td><td class="num">${f(avg(a, "sdpo_pos_frac_in_forget"))}</td><td class="num">${f(avg(a, "sdpo_gate_contam"))}</td><td class="num">${f(avg(a, "sdpo_gate_clean"))}</td><td class="num">${f(avg(a, "sdpo_logged_end_in_forget"))}</td><td class="num">${f(avg(a, "mass_off"))}</td></tr>`;
+  document.getElementById("sdpo-diag").innerHTML = q + "</table><p style=\"font-size:0.8rem;color:var(--ink3)\">The gate weight is σ(β(r_l − r_w)) after training, scaled to [0, 1]. The oracle labeller is used only for these diagnostics. A dash means the arm ran before the diagnostic was added.</p>";
+})();
+
 /* ---------------- methods ---------------- */
 const M = [
   {h: "Notation", chips: [], body: `
@@ -410,6 +460,16 @@ const M = [
       <li><b>nf anchor</b> (unconditional): A = U samples farther than d₀ from every logged negative.</li>
       <li><b>Vote-masked anchor</b> (conditional): A = U samples whose noise the bad vote does not flag.</li>
       <li><b>Local anchor</b> (conditional): at each c_i, 64 samples (ξ, f_ref(ξ, c_i)) whose action is outside B_i, kept pinned. It uses no other negative.</li>
+    </ul>`},
+  {h: "Self-paired DPO (user idea)", chips: ["neg"], body: `
+    <p class="uses">Uses: T_n, and fresh samples of π_ref at each negative's own state as winners. No labels.</p>
+    <p>Flow-DPO needs a winner and a loser at one state. The loser is the logged negative a_l. The winner a_w is a new π_ref sample at the same state. The loss is:</p>
+    <div class="math" data-tex="L=-\\log\\sigma\\big(\\beta\\,(r(a_w)-r(a_l))\\big),\\qquad \\nabla_\\theta L=w\\,\\big[\\nabla\\ell_\\theta(a_w)-\\nabla\\ell_\\theta(a_l)\\big],\\quad w=\\beta\\,\\sigma\\big(\\beta\\,(r(a_l)-r(a_w))\\big)" data-display="1"></div>
+    <p>One weight w scales both terms, and w goes to zero when the winner is clearly preferred (the "gate"). At the start every pair has w = β/2.</p>
+    <ul>
+      <li><b>Fresh noise</b> (winner and loser use independent noise): the method is NPO on the negative plus a self-distillation anchor, with one gate for both. It is not a new method.</li>
+      <li><b>Logged noise</b> (both use ξ_l): the winner term is exactly rerouting. The loser term pushes the logged noise→action link away from a_l. No earlier method has this push. It is partly new.</li>
+      <li><b>Hop-target winner</b>: the winner is the hop target, so it comes from another behaviour at that state.</li>
     </ul>`},
   {h: "Pseudo-positive BC", chips: ["neg"], body: `
     <p class="uses">Uses: U, filtered by T_n. No positive labels.</p>
