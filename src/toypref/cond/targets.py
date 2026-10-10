@@ -192,12 +192,15 @@ class Rows:
 
 
 def build(ref, mix, seed, uids, c_neg, xi_neg, a_neg, rule, support, transplant=False,
-          tx_conditions: Optional[torch.Tensor] = None, d0=None, pu=None, forget=None) -> Rows:
+          tx_conditions: Optional[torch.Tensor] = None, d0=None, pu=None, forget=None, vetoes_ext=None) -> Rows:
     cs, ns, ts = [], [], []
     stats: Dict = {}
     tx_bad = []
     vetoes = None
-    if rule in ("hopV", "hopB", "hopVB"):
+    if vetoes_ext is not None:
+        vetoes = vetoes_ext
+        rule_eff = "hop"
+    elif rule in ("hopV", "hopB", "hopVB"):
         vetoes = make_vetoes(ref, seed, uids, c_neg, xi_neg, a_neg, rule, stats)
         rule_eff = "hop"
     else:

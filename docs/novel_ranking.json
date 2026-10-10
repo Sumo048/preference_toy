@@ -1,0 +1,143 @@
+{
+ "overall_assessment": "Strict verdict: 18 proposals reduce to one real idea. Several delivery variants and two self-training schemes sit on top of it and should be dropped.\n\nThe idea is to replace the global bad-noise vote with local continuation of pi_ref's own behaviour clusters across densely logged conditions. A negative then labels its whole behaviour at every logged condition, and the edit is ordinary fresh-noise pseudo-positive BC on the samples no negative touches. Six proposals are this idea under different names (P1 atlas, TRACK-C, three TRACK lenses, SinkTrack).\n\nFour independent scratch pilots on exploration seeds agree that it beats the frozen recipe by 2-8x in every layout, including alternating. I re-aggregated the 210 cells in claude_track_pilot:\n- TRACK_bc means are 0.050-0.074 in every setting.\n- Flag precision is 0.97 and recall 0.97-1.0.\n- The worst cell is 0.144, on alternating and random-4 at n_neg=1.\n\nThe repo's BC fixed-point formula already explains why. Pseudo-BC converges to its mask's implied mixture (0.316 predicted vs 0.315 measured), so the score depends only on mask precision and recall. The delivery choices (hop, veto, OT, Sinkhorn, exact negated velocity) are second-order.\n\nThree things are still unproven.\n- **Protocol.** Seeds 5-7 were probed with the oracle while the rules were chosen, and one pilot built its condition graph from other cells' negatives. Confirmation must use fresh bases s10-14, per-cell graphs, and a label-free kNN graph instead of sorted c.\n- **Attribution.** Part of the gain may be atypical-tail trimming. The ATYP_dist control prices this.\n- **Transfer to pi0.** This is the binding doubt. The toy gives tracking its success: a dense 1-D condition, modes about 8 std apart that never split or merge, and oracle-clean negatives. Under OR-seeding and transitive union-find, one bad seed or link erases a retained behaviour everywhere. Trajectory-level labels will produce exactly such seeds.\n\nHence the ranking:\n1. Confirm TRACK-BC cleanly.\n2. Test the enrichment-seeded, two-bank robust variant under label noise, sparse graphs, an unordered graph and merge/split behaviours, and measure the node density at which it stops winning.\n3. Test a cheaper pooled-density labeller (JOINT with a plateau rule).\n4. Run PRA only as a map-preserving delivery ablation.\n5. Keep a negative-calibrated reach vote as the no-chain fallback.\n6. Test the amortised embedding only behind a hard gate.\n\nBefore any pi0 edit, a decode-only robot pre-test should come first, given the robopref record that no method moved the preference against a fresh frozen rerun. It should check three things on logged states: whether the 64-128 decoded chunks have dendrogram gaps, how often tracks link across neighbouring and cross-episode states, and whether a negative's tracked component predicts failure in held-out rollouts better than chance.",
+ "ranked": [
+  {
+   "rank": 1,
+   "name": "TRACK-BC: label-free behaviour tracking by shared-noise basin continuation, then pseudo-positive density BC",
+   "merged_from": [
+    "P1 behaviour atlas",
+    "TRACK-C",
+    "TRACK (representation lens)",
+    "TRACK (detection lens)",
+    "TRACK (self-training lens)",
+    "SinkTrack (as a filter)",
+    "TRACK-V (labels only)"
+   ],
+   "one_line": "Follow pi_ref's own behaviour clusters across neighbouring logged conditions with a shared noise bank, so one negative marks its whole behaviour at every logged condition; then run fresh-noise BC on the pool samples no negative touches.",
+   "algorithm_math": "Freeze everything below before confirmation.\n\n(1) Nodes and bank. V = anchor-pool conditions (4096) plus THIS cell's negative conditions. Draw one shared bank Z = {z_m}, M = 128 (also report M = 256). Decode D_u[m] = f_ref(z_m, c_u) at every node.\n\n(2) Basins per node. A point is typical iff its 5-NN distance is at most the q90 of that node. Run single linkage on the typical points and cut at the largest log-gap among the top 20 merge heights (the gap-cut rule). Each point gets l_u(m), or -1 if atypical.\n\n(3) Graph. delta(u,v) = median_m ||D_u[m] - D_v[m]||. Edges = mutual-kNN(delta, k = 8) plus the MST. Do not sort c.\n\n(4) Linking. Link (u,q)-(v,r) iff the pair is the mutual argmax of the overlap O_uv[q,r] = #{m : l_u(m) = q, l_v(m) = r} and O is at least half the typical size on both sides. Add links by decreasing O with union-find (Kruskal). Refuse any merge that puts two clusters of the same node into one component, and count refusals as a label-free alarm.\n\n(5) Seeds. Insert a_i into its node's cloud before clustering (no special attach radius). K_bad = {comp(c_i, cluster(a_i))}, OR over negatives.\n\n(6) Mask. A pool sample is good iff it is assigned within the cut height to a component not in K_bad. Atypical samples are excluded from both sets.\n\n(7) Loss, 5000 steps, same LR as every arm:\nL = E_good E_{xi ~ N(0,I), t} || v_theta(t xi + (1-t) a, t, c) - (xi - a) ||^2.\n\nThe optimum is pi_ref(.|c, good). The forget ratio is about (1 - rec) / (1 - rec * b / prec).",
+   "data_used": "Logged negatives (c_i, a_i); xi_i is not needed. pi_ref forward decodes of one shared noise bank at logged conditions: the 4096 unlabelled anchor-pool conditions plus this cell's negatives. Unlabelled pool samples as BC targets. No mode labels, mode width, n_forget, positives, or same-condition pairs. The oracle is used only for post-hoc precision and recall.",
+   "why_it_should_work": "The vote assumes a fixed noise keeps its behaviour at every c. Same-noise same-mode agreement is 0.98 at |dc| < 0.05, 0.40 at |dc| 0.3-0.5, and 0.06 beyond 0.5. Tracking trusts only adjacent conditions and chains them.\n\nFour independent pilots agree:\n- claude_track_pilot, re-aggregated: TRACK_bc 0.050-0.074 mean per setting, precision 0.97, recall 0.97-1.0, worst cell 0.144.\n- Detection-lens TRK_pseudo_dist: 0.033-0.062.\n- SinkTrack TRK_pseudo: 0.070 / 0.086 / 0.150 at k = 1 / 2 / 4.\n- probe_track: 26/30 wins.\n\nThe edit is plain FM-BC, so it scales trivially, and it removes failure modes 1, 3, 5, 6 and 7 together.",
+   "target_settings": "All 7 conditional settings at n_neg 1/4/16/64. The largest gains should be on alternating, random-4, and n_neg = 1.",
+   "main_risk": "- The toy is the friendliest case for tracking: 1-D dense c, modes about 8 std apart that never split or merge, and clean negatives.\n- OR-seeding plus transitive union-find means one wrong seed or link erases a retained behaviour everywhere (+0.12-0.25 TV).\n- Implementations differ. The eps-rule probe lost 2 cells at n = 1 to fragmentation.\n- Part of the gain may be tail trimming.",
+   "leak_status": "Fixed by protocol; no hard leak. Required fixes:\n- Seeds 5-7 were probed with the oracle, so confirm on fresh bases s10-14.\n- Build the graph per cell; the pilot used the union of negative conditions across cells.\n- Use the kNN-on-delta graph instead of sorted c.\n- Seed by insertion of a_i instead of the oracle-tuned 3*eps attach radius.",
+   "test_plan": "Train cond_base s10-14. Run 7 settings x n_neg {1,4,16,64} x 5 seeds = 140 cells per arm.\n\nArms:\n- TRACK_bc (primary)\n- Frozen recipe, rerun on s10-14\n- PSEUDO_vote_dist\n- R_hop_bsup_neg (plain hop; the true alternating bar is about 0.26)\n- ATYP_dist control: the same BC with an atypical-only mask and no negatives\n- TRACK_bc_sortc\n\nPredicted means (recipe in brackets):\n- random-1: 0.05-0.07 (0.107)\n- random-2: 0.05-0.08 (0.166)\n- random-4: 0.055-0.09 (0.265)\n- contig: 0.05-0.08 (0.228)\n- alt: 0.05-0.09 (0.450)\n- pairs: 0.05-0.08 (0.251)\n- block-3+1: 0.05-0.08 (0.256)\n- Worst cell at most 0.15.\n\nDecision rule:\n- A setting is a WIN if the paired mean difference vs the rerun recipe is at most -0.02 and TRACK_bc is lower in at least 16/20 cells.\n- ADOPT if at least 6/7 settings are wins, no setting is worse by more than 0.01, and TRACK_bc beats ATYP_dist by at least 0.03 in every setting.\n- ABANDON if 3/7 or fewer settings are wins.",
+   "cost": "- About 0.5M decodes plus per-node single linkage per cell (about 1-2 CPU-min), with zero decodes per negative.\n- BC takes about 2 min.\n- About 50 CPU-h for 6 arms x 140 cells.\n- For pi0: about 1 GPU-h per 10k logged states with a cached prefix, amortised over all edits."
+  },
+  {
+   "rank": 2,
+   "name": "ROBUST-TRACK: enrichment-seeded, two-bank-agreement tracking under pi0-like stress",
+   "merged_from": [
+    "SinkTrack robust rules",
+    "PRA critique (enrichment seeding)",
+    "TRACK stress arms",
+    "P1 gate/triangle ideas"
+   ],
+   "one_line": "Replace OR-seeding with a label-free over-representation test against pi_ref's own component mass, require two independent noise banks to agree, and measure how far tracking degrades under label noise, sparse graphs, and behaviour splits or merges.",
+   "algorithm_math": "Build the tracker from #1 twice, with independent banks Z1 and Z2.\n\nComponent mass: m_g = mean over the negatives' nodes of the typical-decode share of g. X_g = number of negatives seeded into g; N = total number of negatives.\n\nFlag g iff all three hold:\n- X_g >= 1\n- X_g > N * m_g\n- X_g >= 2 or N * m_g < 0.5\n\nWhy it separates: when a fraction rho of the negatives are uninformative, they land in components in proportion to mass. The over-representation ratio is then about (1 - rho) * 8 / K_f + rho >= 2 for a bad component and about rho < 1 for a retained one.\n\nA pool sample is bad only if both banks flag it (components matched across banks by majority overlap).\n\nAlarms: any merge refusal, and any flagged component holding more than half of a node's mass (a pre-decision seed, which is dropped).\n\nThe edit is the same as #1.",
+   "data_used": "As in #1, plus a second noise bank. Component masses come from unlabelled decodes. Stress variants change the toy, not the information available to the method.",
+   "why_it_should_work": "Every critic pointed at the same decisive pi0 failure. Trajectory-level negatives mostly sit in shared behaviours, and OR-seeding flags those globally. The enrichment ratio against pi_ref's own mass separates bad from shared components at no cost. Two-bank agreement suppresses link errors specific to one bank. The stress arms yield the node density at which tracking stops winning, which is the robot go/no-go number.",
+   "target_settings": "Fresh seeds, random-4 / alt / random-1, n_neg {1,16,64}, under four stresses:\n- (a) 10% or 25% of negatives flipped to retained or off-mode samples, plus a single flipped negative.\n- (b) Pool nodes reduced 4096 -> 256 -> 64 -> negatives-only.\n- (c) Graph built on a noisy 32-D nonlinear lift of c.\n- (d) A toy variant with a merge over c in [0.4, 0.6] and one mode that appears at c > 0.5.",
+   "main_risk": "- At N = 1 the test has no power and falls back to OR.\n- Small fragments can still be flagged by a single flipped negative (bounded damage).\n- The two-bank requirement costs some recall.\n- Variant (d) needs new toy code.",
+   "leak_status": "Clean. The thresholds follow the majority/over-representation definition, and the stresses are environment manipulations scored only by the oracle.",
+   "test_plan": "Arms: TRACK_bc, RTRACK_bc, and the frozen recipe on s10-14.\n\nPredicted:\n- (a) At 10% flips, TRACK_bc gets +0.08-0.20 worse in affected cells. RTRACK_bc stays within 0.02 of clean at n_neg >= 16 and equals TRACK at n_neg = 1.\n- (b) At 256 nodes, within 0.02 of clean. At 64 nodes, recall 0.6-0.85 and TV 0.08-0.15. Negatives-only at n_neg <= 4 approaches the recipe.\n- (c) The lift costs at most 0.01.\n- (d) TRACK fragments or merges; RTRACK refusals fire and it beats TRACK by at least 0.03.\n\nDecision:\n- Make RTRACK the default if its clean cost is at most +0.01 and it beats TRACK_bc by at least 0.03 in the label-noise cells.\n- Report the minimum node count at which TRACK still wins at least 16/20 cells vs the recipe.",
+   "cost": "Twice #1's decode cost (about 3 CPU-min per cell). About 300 stress cells x 3 arms, roughly 30 CPU-h. About one day of code for the toy variant."
+  },
+  {
+   "rank": 3,
+   "name": "JOINT-plateau: pooled (lambda*c, a) density connectivity, 16 decodes per node, plateau-chosen condition scale",
+   "merged_from": [
+    "JOINT"
+   ],
+   "one_line": "Treat all pi_ref decodes from all logged conditions as one point cloud in product space and take density-connected components as behaviours. The condition scale is chosen by a label-free plateau in the component count. This uses 8x fewer decodes than TRACK and no shared bank.",
+   "algorithm_math": "Decode M_s = 16 fresh noises per node. X = {(lambda c_v, a)}.\n\nScales: gap = median adjacent spacing of the nodes; eps = 3 * median 1-NN distance in X; lambda = eps / (k_c * gap).\n\nClustering: keep points whose 5-NN distance is at most q90, build the eps-graph, and keep connected components holding at least 1% of the points.\n\nPlateau rule: over k_c in {4, 8, 16, 32, 64, 128}, pick the smallest k_c from which the component count stays unchanged over two consecutive doublings.\n\nSeeds: the component of a_i by 8-NN majority vote. Mask and BC edit as in #1.",
+   "data_used": "Logged negatives (c_i, a_i); 16 pi_ref decodes per logged condition; unlabelled pool for BC. No labels, width, n_forget or positives.",
+   "why_it_should_work": "Pooling density across neighbouring conditions removes the per-node sample-size bottleneck. That bottleneck is the main worry for 600-D chunks at 64-128 decodes per state.\n\nHand-set k_c = 16 already gives precision 1.000, recall 0.89-0.93 at n >= 16, but recall 0.46-0.55 at n = 1 because of fragments. The critic's label-free audit (claude_joint_audit/cert_s{0,1}.json) shows the plateau rule picks k_c = 32 on both seeds, giving exactly 8 components with purity at least 0.9994.",
+   "target_settings": "All toy settings, especially n_neg = 1. It is the candidate low-budget labeller for the robot.",
+   "main_risk": "- Single-linkage chaining over about 65k pooled points can merge behaviours globally.\n- The plateau may land on an over-merged count on other seeds.\n- The robot needs an observation metric for lambda * c.\n- Edits have not been run.",
+   "leak_status": "Fixed by the plateau rule, which replaces the hand-picked k_c. M_s = 16 is fixed on budget grounds, and the inherited constants are frozen.",
+   "test_plan": "Arms on s10-14, all 140 cells: JOINT_bc, TRACK_bc with M = 128, TRACK_bc with M = 16 (matched budget), and the frozen recipe.\n\nPredicted:\n- JOINT scores 0.05-0.08 in every setting.\n- n = 1 cells are within 0.02 of n = 16.\n- The plateau picks k_c = 32 on at least 4/5 seeds.\n- TRACK at M = 16 is worse than JOINT by at least 0.02 at n = 1.\n\nDecision:\n- Promote JOINT as the robot labeller if it is non-inferior to TRACK at M = 128 (difference at most +0.01) in at least 6/7 settings.\n- Drop it if any seed's plateau gives fewer than 5 or more than 12 components and that seed loses to the recipe.",
+   "cost": "About 66k decodes per cell plus a KD-tree eps-graph for each of 6 k_c values, about 1 CPU-min per cell. About 15 CPU-h total."
+  },
+  {
+   "rank": 4,
+   "name": "PRA-trk: proportional pinned rearrangement by action-cost assignment (delivery ablation on the #1 mask)",
+   "merged_from": [
+    "PRA",
+    "TRACK-OT",
+    "P2 OT re-cut"
+   ],
+   "one_line": "With the tracked mask held fixed, good noises keep their own pi_ref decode and bad noises are Hungarian-assigned in action space to fresh good decodes. Mass ends up proportional, and retained per-noise behaviour is preserved.",
+   "algorithm_math": "Training nodes: the negatives' conditions plus every 8th pool node.\n\nPer node:\n1. Draw S = 64 noises and decode them; B = {s : bad}.\n2. Rejection-sample |B| typical good decodes to form E.\n3. Targets T = {own decode for every s not in B} union E.\n4. sigma = argmin over bijections of sum_s ||a_s - a'_sigma(s)||^2. Use action cost, because noise cost degenerates in 1600-D.\n\nGood noises are fixed points of sigma, so retained mode j gets mass p_j / (1 - p_F).\n\nLoss: L = E || v_theta(t xi + (1-t) a', t, c) - (xi - a') ||^2.\n\nHybrid PRAhop: at n_neg >= 16, add hop rows with a tracked veto at weight 1/2.",
+   "data_used": "#1's mask; pi_ref decodes of fresh prior noise at logged conditions. No labels or positives.",
+   "why_it_should_work": "Not for TV. The BC fixed point is already proportional, and TRACK_ot vs TRACK_bc tie within about 0.01 (re-aggregated). PRA vs TRK_pseudo was 0.01-0.06 better in the SinkTrack pilot.\n\nThe payoff is map preservation: retained flips 0.013-0.196 vs 0.010-0.319, and retain_tv about 0.01. On a robot, retained behaviours replay identically. Action cost and fixed rows survive high dimension, and no sampler backprop is needed.",
+   "target_settings": "Same cells as #1. Secondary metric: retain_noise_flip.",
+   "main_risk": "- It inherits tracker errors, and misses get pinned to their forgotten actions.\n- Off-mode floor of 0.045-0.049.\n- No gain as n_neg grows.\n- No TV advantage.",
+   "leak_status": "Clean given #1's protocol. Use n_src = 64 for all arms (the pilot mixed 64 and 256).",
+   "test_plan": "Arms PRA_trk, PRAhop_trk and TRACK_bc on the same frozen mask, s10-14, all cells.\n\nPredicted:\n- TV difference vs TRACK_bc between -0.01 and +0.01.\n- retain_noise_flip at most 0.6x TRACK_bc's.\n- Off-mode mass up by 0.005-0.01.\n\nDecision: adopt as the default delivery only if mean TV is at most TRACK_bc + 0.005 in at least 6/7 settings AND flips fall by at least 40%. Otherwise keep BC.",
+   "cost": "About 1e5 decodes per cell plus 64x64 Hungarian solves. Training cost equals BC. About 15 CPU-h."
+  },
+  {
+   "rank": 5,
+   "name": "REACH-VOTE: vote weighted by a negative-estimated cross-condition reach curve (no-chain fallback)",
+   "merged_from": [
+    "P3 drift-aware vote (critic's fix)"
+   ],
+   "one_line": "When no dense chain of logged conditions exists, learn from pairs of negatives how far a transplanted bad noise stays informative, and weight the existing vote by that curve, which may go negative.",
+   "algorithm_math": "Distance: delta(u,v) = median_m ||D_u[m] - D_v[m]|| on a shared bank.\n\nCross-hits: for pairs i != j (leave-one-trajectory-out on a robot), h_ij = 1{f_ref(xi_i, c_j) in B_j} - m_j, where m_j is B_j's mass share.\n\nReach curve: w(delta) = kernel regression of h_ij on delta(c_i, c_j). Its sign is free.\n\nVote: v(z, c_j) = sum_i w(delta_ij) * [1{f_ref(z, c_j) in B_j} - m_j] / sum_i |w|.\n\nAbstention: where sum_i |w| is small, exclude the sample from the anchor rather than keeping it.\n\nEverything else is the frozen recipe: hopB with this veto, basin support, and the masked dist anchor with theta = 1/2 * median leave-one-out self-vote.",
+   "data_used": "Logged negatives (c_i, xi_i, a_i); pi_ref decodes at their conditions and at the pool conditions. The cross-hits are the vote's own quantity. No labels or positives.",
+   "why_it_should_work": "The ARI bandwidth is blind to layout because partition drift is the same everywhere. The cross-hit curve is not: it stays positive far out on contig, random and pairs (transplant precision 0.74-0.78) and goes to zero or below on alternating (0.01-0.07).\n\nIt therefore nests both the global vote and local-only rerouting, with no chain or union-find. It is the fallback if #2 shows that logged states are too sparse to track.",
+   "target_settings": "Alternating, plus the sparse and negatives-only node regimes. It should tie elsewhere.",
+   "main_risk": "- No pairs at N = 1, so it reduces to the recipe.\n- The curve is noisy at small N.\n- It is dominated by TRACK wherever a dense chain exists.\n- On a robot, delta may be dominated by nuisance variation.",
+   "leak_status": "Clean once revised: the pool is drawn from logged conditions, the fit and abstention rules are pre-registered, and the fallback is judged against plain hop rather than the oracle-picked AL arm.",
+   "test_plan": "Arms REACH_recipe, frozen recipe, R_hop_bsup_neg, and TRACK_bc on the same nodes, s10-14. Cells: all settings at n_neg {4,16,64}, plus the negatives-only regime.\n\nPredicted:\n- alt 0.28-0.36 vs 0.450 (plain hop about 0.26-0.30).\n- Other settings within \u00b10.01 of the recipe.\n- In the negatives-only regime, beats TRACK_bc at n_neg <= 4.\n\nDecision: keep only if it beats the recipe on alt by at least 0.05, no other setting is worse by more than 0.01, and it beats TRACK_bc negatives-only in at least 3/5 seeds.",
+   "cost": "N^2 cross-hit decodes (65k at N = 256) plus the recipe's hop cost. About 15 CPU-h."
+  },
+  {
+   "rank": 6,
+   "name": "CORAL/PROTO-NC: amortised behaviour embedding via multi-hop noise-continuity contrastive learning (gated, stress cells only)",
+   "merged_from": [
+    "CORAL",
+    "PROTO-NC"
+   ],
+   "one_line": "Learn e(c, a, xi) on pi_ref samples with multi-hop shared-noise positives and seed bad prototypes from the negatives. The goal is to label unlogged states in one forward pass and to survive sparse or unordered condition graphs.",
+   "algorithm_math": "Pairs: nodes at graph distance h in {1, 4, 16}. A pair is positive iff majority shared-noise overlap holds along the path, and negative iff the clusters differ at both ends.\n\nEncoder: e_phi([a / std(decodes), c rescaled to its empirical range, xi projection]) -> S^15. The xi input blocks the positional shortcut.\n\nTraining: SupCon with T = 0.1 for 20k batches.\n\nThreshold: tau = median_i (w_i + b_i) / 2, from within- and between-cluster cosines at the negatives' nodes.\n\nPrototypes: seeded at the negatives and merged if cos > tau, with a single E-step. Split any prototype that covers more than one cluster at any node.\n\nThe resulting mask feeds the BC edit from #1.",
+   "data_used": "Unlabelled pi_ref decodes on the shared bank, per-node clusters, and the negatives as seeds. No labels or positives.",
+   "why_it_should_work": "It should not beat TRACK on the dense toy. Its only claim is graceful degradation on sparse (32-64 node) and unordered graphs, plus amortised labelling of states that were never logged, which the robot needs. Multi-hop positives supervise identity across large rotations directly.",
+   "target_settings": "Only the #2 stress cells: 32-64 nodes and the lifted-c graph, on alt and random-4.",
+   "main_risk": "- Positional shortcut: the embedding learns action location instead of identity.\n- Soft percolation through the encoder.\n- Many moving parts and a low prior.",
+   "leak_status": "Fixable: use data-driven normalisation, build the graph from lifted c or decode-MMD, freeze all constants before any oracle diagnostic, and build the node bank per cell.",
+   "test_plan": "Gate on s0-4 before any edit, with diagnostics only:\n- Label-free: same-noise neighbour cosine exceeds tau for more than 90% of typical pairs.\n- Post-hoc oracle: same-mode cosine across dc = 0.5 exceeds different-mode cosine at the same action location.\nAbort if either fails.\n\nThen run CORAL_bc vs TRACK_bc vs the recipe on the stress cells of s10-14.\n\nPredicted:\n- At 64 nodes, recall 0.85-0.9 vs TRACK's 0.6-0.85, and 0.02-0.05 better TV.\n- At 4096 nodes, a tie, or 0.01-0.02 worse.\n\nDecision: keep only if it beats TRACK_bc by at least 0.03 on the sparse cells and loses no more than 0.02 on the dense cells.",
+   "cost": "Shares the decode bank. The encoder trains in minutes, and labelling is one forward pass. About 10 CPU-h including the gate."
+  }
+ ],
+ "rejected": [
+  {
+   "name": "P2 OT re-cut (Hungarian coupling in noise space) as written",
+   "reason": "With independent coupling it is the already-tested PSEUDO_vote_dist. OT coupling cannot move a mass-only score, and noise-space OT degenerates in 1600-D. Choosing the labeller per layout leaks the oracle. The useful part is merged into #4 with action cost."
+  },
+  {
+   "name": "TRACK-V (exact complement-velocity distillation, on-policy)",
+   "reason": "It has the same population fixed point as BC on the same labels, and the BC fixed-point formula shows no unvisited-state deficit for it to fix. The kernel posterior collapses to nearest-atom memorisation in 600-D. Its labels are merged into #1."
+  },
+  {
+   "name": "RATIO-BOOT (likelihood-ratio bootstrap)",
+   "reason": "The unmasked round-0 anchor re-teaches forgotten modes exactly where the ratio is read out. The far-condition log-ratio is about -0.2, below the in-sample tau, so recall is near zero and it collapses to local pseudo-BC (about 0.28). It also loses to plain hop on alt."
+  },
+  {
+   "name": "ECHO (EM self-training on student outflow)",
+   "reason": "Measured round-0 outflow barely separates bad from retained clusters (24% vs 16% at alt n=1) under 16-sample binomial noise. Later rounds confirm their own labels because the dist anchor scrambles noise identity, and its validity check is vacuous. It costs 3-4x for an expected tie or loss."
+  },
+  {
+   "name": "FCS (Sinkhorn through the sampler with a Monge pin)",
+   "reason": "It costs 36x the compute and loses to PRA in 10/13 clean cells. Its headline numbers were selected on an oracle filter (trk_prec > 0.95). It is the variant hurt most by tracker false positives (worse than no edit in one cell), and minibatch OT in 600-D is statistically empty."
+  },
+  {
+   "name": "MODE-TRACK (mean-shift continuation with placebo jump test)",
+   "reason": "Its new component is measured broken: mode switches are slides (0.013-0.05h vs tau of 0.2-0.65h), and tau kills 35-88% of honest tracks. Precision decays to 0.55-0.83 at n=64. #1 and #3 dominate it."
+  },
+  {
+   "name": "TRACK-C / P1 atlas / TRACK (x3) / SinkTrack as separate entries",
+   "reason": "Merged, not rejected. They are one idea with different matching rules and are consolidated into #1 and #2. The atlas gate (ii) and its hop and pool rows add nothing beyond the mask."
+  }
+ ]
+}

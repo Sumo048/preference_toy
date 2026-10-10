@@ -161,6 +161,7 @@ class Arm:
     anchor: bool = False      # NEG+U: unlabelled pi_ref pairs at random conditions
     amask: str = ""           # round 3: masked anchor on samples NOT voted bad ("map" | "dist")
     mine: bool = False        # round 3: reroute vote-flagged unlabelled samples too
+    track: str = ""           # round 4: knn | sortc | m16 | robust | joint | atyp | reach
     practical: bool = True    # False = uses information a real system lacks (oracle geometry)
 
 
@@ -201,6 +202,15 @@ for a in [Arm("B0_frozen", "frozen"),
           Arm("KTO_b10_neg_AL", "kto", beta=10.0, amask="local"),
           Arm("PSEUDO_vote_map", "pseudo", amask="map"),
           Arm("PSEUDO_vote_dist", "pseudo", amask="dist"),
+          # round 4 (docs/NOVEL_PREREG.md): behaviour tracking and friends
+          Arm("TRACK_bc", "maskbc", track="knn"),
+          Arm("TRACK_bc_sortc", "maskbc", track="sortc"),
+          Arm("TRACK_bc_M16", "maskbc", track="m16"),
+          Arm("RTRACK_bc", "maskbc", track="robust"),
+          Arm("JOINT_bc", "maskbc", track="joint"),
+          Arm("ATYP_dist", "maskbc", track="atyp"),
+          Arm("PRA_trk", "pra", track="knn"),
+          Arm("REACH_recipe", "reroute", rule="hopR", support="bsup", amask="reach", track="reach"),
           # NEG+U: same methods with an unlabelled self-distillation anchor
           Arm("NPO_b10_neg_A", "npo", beta=10.0, anchor=True),
           Arm("KTO_b10_neg_A", "kto", beta=10.0, anchor=True),
@@ -253,6 +263,112 @@ def get_local(ctx: "Ctx"):
     return ctx._local
 
 
+N_NODES = 4096
+
+
+def _nodes(ctx):
+    n = getattr(ctx, "n_nodes", N_NODES)
+    P = ctx.anchor
+    node_c = np.concatenate([P.c[:n].numpy(), ctx.ed.c.numpy()]).astype(np.float64)
+    neg_node = np.arange(n, n + len(ctx.ed.c))
+    return n, node_c, neg_node
+
+
+def get_tracker(ctx, variant):
+    """(tracker, neg_comp) cached per variant key (knn/sortc/m16/bank2)."""
+    cache = ctx.__dict__.setdefault("_trk", {})
+    if variant not in cache:
+        from . import track as TK
+        n, node_c, neg_node = _nodes(ctx)
+        kw = {"knn": {}, "sortc": {"graph": "sortc"}, "m16": {"M": 16}, "bank2": {"bank": TK.P_BANK2}}[variant]
+        cache[variant] = TK.build_tracker(ctx.ref, ctx.seed, node_c, neg_node, ctx.ed.a.numpy(), **kw)
+    return cache[variant]
+
+
+def get_mask(ctx, variant):
+    """good mask over the first n anchor-pool samples + diagnostics (oracle used ONLY for diagnostics)."""
+    cache = ctx.__dict__.setdefault("_masks", {})
+    if variant in cache:
+        return cache[variant]
+    from . import track as TK
+    n, node_c, neg_node = _nodes(ctx)
+    P = ctx.anchor
+    pa, pnode = P.a[:n].numpy(), np.arange(n)
+    diag = {}
+    if variant in ("knn", "sortc", "m16", "atyp"):
+        tr, nc = get_tracker(ctx, "knn" if variant == "atyp" else variant)
+        flagged = TK.flag_or(nc) if variant != "atyp" else set()
+        bad, assigned = TK.pool_bad_mask(tr, flagged, pa, pnode)
+        diag.update({f"trk_{k}": v for k, v in tr.diag.items()})
+        diag["trk_flagged"] = len(flagged)
+    elif variant == "robust":
+        bads, asg = [], []
+        for bk in ("knn", "bank2"):
+            tr, nc = get_tracker(ctx, bk)
+            flagged, alarms = TK.flag_enrichment(tr, nc, neg_node)
+            b, a = TK.pool_bad_mask(tr, flagged, pa, pnode)
+            bads.append(b)
+            asg.append(a)
+            diag[f"rtrk_{bk}_flagged"] = len(flagged)
+            diag[f"rtrk_{bk}_alarms"] = alarms
+            diag[f"rtrk_{bk}_refusals"] = tr.diag["refusals"]
+        bad = bads[0] & bads[1]
+        assigned = asg[0] | asg[1]
+    elif variant == "joint":
+        bad, assigned, jd = TK.joint_labeller(ctx.ref, ctx.seed, node_c[:n], ctx.ed.c.numpy(), ctx.ed.a.numpy(),
+                                              P.c[:n].numpy(), pa)
+        diag.update(jd)
+    else:
+        raise ValueError(variant)
+    good = assigned & ~bad
+    truth_bad = np.isin(P.mode[:n], ctx.ed.forget)
+    flagged_bad = bad & assigned
+    diag.update({"mask_good_frac": float(good.mean()), "mask_excluded_frac": float((~assigned).mean()),
+                 "mask_bad_precision": float(truth_bad[flagged_bad].mean()) if flagged_bad.any() else float("nan"),
+                 "mask_bad_recall": float(flagged_bad[truth_bad].mean()) if truth_bad.any() else float("nan"),
+                 "mask_good_purity": float((~truth_bad)[good].mean()) if good.any() else float("nan")})
+    cache[variant] = (torch.from_numpy(good), diag)
+    return cache[variant]
+
+
+def mask_bc_loss(ctx, good):
+    P = ctx.anchor
+    n = good.shape[0]
+    c, a = P.c[:n][good], P.a[:n][good]
+    B = ctx.batch
+
+    def loss(pol, g):
+        j = _pick(c.shape[0], B, g)
+        t = FlowPolicy.sample_time(B, g)
+        return pol.flow_loss(a[j], torch.randn(a[j].shape, generator=g), t, c[j]).mean()
+    return loss
+
+
+def get_reach(ctx):
+    """REACH vote (spec #5) on top of the knn tracker's delta; None when fewer than 2 negatives."""
+    if "_reach" in ctx.__dict__:
+        return ctx._reach
+    from . import track as TK
+    N = len(ctx.ed.c)
+    if N < 2:
+        ctx._reach = None
+        return None
+    tr, _ = get_tracker(ctx, "knn")
+    n, node_c, neg_node = _nodes(ctx)
+    bank = TG.NegBank(ctx.ref, ctx.seed, ctx.ed.uid, ctx.ed.c, ctx.ed.xi, ctx.ed.a)
+    dnn = tr.delta[np.ix_(neg_node, neg_node)].astype(np.float64)
+    rv = TK.ReachVote(ctx.ref, bank.basins, ctx.ed.c.numpy(), ctx.ed.xi, dnn)
+    P = ctx.anchor
+    d_pool = tr.delta[np.ix_(np.arange(n), neg_node)].astype(np.float64)
+    v, ws = rv.vote(P.xi[:n], d_pool)
+    abst = ws < np.quantile(ws, 0.1)
+    keep = (v < rv.theta) & ~abst
+    ctx._reach = (rv, tr, neg_node, torch.from_numpy(keep),
+                  {"reach_theta": rv.theta, "reach_bw": rv.bw, "reach_keep_frac": float(keep.mean()),
+                   "reach_abstain_frac": float(abst.mean())})
+    return ctx._reach
+
+
 def masked_anchor_loss(ctx: "Ctx", kind: str):
     """kind: map | dist (vote-masked pool), local (user's local anchor, pinned),
     local+map (both pools, pinned)."""
@@ -264,6 +380,16 @@ def masked_anchor_loss(ctx: "Ctx", kind: str):
         parts.append((P.c[:N_VOTE_POOL][keep], P.xi[:N_VOTE_POOL][keep], P.a[:N_VOTE_POOL][keep]))
     if kind in ("local", "local+map"):
         parts.append(get_local(ctx))
+    if kind == "reach":
+        r = get_reach(ctx)
+        if r is None:                      # one negative: no pairs, reduces to the recipe's vote mask
+            _, keep, _ = get_vote(ctx)
+        else:
+            keep = r[3]
+        P = ctx.anchor
+        n = keep.shape[0]
+        parts.append((P.c[:n][keep], P.xi[:n][keep], P.a[:n][keep]))
+        kind = "dist"
     c = torch.cat([p[0] for p in parts])
     xi = torch.cat([p[1] for p in parts])
     a = torch.cat([p[2] for p in parts])
@@ -281,9 +407,11 @@ def step_fn(arm: Arm, ctx: Ctx, rows=None):
     B, ref, ed = ctx.batch, ctx.ref, ctx.ed
     if arm.kind == "pseudo":
         return masked_anchor_loss(ctx, arm.amask)
+    if arm.kind == "maskbc":
+        return mask_bc_loss(ctx, get_mask(ctx, arm.track)[0])
 
     def method(pol, g):
-        if arm.kind == "reroute":
+        if arm.kind in ("reroute", "pra"):
             i = _pick(rows.c.shape[0], B, g)
             t = FlowPolicy.sample_time(B, g)
             return pol.flow_loss(rows.target[i], rows.noise[i], t, rows.c[i]).mean()
@@ -327,10 +455,35 @@ def train_arm(arm: Arm, ctx: Ctx, probe=None):
     if arm.kind == "frozen":
         return ctx.ref, info
     rows = None
-    if arm.kind == "reroute":
-        rows = TG.build(ctx.ref, MIX, ctx.seed, ctx.ed.uid, ctx.ed.c, ctx.ed.xi, ctx.ed.a, arm.rule,
+    if arm.kind == "pra":
+        from . import track as TK
+        tr, nc = get_tracker(ctx, arm.track)
+        n, node_c, neg_node = _nodes(ctx)
+        train_nodes = np.concatenate([neg_node, np.arange(0, n, 8)])
+        c_, z_, t_, st = TK.pra_rows(ctx.ref, ctx.seed, tr, TK.flag_or(nc), train_nodes)
+        rows = TG.Rows(c=c_, noise=z_, target=t_, diag=st)
+        info.update({f"rows_{k}": v for k, v in st.items()})
+        info.update(get_mask(ctx, arm.track)[1])
+    elif arm.kind == "reroute":
+        vetoes_ext = None
+        if arm.rule == "hopR":
+            r = get_reach(ctx)
+            if r is None:
+                rule = "hopB"
+            else:
+                rv, tr, neg_node, _, rd = r
+                info.update(rd)
+                vetoes_ext = []
+                for i in range(len(ctx.ed.c)):
+                    d_i = tr.delta[neg_node[i], neg_node].astype(np.float64)
+                    vetoes_ext.append(lambda z, d_i=d_i: torch.from_numpy(
+                        rv.vote(z, np.repeat(d_i[None], z.shape[0], 0))[0] >= rv.theta))
+                rule = "hop"
+        else:
+            rule = arm.rule
+        rows = TG.build(ctx.ref, MIX, ctx.seed, ctx.ed.uid, ctx.ed.c, ctx.ed.xi, ctx.ed.a, rule,
                         arm.support, transplant=arm.transplant, tx_conditions=ctx.pool.c[:4096],
-                        d0=4 * MIX.mode_std, pu=ctx.pu, forget=ctx.ed.forget)
+                        d0=4 * MIX.mode_std, pu=ctx.pu, forget=ctx.ed.forget, vetoes_ext=vetoes_ext)
         info.update({f"rows_{k}": v for k, v in rows.diag.items()})
         if arm.mine:
             bank, keep, _ = get_vote(ctx)
@@ -342,7 +495,9 @@ def train_arm(arm: Arm, ctx: Ctx, probe=None):
             if mrows.c.shape[0]:
                 rows = TG.Rows(c=torch.cat([rows.c, mrows.c]), noise=torch.cat([rows.noise, mrows.noise]),
                                target=torch.cat([rows.target, mrows.target]), diag=rows.diag)
-    if arm.mine or arm.amask in ("map", "dist", "local+map"):
+    if arm.kind == "maskbc":
+        info.update(get_mask(ctx, arm.track)[1])
+    if arm.mine or arm.amask in ("map", "dist", "local+map") or (arm.amask == "reach" and get_reach(ctx) is None):
         info.update(get_vote(ctx)[2])
     if "local" in arm.amask:
         lc, _, la = get_local(ctx)

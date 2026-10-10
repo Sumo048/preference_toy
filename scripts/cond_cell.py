@@ -12,9 +12,14 @@ ap.add_argument("--n_neg", type=int, required=True); ap.add_argument("--arms", d
 ap.add_argument("--steps", type=int, default=5000); ap.add_argument("--out", default=os.path.join(RUNS, "cond", "cells"))
 ap.add_argument("--force", action="store_true")
 ap.add_argument("--layout", default="random", help="forget-set layout (random | contig | alt | pairs | b3p1)")
+ap.add_argument("--stress", default="", help="round-4 stress: 'flip=0.1' (share of negatives replaced by retained-mode rollouts) and/or 'nodes=256'")
 args = ap.parse_args()
-if args.layout != "random" and args.out == os.path.join(RUNS, "cond", "cells"):
-    args.out = os.path.join(RUNS, "cond", f"cells_{args.layout}")
+stress = dict(kv.split("=") for kv in args.stress.split(",") if kv)
+if args.out == os.path.join(RUNS, "cond", "cells"):
+    if args.layout != "random":
+        args.out = os.path.join(RUNS, "cond", f"cells_{args.layout}")
+    if stress:
+        args.out = args.out.rstrip("/") + "_stress_" + "_".join(f"{k}{v}" for k, v in sorted(stress.items()))
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
 s = args.seed
 sd = torch.load(os.path.join(RUNS, "cond_base", f"s{s}", "policy.pt"), map_location="cpu", weights_only=False)
@@ -27,6 +32,15 @@ if not todo:
     sys.exit(0)
 pool = E.make_pool(ref, s, 200_000)
 ed = E.editset(pool, s, args.n_forget, args.n_neg, args.layout)
+if "flip" in stress:
+    # label-noise stress: replace a share of the negatives by rollouts that landed in RETAINED modes
+    # (the oracle is used only to construct the stress, never by a method)
+    m = int(round(float(stress["flip"]) * len(ed.uid)))
+    if m:
+        gperm = np.random.default_rng(s * 1_000_003 + 31_000).permutation(len(ed.uid))[:m]
+        cand = np.flatnonzero(np.isin(pool.mode, ed.retain))[::-1][:m]
+        ed.uid = ed.uid.copy(); ed.uid[gperm] = cand
+        ed.c, ed.xi, ed.a = pool.c[ed.uid], pool.xi[ed.uid], pool.a[ed.uid]
 assert len(set(ed.c.tolist())) == len(ed.c), "conditions must be unique"
 anchor = E.make_pool(ref, s, 20_000, purpose=E.P_ANCHOR)
 pu = None
@@ -34,6 +48,8 @@ if any(E.ARMS[n].rule == "pu" for n in todo):
     upool = E.make_pool(ref, s, 20_000, purpose=E.P_PU + 1)
     pu = E.train_pu(ed, upool, s, prior=args.n_forget / E.MIX.n_modes)
 ctx = E.Ctx(ref=ref, seed=s, ed=ed, pool=pool, anchor=anchor, steps=args.steps, pu=pu)
+if "nodes" in stress:
+    ctx.n_nodes = int(stress["nodes"])
 bank = E.Bank(ref, s, ed)
 probe = E.make_probe(bank)
 print(f"[{cell}] forget={ed.forget} |T_n|={len(ed.uid)} arms={len(todo)}", flush=True)
@@ -43,7 +59,7 @@ for n in todo:
     pol, info = E.train_arm(arm, ctx, probe=probe)
     met = E.compute(bank, pol)
     rec = {"cell": cell, "seed": s, "n_forget": args.n_forget, "n_neg": args.n_neg, "forget": ed.forget,
-           "arm": n, "layout": args.layout, "kind": arm.kind, "rule": arm.rule, "support": arm.support, "transplant": arm.transplant,
+           "arm": n, "layout": args.layout, "stress": args.stress, "kind": arm.kind, "rule": arm.rule, "support": arm.support, "transplant": arm.transplant,
            "anchor": arm.anchor, "practical": arm.practical, "train_s": round(time.time() - t0, 1),
            **{k: v for k, v in info.items() if k != "train_history"}, **met, "train_history": info.get("train_history")}
     tmp = os.path.join(od, f".{n}.tmp"); json.dump(rec, open(tmp, "w")); os.replace(tmp, os.path.join(od, f"{n}.json"))

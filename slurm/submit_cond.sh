@@ -8,10 +8,11 @@
 #SBATCH --partition=shubhamlong,all
 # MANIFEST=results/cond/manifest_<phase>.csv; per-arm outputs are skip-if-exists, so preemption is cheap.
 set -eo pipefail
-cd /home/soumojib/repos/toypref-cond
+cd /home/soumojib/repos/toypref-novel
 export OMP_NUM_THREADS=4 PYTHONUNBUFFERED=1
 PY=$HOME/miniconda3/envs/pref_pillars/bin/python
-ROW=$($PY -c "import csv,sys;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['n_forget'],r['n_neg'],r['arms'],r.get('layout') or 'random')")
-read S K N A L <<< "$ROW"
-$PY scripts/cond_cell.py --seed $S --n_forget $K --n_neg $N --arms $A --layout $L
+ROW=$($PY -c "import csv,sys;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['n_forget'],r['n_neg'],r['arms'],r.get('layout') or 'random',r.get('stress') or '-')")
+read S K N A L ST <<< "$ROW"
+if [ "$ST" = "-" ]; then ST=""; fi
+$PY scripts/cond_cell.py --seed $S --n_forget $K --n_neg $N --arms $A --layout $L --stress "$ST"
 echo "=== COND TASK $SLURM_ARRAY_TASK_ID DONE ==="
