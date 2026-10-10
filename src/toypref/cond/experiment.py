@@ -221,6 +221,14 @@ for a in [Arm("B0_frozen", "frozen"),
           Arm("SDPO_pin_b25", "sdpo", beta=25.0, sdpo_noise="pin"),
           Arm("SDPO_hop_pin_b1", "sdpo", beta=1.0, sdpo_noise="pin", sdpo_pos="hop"),
           Arm("SDPO_hop_pin_b25", "sdpo", beta=25.0, sdpo_noise="pin", sdpo_pos="hop"),
+          # skeptic's controls (novelty workflow wf_2078e6c7-444)
+          Arm("SDPO_fresh_b10", "sdpo", beta=10.0, sdpo_noise="fresh"),
+          Arm("SDPO_fresh_b100", "sdpo", beta=100.0, sdpo_noise="fresh"),
+          Arm("SDPO_hop_pin_bH1", "sdpo", beta=1.0, sdpo_noise="pin", sdpo_pos="hop", track="betaH"),
+          Arm("SDPO_hop_pin_bH3", "sdpo", beta=3.0, sdpo_noise="pin", sdpo_pos="hop", track="betaH"),
+          Arm("SDPO_hop_pin_bH10", "sdpo", beta=10.0, sdpo_noise="pin", sdpo_pos="hop", track="betaH"),
+          Arm("CTRL_hop_GA", "sdpo", beta=0.0, sdpo_noise="pin", sdpo_pos="hop", track="ungated"),
+          Arm("CTRL_synB1_hop", "sdpo", beta=0.0, sdpo_noise="fresh", sdpo_pos="hop", track="synbc"),
           # NEG+U: same methods with an unlabelled self-distillation anchor
           Arm("NPO_b10_neg_A", "npo", beta=10.0, anchor=True),
           Arm("KTO_b10_neg_A", "kto", beta=10.0, anchor=True),
@@ -443,6 +451,18 @@ def sdpo_step_fn(arm: Arm, ctx: "Ctx", pos):
     P = ctx.batch // 2
     N, K = pos.shape[0], pos.shape[1]
 
+    beta_i = None
+    if arm.track == "betaH":
+        # beta per negative = (beta H-scale) / H_i,  H_i = E_t l_ref(a_w; xi_l, t)  (skeptic's calibration)
+        with torch.no_grad():
+            gH = gen(ctx.seed, 77_000)
+            H = []
+            for i in range(N):
+                tt = FlowPolicy.sample_time(64, gH)
+                H.append(float(ref.flow_loss(pos[i, 0].expand(64, -1), ed.xi[i].expand(64, -1), tt,
+                                             ed.c[i].expand(64)).mean()))
+        beta_i = arm.beta / torch.tensor(H).clamp_min(1e-6)
+
     def step(pol, g):
         i = _pick(N, P, g)
         k = _pick(K, P, g)
@@ -453,12 +473,48 @@ def sdpo_step_fn(arm: Arm, ctx: "Ctx", pos):
         else:
             nw = torch.randn(aw.shape, generator=g)
             nl = torch.randn(al.shape, generator=g)
+        if arm.track == "synbc":                   # control: BC on the winners only (fresh noise)
+            return pol.flow_loss(aw, nw, t, c).mean()
         lw, ll = pol.flow_loss(aw, nw, t, c), pol.flow_loss(al, nl, t, c)
+        if arm.track == "ungated":                 # control: rerouting + constant push, no gate
+            return (lw - ll).mean()
         with torch.no_grad():
             rw0, rl0 = ref.flow_loss(aw, nw, t, c), ref.flow_loss(al, nl, t, c)
         margin = (rw0 - lw) - (rl0 - ll)
-        return -torch.nn.functional.logsigmoid(arm.beta * margin).mean()
+        b = beta_i[i] if beta_i is not None else arm.beta
+        return -torch.nn.functional.logsigmoid(b * margin).mean()
     return step
+
+
+@torch.no_grad()
+def sdpo_diagnostics(arm: Arm, ctx: "Ctx", pol, pos, n_pairs=2048):
+    """Post-training: where the margin comes from, gate weight on contaminated vs clean pairs (oracle used
+    for diagnostics only), and where the logged noise now decodes."""
+    ed, ref = ctx.ed, ctx.ref
+    g = gen(ctx.seed, 78_000)
+    N, K = pos.shape[0], pos.shape[1]
+    i = _pick(N, n_pairs, g)
+    k = _pick(K, n_pairs, g)
+    aw, al, c = pos[i, k], ed.a[i], ed.c[i]
+    t = FlowPolicy.sample_time(n_pairs, g)
+    nw = nl = ed.xi[i]
+    if arm.sdpo_noise != "pin":
+        nw, nl = torch.randn(aw.shape, generator=g), torch.randn(al.shape, generator=g)
+    rw = ref.flow_loss(aw, nw, t, c) - pol.flow_loss(aw, nw, t, c)
+    rl = ref.flow_loss(al, nl, t, c) - pol.flow_loss(al, nl, t, c)
+    contam = torch.from_numpy(np.isin(MIX.assign(aw, c), ed.forget))
+    gate = torch.sigmoid(-(max(arm.beta, 1e-9)) * (rw - rl))
+    a_end = pol.sample(ed.xi, ed.c)
+    lab_end = MIX.assign(a_end, ed.c)
+    d = {"sdpo_rw_mean": float(rw.mean()), "sdpo_rl_mean": float(rl.mean()),
+         "sdpo_frac_rw_neg": float((rw < 0).float().mean()),
+         "sdpo_gate_contam": float(gate[contam].mean()) if contam.any() else float("nan"),
+         "sdpo_gate_clean": float(gate[~contam].mean()) if (~contam).any() else float("nan"),
+         "sdpo_logged_end_in_forget": float(np.isin(lab_end, ed.forget).mean()),
+         "sdpo_logged_end_off": float((lab_end == OFF).mean()),
+         "sdpo_logged_end_dist_to_winner": float(torch.linalg.norm(a_end - pos[:, 0], dim=1).mean()),
+         "sdpo_logged_end_dist_to_loser": float(torch.linalg.norm(a_end - ed.a, dim=1).mean())}
+    return d
 
 
 def step_fn(arm: Arm, ctx: Ctx, rows=None):
@@ -594,6 +650,8 @@ def train_arm(arm: Arm, ctx: Ctx, probe=None):
     pol.eval()
     for p in pol.parameters():
         p.requires_grad_(False)
+    if arm.kind == "sdpo":
+        info.update(sdpo_diagnostics(arm, ctx, pol, rows))
     info["train_history"] = hist
     return pol, info
 
