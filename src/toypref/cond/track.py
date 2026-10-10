@@ -58,10 +58,7 @@ def cluster_node(dec: np.ndarray):
     cut = float(np.sqrt(h[k] * h[k + 1]))
     lab = fcluster(Zl, cut, criterion="distance") - 1
     full = -np.ones(len(dec), int)
-    dd = np.linalg.norm(dec[:, None] - pts[None], axis=-1)
-    j = dd.argmin(1)
-    ok = dd.min(1) <= cut
-    full[ok] = lab[j[ok]]
+    full[typ] = lab                      # spec #1 step 2: atypical points get -1 (review fix 2)
     return full, int(lab.max() + 1), cut, typ
 
 
@@ -76,9 +73,16 @@ class Tracker:
     comp: Dict                    # (node, cluster) -> component id
     delta: Optional[np.ndarray]
     diag: Dict = field(default_factory=dict)
+    bank: Optional[List[np.ndarray]] = None   # full cloud per node (bank decodes [+ inserted negatives])
+    thr: Optional[np.ndarray] = None          # per-node q90 of the 5-NN distance (typicality)
+
+    def typical(self, u: int, a: np.ndarray) -> np.ndarray:
+        """spec #1 step 6 (review fix 1): 5-NN distance to the node's cloud <= the node's q90."""
+        d = np.sort(np.linalg.norm(a[:, None] - self.bank[u][None], axis=-1), axis=1)[:, K_TYP - 1]
+        return d <= self.thr[u]
 
     def assign(self, u: int, a: np.ndarray) -> np.ndarray:
-        """component of actions `a` (n,2) at node u; -1 if unassigned."""
+        """component of actions `a` (n,2) at node u; -1 if atypical or unassigned."""
         P = self.pts[u]
         if len(P) == 0:
             return -np.ones(len(a), int)
@@ -86,6 +90,7 @@ class Tracker:
         j = dd.argmin(1)
         out = np.array([self.comp.get((u, int(self.pts_lab[u][jj])), -1) for jj in j])
         out[dd.min(1) > self.cut[u]] = -1
+        out[~self.typical(u, a)] = -1
         return out
 
 
@@ -118,6 +123,7 @@ def build_tracker(ref, seed, node_c: np.ndarray, neg_node: np.ndarray, neg_a: np
     D = _decode_bank(ref, node_c, Z)
     labels = -np.ones((V, M + 1), int)
     pts, pts_lab, cuts, sizes = [], [], np.zeros(V), []
+    thrs, clouds = np.zeros(V), []
     neg_at = {}
     for i, u in enumerate(neg_node):
         neg_at.setdefault(int(u), []).append(i)
@@ -128,6 +134,10 @@ def build_tracker(ref, seed, node_c: np.ndarray, neg_node: np.ndarray, neg_a: np
         if extra:
             dec = np.concatenate([dec, neg_a[extra]])
         lab, ncl, cut, typ = cluster_node(dec)
+        dfull = np.linalg.norm(dec[:, None] - dec[None], axis=-1)
+        np.fill_diagonal(dfull, np.inf)
+        thrs[u] = float(np.quantile(np.sort(dfull, axis=1)[:, K_TYP - 1], Q_TYP))
+        clouds.append(dec)
         labels[u, :M] = lab[:M]
         for t, i in enumerate(extra):
             neg_lab[i] = lab[M + t]
@@ -202,6 +212,7 @@ def build_tracker(ref, seed, node_c: np.ndarray, neg_node: np.ndarray, neg_a: np
         comp[key] = roots.setdefault(rt, len(roots))
     neg_comp = np.array([comp.get((int(u), int(l)), -1) if l >= 0 else -1 for u, l in zip(neg_node, neg_lab)])
     tr = Tracker(V=V, node_c=node_c, labels=labels, pts=pts, pts_lab=pts_lab, cut=cuts, comp=comp, delta=delta,
+                 bank=clouds, thr=thrs,
                  diag={"n_edges": len(edges), "n_links_cand": len(cands), "refusals": refusals,
                        "n_components": len(roots), "neg_unseeded": int((neg_comp < 0).sum())})
     tr.sizes = sizes
@@ -282,24 +293,28 @@ def joint_labeller(ref, seed, node_c, neg_c, neg_a, pool_c, pool_a, Ms=16, kcs=(
         cnt = np.bincount(lab)
         big = cnt >= 0.01 * n
         lab = np.where(big[lab], lab, -1)
-        res[kc] = (int(big.sum()), lam, Xt, lab, t2, eps)
+        res[kc] = (int(big.sum()), lam, Xt, lab, t2, eps, tree, float(np.quantile(kd[:, -1], Q_TYP)))
     counts = [res[k][0] for k in kcs]
     pick = kcs[-1]
     for i in range(len(kcs) - 2):
-        if counts[i] == counts[i + 1] == counts[i + 2]:
+        if counts[i] >= 2 and counts[i] == counts[i + 1] == counts[i + 2]:
             pick = kcs[i]
             break
-    nc, lam, Xt, lab, t2, eps = res[pick]
+    nc, lam, Xt, lab, t2, eps, tree_full, thrJ = res[pick]
 
     def vote(c, a):
         q = np.c_[lam * np.asarray(c), np.asarray(a)]
+        dq, _ = tree_full.query(q, k=K_TYP)
+        atyp = np.atleast_2d(dq)[:, -1] > thrJ          # review fix 1: typicality gate
         _, idx = t2.query(q, k=8)
         out = []
         for row in np.atleast_2d(idx):
             l = lab[row]
             l = l[l >= 0]
             out.append(int(np.bincount(l).argmax()) if len(l) else -1)
-        return np.array(out)
+        out = np.array(out)
+        out[atyp] = -1
+        return out
     neg_comp = vote(neg_c, neg_a)
     flagged = set(int(g) for g in neg_comp if g >= 0)
     pc = vote(pool_c, pool_a)
@@ -325,7 +340,7 @@ def pra_rows(ref, seed, tr: Tracker, flagged, train_nodes, S=64, max_tries=8):
         tgt = a.copy()
         nb = int(bad.sum())
         if nb:
-            pool = a[good]
+            pool = np.empty((0, a.shape[1]), dtype=a.dtype)    # spec #4: fresh rejection samples only
             tries = 0
             while len(pool) < nb and tries < max_tries:
                 zz = torch.randn(S, 2, generator=g)
@@ -382,10 +397,16 @@ class ReachVote:
             self.theta = 0.5 * float(np.median(sv))
 
     def w(self, d):
+        d = np.asarray(d, dtype=np.float64)
         if self.N < 2:
             return np.zeros_like(d)
-        K = np.exp(-0.5 * ((np.asarray(d)[..., None] - self.pair_d) / self.bw) ** 2)
-        return (K * self.pair_h).sum(-1) / np.maximum(K.sum(-1), 1e-9)
+        flat = d.reshape(-1)
+        out = np.empty_like(flat)
+        step = max(1, int(2e7 // max(len(self.pair_d), 1)))      # review fix 3: chunked, same values
+        for s0 in range(0, len(flat), step):
+            K = np.exp(-0.5 * ((flat[s0:s0 + step, None] - self.pair_d[None]) / self.bw) ** 2)
+            out[s0:s0 + step] = (K * self.pair_h).sum(-1) / np.maximum(K.sum(-1), 1e-9)
+        return out.reshape(d.shape)
 
     def _vote_from(self, hits_minus_m, d):
         w = self.w(d)

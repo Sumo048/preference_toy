@@ -206,6 +206,7 @@ for a in [Arm("B0_frozen", "frozen"),
           Arm("TRACK_bc", "maskbc", track="knn"),
           Arm("TRACK_bc_sortc", "maskbc", track="sortc"),
           Arm("TRACK_bc_M16", "maskbc", track="m16"),
+          Arm("TRACK_bc_M256", "maskbc", track="m256"),     # reporting only (spec #1 asks for M = 256)
           Arm("RTRACK_bc", "maskbc", track="robust"),
           Arm("JOINT_bc", "maskbc", track="joint"),
           Arm("ATYP_dist", "maskbc", track="atyp"),
@@ -280,7 +281,7 @@ def get_tracker(ctx, variant):
     if variant not in cache:
         from . import track as TK
         n, node_c, neg_node = _nodes(ctx)
-        kw = {"knn": {}, "sortc": {"graph": "sortc"}, "m16": {"M": 16}, "bank2": {"bank": TK.P_BANK2}}[variant]
+        kw = {"knn": {}, "sortc": {"graph": "sortc"}, "m16": {"M": 16}, "m256": {"M": 256}, "bank2": {"bank": TK.P_BANK2}}[variant]
         cache[variant] = TK.build_tracker(ctx.ref, ctx.seed, node_c, neg_node, ctx.ed.a.numpy(), **kw)
     return cache[variant]
 
@@ -295,7 +296,7 @@ def get_mask(ctx, variant):
     P = ctx.anchor
     pa, pnode = P.a[:n].numpy(), np.arange(n)
     diag = {}
-    if variant in ("knn", "sortc", "m16", "atyp"):
+    if variant in ("knn", "sortc", "m16", "m256", "atyp"):
         tr, nc = get_tracker(ctx, "knn" if variant == "atyp" else variant)
         flagged = TK.flag_or(nc) if variant != "atyp" else set()
         bad, assigned = TK.pool_bad_mask(tr, flagged, pa, pnode)
@@ -321,6 +322,7 @@ def get_mask(ctx, variant):
     else:
         raise ValueError(variant)
     good = assigned & ~bad
+    diag["mask_empty"] = bool(not good.any())
     truth_bad = np.isin(P.mode[:n], ctx.ed.forget)
     flagged_bad = bad & assigned
     diag.update({"mask_good_frac": float(good.mean()), "mask_excluded_frac": float((~assigned).mean()),
@@ -336,6 +338,8 @@ def mask_bc_loss(ctx, good):
     n = good.shape[0]
     c, a = P.c[:n][good], P.a[:n][good]
     B = ctx.batch
+    if c.shape[0] == 0:          # review fix 4: nothing to clone -> no edit (policy stays pi_ref)
+        return lambda pol, g: sum((p * 0).sum() for p in pol.parameters())
 
     def loss(pol, g):
         j = _pick(c.shape[0], B, g)
