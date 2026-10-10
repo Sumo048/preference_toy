@@ -162,6 +162,8 @@ class Arm:
     amask: str = ""           # round 3: masked anchor on samples NOT voted bad ("map" | "dist")
     mine: bool = False        # round 3: reroute vote-flagged unlabelled samples too
     track: str = ""           # round 4: knn | sortc | m16 | robust | joint | atyp | reach
+    sdpo_noise: str = ""      # self-paired DPO (user idea): "fresh" | "pin"
+    sdpo_pos: str = "rand"    # positive: "rand" (8 fresh pi_ref samples at c_i) | "hop" (the hop target)
     practical: bool = True    # False = uses information a real system lacks (oracle geometry)
 
 
@@ -212,6 +214,13 @@ for a in [Arm("B0_frozen", "frozen"),
           Arm("ATYP_dist", "maskbc", track="atyp"),
           Arm("PRA_trk", "pra", track="knn"),
           Arm("REACH_recipe", "reroute", rule="hopR", support="bsup", amask="reach", track="reach"),
+          # self-paired DPO (user idea, 2026-10-09): loser = logged negative, winner = pi_ref sample at its state
+          Arm("SDPO_fresh_b1", "sdpo", beta=1.0, sdpo_noise="fresh"),
+          Arm("SDPO_fresh_b25", "sdpo", beta=25.0, sdpo_noise="fresh"),
+          Arm("SDPO_pin_b1", "sdpo", beta=1.0, sdpo_noise="pin"),
+          Arm("SDPO_pin_b25", "sdpo", beta=25.0, sdpo_noise="pin"),
+          Arm("SDPO_hop_pin_b1", "sdpo", beta=1.0, sdpo_noise="pin", sdpo_pos="hop"),
+          Arm("SDPO_hop_pin_b25", "sdpo", beta=25.0, sdpo_noise="pin", sdpo_pos="hop"),
           # NEG+U: same methods with an unlabelled self-distillation anchor
           Arm("NPO_b10_neg_A", "npo", beta=10.0, anchor=True),
           Arm("KTO_b10_neg_A", "kto", beta=10.0, anchor=True),
@@ -407,8 +416,55 @@ def masked_anchor_loss(ctx: "Ctx", kind: str):
     return loss
 
 
+K_SDPO = 8
+
+
+@torch.no_grad()
+def sdpo_positives(arm: Arm, ctx: "Ctx"):
+    """(N, K, 2) winners per negative: K fresh pi_ref samples at c_i (own stream), or the hop target (K=1)."""
+    ed, ref = ctx.ed, ctx.ref
+    if arm.sdpo_pos == "hop":
+        out, stats = [], {}
+        for i in range(len(ed.uid)):
+            g = TG.row_gen(ctx.seed, ed.uid[i], 1)            # same stream as R_hop's target
+            out.append(TG.target_one(ref, "hop", float(ed.c[i]), ed.xi[i], ed.a[i], g, stats=stats).reshape(1, 2))
+        return torch.stack(out), stats
+    pos = []
+    for i in range(len(ed.uid)):
+        z = torch.randn(K_SDPO, 2, generator=TG.row_gen(ctx.seed, ed.uid[i], 5))
+        pos.append(ref.sample(z, torch.full((K_SDPO,), float(ed.c[i]))))
+    return torch.stack(pos), {}
+
+
+def sdpo_step_fn(arm: Arm, ctx: "Ctx", pos):
+    """L = -log sigmoid(beta (r(a_w) - r(a_l))), r = l_ref - l_theta at a shared t; noise independent
+    ("fresh") or the logged noise for both ("pin"). B/2 pairs per step (= B rows)."""
+    ed, ref = ctx.ed, ctx.ref
+    P = ctx.batch // 2
+    N, K = pos.shape[0], pos.shape[1]
+
+    def step(pol, g):
+        i = _pick(N, P, g)
+        k = _pick(K, P, g)
+        aw, al, c = pos[i, k], ed.a[i], ed.c[i]
+        t = FlowPolicy.sample_time(P, g)
+        if arm.sdpo_noise == "pin":
+            nw = nl = ed.xi[i]
+        else:
+            nw = torch.randn(aw.shape, generator=g)
+            nl = torch.randn(al.shape, generator=g)
+        lw, ll = pol.flow_loss(aw, nw, t, c), pol.flow_loss(al, nl, t, c)
+        with torch.no_grad():
+            rw0, rl0 = ref.flow_loss(aw, nw, t, c), ref.flow_loss(al, nl, t, c)
+        margin = (rw0 - lw) - (rl0 - ll)
+        return -torch.nn.functional.logsigmoid(arm.beta * margin).mean()
+    return step
+
+
 def step_fn(arm: Arm, ctx: Ctx, rows=None):
     B, ref, ed = ctx.batch, ctx.ref, ctx.ed
+    if arm.kind == "sdpo":
+        return sdpo_step_fn(arm, ctx, rows)
     if arm.kind == "pseudo":
         return masked_anchor_loss(ctx, arm.amask)
     if arm.kind == "maskbc":
@@ -499,6 +555,12 @@ def train_arm(arm: Arm, ctx: Ctx, probe=None):
             if mrows.c.shape[0]:
                 rows = TG.Rows(c=torch.cat([rows.c, mrows.c]), noise=torch.cat([rows.noise, mrows.noise]),
                                target=torch.cat([rows.target, mrows.target]), diag=rows.diag)
+    if arm.kind == "sdpo":
+        rows, st = sdpo_positives(arm, ctx)
+        info.update({f"sdpo_{k}": v for k, v in st.items()})
+        lab = MIX.assign(rows.reshape(-1, 2), np.repeat(ctx.ed.c.numpy(), rows.shape[1]))
+        info["sdpo_pos_frac_in_forget"] = float(np.isin(lab, ctx.ed.forget).mean())     # diagnostic only
+        info["sdpo_pos_frac_off"] = float((lab == OFF).mean())
     if arm.kind == "maskbc":
         info.update(get_mask(ctx, arm.track)[1])
     if arm.mine or arm.amask in ("map", "dist", "local+map") or (arm.amask == "reach" and get_reach(ctx) is None):
