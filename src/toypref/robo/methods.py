@@ -62,6 +62,7 @@ ARMS: Dict[str, Arm] = {a.name: a for a in [
     Arm("SDPO_pin_b1", "sdpo", beta=1.0, pos="fresh", noise="pin"),
     Arm("SDPO_pin_b25", "sdpo", beta=25.0, pos="fresh", noise="pin"),
     Arm("SDPO_hop_pin_b1", "sdpo", beta=1.0, pos="hop", noise="pin"),
+    Arm("SDPO_hop_pin_b25", "sdpo", beta=25.0, pos="hop", noise="pin"),   # beta 25 was the better gate in the cond toy
 ]}
 
 

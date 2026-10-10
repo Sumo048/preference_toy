@@ -49,7 +49,7 @@ g = df.groupby("arm")[keys]
 mean, se, n = g.mean(), g.sem(), g.size()
 order = [x for x in ["B0_frozen", "NPO_b10_neg", "NPO_b100_neg", "KTO_b10_neg", "KTO_b100_neg", "R_ours_neg",
                      "R_hop_bsup_neg", "R_hop_bsup_neg_AL", "SDPO_fresh_b1", "SDPO_fresh_b25", "SDPO_pin_b1",
-                     "SDPO_pin_b25", "SDPO_hop_pin_b1"] if x in mean.index]
+                     "SDPO_pin_b25", "SDPO_hop_pin_b1", "SDPO_hop_pin_b25"] if x in mean.index]
 tab = mean.loc[order].round(4)
 tab.insert(0, "n_seeds", n.loc[order])
 tab.to_csv(os.path.join(a.out, f"summary_{a.tag}.csv"))

@@ -10,7 +10,7 @@ from toypref.robo import methods as MT
 GROUPS = [["B0_frozen", "NPO_b10_neg", "NPO_b100_neg", "KTO_b10_neg", "KTO_b100_neg"],
           ["R_hop_bsup_neg", "R_hop_bsup_neg_AL", "R_ours_neg"],
           ["SDPO_hop_pin_b1", "SDPO_fresh_b1", "SDPO_fresh_b25"],
-          ["SDPO_pin_b1", "SDPO_pin_b25"]]
+          ["SDPO_pin_b1", "SDPO_pin_b25", "SDPO_hop_pin_b25"]]
 assert sorted(sum(GROUPS, [])) == sorted(MT.ARMS), "every arm exactly once"
 
 ap = argparse.ArgumentParser()
