@@ -89,6 +89,16 @@ code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
   .phead svg { width: 72px; height: 72px; }
 }
 a { color: var(--both); }
+.toggle { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin-top: 0.8rem; }
+.toggle button { font: 500 0.82rem var(--f-body); padding: 0.4rem 0.8rem; background: var(--panel); color: var(--ink2); border: 0; cursor: pointer; }
+.toggle button + button { border-left: 1px solid var(--rule); }
+.toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.tests { overflow-x: auto; margin: 0.6rem 0 1.2rem; }
+.tests table { border-collapse: collapse; font-size: 0.84rem; min-width: 640px; width: 100%; }
+.tests th, .tests td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tests th { font-family: var(--f-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink3); font-weight: 500; }
+.tests td.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ok { color: var(--pos); font-weight: 600; } .no { color: var(--neg); font-weight: 600; } .tie { color: var(--ink2); font-weight: 600; }
 :focus-visible { outline: 2px solid var(--both); outline-offset: 2px; }
 </style>
 
@@ -112,15 +122,12 @@ a { color: var(--both); }
   <div class="rulebox prose">
     <p><b>How we pick the method list.</b> For each method and each setting, we select the config with the lowest <b>distance to the ideal</b>. The ideal policy puts equal mass on each retained mode, and no mass on forgotten modes or between modes. Each grid then shows every selected config in every setting. A config is a candidate only if it ran in every setting of its grid.</p>
     <p><svg class="stari" viewBox="0 0 10 10" width="11" height="11" aria-hidden="true"><path d="M5 0.6 6.3 3.6 9.6 3.9 7.1 6.1 7.8 9.4 5 7.7 2.2 9.4 2.9 6.1 0.4 3.9 3.7 3.6Z" fill="var(--star)"/></svg> marks the config with the lowest distance to the ideal in that setting. <b>Bold</b> marks the best config of its method in that setting. Hover a row to see its distance to the ideal.</p>
-    <p><b>Data.</b> All values are seed means over seeds 0–4 and the stated negatives-per-mode values. We use the same seeds for every config, so all values in a grid are comparable.</p>
+    <p><b>Data.</b> We select the method list on seeds 0–4. A toggle above each grid shows the same list on fresh seeds 5–9. On seeds 5–9 the ★ and bold markers come from the seeds 5–9 values, so you can see which picks hold. All values are seed means over the stated negatives-per-mode values.</p>
   </div>
 
   <div class="confirm prose">
-    <div class="eyebrow">Confirmed on fresh seeds 5–9 (pre-registered tests)</div>
-    <ul>
-      <li>Unconditional toy: with positives available, an anchored baseline is best. Rerouting wins only with negatives alone and 4 of 8 modes forgotten (distance to ideal 0.290 against 0.498).</li>
-      <li>Conditional toy: the recipe <code>R_hopB_bsup_neg_AMdist</code> wins at 1 forgotten mode (0.107 against 0.113) and 2 (0.166 against 0.208). It also wins at 4 for the random, pairs and block-of-3-plus-1 layouts. It ties on the contiguous layout and loses on the alternating layout.</li>
-    </ul>
+    <div class="eyebrow">Fresh-seed results</div>
+    <p>Each grid has a toggle for seeds 5–9. The section <a href="#tests">Pre-registered tests</a> lists every test we fixed before we saw the fresh seeds, and its outcome.</p>
   </div>
 
   <section>
@@ -129,6 +136,7 @@ a { color: var(--both); }
       <p>The policy has no condition. All logged negatives of a mode share the same input. Positives exist in every setting: 512 positive samples unless the setting says otherwise. A method may use them or ignore them.</p>
       <p>Each setting uses 1, 4 or 16 negatives per forgotten mode. The base settings use one count of forgotten modes. The other settings pool 1, 2 and 4 forgotten modes.</p>
     </div>
+    <div class="toggle" role="group" aria-label="seed set, grid 1" data-grid="unconditional"><button type="button" id="tu-e" data-ds="explore" aria-pressed="true">Seeds 0–4 · exploration</button><button type="button" id="tu-c" data-ds="confirm" aria-pressed="false">Seeds 5–9 · confirmation</button></div>
     <div class="grid" id="grid-u"></div>
   </section>
 
@@ -138,7 +146,46 @@ a { color: var(--both); }
       <p>The policy takes a condition <i>c</i> in [0, 1). The ring rotates by 1.5 mode spacings and grows as <i>c</i> grows. Every logged sample has its own condition. No two negatives share a condition. This is the practical case for a robot policy.</p>
       <p>This grid has no positive labels. Every method is a negatives-only method. Each setting uses 1, 4, 16 or 64 negatives per forgotten mode.</p>
     </div>
+    <div class="toggle" role="group" aria-label="seed set, grid 2" data-grid="conditional"><button type="button" id="tc-e" data-ds="explore" aria-pressed="true">Seeds 0–4 · exploration</button><button type="button" id="tc-c" data-ds="confirm" aria-pressed="false">Seeds 5–9 · confirmation</button></div>
     <div class="grid" id="grid-c"></div>
+  </section>
+
+  <section id="tests">
+    <h2>Pre-registered tests</h2>
+    <div class="prose">
+      <p>We fixed each test before we ran the fresh seeds 5–9. A test passes when the method beats the comparator by more than 2 standard errors, paired over seeds and negatives-per-mode values, and no other arm dominates it. The score is the distance to the ideal. Lower is better.</p>
+    </div>
+    <h3 style="margin-top:1rem">Unconditional toy, negatives only (test C1)</h3>
+    <div class="tests"><table>
+      <tr><th>forgotten</th><th>method</th><th>comparator</th><th>difference</th><th>lower in</th><th>outcome</th></tr>
+      <tr><td>4 of 8</td><td>near-nf rerouting, noise jitter (0.290)</td><td>NPO β=100 (0.498)</td><td class="num">−0.208 ± 0.018</td><td class="num">29/30</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8</td><td>same</td><td>NPO β=10 (0.566)</td><td class="num">−0.276 ± 0.033</td><td class="num">28/30</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8</td><td>same</td><td>KTO β=100 (0.565)</td><td class="num">−0.276 ± 0.046</td><td class="num">25/30</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8</td><td>same</td><td>KTO β=10 (0.875)</td><td class="num">−0.586 ± 0.051</td><td class="num">28/30</td><td class="ok">pass</td></tr>
+      <tr><td>3 of 8</td><td>same</td><td>KTO β=100</td><td class="num">+0.013 ± 0.047</td><td class="num">10/30</td><td class="tie">tie: C1 not confirmed as written</td></tr>
+      <tr><td>1 of 8</td><td>same</td><td>all four baselines</td><td class="num">+0.08 to +0.19</td><td class="num">0–9/30</td><td class="no">loses (as predicted)</td></tr>
+    </table></div>
+    <h3>Conditional toy, rounds 1 and 2</h3>
+    <div class="tests"><table>
+      <tr><th>forgotten</th><th>method</th><th>comparator</th><th>difference</th><th>lower in</th><th>outcome</th></tr>
+      <tr><td>4 of 8</td><td>hop, basin support (0.398)</td><td>NPO β=100 (0.500)</td><td class="num">−0.102 ± 0.022</td><td class="num">15/20</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8</td><td>hop, basin support</td><td>NPO β=10 + anchor (0.481)</td><td class="num">−0.083 ± 0.016</td><td class="num">15/20</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8</td><td>hop + veto (0.301)</td><td>plain hop (0.398)</td><td class="num">−0.097 ± 0.026</td><td class="num">17/20</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8</td><td>hop + veto</td><td>NPO β=100 / NPO β=10 + anchor</td><td class="num">−0.199 / −0.180</td><td class="num">17/20, 18/20</td><td class="ok">pass</td></tr>
+      <tr><td>2 of 8</td><td>hop + veto</td><td>NPO β=10 + anchor</td><td class="num">−0.011 ± 0.018</td><td class="num">12/20</td><td class="tie">not significant</td></tr>
+      <tr><td>1 of 8</td><td>hop + veto</td><td>NPO β=100</td><td class="num">+0.053 ± 0.010</td><td class="num">3/20</td><td class="no">loses</td></tr>
+    </table></div>
+    <h3>Conditional toy, round 3: one frozen recipe, hop + veto + basin support + vote-masked density anchor</h3>
+    <div class="tests"><table>
+      <tr><th>setting</th><th>recipe</th><th>comparator (best other method on seeds 0–4)</th><th>difference</th><th>lower in</th><th>outcome</th></tr>
+      <tr><td>1 of 8</td><td class="num">0.107</td><td>NPO β=10 + vote-masked density anchor (0.113)</td><td class="num">−0.006 ± 0.002</td><td class="num">15/20</td><td class="ok">pass</td></tr>
+      <tr><td>2 of 8</td><td class="num">0.166</td><td>NPO β=10 + local anchor (0.208)</td><td class="num">−0.041 ± 0.016</td><td class="num">14/20</td><td class="ok">pass</td></tr>
+      <tr><td>4 of 8, random</td><td class="num">0.265</td><td>pseudo-positive BC (0.283)</td><td class="num">−0.018 ± 0.005</td><td class="num">17/20</td><td class="ok">pass</td></tr>
+      <tr><td>4, pairs</td><td class="num">0.251</td><td>pseudo-positive BC (0.288)</td><td class="num">−0.037 ± 0.007</td><td class="num">18/20</td><td class="ok">pass</td></tr>
+      <tr><td>4, block of 3 + 1</td><td class="num">0.256</td><td>pseudo-positive BC (0.285)</td><td class="num">−0.029 ± 0.006</td><td class="num">18/20</td><td class="ok">pass</td></tr>
+      <tr><td>4, contiguous</td><td class="num">0.228</td><td>NPO β=10 + vote-masked density anchor (0.230)</td><td class="num">−0.003 ± 0.003</td><td class="num">13/20</td><td class="tie">tie</td></tr>
+      <tr><td>4, alternating</td><td class="num">0.450</td><td>KTO β=10 + vote-masked pinned anchor (0.400)</td><td class="num">+0.050 ± 0.021</td><td class="num">8/20</td><td class="no">loses</td></tr>
+    </table></div>
   </section>
 
   <section>
@@ -243,8 +290,15 @@ function ring(o) {
   return s;
 }
 
+const DS = {unconditional: "explore", conditional: "explore"};
+function view(grid, ds) {
+  const G = DATA[grid];
+  return ds === "confirm"
+    ? {values: G.confirm.values, best_overall: G.confirm.best_overall, best_for: G.confirm.best_for, n_runs: G.confirm.n_runs, oracle: G.oracle_confirm, other: G.best_overall, otherName: "seeds 0–4"}
+    : {values: G.values, best_overall: G.best_overall, best_for: G.best_for, n_runs: G.n_runs, oracle: G.oracle, other: G.confirm.best_overall, otherName: "seeds 5–9"};
+}
 function panel(grid, sid, title, desc, opt) {
-  const G = DATA[grid], V = G.values[sid], best = G.best_overall[sid], fb = G.best_for[sid];
+  const G = DATA[grid], W = view(grid, DS[grid]), V = W.values[sid], best = W.best_overall[sid], fb = W.best_for[sid];
   const fbSet = new Set(Object.values(fb));
   const fams = FAMILY_ORDER.filter(f => G.configs.some(c => c.family === f));
   let rows = "";
@@ -265,18 +319,29 @@ function panel(grid, sid, title, desc, opt) {
     }
   }
   const b0 = V["B0_frozen"] ? V["B0_frozen"].tv : null;
-  const oracle = grid === "unconditional" && G.oracle && G.oracle[sid] != null ? G.oracle[sid] : null;
+  const oracle = grid === "unconditional" && W.oracle && W.oracle[sid] != null ? W.oracle[sid] : null;
+  const ob = W.other[sid];
+  const held = ob === best;
   return `<article class="panel" id="${grid[0]}-${sid}">
     <div class="phead">${ring(opt)}<div><h3>${esc(title)}</h3><p>${esc(desc)}</p>
-      <div class="meta">${G.n_runs[sid]} runs per config</div></div></div>
+      <div class="meta">${W.n_runs[sid]} runs per config · ${DS[grid] === "confirm" ? "seeds 5–9" : "seeds 0–4"}</div></div></div>
     <div class="cols"><span>method · config</span><span>removed ↑</span><span>collateral ↓</span></div>
     ${rows}
-    <div class="pfoot"><svg class="stari" viewBox="0 0 10 10" width="11" height="11" aria-hidden="true"><path d="M5 0.6 6.3 3.6 9.6 3.9 7.1 6.1 7.8 9.4 5 7.7 2.2 9.4 2.9 6.1 0.4 3.9 3.7 3.6Z" fill="var(--star)"/></svg> ${esc(LABEL[best] || best)}: distance to ideal ${V[best].tv.toFixed(3)}.${b0 != null ? ` Base policy, no edit: ${b0.toFixed(3)}.` : ""}${oracle != null ? ` Oracle (privileged BC on 20k retained samples): ${oracle.toFixed(3)}.` : ""} Collateral bar scale: 0 to 0.75.</div>
+    <div class="pfoot"><svg class="stari" viewBox="0 0 10 10" width="11" height="11" aria-hidden="true"><path d="M5 0.6 6.3 3.6 9.6 3.9 7.1 6.1 7.8 9.4 5 7.7 2.2 9.4 2.9 6.1 0.4 3.9 3.7 3.6Z" fill="var(--star)"/></svg> ${esc(LABEL[best] || best)}: distance to ideal ${V[best].tv.toFixed(3)}.${b0 != null ? ` Base policy, no edit: ${b0.toFixed(3)}.` : ""}${oracle != null ? ` Oracle (privileged BC on 20k retained samples): ${oracle.toFixed(3)}.` : ""} Best on ${W.otherName}: ${esc(LABEL[ob] || ob)}${held ? " (same pick)" : " (different pick)"}. Collateral bar scale: 0 to 0.75.</div>
   </article>`;
 }
 
-document.getElementById("grid-u").innerHTML = UNC_SETTINGS.map(s => panel("unconditional", ...s)).join("");
-document.getElementById("grid-c").innerHTML = CON_SETTINGS.map(s => panel("conditional", ...s)).join("");
+function render() {
+  document.getElementById("grid-u").innerHTML = UNC_SETTINGS.map(s => panel("unconditional", ...s)).join("");
+  document.getElementById("grid-c").innerHTML = CON_SETTINGS.map(s => panel("conditional", ...s)).join("");
+}
+render();
+document.querySelectorAll(".toggle").forEach(g => g.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  DS[g.dataset.grid] = b.dataset.ds;
+  g.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  render();
+}));
 
 /* ---------------- methods ---------------- */
 const M = [
