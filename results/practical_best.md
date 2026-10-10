@@ -1,4 +1,4 @@
-# Where our practical algorithms are best (seeds 0-4; robo seeds 0-2 provisional)
+# Where our practical algorithms are best (seeds 0-4; robo seeds with a working base)
 
 ## Summary
 
@@ -17,8 +17,8 @@
 | conditional | forget 4/8, pairs | R_hop_bsup_neg | R_hop_bsup_neg |
 | conditional | forget 4/8, b3p1 | R_hop_bsup_neg | R_hop_bsup_neg |
 | robo | setups with negatives | SDPO_fresh_b25 | SDPO_fresh_b25, SDPO_pin_b25 |
-| robo | setups without negatives | SDPO_fresh_b25 | SDPO_fresh_b25, SDPO_pin_b25 |
-| robo | held-out setups | SDPO_pin_b25 | SDPO_pin_b25, SDPO_fresh_b25 |
+| robo | setups without negatives | SDPO_fresh_b25 | SDPO_fresh_b25 |
+| robo | held-out setups | SDPO_fresh_b25 | SDPO_fresh_b25, SDPO_pin_b25 |
 
 ### Unconditional toy, forget 1 of 8 (negatives only)
 
@@ -236,57 +236,63 @@ best: `R_hop_bsup_neg` (0.376); tied-best (within 2 sem): `R_hop_bsup_neg`
 | 9 | KTO_b10_neg_AL |  | 0.474 | 0.745 | 0.025 | 0.111 |  |
 | 10 | SDPO_fresh_b10 | yes | 0.504 | 0.958 | 0.009 | 0.037 |  |
 
-### Robo toy, setups with negatives (seeds [np.int64(0), np.int64(1), np.int64(2)])
+_robo: dropped seed(s) [3]: frozen base failed (B0 clean success [0.0])_
+
+### Robo toy, setups with negatives (seeds [0, 1, 2, 4])
+
+best: `SDPO_fresh_b25` (0.875); tied-best (within 2 sem): `SDPO_fresh_b25`, `SDPO_pin_b25`
+**ours among the best: SDPO_fresh_b25, SDPO_pin_b25**
+
+| rank | arm | ours? | clean_success | bad | collision | jerk | behaviour_change | tied-best |
+|---|---|---|---|---|---|---|---|---|
+| 1 | SDPO_fresh_b25 | yes | 0.875 | 0.122 | 0.067 | 0.062 | 0.074 | yes |
+| 2 | SDPO_pin_b25 | yes | 0.855 | 0.139 | 0.083 | 0.072 | 0.184 | yes |
+| 3 | B0_frozen |  | 0.854 | 0.145 | 0.090 | 0.064 | 0.000 |  |
+| 4 | R_hop_bsup_neg_AL | yes | 0.848 | 0.151 | 0.148 | 0.003 | 0.213 |  |
+| 5 | KTO_b100_neg |  | 0.827 | 0.169 | 0.122 | 0.056 | 0.144 |  |
+| 6 | NPO_b100_neg |  | 0.810 | 0.185 | 0.138 | 0.057 | 0.166 |  |
+| 7 | SDPO_hop_pin_b25 | yes | 0.791 | 0.203 | 0.157 | 0.060 | 0.337 |  |
+| 8 | R_hop_bsup_neg | yes | 0.771 | 0.228 | 0.227 | 0.002 | 0.350 |  |
+| 9 | R_ours_neg | yes | 0.743 | 0.240 | 0.141 | 0.129 | 0.163 |  |
+| 10 | NPO_b10_neg |  | 0.237 | 0.725 | 0.152 | 0.625 | 0.280 |  |
+
+_robo: dropped seed(s) [3]: frozen base failed (B0 clean success [0.0])_
+
+### Robo toy, setups without negatives (seeds [0, 1, 2, 4])
+
+best: `SDPO_fresh_b25` (0.869); tied-best (within 2 sem): `SDPO_fresh_b25`
+**ours among the best: SDPO_fresh_b25**
+
+| rank | arm | ours? | clean_success | bad | collision | jerk | behaviour_change | tied-best |
+|---|---|---|---|---|---|---|---|---|
+| 1 | SDPO_fresh_b25 | yes | 0.869 | 0.129 | 0.076 | 0.060 | 0.075 | yes |
+| 2 | SDPO_pin_b25 | yes | 0.855 | 0.141 | 0.089 | 0.074 | 0.184 |  |
+| 3 | B0_frozen |  | 0.851 | 0.148 | 0.095 | 0.063 | 0.000 |  |
+| 4 | R_hop_bsup_neg_AL | yes | 0.839 | 0.161 | 0.158 | 0.003 | 0.220 |  |
+| 5 | KTO_b100_neg |  | 0.833 | 0.163 | 0.113 | 0.061 | 0.156 |  |
+| 6 | NPO_b100_neg |  | 0.811 | 0.184 | 0.137 | 0.060 | 0.164 |  |
+| 7 | SDPO_hop_pin_b25 | yes | 0.762 | 0.227 | 0.175 | 0.064 | 0.345 |  |
+| 8 | R_hop_bsup_neg | yes | 0.737 | 0.263 | 0.261 | 0.003 | 0.365 |  |
+| 9 | R_ours_neg | yes | 0.731 | 0.251 | 0.146 | 0.135 | 0.154 |  |
+| 10 | NPO_b10_neg |  | 0.216 | 0.757 | 0.155 | 0.658 | 0.300 |  |
+
+_robo: dropped seed(s) [3]: frozen base failed (B0 clean success [0.0])_
+
+### Robo toy, held-out setups (seeds [0, 1, 2, 4])
 
 best: `SDPO_fresh_b25` (0.873); tied-best (within 2 sem): `SDPO_fresh_b25`, `SDPO_pin_b25`
 **ours among the best: SDPO_fresh_b25, SDPO_pin_b25**
 
 | rank | arm | ours? | clean_success | bad | collision | jerk | behaviour_change | tied-best |
 |---|---|---|---|---|---|---|---|---|
-| 1 | SDPO_fresh_b25 | yes | 0.873 | 0.124 | 0.068 | 0.064 | 0.079 | yes |
-| 2 | SDPO_pin_b25 | yes | 0.867 | 0.125 | 0.078 | 0.060 | 0.182 | yes |
-| 3 | B0_frozen |  | 0.852 | 0.147 | 0.091 | 0.065 | 0.000 |  |
-| 4 | R_hop_bsup_neg_AL | yes | 0.845 | 0.154 | 0.151 | 0.003 | 0.215 |  |
-| 5 | SDPO_hop_pin_b25 | yes | 0.822 | 0.173 | 0.154 | 0.026 | 0.341 |  |
-| 6 | KTO_b100_neg |  | 0.816 | 0.181 | 0.135 | 0.055 | 0.153 |  |
-| 7 | NPO_b100_neg |  | 0.793 | 0.201 | 0.151 | 0.060 | 0.191 |  |
-| 8 | R_hop_bsup_neg | yes | 0.756 | 0.243 | 0.241 | 0.002 | 0.355 |  |
-| 9 | R_ours_neg | yes | 0.732 | 0.250 | 0.142 | 0.139 | 0.167 |  |
-| 10 | NPO_b10_neg |  | 0.198 | 0.751 | 0.153 | 0.654 | 0.304 |  |
-
-### Robo toy, setups without negatives (seeds [np.int64(0), np.int64(1), np.int64(2)])
-
-best: `SDPO_fresh_b25` (0.868); tied-best (within 2 sem): `SDPO_fresh_b25`, `SDPO_pin_b25`
-**ours among the best: SDPO_fresh_b25, SDPO_pin_b25**
-
-| rank | arm | ours? | clean_success | bad | collision | jerk | behaviour_change | tied-best |
-|---|---|---|---|---|---|---|---|---|
-| 1 | SDPO_fresh_b25 | yes | 0.868 | 0.130 | 0.077 | 0.060 | 0.076 | yes |
-| 2 | SDPO_pin_b25 | yes | 0.859 | 0.137 | 0.096 | 0.061 | 0.173 | yes |
-| 3 | B0_frozen |  | 0.853 | 0.147 | 0.095 | 0.063 | 0.000 |  |
-| 4 | R_hop_bsup_neg_AL | yes | 0.843 | 0.156 | 0.154 | 0.003 | 0.224 |  |
-| 5 | KTO_b100_neg |  | 0.826 | 0.171 | 0.125 | 0.056 | 0.167 |  |
-| 6 | NPO_b100_neg |  | 0.800 | 0.194 | 0.145 | 0.061 | 0.187 |  |
-| 7 | SDPO_hop_pin_b25 | yes | 0.768 | 0.219 | 0.185 | 0.043 | 0.356 |  |
-| 8 | R_hop_bsup_neg | yes | 0.726 | 0.274 | 0.272 | 0.003 | 0.384 |  |
-| 9 | R_ours_neg | yes | 0.724 | 0.256 | 0.145 | 0.138 | 0.157 |  |
-| 10 | NPO_b10_neg |  | 0.186 | 0.778 | 0.154 | 0.682 | 0.328 |  |
-
-### Robo toy, held-out setups (seeds [np.int64(0), np.int64(1), np.int64(2)])
-
-best: `SDPO_pin_b25` (0.879); tied-best (within 2 sem): `SDPO_pin_b25`, `SDPO_fresh_b25`
-**ours among the best: SDPO_pin_b25, SDPO_fresh_b25**
-
-| rank | arm | ours? | clean_success | bad | collision | jerk | behaviour_change | tied-best |
-|---|---|---|---|---|---|---|---|---|
-| 1 | SDPO_pin_b25 | yes | 0.879 | 0.113 | 0.074 | 0.051 | 0.172 | yes |
-| 2 | SDPO_fresh_b25 | yes | 0.872 | 0.127 | 0.069 | 0.065 | 0.068 | yes |
-| 3 | B0_frozen |  | 0.854 | 0.145 | 0.086 | 0.067 | 0.000 |  |
-| 4 | R_hop_bsup_neg_AL | yes | 0.852 | 0.148 | 0.146 | 0.003 | 0.213 |  |
-| 5 | KTO_b100_neg |  | 0.829 | 0.168 | 0.119 | 0.058 | 0.133 |  |
-| 6 | SDPO_hop_pin_b25 | yes | 0.826 | 0.164 | 0.148 | 0.021 | 0.316 |  |
-| 7 | NPO_b100_neg |  | 0.819 | 0.177 | 0.123 | 0.064 | 0.162 |  |
-| 8 | R_hop_bsup_neg | yes | 0.770 | 0.230 | 0.228 | 0.002 | 0.351 |  |
-| 9 | R_ours_neg | yes | 0.743 | 0.241 | 0.128 | 0.142 | 0.155 |  |
-| 10 | NPO_b10_neg |  | 0.255 | 0.693 | 0.144 | 0.593 | 0.286 |  |
+| 1 | SDPO_fresh_b25 | yes | 0.873 | 0.126 | 0.070 | 0.063 | 0.071 | yes |
+| 2 | SDPO_pin_b25 | yes | 0.861 | 0.132 | 0.079 | 0.069 | 0.184 | yes |
+| 3 | B0_frozen |  | 0.854 | 0.146 | 0.089 | 0.064 | 0.000 |  |
+| 4 | R_hop_bsup_neg_AL | yes | 0.850 | 0.150 | 0.148 | 0.003 | 0.216 |  |
+| 5 | KTO_b100_neg |  | 0.839 | 0.159 | 0.110 | 0.059 | 0.133 |  |
+| 6 | NPO_b100_neg |  | 0.826 | 0.171 | 0.122 | 0.058 | 0.152 |  |
+| 7 | SDPO_hop_pin_b25 | yes | 0.804 | 0.176 | 0.145 | 0.037 | 0.324 |  |
+| 8 | R_hop_bsup_neg | yes | 0.791 | 0.209 | 0.208 | 0.002 | 0.351 |  |
+| 9 | R_ours_neg | yes | 0.754 | 0.231 | 0.129 | 0.130 | 0.158 |  |
+| 10 | NPO_b10_neg |  | 0.278 | 0.683 | 0.141 | 0.588 | 0.276 |  |
 

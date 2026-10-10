@@ -13,7 +13,7 @@ import glob, json, os, re, sys
 import numpy as np, pandas as pd
 
 RUNS = "/grogu/datasets/rollout/soumojib/toypref/runs"
-out = ["# Where our practical algorithms are best (seeds 0-4; robo seeds 0-2 provisional)", ""]
+out = ["# Where our practical algorithms are best (seeds 0-4; robo seeds with a working base)", ""]
 
 
 def load(roots, seeds, field_map, arm_ok):
@@ -122,8 +122,15 @@ for grp, lab in (("neg", "setups with negatives"), ("noneg", "setups without neg
     d = load([R], set(range(5)), fmr, lambda a: True)
     if d.empty:
         continue
+    # precondition: a seed whose frozen base does not work (clean success < 0.5) is not a valid testbed
+    # (s3's base diverged at step ~10k, loss 0.09 -> 4.5, B0 clean success 0.0); drop such seeds, say so.
+    b0 = d[d.arm == "B0_frozen"].set_index("seed").clean_success
+    bad_seeds = sorted(b0[b0 < 0.5].index)
+    if bad_seeds:
+        out.append(f"_robo: dropped seed(s) {[int(x) for x in bad_seeds]}: frozen base failed (B0 clean success {b0[bad_seeds].round(3).tolist()})_\n")
+        d = d[~d.seed.isin(bad_seeds)]
     d["n_forget"], d["n_neg"] = 0, 0
-    b, o = rank(d, ["seed"], "clean_success", True, c_ours, f"Robo toy, {lab} (seeds {sorted(d.seed.unique())})",
+    b, o = rank(d, ["seed"], "clean_success", True, c_ours, f"Robo toy, {lab} (seeds {sorted(int(x) for x in d.seed.unique())})",
                 ("bad", "collision", "jerk", "behaviour_change"))
     summary.append(("robo", lab, b, o))
 
