@@ -17,6 +17,7 @@ PY=$HOME/miniconda3/envs/pref_pillars/bin/python
 ROW=$($PY -c "import csv;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['arms'],r['steps'],r.get('labels') or 'native')")
 read S A ST L <<< "$ROW"
 EXTRA="--labels $L"
+[ -n "$EM" ] && EXTRA="$EXTRA --epoch_match"
 [ -n "$SMOKE" ] && EXTRA="$EXTRA --smoke $SMOKE"
 $PY scripts/robo_cell.py --seed $S --arms $A --steps $ST $EXTRA
 echo "=== ROBO TASK $SLURM_ARRAY_TASK_ID DONE ==="

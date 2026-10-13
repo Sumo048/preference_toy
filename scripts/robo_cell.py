@@ -28,12 +28,15 @@ ap.add_argument("--base", default=os.path.join(ROBO, "base"))
 ap.add_argument("--out", default="")
 ap.add_argument("--force", action="store_true")
 ap.add_argument("--labels", default="native", help="label condition (toypref.robo.labels); eval is unchanged")
+ap.add_argument("--epoch_match", action="store_true", help="steps x (condition rows / native rows): same passes per row")
 args = ap.parse_args()
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
 s = args.seed
 tag = (f"smoke{args.smoke}_st{args.steps}" if args.smoke else f"full_st{args.steps}") + f"_m{args.m_eval}"
 if args.labels != "native":
     tag += f"_L{args.labels}"
+if args.epoch_match:
+    tag += "_em"
 od = args.out or os.path.join(ROBO, "cells", tag, f"s{s}")
 os.makedirs(od, exist_ok=True)
 bd = os.path.join(args.base, f"s{s}")
@@ -48,7 +51,7 @@ def done(n):
     r = json.load(open(f))
     if "b0" not in r:
         return False                                 # pre-stress JSON: no in-task base metrics to pair against
-    if r.get("base_policy_sha") != policy_sha or r.get("steps") != args.steps or r.get("m_eval") != args.m_eval:
+    if r.get("base_policy_sha") != policy_sha or r.get("steps_arg", r.get("steps")) != args.steps or r.get("m_eval") != args.m_eval:
         print(f"[s{s}] {n}: existing JSON is from another base / setting; recomputing", flush=True)
         return False
     return True
@@ -86,7 +89,8 @@ if args.smoke:
 ev = EV.EvalSet(ref, s, train, held, log, M=args.m_eval, groups=groups)   # always the native log
 rows, diag, label_info = LB.apply(args.labels, ref, s, train, log)
 print(f"[s{s}] labels {label_info}", flush=True)
-ctx = MT.Ctx(ref=ref, seed=s, rows=rows, steps=args.steps)
+eff_steps = max(1, round(args.steps * len(rows) / max(len(log.rows), 1))) if args.epoch_match else args.steps
+ctx = MT.Ctx(ref=ref, seed=s, rows=rows, steps=eff_steps)
 if len(rows) == 0:                                   # nothing labelled: every arm is the base (flagged)
     print(f"[s{s}] no labelled rows under {args.labels}; arms = base", flush=True)
 need_cache = len(rows) > 0 and any(MT.ARMS[n].rule == "hop" or MT.ARMS[n].local or MT.ARMS[n].pos == "hop" for n in todo)
@@ -155,7 +159,7 @@ for n in todo:
     t0 = time.time()
     pol, info = (ref, {"no_rows": True}) if len(rows) == 0 else MT.train_arm(arm, ctx)
     met = ev.compute(pol)
-    rec = {"seed": s, "arm": n, "kind": arm.kind, "beta": arm.beta, "steps": args.steps, "smoke": args.smoke,
+    rec = {"seed": s, "arm": n, "kind": arm.kind, "beta": arm.beta, "steps": eff_steps, "steps_arg": args.steps, "smoke": args.smoke,
            "m_eval": args.m_eval, "base_policy_sha": policy_sha,
            "labels": label_info, "b0": b0_met, "host": host,
            "train_s": round(time.time() - t0, 1), **{k: v for k, v in info.items() if k != "train_history"},

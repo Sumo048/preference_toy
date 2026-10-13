@@ -95,3 +95,10 @@ seed (2 base hashes per seed). The analysis stopped at its consistency check bef
 result. From now on every arm JSON stores the B0 metrics from its own task's base rollout, and G
 pairs each arm with that in-task B0. The full grid is rerun (jobs 4027985/4027986). The decision
 rules are unchanged.
+
+### Exploratory follow-up (2026-10-13 00:23 EDT; AFTER the pre-registered outcomes were seen)
+
+Oracle, recall0.5 and cover0.25 have 3-4x fewer rows than native at the same 5000 steps, so each row
+is seen 3-4x more often. The pad conditions have 3-8x more rows, so each is seen less often. The
+follow-up (job 4028210, tag suffix `_em`) scales steps to rows: steps = 5000 x condition rows /
+native rows. It is reported apart from the pre-registered results and carries no decision rule.

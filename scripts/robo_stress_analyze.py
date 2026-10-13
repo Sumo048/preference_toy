@@ -134,6 +134,17 @@ for arm in CORE:
         out.append(f"| {arm} | {c} | " + " | ".join(fmt(*gain(arm, c, g)[:3]) for g in GROUPS) + " |")
 out.append("")
 
+EM = ["oracle_em", "native", "recall0.5_em", "cover0.25_em", "pad6_em", "pad18_em"]
+if (df.cond.str.endswith("_em")).any():
+    out += ["## EXPLORATORY (not pre-registered): steps scaled to rows (same passes per row)", "",
+            "| arm | " + " | ".join(EM) + " |", "|---|" + "---|" * len(EM)]
+    for arm in CORE:
+        out.append(f"| {arm} | " + " | ".join(fmt(*gain(arm, c)[:3]) for c in EM) + " |")
+    out += ["", "held group:", "", "| arm | " + " | ".join(EM) + " |", "|---|" + "---|" * len(EM)]
+    for arm in CORE:
+        out.append(f"| {arm} | " + " | ".join(fmt(*gain(arm, c, "held")[:3]) for c in EM) + " |")
+    out.append("")
+
 os.makedirs(os.path.dirname(a.out), exist_ok=True)
 open(a.out, "w").write("\n".join(out) + "\n")
 print("\n".join(out))
