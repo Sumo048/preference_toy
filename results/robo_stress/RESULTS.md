@@ -1,7 +1,7 @@
 # Robo stress round: results
 
-Valid seeds [0, 1, 2, 4, 5, 6, 7, 8, 9]; dropped [] (frozen base clean success < 0.5). Runs: 720.
-Base rollout variants per seed (node-dependent): {0: 2, 1: 1, 2: 3, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2}; spread of in-task B0 neg clean success per seed: max 0.0160. Every G is paired with its own task's B0.
+Valid seeds [0, 1, 2, 4, 5, 6, 7, 8, 9]; dropped [] (frozen base clean success < 0.5). Runs: 990.
+Base rollout variants per seed (node-dependent): {0: 2, 1: 2, 2: 4, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2}; spread of in-task B0 neg clean success per seed: max 0.0160. Every G is paired with its own task's B0.
 
 ## G on the neg group (clean success, points; ▲ > 2 sem above B0, ▼ below)
 
@@ -105,4 +105,28 @@ B0 clean success (neg): 0.855
 | FILTER_rej | native | -3.0±0.4 ▼ | -1.3±0.2 ▼ | -1.3±0.2 ▼ |
 | FILTER_rej | recall0.5 | -2.7±0.3 ▼ | -1.7±0.3 ▼ | -1.8±0.3 ▼ |
 | FILTER_rej | cover0.25 | -1.1±0.3 ▼ | -0.4±0.2 ▼ | -0.6±0.2 ▼ |
+
+## EXPLORATORY (not pre-registered): steps scaled to rows (same passes per row)
+
+| arm | oracle_em | native | recall0.5_em | cover0.25_em | pad6_em | pad18_em |
+|---|---|---|---|---|---|---|
+| SDPO_fresh_b25 | +2.0±0.5 ▲ | +2.5±0.2 ▲ | +1.0±0.2 ▲ | +0.9±0.4 ▲ | -1.0±0.2 ▼ | -2.7±0.3 ▼ |
+| SDPO_fresh_b10 | -15.7±2.7 ▼ | -1.9±0.6 ▼ | -5.2±0.7 ▼ | -4.3±1.2 ▼ | -7.0±0.5 ▼ | -10.1±0.5 ▼ |
+| SDPO_pin_b25 | +8.0±0.7 ▲ | +0.7±1.1 | +3.9±1.1 ▲ | +4.2±0.6 ▲ | -62.3±4.7 ▼ | -85.4±0.2 ▼ |
+| NPO_b100_neg | +1.0±0.9 | -2.7±1.2 ▼ | -2.5±0.7 ▼ | -3.6±2.2 | -6.2±0.8 ▼ | -9.5±1.5 ▼ |
+| KTO_b100_neg | +1.6±1.1 | -3.0±1.1 ▼ | -3.5±1.4 ▼ | -5.2±1.8 ▼ | -7.8±1.3 ▼ | -18.7±3.9 ▼ |
+| R_hop_bsup_neg_AL | -3.9±0.7 ▼ | -0.2±0.2 | -2.6±0.4 ▼ | -2.1±0.5 ▼ | +0.1±0.4 | +0.3±0.3 |
+| FILTER_rej | — | -3.0±0.4 ▼ | — | — | — | — |
+
+held group:
+
+| arm | oracle_em | native | recall0.5_em | cover0.25_em | pad6_em | pad18_em |
+|---|---|---|---|---|---|---|
+| SDPO_fresh_b25 | +2.2±0.8 ▲ | +2.2±0.3 ▲ | +1.1±0.5 ▲ | +0.7±0.4 | -1.0±0.3 ▼ | -2.6±0.2 ▼ |
+| SDPO_fresh_b10 | -14.7±2.8 ▼ | -2.1±0.7 ▼ | -4.1±0.9 ▼ | -4.0±1.1 ▼ | -8.0±0.6 ▼ | -10.4±0.4 ▼ |
+| SDPO_pin_b25 | +8.8±0.8 ▲ | +0.7±1.0 | +4.1±0.9 ▲ | +5.1±0.9 ▲ | -61.5±4.9 ▼ | -85.1±0.5 ▼ |
+| NPO_b100_neg | +0.5±1.2 | -2.9±0.7 ▼ | -1.4±0.4 ▼ | -3.6±2.1 | -5.8±0.8 ▼ | -8.3±1.6 ▼ |
+| KTO_b100_neg | +1.9±1.2 | -2.7±1.0 ▼ | -3.8±1.5 ▼ | -4.9±1.7 ▼ | -7.1±1.4 ▼ | -18.4±3.6 ▼ |
+| R_hop_bsup_neg_AL | -3.8±0.7 ▼ | -1.1±0.5 ▼ | -3.2±0.6 ▼ | -1.5±0.6 ▼ | -0.4±0.6 | -0.1±0.8 |
+| FILTER_rej | — | -1.3±0.2 ▼ | — | — | — | — |
 
