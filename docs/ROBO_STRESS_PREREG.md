@@ -87,3 +87,11 @@ than 2 sem below.
 - E3 (tail vs separate mode) needs an env knob.
 - E6 (repeated rounds).
 - Stage 2 (7-DoF simulator).
+
+### Amendment (2026-10-12 23:38 EDT; no outcome seen)
+
+The first full run (jobs 4027750/4027751) produced base rollouts that differ across nodes within a
+seed (2 base hashes per seed). The analysis stopped at its consistency check before printing any
+result. From now on every arm JSON stores the B0 metrics from its own task's base rollout, and G
+pairs each arm with that in-task B0. The full grid is rerun (jobs 4027985/4027986). The decision
+rules are unchanged.
