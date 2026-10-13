@@ -46,6 +46,8 @@ def done(n):
     if not os.path.exists(f):
         return False
     r = json.load(open(f))
+    if "b0" not in r:
+        return False                                 # pre-stress JSON: no in-task base metrics to pair against
     if r.get("base_policy_sha") != policy_sha or r.get("steps") != args.steps or r.get("m_eval") != args.m_eval:
         print(f"[s{s}] {n}: existing JSON is from another base / setting; recomputing", flush=True)
         return False
@@ -143,6 +145,11 @@ if len(rows) and (need_cache or not os.path.exists(sep_path)):
 if len(rows) and (not os.path.exists(sep_path) or stale(sep_path)):
     separability(ctx.cache)                              # deterministic; atomic write, so a race is harmless
 print(f"[s{s}] rows {len(rows)} eval episodes {len(ev.idx)} arms {todo}", flush=True)
+# The base's CRN rollout is computed in THIS task, on this node: closed-loop rollouts amplify
+# CPU-dependent last bits, so a B0 from another node is not a valid pair. Every arm JSON carries
+# the in-task B0 metrics and the analysis pairs against them.
+b0_met = {k: v for k, v in ev.compute(ref).items() if isinstance(v, (int, float))}
+host = os.uname().nodename
 for n in todo:
     arm = MT.ARMS[n]
     t0 = time.time()
@@ -150,7 +157,7 @@ for n in todo:
     met = ev.compute(pol)
     rec = {"seed": s, "arm": n, "kind": arm.kind, "beta": arm.beta, "steps": args.steps, "smoke": args.smoke,
            "m_eval": args.m_eval, "base_policy_sha": policy_sha,
-           "labels": label_info,
+           "labels": label_info, "b0": b0_met, "host": host,
            "train_s": round(time.time() - t0, 1), **{k: v for k, v in info.items() if k != "train_history"},
            **met, "train_history": info.get("train_history")}
     write_json(rec, os.path.join(od, f"{n}.json"))

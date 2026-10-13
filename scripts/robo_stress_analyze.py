@@ -31,26 +31,30 @@ for d in glob.glob(os.path.join(ROBO, "cells", a.tag + "*", "s*")):
         if os.path.basename(f) == "separability.json":
             continue
         r = json.load(open(f))
+        if "b0" not in r:
+            continue
         recs.append({"cond": cond, "arm": r["arm"], "seed": r["seed"], "edit_norm": r.get("edit_norm", np.nan),
-                     "base_hash": r.get("base_hash"), **{k: r.get(k, np.nan) for k in FIELDS}})
+                     "base_hash": r.get("base_hash"), "host": r.get("host"), **{k: r.get(k, np.nan) for k in FIELDS},
+                     **{"b0_" + k: r["b0"].get(k, np.nan) for k in FIELDS}})
 df = pd.DataFrame(recs)
 b0 = df[(df.arm == "B0_frozen") & (df.cond == "native")].set_index("seed")
 valid = sorted(int(s) for s in b0.index[b0.neg_success_clean >= 0.5])
 dropped = sorted(int(s) for s in b0.index[b0.neg_success_clean < 0.5])
 df = df[df.seed.isin(valid)]
-# every arm of a seed must share the base rollout
-for s in valid:
-    hs = set(df[df.seed == s].base_hash.dropna())
-    assert len(hs) == 1, f"seed {s}: arms scored against different base rollouts {hs}"
+# base rollouts differ across nodes (closed-loop amplification of CPU last bits): every arm is
+# paired with the B0 rollout computed in its own task, never with a B0 from another task.
+n_hash = df.groupby("seed").base_hash.nunique()
+b0_spread = df.groupby("seed").b0_neg_success_clean.agg(lambda x: x.max() - x.min())
 
 out = [f"# Robo stress round: results", "",
-       f"Valid seeds {valid}; dropped {dropped} (frozen base clean success < 0.5). Runs: {len(df)}.", ""]
+       f"Valid seeds {valid}; dropped {dropped} (frozen base clean success < 0.5). Runs: {len(df)}.",
+       f"Base rollout variants per seed (node-dependent): {n_hash.to_dict()}; spread of in-task B0 neg clean success "
+       f"per seed: max {b0_spread.max():.4f}. Every G is paired with its own task's B0.", ""]
 
 
 def gain(arm, cond, group="neg", metric="success_clean"):
-    x = df[(df.arm == arm) & (df.cond == cond)].set_index("seed")[f"{group}_{metric}"]
-    y = b0.loc[valid, f"{group}_{metric}"]
-    z = (x - y).dropna()
+    d = df[(df.arm == arm) & (df.cond == cond)].set_index("seed")
+    z = (d[f"{group}_{metric}"] - d[f"b0_{group}_{metric}"]).dropna()
     return z.mean(), z.sem() if len(z) > 1 else np.nan, len(z), z
 
 
