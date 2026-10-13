@@ -17,6 +17,14 @@ Arms
                        fresh  independent fresh noise for winner and loser (8 fixed positives per row)
                        pin    both evaluated on the row's LOGGED noise (8 fixed positives per row)
                        hop    winner = the R_hop_bsup target, pinned
+  (stress round)
+  SDPO_fresh_b{5,10,50,100}, NPO/KTO_b{30,300}   strength sweep
+  RAND_<arm>           control: the base plus a random edit with the SAME per-tensor norm as <arm>'s
+                       trained edit (prices "any small edit helps")
+  FILTER_rej           control, inference time: K = 4 candidate chunks per decision (noise xi Q_k,
+                       Q_0 = I); a candidate is rejected when it lies within tau of a logged negative
+                       chunk whose observation is within r_o; the first unrejected candidate is used
+                       (all rejected: the farthest). No training.
 """
 
 from __future__ import annotations
@@ -48,6 +56,7 @@ class Arm:
     local: bool = False       # + local anchor
     pos: str = ""             # sdpo: fresh | hop
     noise: str = ""           # sdpo: fresh | pin
+    of: str = ""              # rand: the arm whose edit norm is matched
 
 
 ARMS: Dict[str, Arm] = {a.name: a for a in [
@@ -63,7 +72,62 @@ ARMS: Dict[str, Arm] = {a.name: a for a in [
     Arm("SDPO_pin_b25", "sdpo", beta=25.0, pos="fresh", noise="pin"),
     Arm("SDPO_hop_pin_b1", "sdpo", beta=1.0, pos="hop", noise="pin"),
     Arm("SDPO_hop_pin_b25", "sdpo", beta=25.0, pos="hop", noise="pin"),   # beta 25 was the better gate in the cond toy
+    # stress round: strength sweep and controls
+    *[Arm(f"SDPO_fresh_b{b}", "sdpo", beta=float(b), pos="fresh", noise="fresh") for b in (5, 10, 50, 100)],
+    *[Arm(f"NPO_b{b}_neg", "npo", beta=float(b)) for b in (30, 300)],
+    *[Arm(f"KTO_b{b}_neg", "kto", beta=float(b)) for b in (30, 300)],
+    Arm("RAND_SDPO_fresh_b25", "rand", of="SDPO_fresh_b25"),
+    Arm("RAND_NPO_b100_neg", "rand", of="NPO_b100_neg"),
+    Arm("FILTER_rej", "filter"),
 ]}
+
+P_RAND = 90_000
+P_FILTER = 91_000
+FILTER_K = 4
+FILTER_TAU = 0.5          # x median pairwise base-decode distance at the negative's observation
+FILTER_RO = 1.0           # x median 1-NN distance between logged negative observations
+
+
+class RejectFilter:
+    """Inference-time rejection of chunks near logged negatives. Duck-types ChunkFlow.sample."""
+
+    def __init__(self, ref: ChunkFlow, seed: int, rows: NegRows):
+        self.ref = ref
+        g = S.gen(seed, P_FILTER)
+        d = rows.a.shape[1]
+        Q = [torch.eye(d)] + [torch.linalg.qr(torch.randn(d, d, generator=g))[0] for _ in range(FILTER_K - 1)]
+        self.Q = torch.stack(Q)                                                   # (K, d, d), orthogonal
+        self.no, self.na = rows.obs.float(), rows.a.float()
+        P = TG.fresh_decodes(ref, seed, rows, TG.N_SDPO_POS, S.ROW_SDPO)          # (N, 8, d)
+        pd_ = torch.cdist(P, P)
+        iu = torch.triu_indices(P.shape[1], P.shape[1], 1)
+        self.tau = FILTER_TAU * pd_[:, iu[0], iu[1]].median(1).values             # (N,)
+        dn = torch.cdist(self.no, self.no)
+        dn.fill_diagonal_(float("inf"))
+        self.r_o = float(FILTER_RO * dn.min(1).values.median())
+        self.stats = {"filter_tau_median": float(self.tau.median()), "filter_r_o": self.r_o}
+
+    @torch.no_grad()
+    def sample(self, xi, o, batch=8192):
+        out = []
+        for s in range(0, xi.shape[0], batch):
+            x, oo = xi[s:s + batch].float(), o[s:s + batch].float()
+            n = x.shape[0]
+            cand = self.ref.sample(torch.einsum("nd,kde->knd", x, self.Q).reshape(-1, x.shape[1]),
+                                   oo.repeat(FILTER_K, 1)).reshape(FILTER_K, n, -1)
+            near = torch.cdist(oo, self.no) <= self.r_o                           # (n, N)
+            dmin = torch.full((FILTER_K, n), float("inf"))
+            hit = near.any(1)
+            if hit.any():
+                ii = torch.nonzero(hit).squeeze(1)
+                da = torch.cdist(cand[:, ii], self.na.unsqueeze(0).expand(FILTER_K, -1, -1))   # (K, h, N)
+                rel = da / self.tau.view(1, 1, -1)
+                rel = torch.where(near[ii].unsqueeze(0), rel, torch.full_like(rel, float("inf")))
+                dmin[:, ii] = rel.min(2).values                                   # in units of tau
+            ok = dmin >= 1.0
+            first = torch.where(ok.any(0), ok.float().argmax(0), dmin.argmax(0))
+            out.append(cand[first, torch.arange(n)])
+        return torch.cat(out) if out else xi.new_zeros((0, xi.shape[1]))
 
 
 @dataclass
@@ -185,6 +249,21 @@ def step_fn(arm: Arm, ctx: Ctx):
 def train_arm(arm: Arm, ctx: Ctx, probe=None, log_every=500):
     if arm.kind == "frozen":
         return ctx.ref, {}
+    if arm.kind == "filter":
+        f = RejectFilter(ctx.ref, ctx.seed, ctx.rows)
+        return f, dict(f.stats)
+    if arm.kind == "rand":
+        pol_of, info = train_arm(ARMS[arm.of], ctx)
+        g = S.gen(ctx.seed, P_RAND)
+        pol = copy.deepcopy(ctx.ref)
+        num = 0.0
+        with torch.no_grad():
+            for p, q, r in zip(pol.parameters(), pol_of.parameters(), ctx.ref.parameters()):
+                d = torch.randn(p.shape, generator=g)
+                nrm = (q - r).norm()
+                num += float(nrm) ** 2
+                p.copy_(r + d * (nrm / d.norm().clamp_min(1e-12)))
+        return pol, {"edit_norm": num ** 0.5, "of": arm.of}
     fn, info = step_fn(arm, ctx)
     torch.manual_seed(ctx.seed)
     pol = copy.deepcopy(ctx.ref)
@@ -213,5 +292,7 @@ def train_arm(arm: Arm, ctx: Ctx, probe=None, log_every=500):
     pol.eval()
     for p in pol.parameters():
         p.requires_grad_(False)
+    with torch.no_grad():
+        info["edit_norm"] = float(sum(float((p - r).norm()) ** 2 for p, r in zip(pol.parameters(), ctx.ref.parameters())) ** 0.5)
     info["train_history"] = hist
     return pol, info

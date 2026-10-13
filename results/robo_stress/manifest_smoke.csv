@@ -1,0 +1,8 @@
+seed,arms,steps,labels
+0,"B0_frozen,SDPO_fresh_b25,RAND_SDPO_fresh_b25,FILTER_rej,R_hop_bsup_neg_AL",300,native
+0,"SDPO_fresh_b25,R_hop_bsup_neg_AL",300,oracle
+0,"SDPO_fresh_b25,R_hop_bsup_neg_AL",300,pad6
+0,"SDPO_fresh_b25,R_hop_bsup_neg_AL",300,flip0.25
+0,"SDPO_fresh_b25,R_hop_bsup_neg_AL",300,placebo
+0,"SDPO_fresh_b25,R_hop_bsup_neg_AL",300,recall0.5
+0,"SDPO_fresh_b25,R_hop_bsup_neg_AL",300,cover0.25

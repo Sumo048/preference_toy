@@ -14,7 +14,7 @@ os.environ.setdefault("MKL_DYNAMIC", "FALSE")
 os.environ.setdefault("ATEN_CPU_CAPABILITY", "avx2")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 import numpy as np, torch
-from toypref.robo import data as DT, diagnostics as DG, evaluate as EV, methods as MT, targets as TG
+from toypref.robo import data as DT, diagnostics as DG, evaluate as EV, labels as LB, methods as MT, targets as TG
 from toypref.robo.policy import load
 
 ROBO = os.environ.get("ROBO_RUNS", "/grogu/datasets/rollout/soumojib/toypref/runs/robo")
@@ -27,10 +27,13 @@ ap.add_argument("--m_eval", type=int, default=DT.M_EVAL)
 ap.add_argument("--base", default=os.path.join(ROBO, "base"))
 ap.add_argument("--out", default="")
 ap.add_argument("--force", action="store_true")
+ap.add_argument("--labels", default="native", help="label condition (toypref.robo.labels); eval is unchanged")
 args = ap.parse_args()
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
 s = args.seed
 tag = (f"smoke{args.smoke}_st{args.steps}" if args.smoke else f"full_st{args.steps}") + f"_m{args.m_eval}"
+if args.labels != "native":
+    tag += f"_L{args.labels}"
 od = args.out or os.path.join(ROBO, "cells", tag, f"s{s}")
 os.makedirs(od, exist_ok=True)
 bd = os.path.join(args.base, f"s{s}")
@@ -78,9 +81,13 @@ if args.smoke:
     log = DT.LogResult(rows, diag, eps, log.per_setup)
     groups = {"neg": keep_setups, "noneg": g_noneg[:args.smoke],
               "held": np.arange(len(train), len(train) + min(args.smoke, len(held)))}
-ev = EV.EvalSet(ref, s, train, held, log, M=args.m_eval, groups=groups)
+ev = EV.EvalSet(ref, s, train, held, log, M=args.m_eval, groups=groups)   # always the native log
+rows, diag, label_info = LB.apply(args.labels, ref, s, train, log)
+print(f"[s{s}] labels {label_info}", flush=True)
 ctx = MT.Ctx(ref=ref, seed=s, rows=rows, steps=args.steps)
-need_cache = any(MT.ARMS[n].rule == "hop" or MT.ARMS[n].local or MT.ARMS[n].pos == "hop" for n in todo)
+if len(rows) == 0:                                   # nothing labelled: every arm is the base (flagged)
+    print(f"[s{s}] no labelled rows under {args.labels}; arms = base", flush=True)
+need_cache = len(rows) > 0 and any(MT.ARMS[n].rule == "hop" or MT.ARMS[n].local or MT.ARMS[n].pos == "hop" for n in todo)
 cp = os.path.join(od, "hop_cache.pt")
 t0 = time.time()
 
@@ -101,7 +108,7 @@ def stale(path):
     return os.path.exists(path) and getattr(torch.load(path, map_location="cpu", weights_only=False), "base_sha", None) != policy_sha
 
 
-if need_cache or not os.path.exists(sep_path):
+if len(rows) and (need_cache or not os.path.exists(sep_path)):
     # one builder per cell: an O_EXCL lock file; the builder also writes separability.json (atomically),
     # other jobs wait for the cache (stale locks > 3 h are taken over)
     lock = cp + ".lock"
@@ -133,16 +140,17 @@ if need_cache or not os.path.exists(sep_path):
             except FileNotFoundError:
                 pass
     ctx.cache = torch.load(cp, map_location="cpu", weights_only=False)
-if not os.path.exists(sep_path) or stale(sep_path):
+if len(rows) and (not os.path.exists(sep_path) or stale(sep_path)):
     separability(ctx.cache)                              # deterministic; atomic write, so a race is harmless
 print(f"[s{s}] rows {len(rows)} eval episodes {len(ev.idx)} arms {todo}", flush=True)
 for n in todo:
     arm = MT.ARMS[n]
     t0 = time.time()
-    pol, info = MT.train_arm(arm, ctx)
+    pol, info = (ref, {"no_rows": True}) if len(rows) == 0 else MT.train_arm(arm, ctx)
     met = ev.compute(pol)
     rec = {"seed": s, "arm": n, "kind": arm.kind, "beta": arm.beta, "steps": args.steps, "smoke": args.smoke,
            "m_eval": args.m_eval, "base_policy_sha": policy_sha,
+           "labels": label_info,
            "train_s": round(time.time() - t0, 1), **{k: v for k, v in info.items() if k != "train_history"},
            **met, "train_history": info.get("train_history")}
     write_json(rec, os.path.join(od, f"{n}.json"))

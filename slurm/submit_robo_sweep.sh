@@ -14,9 +14,9 @@ set -eo pipefail
 cd /home/soumojib/repos/toypref-robo
 export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 MKL_DYNAMIC=FALSE MKL_CBWR=AVX2 ATEN_CPU_CAPABILITY=avx2 PYTHONUNBUFFERED=1
 PY=$HOME/miniconda3/envs/pref_pillars/bin/python
-ROW=$($PY -c "import csv;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['arms'],r['steps'])")
-read S A ST <<< "$ROW"
-EXTRA=""
-[ -n "$SMOKE" ] && EXTRA="--smoke $SMOKE"
+ROW=$($PY -c "import csv;r=list(csv.DictReader(open('$MANIFEST')))[$SLURM_ARRAY_TASK_ID];print(r['seed'],r['arms'],r['steps'],r.get('labels') or 'native')")
+read S A ST L <<< "$ROW"
+EXTRA="--labels $L"
+[ -n "$SMOKE" ] && EXTRA="$EXTRA --smoke $SMOKE"
 $PY scripts/robo_cell.py --seed $S --arms $A --steps $ST $EXTRA
 echo "=== ROBO TASK $SLURM_ARRAY_TASK_ID DONE ==="
