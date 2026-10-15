@@ -33,14 +33,19 @@ ap.add_argument("--arms", required=True)
 ap.add_argument("--labels", default="traj", choices=["traj", "approach", "sym", "causal_pc", "cause", "human"])
 ap.add_argument("--ns", type=int, default=512)
 ap.add_argument("--budget", default="R1", choices=["R1", "R2"])
-ap.add_argument("--base", default=os.path.join(ROBO, "base"))
+ap.add_argument("--variant", default="", help="environment variant: bases in base_<v>, cells in cells_<v>")
+ap.add_argument("--noise", default="none", help="label noise: none | flip<f> (a share f of labelled episodes replaced by a "
+                "clean pool episode of the same course) | recall<r> (only a share r of negative episodes labelled)")
+ap.add_argument("--base", default="")
 ap.add_argument("--out", default="")
 ap.add_argument("--force", action="store_true")
 args = ap.parse_args()
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
 s = args.seed
-tag = f"{args.budget}_ns{args.ns}_{args.labels}"
-od = args.out or os.path.join(ROBO, "cells", tag, f"s{s}")
+tag = f"{args.budget}_ns{args.ns}_{args.labels}" + ("" if args.noise == "none" else f"_{args.noise}")
+vs = f"_{args.variant}" if args.variant else ""
+args.base = args.base or os.path.join(ROBO, "base" + vs)
+od = args.out or os.path.join(ROBO, "cells" + vs, tag, f"s{s}")
 os.makedirs(od, exist_ok=True)
 bd = os.path.join(args.base, f"s{s}")
 policy_sha = hashlib.sha1(open(os.path.join(bd, "policy.pt"), "rb").read()).hexdigest()
@@ -78,10 +83,63 @@ if args.labels in ("approach", "causal_pc"):
     m &= span
 elif args.labels != "traj":
     m &= getattr(Dg, args.labels)
+P_NOISE = 95_000
+noise_info = {}
 rows = R.take(m)
+if args.noise != "none":
+    import re
+    from toypref.robol import seeds as SS
+    n_glob = int(R.episode.max()) + 1
+    u = SS.nprng(s, P_NOISE).random(n_glob)
+    if (mm := re.fullmatch(r"recall([\d.]+)", args.noise)):
+        m &= (u < float(mm.group(1)))[R.episode]
+        rows = R.take(m)
+        noise_info = {"kept_episodes": int(len(np.unique(rows.episode)))}
+    elif (mm := re.fullmatch(r"flip([\d.]+)", args.noise)):
+        f = float(mm.group(1))
+        flip_ep = np.flatnonzero(u < f)
+        m &= ~np.isin(R.episode, flip_ep)
+        keep = R.take(m)
+        pool = torch.load(os.path.join(bd, "pool.pt"), map_location="cpu", weights_only=False)
+        g = SS.nprng(s, P_NOISE + 1)
+        used = {}
+        add = {k: [] for k in ("obs", "xi", "a", "uid", "setup", "episode", "chunk")}
+        n_flip = 0
+        ep_setup = {int(e): int(R.setup[R.episode == e][0]) for e in np.unique(R.episode[R.setup < args.ns])}
+        for e, st_ in ep_setup.items():
+            if u[e] >= f:
+                continue
+            cand = [pe for pe in np.unique(pool.episode[pool.setup == st_]) if not pool.negative[pool.episode == pe].any()]
+            cand = [pe for pe in cand if pe not in used.get(st_, set())]
+            if not cand:
+                continue
+            pe = int(cand[0]); used.setdefault(st_, set()).add(pe)
+            idx = np.flatnonzero(pool.episode == pe)
+            ch = pool.chunk[idx]
+            if args.labels != "traj":                 # a human marks a window on the (wrongly) labelled episode
+                w = 3 if args.labels == "approach" else 1
+                lo = int(g.integers(0, max(1, len(idx) - w + 1)))
+                idx = idx[(ch >= ch.min() + lo) & (ch < ch.min() + lo + w)]
+            for i in idx:
+                add["obs"].append(pool.obs[i]); add["xi"].append(pool.xi[i]); add["a"].append(pool.a[i])
+                add["uid"].append(int(train.sid[st_]) * 100_000 + (200 + int(pe) % 100) * 100 + int(pool.chunk[i]))
+                add["setup"].append(st_); add["episode"].append(1_000_000 + int(pe)); add["chunk"].append(int(pool.chunk[i]))
+            n_flip += 1
+        if add["uid"]:
+            rows = DT.NegRows(torch.cat([keep.obs, torch.stack(add["obs"])]), torch.cat([keep.xi, torch.stack(add["xi"])]),
+                              torch.cat([keep.a, torch.stack(add["a"])]), np.concatenate([keep.uid, add["uid"]]),
+                              np.concatenate([keep.setup, add["setup"]]), np.concatenate([keep.episode, add["episode"]]),
+                              np.concatenate([keep.chunk, add["chunk"]]))
+        else:
+            rows = keep
+        assert len(set(rows.uid.tolist())) == len(rows.uid), "row uids must be unique"
+        noise_info = {"flipped_episodes": n_flip, "flipped_rows": len(add["uid"])}
+    else:
+        raise ValueError(args.noise)
 n_ep = int(len(np.unique(rows.episode)))
 steps = int(np.clip(6 * len(rows), 500, 20000)) if args.budget == "R1" else 5000
-label_info = {"labels": args.labels, "ns": args.ns, "budget": args.budget, "rows": len(rows), "episodes": n_ep,
+label_info = {"labels": args.labels, "ns": args.ns, "budget": args.budget, "noise": args.noise, "variant": args.variant,
+              **noise_info, "rows": len(rows), "episodes": n_ep,
               "share_true_cause": float(Dg.cause[m].mean()) if m.any() else float("nan")}
 print(f"[s{s}] {tag}: {label_info}, steps {steps}", flush=True)
 ev = EV.EvalSet(ref, s, train, held, log)
