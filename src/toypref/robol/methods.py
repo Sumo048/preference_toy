@@ -78,6 +78,8 @@ ARMS: Dict[str, Arm] = {a.name: a for a in [
     *[Arm(f"KTO_b{b}_neg", "kto", beta=float(b)) for b in (30, 300)],
     Arm("RAND_SDPO_fresh_b25", "rand", of="SDPO_fresh_b25"),
     Arm("RAND_NPO_b100_neg", "rand", of="NPO_b100_neg"),
+    Arm("RAND_SDPO_pin_b25", "rand", of="SDPO_pin_b25"),
+    Arm("RAND_KTO_b100_neg", "rand", of="KTO_b100_neg"),
     Arm("FILTER_rej", "filter"),
 ]}
 
