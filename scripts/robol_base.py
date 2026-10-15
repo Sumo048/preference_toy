@@ -25,15 +25,18 @@ ap.add_argument("--q_jerk", type=float, default=D.Q_JERK)
 ap.add_argument("--q_mom", type=float, default=D.Q_MOM)
 ap.add_argument("--q_route", type=float, default=D.Q_ROUTE)
 ap.add_argument("--rho", type=float, default=D.RHO)
+ap.add_argument("--clr", type=float, nargs=2, default=list(D.CLR))
 ap.add_argument("--n_setups", type=int, default=DT.N_BASE_SETUPS)
 ap.add_argument("--out", default=os.path.join(ROBO, "base"))
 ap.add_argument("--skip_train", action="store_true")
 args = ap.parse_args()
 torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "4")))
+D.CLR = tuple(args.clr)
 od = os.path.join(args.out, f"s{args.seed}")
 os.makedirs(od, exist_ok=True)
 t0 = time.time()
 inj = dict(q_col=args.q_col, q_jerk=args.q_jerk, q_mom=args.q_mom, q_route=args.q_route, rho=args.rho)
+print(f"[s{args.seed}] injection {inj} clearance {D.CLR}", flush=True)
 if not args.skip_train:
     ds = DT.base_demos(args.seed, n_setups=args.n_setups, **inj)
     demo_stats = {"n_samples": int(len(ds.obs)), "n_demos": int(ds.demo.max() + 1),
@@ -41,7 +44,7 @@ if not args.skip_train:
                   "frac_route_demos": float(np.mean([ds.route[ds.demo == d][0] for d in np.unique(ds.demo)]))}
     print(f"[s{args.seed}] demos {demo_stats} ({time.time() - t0:.0f}s)", flush=True)
     pol = DT.train_base(args.seed, ds, steps=args.steps, lr=args.lr)
-    save(pol, os.path.join(od, "policy.pt"), steps=args.steps, demo_stats=demo_stats, **inj)
+    save(pol, os.path.join(od, "policy.pt"), steps=args.steps, demo_stats=demo_stats, clr=list(D.CLR), **inj)
     del ds
 ck = torch.load(os.path.join(od, "policy.pt"), map_location="cpu", weights_only=False)
 ref = load(os.path.join(od, "policy.pt"))

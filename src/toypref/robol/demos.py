@@ -28,12 +28,13 @@ import numpy as np
 
 from . import env as E
 
-Q_COL = 0.004
-Q_JERK = 0.006
+Q_COL = 0.004        # calibrated (calib D, s0): clean success 0.789, contact 14.6%, jerk 5.6%
+Q_JERK = 0.005
 Q_MOM = 0.02
 Q_ROUTE = 0.0
 RHO = 0.0
 CLEAR_MIN = 0.03
+CLR = (0.16, 0.28)            # lateral clearance of a demo around an obstacle (set_clearance for calibration)
 SMOOTH_SIGMA = 0.12
 MAX_TURN = 0.06
 WP_TOL = 0.07
@@ -100,7 +101,7 @@ def demo_path(st: E.Setups, s: int, rng: np.random.Generator, route=False, max_t
             for j, x, y in sorted(zip(sl, cx, cy), key=lambda z: z[1]):
                 r = st.radius[s, j]
                 side = rng.choice([-1, 1])
-                clr = -0.35 * r if j == graze else rng.uniform(0.12, 0.24)
+                clr = -0.35 * r if j == graze else rng.uniform(*CLR)
                 yy = y + side * (r + clr)
                 jx = rng.uniform(-0.04, 0.04)
                 for dx in (-r - 0.06, 0.0, r + 0.06):
