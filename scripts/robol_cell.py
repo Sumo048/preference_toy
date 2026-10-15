@@ -6,8 +6,11 @@ labels  traj    every chunk of each negative episode (the ACTUAL method's data)
         sym     symptom-window chunks only (oracle)
         cause   causal-window chunks only (oracle)
         human   human-style window chunks only (oracle)
-        window  THE headline oracle: per event, the contiguous span from the earliest causal chunk
-                through the symptom (onset) chunk (causal chunks lie at or before the symptom)
+        approach  THE headline oracle (Soumojit, 2026-10-15): per event, the symptom chunk and the 2
+                  chunks before it
+        causal_pc per event, the span from the earliest chunk whose resampling removes the event at least
+                  PC_MARGIN more often than resampling the placebo chunks 6-7 back, through the symptom
+                  chunk (the raw causal test does not beat the placebo; see LONG_TOY_DESIGN.md)
 ns      negatives come from the first N_s labelable courses only (nested)
 budget  R1  steps = clip(6 x rows, 500, 20000);  R2  5000 steps
 
@@ -27,7 +30,7 @@ ROBO = os.environ.get("ROBO_RUNS", "/grogu/datasets/rollout/soumojib/toypref/run
 ap = argparse.ArgumentParser()
 ap.add_argument("--seed", type=int, required=True)
 ap.add_argument("--arms", required=True)
-ap.add_argument("--labels", default="traj", choices=["traj", "sym", "cause", "human", "window"])
+ap.add_argument("--labels", default="traj", choices=["traj", "approach", "sym", "causal_pc", "cause", "human"])
 ap.add_argument("--ns", type=int, default=512)
 ap.add_argument("--budget", default="R1", choices=["R1", "R2"])
 ap.add_argument("--base", default=os.path.join(ROBO, "base"))
@@ -58,11 +61,19 @@ log = DT.LogResult(lg["rows"], lg["diag"], lg["episodes"], lg["per_setup"])
 train, held = DT.experiment_setups(s)
 R, Dg = log.rows, log.diag
 m = R.setup < args.ns
-if args.labels == "window":
+PC_MARGIN = 0.2
+if args.labels in ("approach", "causal_pc"):
     span = np.zeros(len(R), bool)
     for e, evs in enumerate(log.episodes["events"]):
         for x in evs:
-            lo, hi = min(x["cause"] + [x["onset"] // 8]), x["onset"] // 8
+            hi = min(x["onset"] // 8, 17)
+            if args.labels == "approach":
+                lo = hi - 2
+            else:
+                ctl = x.get("control", float("nan"))
+                beat = [hi - b for b, r in x.get("removal", {}).items()
+                        if not np.isnan(ctl) and r >= ctl + PC_MARGIN]
+                lo = min(beat + [hi])
             span |= (R.episode == e) & (R.chunk >= lo) & (R.chunk <= hi)
     m &= span
 elif args.labels != "traj":
