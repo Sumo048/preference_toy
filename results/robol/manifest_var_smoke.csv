@@ -1,0 +1,4 @@
+mode,seed,labels,ns,arm,ks
+iter,0,approach,16,SDPO_pin_b25,0.03125
+shift,0,approach,16,SDPO_pin_b25,0.03125
+own,0,approach,16,-,0.03125

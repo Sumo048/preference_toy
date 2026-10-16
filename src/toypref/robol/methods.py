@@ -57,6 +57,7 @@ class Arm:
     pos: str = ""             # sdpo: fresh | hop
     noise: str = ""           # sdpo: fresh | pin
     of: str = ""              # rand: the arm whose edit norm is matched
+    n_win: int = 1            # sdpo noise="own": winners averaged per row (r_w = mean over winners)
 
 
 ARMS: Dict[str, Arm] = {a.name: a for a in [
@@ -81,6 +82,10 @@ ARMS: Dict[str, Arm] = {a.name: a for a in [
     Arm("RAND_SDPO_pin_b25", "rand", of="SDPO_pin_b25"),
     Arm("RAND_KTO_b100_neg", "rand", of="KTO_b100_neg"),
     Arm("FILTER_rej", "filter"),
+    # own-noise pinned SDPO (Soumojit, 2026-10-16): loser at its logged noise, each winner at the noise that
+    # generated it; r_w = mean over n_win winners
+    Arm("SDPO_own_b25_K1", "sdpo", beta=25.0, pos="fresh", noise="own", n_win=1),
+    Arm("SDPO_own_b25_K8", "sdpo", beta=25.0, pos="fresh", noise="own", n_win=8),
 ]}
 
 P_RAND = 90_000
@@ -209,11 +214,34 @@ def step_fn(arm: Arm, ctx: Ctx):
                 z0 = torch.clamp((ref.flow_loss(ar, nr, t[:k], o[:k]) - pol.flow_loss(ar, nr, t[:k], o[:k])).mean(), min=0.0)
             return (1.0 - torch.sigmoid(arm.beta * (z0 - r))).mean()
     elif arm.kind == "sdpo":
+        Z = None
         if arm.pos == "hop":
             P = get_cache(ctx).target.unsqueeze(1)                                      # (N, 1, 16)
+        elif arm.noise == "own":
+            Z, P = TG._row_decodes(ref, ctx.seed, R, S.ROW_SDPO, TG.N_SDPO_POS)         # winners + the noise that made them
         else:
             P = TG.fresh_decodes(ref, ctx.seed, R, TG.N_SDPO_POS, S.ROW_SDPO)          # (N, 8, 16)
         info["n_pos_per_row"] = int(P.shape[1])
+        if arm.noise == "own":
+            K = arm.n_win
+
+            def method(pol, g):
+                i = _pick(len(R), B, g)
+                a_l, o, z_l = R.a[i], R.obs[i], R.xi[i]
+                t = FlowPolicy.sample_time(B, g)
+                if K >= P.shape[1]:
+                    j = torch.arange(P.shape[1]).expand(B, -1)
+                else:
+                    j = torch.stack([torch.randperm(P.shape[1], generator=g)[:K] for _ in range(B)])
+                a_w = P[i[:, None], j].reshape(B * K, -1)
+                z_w = Z[i[:, None], j].reshape(B * K, -1)
+                o_w, t_w = o.repeat_interleave(K, 0), t.repeat_interleave(K, 0)
+                with torch.no_grad():
+                    lr_w, lr_l = ref.flow_loss(a_w, z_w, t_w, o_w), ref.flow_loss(a_l, z_l, t, o)
+                r_w = (lr_w - pol.flow_loss(a_w, z_w, t_w, o_w)).reshape(B, K).mean(1)
+                r_l = lr_l - pol.flow_loss(a_l, z_l, t, o)
+                return O.dpo_pair_term(r_w, r_l, arm.beta).mean()
+            return method, info
 
         def method(pol, g):
             i = _pick(len(R), B, g)
@@ -246,6 +274,47 @@ def step_fn(arm: Arm, ctx: Ctx):
         t = FlowPolicy.sample_time(B, g)
         return 0.5 * (lm + pol.flow_loss(la[j], lz[j], t, lo[j]).mean())
     return anchored, info
+
+
+def train_arm_shift(arm: Arm, ctx: Ctx, n_shift: int, log_every=500):
+    """One continuous SDPO run (one optimiser, one cosine schedule over ctx.steps) whose reference policy is
+    replaced by the current policy n_shift - 1 times, at equal intervals. At every shift the winners are
+    regenerated from the new reference (an SDPO winner is a sample of pi_ref); the logged negatives and
+    their logged noises never change."""
+    torch.manual_seed(ctx.seed)
+    pol = copy.deepcopy(ctx.ref)
+    pol.train()
+    for p in pol.parameters():
+        p.requires_grad_(True)
+    opt = torch.optim.AdamW(pol.parameters(), lr=ctx.lr, betas=(0.9, 0.95), weight_decay=1e-10)
+    g = S.gen(ctx.seed, S.P_TRAIN)
+    bounds = [int(round(ctx.steps * q / n_shift)) for q in range(n_shift + 1)]
+    cur = copy.copy(ctx)
+    fn, info = step_fn(arm, cur)
+    hist = []
+    for step in range(ctx.steps):
+        if step in bounds[1:-1]:
+            from .policy import frozen
+            cur = copy.copy(ctx)
+            cur.ref = frozen(pol)
+            fn, _ = step_fn(arm, cur)
+        lr = cosine(step, ctx.steps, min(500, ctx.steps // 10), ctx.lr, 0.1 * ctx.lr)
+        for pg in opt.param_groups:
+            pg["lr"] = lr
+        loss = fn(pol, g)
+        opt.zero_grad(set_to_none=True)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(pol.parameters(), 1.0)
+        opt.step()
+        if step % log_every == 0 or step == ctx.steps - 1:
+            hist.append({"step": step, "loss": float(loss.detach())})
+    pol.eval()
+    for p in pol.parameters():
+        p.requires_grad_(False)
+    with torch.no_grad():
+        info["edit_norm"] = float(sum(float((p - r).norm()) ** 2 for p, r in zip(pol.parameters(), ctx.ref.parameters())) ** 0.5)
+    info.update({"train_history": hist, "n_shift": n_shift, "shift_steps": bounds[1:-1]})
+    return pol, info
 
 
 def train_arm(arm: Arm, ctx: Ctx, probe=None, log_every=500):
