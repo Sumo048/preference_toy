@@ -89,3 +89,36 @@ for arm in ARMS:
         out.append("")
 open("results/robol/KSWEEP.md", "w").write("\n".join(out) + "\n")
 print("\n".join(out))
+
+# ---- the same curves against TOTAL steps (k x rows): is the optimum a fixed step count rather than a per-row dose?
+fig, axes = plt.subplots(len(LABELS), len(ARMS), figsize=(4.2 * len(ARMS), 3.6 * len(LABELS)), sharex=True)
+best_rows = []
+for i, L in enumerate(LABELS):
+    for j, arm in enumerate(ARMS):
+        ax = axes[i, j]
+        d = df[(df.arm == arm) & (df.labels == L)]
+        for n in NS:
+            g = d[d.ns == n].groupby("k").agg(G=("G", "mean"), se=("G", "sem"), steps=("steps", "median"))
+            if not len(g):
+                continue
+            ax.errorbar(g.steps, g.G, yerr=2 * g.se.fillna(0), color=col[n], marker="o", ms=3, lw=1.4, capsize=2,
+                        label=f"N_s={n}")
+            b = g.G.idxmax()
+            best_rows.append({"arm": arm, "labels": L, "ns": n, "best_k": b, "best_steps": int(g.loc[b, "steps"]),
+                              "best_G": g.loc[b, "G"], "at_edge": b == min(g.index)})
+        ax.axhline(0, color="grey", lw=0.8)
+        ax.set_xscale("log", base=10)
+        ax.set_title(f"{arm} — {L} labels", fontsize=9)
+        if j == 0:
+            ax.set_ylabel("Δ clean success, held (pts)")
+        if i == len(LABELS) - 1:
+            ax.set_xlabel("total gradient steps (= k x labelled rows)")
+        if i == 0 and j == 0:
+            ax.legend(fontsize=7)
+fig.tight_layout()
+fig.savefig("results/robol/ksweep_steps.png", dpi=130)
+bt = pd.DataFrame(best_rows)
+with open("results/robol/KSWEEP.md", "a") as fh:
+    fh.write("\n## Best dose per (arm, labels, N_s): k and total steps (at_edge: best k is the smallest tested)\n\n")
+    fh.write(bt.to_string(index=False) + "\n")
+print(bt.to_string(index=False))
