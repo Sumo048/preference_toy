@@ -16,7 +16,7 @@ for f in glob.glob(os.path.join(ROBO, "cells_v", "*", "*_ns*", "s*", "*.json")):
     b = r["b0"]
     if r["mode"] == "iter":
         cfg = f"round {r['round']}"
-    elif r["mode"] == "shift":
+    elif r["mode"] in ("shift", "shiftneg"):
         cfg = f"S={r['n_shift']}"
     else:
         cfg = f"K={r['n_win']}"
@@ -56,7 +56,7 @@ def figure(mode, arms, cfgs, fname):
     for i, (a, L) in enumerate(rows):
         for j, n in enumerate(NS):
             ax = axes[i, j]
-            base_arm = "SDPO_pin_b25" if a == "SDPO_own_b25" else a
+            base_arm = "SDPO_pin_b25" if a.startswith("SDPO_own") else a
             pl = df[(df["mode"] == "plain") & (df.arm == base_arm) & (df.labels == L) & (df.ns == n)]
             g = pl.groupby("k").G
             ax.errorbar(g.mean().index, g.mean(), yerr=2 * g.sem().fillna(0), color="0.55", lw=1.4, marker="o", ms=2,
@@ -84,14 +84,16 @@ def figure(mode, arms, cfgs, fname):
 
 
 figure("iter", ["SDPO_pin_b25", "SDPO_fresh_b25"], ["round 1", "round 2", "round 3"], "results/robol/variants_iter.png")
-figure("shift", ["SDPO_pin_b25", "SDPO_fresh_b25"], ["S=2", "S=4", "S=8"], "results/robol/variants_shift.png")
+figure("shift", ["SDPO_pin_b25", "SDPO_fresh_b25", "SDPO_own_b25_K8"], ["S=2", "S=4", "S=8"], "results/robol/variants_shift.png")
+figure("shiftneg", ["SDPO_pin_b25", "SDPO_fresh_b25", "SDPO_own_b25_K8"], ["S=2", "S=4", "S=8"], "results/robol/variants_shiftneg.png")
 figure("own", ["SDPO_own_b25"], ["K=1", "K=8"], "results/robol/variants_own.png")
 
 for mode, arms, cfgs in (("iter", ["SDPO_pin_b25", "SDPO_fresh_b25"], ["round 1", "round 2", "round 3"]),
-                         ("shift", ["SDPO_pin_b25", "SDPO_fresh_b25"], ["S=2", "S=4", "S=8"]),
+                         ("shift", ["SDPO_pin_b25", "SDPO_fresh_b25", "SDPO_own_b25_K8"], ["S=2", "S=4", "S=8"]),
+                         ("shiftneg", ["SDPO_pin_b25", "SDPO_fresh_b25", "SDPO_own_b25_K8"], ["S=2", "S=4", "S=8"]),
                          ("own", ["SDPO_own_b25"], ["K=1", "K=8"])):
     for a in arms:
-        base_arm = "SDPO_pin_b25" if a == "SDPO_own_b25" else a
+        base_arm = "SDPO_pin_b25" if a.startswith("SDPO_own") else a
         for L in ("traj", "approach"):
             out += [f"## {mode}: {a}, {L}", "", "| N_s | plain best | " + " | ".join(f"{c} best" for c in cfgs) + " |",
                     "|---|---|" + "---|" * len(cfgs)]
