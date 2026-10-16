@@ -347,3 +347,51 @@ def unlabelled_pool(ref, seed: int, train: E.Setups) -> Pool:
     e, c = np.nonzero(ro.ran)
     return Pool(torch.from_numpy(ro.obs[e, c]), torch.from_numpy(ro.noise[e, c]), torch.from_numpy(ro.act[e, c]),
                 idx[e], e, c, ro.negative[e])
+
+
+# ------------------------------------------------------------------ re-collected negatives (online rounds)
+P_RELOG = 200_000              # + round * 1000 + setup id
+
+
+def collect_negatives(pol, seed: int, train: E.Setups, setups, round_id: int, labels: str = "traj") -> NegRows:
+    """New negative rows from ``pol`` on the given training courses: up to n_keep(seed) negative episodes per
+    course from LOG_ROUNDS x LOG_BATCH rollouts (fresh noise streams per round_id), labelled by the env labeller.
+    labels: traj (every chunk) | approach (per event: the onset chunk and the 2 before it). Courses where the
+    policy no longer fails contribute nothing. Row uids live in their own range (>= 1e9) so row streams are new."""
+    keep = n_keep(seed)
+    need = [int(s) for s in setups if keep[s] > 0]
+    found: Dict[int, int] = {s: 0 for s in need}
+    rows = {k: [] for k in ("obs", "xi", "a", "uid", "setup", "episode", "chunk")}
+    n_ep = 0
+    for r in range(LOG_ROUNDS):
+        todo = [s for s in need if found[s] < keep[s]]
+        if not todo:
+            break
+        nz = torch.cat([torch.randn(LOG_BATCH, E.N_CHUNKS, E.ACT_DIM,
+                                    generator=S.gen(seed, P_RELOG + round_id * 1000 + int(train.sid[s]) + 100_000 * r)) for s in todo])
+        ro = rollout_chunked(pol, train, np.repeat(todo, LOG_BATCH), nz)
+        evs = E.events(ro.pos, ro.contact) if labels == "approach" else None
+        for n, s in enumerate(todo):
+            for e in np.flatnonzero(ro.negative[n * LOG_BATCH:(n + 1) * LOG_BATCH]):
+                if found[s] >= keep[s]:
+                    break
+                j = n * LOG_BATCH + e
+                ch = np.flatnonzero(ro.ran[j])
+                if labels == "approach":
+                    sel = np.zeros(E.N_CHUNKS, bool)
+                    for _, t0 in evs[j]:
+                        hi = min(t0 // E.H, E.N_CHUNKS - 1)
+                        sel[max(0, hi - 2):hi + 1] = True
+                    ch = [c for c in ch if sel[c]]
+                for c in ch:
+                    rows["obs"].append(ro.obs[j, c]); rows["xi"].append(ro.noise[j, c]); rows["a"].append(ro.act[j, c])
+                    rows["uid"].append(10**9 + round_id * 10**8 + int(train.sid[s]) * 10**5 + (r * LOG_BATCH + int(e)) * 100 + int(c))
+                    rows["setup"].append(s); rows["episode"].append(n_ep); rows["chunk"].append(int(c))
+                found[s] += 1
+                n_ep += 1
+    if not rows["uid"]:
+        z = torch.zeros(0, E.OBS_DIM), torch.zeros(0, E.ACT_DIM)
+        return NegRows(z[0], z[1], z[1].clone(), np.zeros(0, int), np.zeros(0, int), np.zeros(0, int), np.zeros(0, int))
+    return NegRows(torch.from_numpy(np.stack(rows["obs"])), torch.from_numpy(np.stack(rows["xi"]).astype(np.float32)),
+                   torch.from_numpy(np.stack(rows["a"])), np.array(rows["uid"]), np.array(rows["setup"]),
+                   np.array(rows["episode"]), np.array(rows["chunk"]))

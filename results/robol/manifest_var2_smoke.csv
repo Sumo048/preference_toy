@@ -1,0 +1,4 @@
+mode,seed,labels,ns,arm,ks
+shiftneg,0,approach,16,SDPO_pin_b25,0.0625
+shiftneg,0,traj,16,SDPO_own_b25_K8,0.0625
+shift,0,traj,16,SDPO_own_b25_K8,0.0625

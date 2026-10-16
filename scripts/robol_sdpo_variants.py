@@ -9,6 +9,8 @@ iter   SDPO on the result of SDPO. Round 1 = a normal SDPO run (k x rows steps) 
        fresh schedule, k x rows steps again. Same logged negatives every round. Evaluated after rounds 1, 2, 3.
 shift  One continuous SDPO run of k x rows steps (one optimiser, one cosine schedule) whose pi_ref is replaced by
        the current policy at S-1 equally spaced points (S segments); winners re-sampled at each shift.
+shiftneg  As shift, and at every shift the NEGATIVES are re-collected from the current policy on the same labelled
+       courses (same 1-3 per course, env labeller, same label type); winners re-sampled as in shift.
 own    Pinned SDPO with the winner at its OWN noise: loser at the negative's logged noise; each of K winners is a
        base sample at the same observation, scored at the noise that generated it; r_w = mean over the K winners.
        K = 1 and K = 8 (SDPO_own_b25_K1 / _K8).
@@ -25,7 +27,7 @@ from toypref.robol.policy import load, frozen
 
 ROBO = os.environ.get("ROBO_RUNS", "/grogu/datasets/rollout/soumojib/toypref/runs/robol")
 ap = argparse.ArgumentParser()
-ap.add_argument("--mode", required=True, choices=["iter", "shift", "own"])
+ap.add_argument("--mode", required=True, choices=["iter", "shift", "own", "shiftneg"])
 ap.add_argument("--seed", type=int, required=True)
 ap.add_argument("--labels", default="traj", choices=["traj", "approach"])
 ap.add_argument("--ns", type=int, default=512)
@@ -55,7 +57,7 @@ def names():
             if args.mode == "iter":
                 for n in range(1, args.rounds + 1):
                     yield f"{arm}_k{kname(k)}_r{n}"
-            elif args.mode == "shift":
+            elif args.mode in ("shift", "shiftneg"):
                 for S in shifts:
                     yield f"{arm}_k{kname(k)}_S{S}"
             else:
@@ -114,13 +116,15 @@ for arm in arms:
                 write(nm, pol, info, {"arm": arm, "k": k, "round": n, "steps_per_round": steps, "total_steps": n * steps,
                                       "train_s": round(time.time() - t0, 1)})
                 cur = frozen(pol)
-        elif args.mode == "shift":
+        elif args.mode in ("shift", "shiftneg"):
+            labelled = np.unique(R.setup[R.setup < args.ns])
+            refresh = (lambda pol_, i_: DT.collect_negatives(pol_, s, train, labelled, i_, args.labels)) if args.mode == "shiftneg" else None
             for S in shifts:
                 nm = f"{arm}_k{kname(k)}_S{S}"
                 if done(nm):
                     continue
                 t0 = time.time()
-                pol, info = MT.train_arm_shift(A, MT.Ctx(ref=ref, seed=s, rows=rows, steps=steps), S)
+                pol, info = MT.train_arm_shift(A, MT.Ctx(ref=ref, seed=s, rows=rows, steps=steps), S, refresh_rows=refresh)
                 write(nm, pol, info, {"arm": arm, "k": k, "n_shift": S, "total_steps": steps, "train_s": round(time.time() - t0, 1)})
         else:
             nm = f"{arm}_k{kname(k)}"

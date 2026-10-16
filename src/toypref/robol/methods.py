@@ -86,6 +86,7 @@ ARMS: Dict[str, Arm] = {a.name: a for a in [
     # generated it; r_w = mean over n_win winners
     Arm("SDPO_own_b25_K1", "sdpo", beta=25.0, pos="fresh", noise="own", n_win=1),
     Arm("SDPO_own_b25_K8", "sdpo", beta=25.0, pos="fresh", noise="own", n_win=8),
+
 ]}
 
 P_RAND = 90_000
@@ -276,11 +277,12 @@ def step_fn(arm: Arm, ctx: Ctx):
     return anchored, info
 
 
-def train_arm_shift(arm: Arm, ctx: Ctx, n_shift: int, log_every=500):
+def train_arm_shift(arm: Arm, ctx: Ctx, n_shift: int, log_every=500, refresh_rows=None):
     """One continuous SDPO run (one optimiser, one cosine schedule over ctx.steps) whose reference policy is
     replaced by the current policy n_shift - 1 times, at equal intervals. At every shift the winners are
     regenerated from the new reference (an SDPO winner is a sample of pi_ref); the logged negatives and
-    their logged noises never change."""
+    their logged noises never change -- unless ``refresh_rows(frozen_policy, shift_index)`` is given, which
+    returns the NEW negative rows (re-collected from the current policy) used from that shift on."""
     torch.manual_seed(ctx.seed)
     pol = copy.deepcopy(ctx.ref)
     pol.train()
@@ -295,9 +297,12 @@ def train_arm_shift(arm: Arm, ctx: Ctx, n_shift: int, log_every=500):
     for step in range(ctx.steps):
         if step in bounds[1:-1]:
             from .policy import frozen
-            cur = copy.copy(ctx)
+            cur = copy.copy(cur)
             cur.ref = frozen(pol)
-            fn, _ = step_fn(arm, cur)
+            if refresh_rows is not None:
+                cur.rows = refresh_rows(cur.ref, bounds.index(step))
+                info.setdefault("refresh_rows", []).append(len(cur.rows))
+            fn, _ = step_fn(arm, cur) if len(cur.rows) else (lambda p_, g_: sum(x.sum() * 0 for x in p_.parameters()), None)
         lr = cosine(step, ctx.steps, min(500, ctx.steps // 10), ctx.lr, 0.1 * ctx.lr)
         for pg in opt.param_groups:
             pg["lr"] = lr
