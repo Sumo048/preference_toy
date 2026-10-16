@@ -5,8 +5,8 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:0
 #SBATCH --time=08:00:00
-#SBATCH --partition=shubhamlong
-#SBATCH --exclude=grogu-0-25
+#SBATCH --partition=all,shubhamlong
+#SBATCH --exclude=grogu-0-25,grogu-1-20
 # robol base policies: one array task per seed. Optional env: ARGS (extra args, e.g. injection rates), OUT.
 set -eo pipefail
 cd /home/soumojib/repos/toypref-robo

@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --gres=gpu:0
 #SBATCH --time=12:00:00
-#SBATCH --partition=shubhamlong
+#SBATCH --partition=all,shubhamlong
 #SBATCH --exclude=grogu-0-25,grogu-1-20
 # MANIFEST=results/robol/manifest_*.csv ; one task per row (seed, arms, labels, ns, budget). Skip-if-exists per arm.
 set -eo pipefail

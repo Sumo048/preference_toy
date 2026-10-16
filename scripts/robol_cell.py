@@ -142,7 +142,7 @@ if args.budget == "R1":
 elif args.budget == "R2":
     steps = 5000
 elif args.budget.startswith("K"):
-    steps = max(20, int(round(float(args.budget[1:]) * len(rows))))
+    steps = max(5, int(round(float(args.budget[1:]) * len(rows))))
 else:
     raise ValueError(args.budget)
 label_info = {"labels": args.labels, "ns": args.ns, "budget": args.budget, "noise": args.noise, "variant": args.variant,
