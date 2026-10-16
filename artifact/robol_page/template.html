@@ -1,0 +1,238 @@
+<title>Long-Course Robot Toy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a lab notebook page. One reading column for prose, full-width figure strips for renders and the results table. */
+:root {
+  --bg: #f5f6f4; --surface: #ffffff; --ink: #1b2124; --muted: #5d676b; --rule: #d9ddda;
+  --path: #1f6f78; --base: #9aa3a6; --contact: #c2412d; --jerk: #c98a0b; --obst: #c9cfcc; --obst-edge: #8f9996;
+  --good: #2e7d4f; --bad: #b3392a; --accent: #1f6f78; --chip: #eceeec;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121618; --surface: #1a1f22; --ink: #e4e8e6; --muted: #9aa5a8; --rule: #2c3437;
+  --path: #4fb3bd; --base: #5e686c; --contact: #ef6a52; --jerk: #e7aa33; --obst: #2f383b; --obst-edge: #56636a;
+  --good: #5cbf86; --bad: #ef6a52; --accent: #4fb3bd; --chip: #242b2e; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121618; --surface: #1a1f22; --ink: #e4e8e6; --muted: #9aa5a8; --rule: #2c3437;
+  --path: #4fb3bd; --base: #5e686c; --contact: #ef6a52; --jerk: #e7aa33; --obst: #2f383b; --obst-edge: #56636a;
+  --good: #5cbf86; --bad: #ef6a52; --accent: #4fb3bd; --chip: #242b2e; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 48px; }
+.prose { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; letter-spacing: 0.005em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(30px, 4.6vw, 44px); line-height: 1.05; }
+h2 { font-size: 24px; line-height: 1.2; }
+h3 { font-size: 17px; }
+p { margin: 0; }
+section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.lede { font-size: 17px; color: var(--ink); }
+.muted { color: var(--muted); }
+code, .mono { font-family: var(--f-mono); font-size: 0.92em; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.stat .v { font-family: var(--f-display); font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat .l { font-size: 13px; color: var(--muted); }
+.stat.neg .v { color: var(--bad); } .stat.pos .v { color: var(--good); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px 32px; }
+.facts > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.facts h3 { font-size: 15px; }
+.facts p, .facts li { font-size: 14px; }
+.facts ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 4px; border-radius: 2px; display: inline-block; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.card svg { width: 100%; height: auto; display: block; }
+.card .cap { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px; }
+.chip { font-family: var(--f-mono); font-size: 11.5px; padding: 2px 7px; border-radius: 10px; background: var(--chip); white-space: nowrap; }
+.chip.ok { color: var(--good); } .chip.c { color: var(--contact); } .chip.j { color: var(--jerk); } .chip.t { color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.tabs button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.compare { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+th:first-child, td:first-child { text-align: left; }
+tbody tr:last-child td { border-bottom: 0; }
+tr.group td { background: var(--bg); font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: left; }
+td .nm { font-weight: 600; } td .nt { display: block; font-size: 12px; color: var(--muted); }
+.pm { color: var(--muted); font-size: 11.5px; }
+.bar { display: inline-block; height: 8px; border-radius: 2px; background: var(--bad); vertical-align: middle; margin-left: 8px; opacity: 0.85; }
+.methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 32px; }
+.methods > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.math { font-family: var(--f-mono); font-size: 13px; background: var(--chip); padding: 8px 10px; border-radius: 4px; overflow-x: auto; white-space: nowrap; }
+.note { border-left: 3px solid var(--jerk); padding: 2px 0 2px 12px; font-size: 14px; max-width: 80ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:14px">
+    <div class="eyebrow">toypref · robol · branch robo-long · 5 seeds · held-out courses</div>
+    <h1>Long-Course Robot Toy</h1>
+    <p class="lede prose">A point robot drives a chunked flow policy through four-segment obstacle courses. It usually succeeds, but sometimes bumps an obstacle or moves jerkily. Each bad run is labelled negative as a whole trajectory. This page shows what the robot does, what a negative looks like, and what each editing method does to the success and negative rates.</p>
+  </header>
+
+  <section>
+    <div class="eyebrow">Starting point: the frozen base policy</div>
+    <div class="stats" id="stats"></div>
+    <p class="muted prose" style="font-size:13.5px">Measured on 128 held-out courses × 32 rollouts per seed, 5 seeds. A <b>negative</b> is an episode with any obstacle contact or any jerk window above threshold. <b>Clean success</b> means reaching the last waypoint with neither.</p>
+  </section>
+
+  <section>
+    <h2>The setup</h2>
+    <div class="facts">
+      <div><h3>Robot and course</h3><ul>
+        <li>A point agent in 2-D. A course has <b>4 waypoint segments</b>, each with 1–3 disc obstacles. Segments turn by up to ±60°.</li>
+        <li>Touching an obstacle does <b>not</b> end the episode: the agent slides along the surface and keeps going.</li>
+        <li>Success = reaching the last waypoint within 144 steps.</li></ul></div>
+      <div><h3>Policy (π0-style)</h3><ul>
+        <li>A conditional rectified flow over <b>action chunks</b>: 8 steps of 2-D velocity, decoded from noise in 20 Euler steps, run open loop, then replanned. At most <b>18 chunks</b> per episode.</li>
+        <li>Observation: position, offset to the current and next waypoint, the 3 nearest obstacles, last velocity.</li></ul></div>
+      <div><h3>Where failures come from</h3><ul>
+        <li>The base imitates demos (2,640 courses × 8). Demos contain rare injected bad chunks: heading into an obstacle, carrying momentum through a turn, and zig-zag jerk.</li>
+        <li>Most contacts are the policy's own drift into a bad state, not a single bad chunk.</li></ul></div>
+      <div><h3>The negative preference</h3><ul>
+        <li><b>Label:</b> a whole episode is negative if it touches an obstacle or exceeds the jerk threshold anywhere.</li>
+        <li><b>Data:</b> 1–3 negative episodes per labelled course, up to 512 courses (about 1,000 episodes, 15,000 chunks). Only about 7.5% of those chunks contain the event.</li>
+        <li><b>Trajectory labels</b> (the real method): every chunk of the episode is a negative row. <b>Window labels</b> (oracle): only the event chunk and the 2 chunks before it.</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Normal and negative behaviour of the base</h2>
+    <div class="legend" id="legend"></div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section>
+    <h2>The same episodes after editing</h2>
+    <p class="prose">Each method edits the base policy, then replays the <b>same noise sequence</b> on the same course, so a difference comes only from the edit. Pick an episode. The grey path is the base and the coloured path is the edited policy.</p>
+    <div class="tabs" id="tabs" role="group" aria-label="Choose an example episode"></div>
+    <div class="compare" id="compare"></div>
+    <p class="note">One episode is a coin flip. Every method fixes some base failures and breaks some good runs, including the best ones. Read the table below for the rates. These 12 episodes are a fixed random draw (one per course, 4 of each kind), not picked to flatter any method.</p>
+  </section>
+
+  <section>
+    <h2>Success and negative rates for every method</h2>
+    <p class="prose">Held-out courses, mean ± standard error over 5 seeds. Every method sees only the labelled negatives and the frozen base. Doses are steps per labelled row (k); batch 256, learning rate 10⁻⁴.</p>
+    <div class="tablewrap"><table id="results"><thead><tr>
+      <th>Method</th><th>Reaches goal</th><th>Clean success</th><th>P(negative)</th><th>Contact</th><th>Jerk</th></tr></thead><tbody></tbody></table></div>
+    <p class="note">The doses in the "best dose" rows were chosen on these same evaluation courses (from the k-sweep), so they are optimistic. A deployed method has to choose its dose without robot evaluation. The "round-1 budget" rows show what a fixed 5,000-step dose does.</p>
+  </section>
+
+  <section>
+    <h2>The methods</h2>
+    <div class="methods">
+      <div><h3>Shared notation</h3><p>ℓ(a; ξ, t, o) is the flow-matching loss of chunk a at noise ξ, time t and observation o. The log-ratio is r = ℓ<sub>ref</sub> − ℓ<sub>θ</sub>: it is positive when the edited policy makes a chunk more likely than the base does.</p></div>
+      <div><h3>Pinned SDPO (ours)</h3><p>Self-paired DPO. The loser is the logged negative chunk at its <b>logged</b> noise. The winner is a fresh base sample at the same observation, scored at the same logged noise.</p><div class="math">L = −log σ(β (r(a_w; ξ_log) − r(a_l; ξ_log))),  β = 25</div></div>
+      <div><h3>Fresh SDPO (ours)</h3><p>The same pair, with winner and loser each scored at independent fresh noise. It changes the policy more gently, peaks lower and is harder to overtrain.</p><div class="math">L = −log σ(β (r(a_w; ξ₁) − r(a_l; ξ₂))),  β = 25</div></div>
+      <div><h3>NPO (baseline)</h3><p>Pushes down the likelihood of every logged negative chunk, with no positive term.</p><div class="math">L = (2/β) softplus(β r(a_l; ξ)),  β = 100</div></div>
+      <div><h3>KTO (baseline)</h3><p>Undesirable-only KTO. The reference point z₀ comes from mismatched rows.</p><div class="math">L = 1 − σ(β (z₀ − r(a_l; ξ))),  β = 100</div></div>
+    </div>
+  </section>
+
+  <p class="muted" style="font-size:12.5px">Source: ~/repos/toypref-robo (branch robo-long). Rates come from results/robol/KSWEEP.md and RESULTS.md. Renders are seed-0 rollouts exported by scripts/robol_showcase.py.</p>
+</div>
+
+<script>
+const D = __DATA__;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const pct = x => (100 * x).toFixed(1) + "%";
+const outcome = r => r.success && !r.negative ? ["ok", "clean"] :
+  [r.collided ? "c" : (r.jerky ? "j" : "t"), [r.collided ? "contact" : "", r.jerky ? "jerk" : "", r.success ? "" : "no goal"].filter(Boolean).join(" + ")];
+
+// ---- stats
+const B = D.table[0];
+document.getElementById("stats").innerHTML = [
+  ["Reaches the goal", pct(B.success[0]), ""], ["Clean success", pct(B.success_clean[0]), ""],
+  ["P(negative episode)", pct(B.bad[0]), "neg"], ["Any obstacle contact", pct(B.collision[0]), ""], ["Jerky", pct(B.jerk[0]), ""],
+].map(([l, v, c]) => `<div class="stat ${c}"><span class="v">${v}</span><span class="l">${l}</span></div>`).join("");
+
+// ---- legend
+document.getElementById("legend").innerHTML =
+  `<span><i class="sw" style="background:var(--path)"></i>path</span>` +
+  `<span><i class="dot" style="background:var(--contact)"></i>contact</span>` +
+  `<span><i class="sw" style="background:var(--jerk);height:6px"></i>jerk window</span>` +
+  `<span><i class="dot" style="background:var(--surface);border:2px solid var(--ink)"></i>waypoint</span>` +
+  `<span><i class="dot" style="background:var(--obst);border:1px solid var(--obst-edge)"></i>obstacle</span>` +
+  `<span><i class="sw" style="background:var(--muted);height:2px"></i>chunk boundary tick</span>`;
+
+// ---- renderer
+function bounds(course, paths) {
+  let xs = [], ys = [];
+  course.wps.forEach(([x, y]) => { xs.push(x); ys.push(y); });
+  course.obstacles.forEach(([x, y, r]) => { xs.push(x - r, x + r); ys.push(y - r, y + r); });
+  paths.forEach(p => p.forEach(([x, y]) => { xs.push(x); ys.push(y); }));
+  const pad = 0.18, x0 = Math.min(...xs) - pad, x1 = Math.max(...xs) + pad, y0 = Math.min(...ys) - pad, y1 = Math.max(...ys) + pad;
+  const w = x1 - x0, h = y1 - y0, s = Math.max(w, h);
+  return [x0 - (s - w) / 2, y0 - (s - h) / 2, s];
+}
+function render(course, run, ghost) {
+  const paths = [run.pos].concat(ghost ? [ghost.pos] : []);
+  const [x0, y0, s] = bounds(course, paths);
+  const W = 300, k = W / s, X = x => ((x - x0) * k).toFixed(1), Y = y => (W - (y - y0) * k).toFixed(1);
+  const pl = p => p.map(([x, y]) => `${X(x)},${Y(y)}`).join(" ");
+  let g = `<svg viewBox="0 0 ${W} ${W}" role="img" aria-label="course render">`;
+  g += `<rect width="${W}" height="${W}" fill="var(--surface)"/>`;
+  course.obstacles.forEach(([x, y, r]) => g += `<circle cx="${X(x)}" cy="${Y(y)}" r="${(r * k).toFixed(1)}" fill="var(--obst)" stroke="var(--obst-edge)" stroke-width="1"/>`);
+  g += `<polyline points="${pl(course.wps)}" fill="none" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 4"/>`;
+  if (ghost) g += `<polyline points="${pl(ghost.pos)}" fill="none" stroke="var(--base)" stroke-width="1.6" stroke-linejoin="round" opacity="0.9"/>`;
+  // jerk windows (8-step windows starting at the event step)
+  run.events.filter(e => e[0] === "jerk").forEach(([, t]) => {
+    const seg = run.pos.slice(Math.max(0, t), Math.min(run.pos.length, t + 10));
+    if (seg.length > 1) g += `<polyline points="${pl(seg)}" fill="none" stroke="var(--jerk)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>`;
+  });
+  g += `<polyline points="${pl(run.pos)}" fill="none" stroke="var(--path)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  (run.chunk_starts || []).forEach(t => { if (t > 0 && t < run.pos.length) { const [x, y] = run.pos[t]; g += `<circle cx="${X(x)}" cy="${Y(y)}" r="1.4" fill="var(--muted)"/>`; } });
+  run.contact.forEach(t => { const p = run.pos[Math.min(t + 1, run.pos.length - 1)]; g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.2" fill="var(--contact)"/>`; });
+  course.wps.forEach(([x, y], i) => {
+    if (i === 0) g += `<rect x="${(+X(x) - 4).toFixed(1)}" y="${(+Y(y) - 4).toFixed(1)}" width="8" height="8" fill="var(--ink)"/>`;
+    else g += `<circle cx="${X(x)}" cy="${Y(y)}" r="5" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/><text x="${X(x)}" y="${(+Y(y) + 3).toFixed(1)}" font-size="7" text-anchor="middle" fill="var(--ink)" font-family="IBM Plex Mono, monospace">${i}</text>`;
+  });
+  return g + `</svg>`;
+}
+
+// ---- gallery
+const kindName = { normal: "Normal (clean)", contact: "Negative: contact", jerk: "Negative: jerk" };
+document.getElementById("gallery").innerHTML = D.examples.map((e, i) => {
+  const [c, t] = outcome(e.base);
+  return `<div class="card">${render(e.course, e.base)}<div class="cap"><span>${kindName[e.kind]} · #${i + 1}</span><span class="chip ${c}">${t}</span></div></div>`;
+}).join("");
+
+// ---- comparison
+const METHODS = Object.keys(D.examples[0].methods);
+const tabs = document.getElementById("tabs");
+let cur = 4;
+function drawCompare() {
+  const e = D.examples[cur];
+  const cards = [["Base policy", e.base, null, "frozen base"]].concat(METHODS.map(m => [m, e.methods[m], e.base, D.method_notes[m].note]));
+  document.getElementById("compare").innerHTML = cards.map(([n, r, gh, note]) => {
+    const [c, t] = outcome(r);
+    return `<div class="card">${render(e.course, r, gh)}<div class="cap"><span><b>${n}</b></span><span class="chip ${c}">${t}</span></div><div class="muted" style="font-size:12px">${note}</div></div>`;
+  }).join("");
+  [...tabs.children].forEach((b, i) => b.setAttribute("aria-pressed", i === cur ? "true" : "false"));
+}
+tabs.innerHTML = D.examples.map((e, i) => { const [c] = outcome(e.base); return `<button type="button" id="ex${i}" aria-pressed="false"><span class="dot" style="background:var(--${c === "ok" ? "good" : c === "j" ? "jerk" : "contact"})"></span>#${i + 1} ${e.kind}</button>`; }).join("");
+[...tabs.children].forEach((b, i) => b.addEventListener("click", () => { cur = i; drawCompare(); }));
+drawCompare();
+
+// ---- table
+const groups = [["Starting point", [0]], ["Trajectory labels at their best dose (the real method)", [1, 2, 3, 4, 5]],
+                ["Window labels (oracle) at their best dose", [6, 7]], ["Fixed 5,000-step dose (round-1 budget)", [8, 9, 10]]];
+const maxBad = Math.max(...D.table.map(r => r.bad[0]));
+const cell = (v, neg) => `${pct(v[0])} <span class="pm">± ${(100 * v[1]).toFixed(1)}</span>`;
+document.querySelector("#results tbody").innerHTML = groups.map(([g, ids]) =>
+  `<tr class="group"><td colspan="6">${g}</td></tr>` + ids.map(i => { const r = D.table[i];
+    return `<tr><td><span class="nm">${r.name}</span><span class="nt">${r.note}</span></td><td>${cell(r.success)}</td><td>${cell(r.success_clean)}</td>` +
+      `<td>${cell(r.bad)}<span class="bar" style="width:${(60 * r.bad[0] / maxBad).toFixed(0)}px"></span></td><td>${cell(r.collision)}</td><td>${cell(r.jerk)}</td></tr>`; }).join("")).join("");
+</script>
