@@ -32,7 +32,7 @@ ap.add_argument("--seed", type=int, required=True)
 ap.add_argument("--arms", required=True)
 ap.add_argument("--labels", default="traj", choices=["traj", "approach", "sym", "causal_pc", "cause", "human"])
 ap.add_argument("--ns", type=int, default=512)
-ap.add_argument("--budget", default="R1", choices=["R1", "R2"])
+ap.add_argument("--budget", default="R1", help="R1: clip(6 x rows, 500, 20000) | R2: 5000 | K<k>: round(k x rows), no clip (>= 20)")
 ap.add_argument("--variant", default="", help="environment variant: bases in base_<v>, cells in cells_<v>")
 ap.add_argument("--noise", default="none", help="label noise: none | flip<f> (a share f of labelled episodes replaced by a "
                 "clean pool episode of the same course) | recall<r> (only a share r of negative episodes labelled)")
@@ -137,7 +137,14 @@ if args.noise != "none":
     else:
         raise ValueError(args.noise)
 n_ep = int(len(np.unique(rows.episode)))
-steps = int(np.clip(6 * len(rows), 500, 20000)) if args.budget == "R1" else 5000
+if args.budget == "R1":
+    steps = int(np.clip(6 * len(rows), 500, 20000))
+elif args.budget == "R2":
+    steps = 5000
+elif args.budget.startswith("K"):
+    steps = max(20, int(round(float(args.budget[1:]) * len(rows))))
+else:
+    raise ValueError(args.budget)
 label_info = {"labels": args.labels, "ns": args.ns, "budget": args.budget, "noise": args.noise, "variant": args.variant,
               **noise_info, "rows": len(rows), "episodes": n_ep,
               "share_true_cause": float(Dg.cause[m].mean()) if m.any() else float("nan")}
