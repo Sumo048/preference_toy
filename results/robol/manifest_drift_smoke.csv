@@ -1,0 +1,3 @@
+seed,arm,labels,ns,steps
+0,SDPO_pin_b25,approach,64,50
+0,SDPO_fresh_b25_W,traj,64,50

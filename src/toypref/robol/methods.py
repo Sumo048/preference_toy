@@ -58,6 +58,7 @@ class Arm:
     noise: str = ""           # sdpo: fresh | pin
     of: str = ""              # rand: the arm whose edit norm is matched
     n_win: int = 1            # sdpo noise="own": winners averaged per row (r_w = mean over winners)
+    half: str = ""            # sdpo ablation: "w" winner term only, "l" loser term only
 
 
 ARMS: Dict[str, Arm] = {a.name: a for a in [
@@ -86,6 +87,11 @@ ARMS: Dict[str, Arm] = {a.name: a for a in [
     # generated it; r_w = mean over n_win winners
     Arm("SDPO_own_b25_K1", "sdpo", beta=25.0, pos="fresh", noise="own", n_win=1),
     Arm("SDPO_own_b25_K8", "sdpo", beta=25.0, pos="fresh", noise="own", n_win=8),
+    # drift experiment D: which half of the SDPO loss moves the policy
+    Arm("SDPO_pin_b25_W", "sdpo", beta=25.0, pos="fresh", noise="pin", half="w"),
+    Arm("SDPO_pin_b25_L", "sdpo", beta=25.0, pos="fresh", noise="pin", half="l"),
+    Arm("SDPO_fresh_b25_W", "sdpo", beta=25.0, pos="fresh", noise="fresh", half="w"),
+    Arm("SDPO_fresh_b25_L", "sdpo", beta=25.0, pos="fresh", noise="fresh", half="l"),
 
 ]}
 
@@ -256,6 +262,12 @@ def step_fn(arm: Arm, ctx: Ctx):
                 n_l = torch.randn(a_l.shape, generator=g)
             with torch.no_grad():
                 lr_w, lr_l = ref.flow_loss(a_w, n_w, t, o), ref.flow_loss(a_l, n_l, t, o)
+            if arm.half == "w":                      # winner half only: -log sigmoid(beta r_w)
+                r_w = lr_w - pol.flow_loss(a_w, n_w, t, o)
+                return O.dpo_pair_term(r_w, torch.zeros_like(r_w), arm.beta).mean()
+            if arm.half == "l":                      # loser half only: -log sigmoid(-beta r_l)
+                r_l = lr_l - pol.flow_loss(a_l, n_l, t, o)
+                return O.dpo_pair_term(torch.zeros_like(r_l), r_l, arm.beta).mean()
             r_w = lr_w - pol.flow_loss(a_w, n_w, t, o)
             r_l = lr_l - pol.flow_loss(a_l, n_l, t, o)
             return O.dpo_pair_term(r_w, r_l, arm.beta).mean()
