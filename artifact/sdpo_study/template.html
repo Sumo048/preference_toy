@@ -1,0 +1,416 @@
+<title>Self-Paired DPO Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a technical report. One reading column for statements, full-width figure bands for charts and tables. */
+:root {
+  --page: #f4f6f8; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --rule: #dde1e4; --chip: #eceef0; --accent: #2a78d6;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  --n1: #86b6ef; --n2: #6da7ec; --n3: #3987e5; --n4: #2a78d6; --n5: #1c5cab; --n6: #104281;
+  --good: #006300; --bad: #b3392a;
+  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #0f1215; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --rule: #2a2f33; --chip: #23282c; --accent: #3987e5;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  --n1: #184f95; --n2: #1c5cab; --n3: #2a78d6; --n4: #5598e7; --n5: #86b6ef; --n6: #cde2fb;
+  --good: #0ca30c; --bad: #e66767; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --page: #0f1215; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --rule: #2a2f33; --chip: #23282c; --accent: #3987e5;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  --n1: #184f95; --n2: #1c5cab; --n3: #2a78d6; --n4: #5598e7; --n5: #86b6ef; --n6: #cde2fb;
+  --good: #0ca30c; --bad: #e66767; color-scheme: dark }
+body { background: var(--page); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-block: 40px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 56px; }
+.col { max-width: 66ch; display: flex; flex-direction: column; gap: 12px; }
+h1, h2, h3 { font-family: var(--f-body); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -0.005em; }
+h1 { font-size: clamp(32px, 5vw, 46px); line-height: 1.05; }
+h2 { font-size: 25px; line-height: 1.2; }
+h3 { font-size: 17px; }
+p { margin: 0; }
+section { display: flex; flex-direction: column; gap: 18px; }
+.tag { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.lede { font-size: 19px; }
+.muted { color: var(--ink-2); }
+code, .mono { font-family: var(--f-mono); font-size: 0.9em; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.stat .v { font-size: 30px; font-weight: 700; }
+.stat .v .from { font-size: 16px; font-weight: 400; color: var(--muted); }
+.stat .l { font-size: 13.5px; color: var(--ink-2); }
+.terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px 28px; }
+.terms div { min-width: 0; font-size: 14.5px; }
+.terms dt { font-family: var(--f-mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+.terms dd { margin: 2px 0 0 0; }
+.finding { display: flex; flex-direction: column; gap: 16px; border-top: 1px solid var(--rule); padding-top: 24px; }
+.finding .num { font-family: var(--f-mono); font-size: 12px; color: var(--muted); letter-spacing: 0.08em; }
+.figure { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 14px 10px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.figure .cap { font-size: 13.5px; color: var(--ink-2); }
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px 18px; }
+.panel { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.panel h4 { margin: 0; font-size: 13.5px; font-weight: 700; }
+.panel svg { width: 100%; height: auto; display: block; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend svg { width: 22px; height: 8px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button { font: inherit; font-size: 13.5px; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; }
+.tabs button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+th:first-child, td:first-child { text-align: left; }
+tbody tr:last-child td { border-bottom: 0; }
+td.best { font-weight: 700; }
+td .pm { color: var(--muted); font-size: 11.5px; }
+.neg { color: var(--bad); } .pos { color: var(--good); }
+.rule { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; max-width: 70ch; }
+.warn { border-left: 3px solid var(--bad); padding: 2px 0 2px 14px; max-width: 70ch; }
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; padding: 6px 9px; font-size: 12.5px; font-family: var(--f-mono); box-shadow: 0 2px 8px rgba(0,0,0,0.12); max-width: 260px; }
+.gridline { stroke: var(--grid); stroke-width: 1; }
+.axisline { stroke: var(--axis); stroke-width: 1; }
+.ticklbl { fill: var(--muted); font-size: 10px; font-family: var(--f-mono); }
+.axlbl { fill: var(--ink-2); font-size: 10.5px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div id="tip" hidden></div>
+<div class="wrap">
+  <header class="col" style="gap:14px">
+    <div class="tag">toypref · robol long-course toy · branch robo-long · 5 seeds per point</div>
+    <h1>Self-Paired DPO Study</h1>
+    <p class="lede">We edit a robot policy with negative labels only. This study tests self-paired DPO and its variants on a long-course robot toy. The best variant raises clean success from 79.1% to 93.2%. It cuts the negative rate from 18.5% to 0.4–4.1%.</p>
+  </header>
+
+  <section>
+    <div class="stats" id="stats"></div>
+    <p class="muted" style="font-size:14px">Held-out courses, mean of 5 seeds. "From" is the frozen base policy on the same courses.</p>
+  </section>
+
+  <section>
+    <h2>Terms</h2>
+    <dl class="terms" id="terms"></dl>
+  </section>
+
+  <section class="col">
+    <h2>The test bed</h2>
+    <p>A point robot drives a course of 4 waypoint segments. Each segment has 1 to 3 disc obstacles.</p>
+    <p>A contact does not stop the episode. The robot slides along the obstacle and continues.</p>
+    <p>The policy is a chunked rectified flow. It decodes 8 steps of velocity from noise, then replans. An episode has at most 18 chunks.</p>
+    <p>An episode is negative when it touches an obstacle or when its jerk goes above a threshold. A run that does not reach the goal in time is not negative.</p>
+    <p>The frozen base policy reaches the goal in 94.5% of episodes. Its clean success is 79.1%. Its negative rate is 18.5%.</p>
+    <p>Each labelled course gives 1 to 3 negative episodes. The data has up to 512 labelled courses. All numbers below come from 128 held-out courses.</p>
+  </section>
+
+  <section class="finding">
+    <div class="num">Finding 1</div>
+    <h2>The training dose controls the result</h2>
+    <div class="col">
+      <p>We train each method for k steps per labelled row. We sweep k from 1/32 to 16.</p>
+      <p>Pinned SDPO is the strongest method at a small dose. It gains +12.0 points with approach windows and +10.3 points with trajectory labels.</p>
+      <p>Pinned SDPO collapses at a large dose. Earlier runs at 5,000 steps showed this collapse only.</p>
+      <p>Fresh SDPO peaks lower, at +5.8 and +3.9 points. It stays positive over a wide range of k.</p>
+      <p>The best dose for pinned SDPO is close to 200 total steps at every dataset size. A rule that scales steps with the number of rows gives too many steps for large datasets.</p>
+      <p>NPO and KTO lose clean success at every dose. We do not use them further.</p>
+    </div>
+    <div class="figure">
+      <div class="legend" id="leg-k"></div>
+      <div class="panels" id="fig-k"></div>
+      <div class="cap">G (change in clean success, points) against k, one line per number of labelled courses N<sub>s</sub>. Bars show ±2 standard errors over 5 seeds. Hover a point for its value.</div>
+    </div>
+  </section>
+
+  <section class="finding">
+    <div class="num">Finding 2</div>
+    <h2>A new reference without new negatives makes the policy worse</h2>
+    <div class="col">
+      <p>We test three variants that change π<sub>ref</sub> or the winner noise. All use the same logged negatives.</p>
+      <p>Iterated SDPO starts a new SDPO run from the result of the last run. Each extra round lowers G. Pinned SDPO with trajectory labels at 512 courses goes from +9.2 to −8.0 to −51.0.</p>
+      <p>Iterated SDPO is also worse than one longer run. At 982 total steps, one run gives +6.7 and two rounds give −8.0.</p>
+      <p>A shifting π<sub>ref</sub> inside one run also lowers G. Four or eight segments make the policy collapse.</p>
+      <p>Own-noise pinned SDPO scores each winner at its own noise. It peaks near +5 points, close to fresh SDPO. Averaging 8 winners does not help.</p>
+      <p>So the shared noise between winner and loser makes pinned SDPO strong.</p>
+    </div>
+    <div class="figure">
+      <div class="tabs" id="tab-v" role="group" aria-label="Choose method and labels"></div>
+      <div class="tablewrap"><table id="tbl-v"></table></div>
+      <div class="cap">Best G over all k for each variant and dataset size (points ± standard error). Bold marks the best cell in a row. "+ new negatives" columns collect new labelled negatives at every π<sub>ref</sub> shift (Finding 3).</div>
+    </div>
+  </section>
+
+  <section class="finding">
+    <div class="num">Finding 3</div>
+    <h2>New negatives at each segment help, up to a limit</h2>
+    <div class="col">
+      <p>A segment ends with two actions. We set π<sub>ref</sub> to the current policy. We collect and label new negatives from the current policy on the same courses.</p>
+      <p>We keep the steps per segment fixed and increase the number of segments S from 1 to 64.</p>
+      <p>Fresh SDPO with trajectory labels gains the most from segments. At 512 courses it goes from +3.9 with one segment to +13.4 with 8 to 16 segments.</p>
+      <p>Pinned SDPO peaks after 1 to 4 segments. Pinned SDPO with approach windows reaches +14.1 at 512 courses with 2 segments.</p>
+      <p>Each configuration has a best S. After that point every configuration collapses.</p>
+      <p>Each segment needs a new round of labels. Eight segments use about eight times the labels of one run.</p>
+    </div>
+    <div class="figure">
+      <div class="tabs" id="tab-s" role="group" aria-label="Choose dataset size"></div>
+      <div class="legend" id="leg-s"></div>
+      <div class="panels" id="fig-s"></div>
+      <div class="cap">G against the number of segments S, one line per k<sub>seg</sub> (steps per segment per labelled row). S = 1 is a plain run.</div>
+    </div>
+  </section>
+
+  <section class="finding">
+    <div class="num">Finding 4</div>
+    <h2>After the limit, the two methods fail in different ways</h2>
+    <div class="col">
+      <p>Fresh SDPO stops the labelled failures and then stops finishing. At 64 segments its negative rate is 0.1%, but it reaches the goal in only 11% of episodes. It moves at 0.69 of the base speed.</p>
+      <p>The labels do not mark a timeout as negative. Fresh SDPO uses this gap.</p>
+      <p>Pinned SDPO becomes jerky. At 32 segments jerk occurs in 35–53% of episodes.</p>
+      <p>The negative rate keeps falling past the best point. Do not use it to choose when to stop.</p>
+    </div>
+    <div class="figure">
+      <div class="tablewrap"><table id="tbl-cases"></table></div>
+      <div class="cap">Absolute rates on held-out courses at the best number of segments and past it. The base policy: goal reached 94.5%, clean success 79.1%, negative rate 18.5%.</div>
+    </div>
+  </section>
+
+  <section class="finding">
+    <div class="num">Finding 5</div>
+    <h2>Pinned SDPO moves the policy farther from the base</h2>
+    <div class="col">
+      <p>We retrain both methods at fixed step counts from 50 to 5,000 and measure four distances from the base.</p>
+      <p>At matched steps, pinned SDPO has 3–10 times the energy distance of fresh SDPO. Its KL surrogate is 5–200 times larger and grows with steps.</p>
+      <p>Its weight distance is 1.5–2.3 times larger. Its pathwise change is 1.5–4 times larger.</p>
+      <p>The energy distance compares sets of actions at a state. So the drift is a change of the action distribution, not only a new map from noise to action.</p>
+      <p>The drift is the same on negative states, labelled courses, unlabelled courses and held-out courses. It is not local to the labelled states.</p>
+      <p>At its best dose, pinned SDPO also gains more per unit of drift than fresh SDPO.</p>
+    </div>
+    <div class="figure">
+      <div class="tabs" id="tab-d" role="group" aria-label="Choose labels and dataset size"></div>
+      <div class="legend" id="leg-d"></div>
+      <div class="panels" id="fig-d"></div>
+      <div class="cap">Drift from the base policy against training steps. Solid lines are the full losses. Dashed lines use only the winner term. Dotted lines use only the loser term. Log scales.</div>
+    </div>
+  </section>
+
+  <section class="finding">
+    <div class="num">Finding 6</div>
+    <h2>The loser term moves the policy and the winner term holds it back</h2>
+    <div class="col">
+      <p>We train each half of the loss alone.</p>
+      <p>The loser term alone destroys the policy for both methods. After 50 steps G is −40 to −67 points. Its energy distance is more than 10 times that of full pinned SDPO.</p>
+      <p>The winner term alone almost does not move the policy. Its gain is +1.6 to +3.1 points for pinned SDPO and close to 0 for fresh SDPO.</p>
+      <p>The gate of pinned SDPO closes to about 0.2 during training. The gate of fresh SDPO stays near 0.5.</p>
+      <p>Pinned SDPO scores winner and loser at the same noise. This gives a low-variance margin that the optimiser can satisfy. The optimiser satisfies it by moving the action distribution everywhere.</p>
+      <p>Fresh SDPO scores them at independent noises. The margin is noisy, the gate stays open, and the policy moves little.</p>
+    </div>
+    <div class="figure">
+      <div class="legend" id="leg-g"></div>
+      <div class="panels" id="fig-g"></div>
+      <div class="cap">Mean gate σ(β(r<sub>l</sub> − r<sub>w</sub>)) on a fixed probe batch during 5,000-step runs. A low gate means the margin is satisfied.</div>
+    </div>
+  </section>
+
+  <section class="col">
+    <h2>What to do next</h2>
+    <p class="rule">Add an anchor term that holds the policy near the base on unlabelled states. Test whether pinned SDPO keeps its gain with less drift.</p>
+    <p class="rule">Stop each run at a fixed energy distance on unlabelled states. This rule needs no robot evaluation. Compare the methods at equal drift.</p>
+    <p class="rule">Label a timeout as negative. Test whether fresh SDPO then keeps improving with more segments.</p>
+    <p class="warn">The best doses on this page come from the same evaluation courses. A real robot run must choose its dose without that evaluation, so these peaks are optimistic.</p>
+  </section>
+
+  <section class="col">
+    <h2>Method notes</h2>
+    <p>Every result uses 5 seeds. Each seed has its own base policy, courses and labelled negatives.</p>
+    <p>Each run is paired with a base-policy rollout in the same task, with the same noise. Rollouts on different machines differ in the last bits, so a pair from another task is not valid.</p>
+    <p>Training uses batch 256 and learning rate 10<sup>−4</sup> with cosine decay. There is no KL term and no other regulariser.</p>
+    <p class="muted" style="font-size:14px">Source: ~/repos/toypref-robo, branch robo-long. Tables: results/robol/KSWEEP.md, VARIANTS.md, SEGMENTS.md, DRIFT.md. Page data: results/robol/sdpo_study.json (<span id="counts"></span>).</p>
+  </section>
+</div>
+
+<script>
+const D = __DATA__;
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip = document.getElementById("tip");
+const fmt = (v, d = 1) => (v > 0 ? "+" : "") + v.toFixed(d);
+const pct = v => (100 * v).toFixed(1) + "%";
+
+// ---------- stats
+const B = D.base, C = D.segment_cases;
+document.getElementById("stats").innerHTML = [
+  [pct(C.pin_appr512_S2.clean), pct(B.clean), "clean success, best (pinned SDPO, approach windows, 2 segments)"],
+  [pct(C.fresh_traj512_S16.bad), pct(B.bad), "negative rate, lowest at a peak (fresh SDPO, trajectory labels, 16 segments)"],
+  [pct(C.fresh_traj512_S8.clean), pct(B.clean), "clean success with trajectory labels only (fresh SDPO, 8 segments)"],
+].map(([v, f, l]) => `<div class="stat"><span class="v">${v} <span class="from">from ${f}</span></span><span class="l">${l}</span></div>`).join("");
+document.getElementById("counts").textContent = `${D.counts.ksweep_runs} k-sweep runs, ${D.counts.variant_runs} variant and segment runs, ${D.counts.drift_runs} drift runs`;
+
+// ---------- terms
+const TERMS = [
+  ["SDPO", "Self-paired DPO. A DPO loss for negatives only. The loser is the logged negative chunk. The winner is a chunk that π_ref samples at the same observation."],
+  ["π_ref", "The reference policy. SDPO measures every change against it. At the start it is the frozen base policy."],
+  ["r(a)", "The log-ratio surrogate: the flow-matching loss of π_ref minus the loss of the edited policy, for chunk a at one noise and one time."],
+  ["loss", "−log σ(β (r_w − r_l)), with β = 25. r_w is for the winner and r_l is for the loser."],
+  ["gate", "σ(β (r_l − r_w)). It scales the gradient. It falls toward 0 when the winner is much more likely than the loser."],
+  ["pinned SDPO", "SDPO that scores the winner and the loser at the loser's logged noise."],
+  ["fresh SDPO", "SDPO that scores the winner and the loser at two independent random noises."],
+  ["own-noise SDPO", "Pinned loser, but each winner scored at the noise that generated it."],
+  ["trajectory labels", "Every chunk of a negative episode is a negative row. This is the real method."],
+  ["approach windows", "Only the event chunk and the 2 chunks before it are negative rows. This is the oracle."],
+  ["N_s", "The number of labelled courses that give negatives."],
+  ["k", "Training steps per labelled row. Total steps = k × labelled rows."],
+  ["segment", "Part of one run that ends with a new π_ref. With new negatives, it also ends with a new round of labelled negatives."],
+  ["clean success", "The robot reaches the last waypoint with no contact and no jerk."],
+  ["negative rate", "The share of episodes with a contact or jerk."],
+  ["G", "Clean success of the edited policy minus clean success of the base, in points, on held-out courses."],
+  ["energy distance", "A distance between two sets of actions at one state. We compare 64 actions of the edited policy and the base."],
+  ["KL surrogate", "The mean flow-matching loss gap on base samples. It grows when the edited policy assigns less likelihood to the base's actions."],
+];
+document.getElementById("terms").innerHTML = TERMS.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join("");
+
+// ---------- line chart
+function lineChart(el, cfg) {
+  const W = 320, H = 210, m = { l: 40, r: 10, t: 8, b: 32 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const tx = cfg.xlog ? (v => Math.log(v)) : (v => v);
+  const xs = cfg.series.flatMap(s => s.pts.map(p => tx(p[0])));
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const [y0, y1] = cfg.yrange;
+  const ty = cfg.ylog ? (v => Math.log10(Math.max(v, cfg.yfloor))) : (v => v);
+  const X = v => m.l + (tx(v) - x0) / (x1 - x0 || 1) * iw;
+  const Y = v => m.t + (1 - (ty(Math.min(Math.max(v, y0), y1)) - ty(y0)) / (ty(y1) - ty(y0))) * ih;
+  let g = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${cfg.title}">`;
+  (cfg.yticks).forEach(v => { g += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ticklbl" x="${m.l - 5}" y="${Y(v) + 3}" text-anchor="end">${cfg.yfmt ? cfg.yfmt(v) : v}</text>`; });
+  if (!cfg.ylog && y0 < 0 && y1 > 0) g += `<line class="axisline" x1="${m.l}" x2="${W - m.r}" y1="${Y(0)}" y2="${Y(0)}"/>`;
+  (cfg.xticks).forEach(v => { g += `<text class="ticklbl" x="${X(v)}" y="${H - m.b + 13}" text-anchor="middle">${cfg.xfmt ? cfg.xfmt(v) : v}</text>`; });
+  g += `<text class="axlbl" x="${m.l + iw / 2}" y="${H - 3}" text-anchor="middle">${cfg.xlabel}</text>`;
+  const pts = [];
+  cfg.series.forEach(s => {
+    const P = s.pts.filter(p => p[1] != null && isFinite(p[1]));
+    if (!P.length) return;
+    P.forEach(p => { if (p[2]) g += `<line x1="${X(p[0])}" x2="${X(p[0])}" y1="${Y(p[1] - 2 * p[2])}" y2="${Y(p[1] + 2 * p[2])}" style="stroke:${s.color};stroke-width:1;opacity:0.45"/>`; });
+    g += `<polyline points="${P.map(p => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ")}" style="fill:none;stroke:${s.color};stroke-width:2;stroke-linejoin:round;stroke-linecap:round" ${s.dash ? `stroke-dasharray="${s.dash}"` : ""}/>`;
+    P.forEach(p => { g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="2.6" style="fill:${s.color};stroke:var(--surface);stroke-width:1"/>`; pts.push([X(p[0]), Y(p[1]), s.name, p]); });
+  });
+  g += `<rect class="hit" x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" style="fill:transparent"/></svg>`;
+  el.innerHTML = `<h4>${cfg.title}</h4>` + g;
+  const svg = el.querySelector("svg");
+  svg.addEventListener("pointermove", ev => {
+    const r = svg.getBoundingClientRect(), sx = (ev.clientX - r.left) * W / r.width, sy = (ev.clientY - r.top) * H / r.height;
+    let best = null, bd = 1e9;
+    pts.forEach(q => { const d = (q[0] - sx) ** 2 + (q[1] - sy) ** 2; if (d < bd) { bd = d; best = q; } });
+    if (!best || bd > 900) { tip.hidden = true; return; }
+    tip.innerHTML = cfg.tipfmt(best[2], best[3]); tip.hidden = false;
+    tip.style.left = Math.min(ev.clientX + 12, window.innerWidth - 270) + "px"; tip.style.top = (ev.clientY + 12) + "px";
+  });
+  svg.addEventListener("pointerleave", () => { tip.hidden = true; });
+}
+const legend = (el, items) => el.innerHTML = items.map(([n, c, dash]) => `<span><svg viewBox="0 0 22 8"><line x1="1" x2="21" y1="4" y2="4" style="stroke:${c};stroke-width:2.2" ${dash ? `stroke-dasharray="${dash}"` : ""}/></svg>${n}</span>`).join("");
+const NS = ["16", "32", "64", "128", "256", "512"];
+const NSC = NS.map((_, i) => `var(--n${i + 1})`);
+const pow2 = v => v >= 1 ? String(v) : "1/" + Math.round(1 / v);
+
+// ---------- finding 1: k-sweep
+legend(document.getElementById("leg-k"), NS.map((n, i) => [`N_s = ${n}`, NSC[i]]));
+const kp = document.getElementById("fig-k");
+[["SDPO_pin_b25", "traj", "Pinned SDPO, trajectory labels"], ["SDPO_pin_b25", "approach", "Pinned SDPO, approach windows"],
+ ["SDPO_fresh_b25", "traj", "Fresh SDPO, trajectory labels"], ["SDPO_fresh_b25", "approach", "Fresh SDPO, approach windows"]].forEach(([a, l, t]) => {
+  const div = document.createElement("div"); div.className = "panel"; kp.appendChild(div);
+  const src = D.ksweep[a][l];
+  lineChart(div, { title: t, xlog: true, yrange: [-80, 15], yticks: [-80, -60, -40, -20, 0, 10], xticks: [1 / 32, 1 / 8, 1 / 2, 2, 8], xfmt: pow2, xlabel: "k (steps per labelled row)",
+    series: NS.map((n, i) => ({ name: `N_s = ${n}`, color: NSC[i], pts: Object.entries(src[n] || {}).map(([k, v]) => [parseFloat(k), v[0], v[1], v[3]]).sort((x, y) => x[0] - y[0]) })),
+    tipfmt: (n, p) => `${n}<br>k = ${pow2(p[0])} (${p[3]} steps)<br>G = ${fmt(p[1])} ± ${p[2].toFixed(1)}` });
+});
+
+// ---------- finding 2: variants table
+const VB = D.variants_best;
+const VCOLS = [["plain", "plain", "plain run"], ["iter", "round 2", "iterated, round 2"], ["iter", "round 3", "iterated, round 3"],
+  ["shift", "S=2", "shifting π_ref, S=2"], ["shift", "S=4", "S=4"], ["shift", "S=8", "S=8"],
+  ["own", "K=1", "own-noise, K=1"], ["own", "K=8", "own-noise, K=8"],
+  ["shiftneg", "S=2", "+ new negatives, S=2"], ["shiftneg", "S=4", "S=4"], ["shiftneg", "S=8", "S=8"]];
+const VT = [["SDPO_pin_b25", "traj", "Pinned, trajectory labels"], ["SDPO_pin_b25", "approach", "Pinned, approach windows"],
+            ["SDPO_fresh_b25", "traj", "Fresh, trajectory labels"], ["SDPO_fresh_b25", "approach", "Fresh, approach windows"]];
+const tabv = document.getElementById("tab-v");
+function drawV(i) {
+  const [a, l] = VT[i];
+  let h = `<thead><tr><th>N_s</th>${VCOLS.map(c => `<th>${c[2]}</th>`).join("")}</tr></thead><tbody>`;
+  NS.forEach(n => {
+    const vals = VCOLS.map(([mo, cf]) => { const arm = mo === "own" ? "SDPO_own_b25" : a; if (mo === "own" && a !== "SDPO_pin_b25") return null; const v = VB[mo]?.[arm]?.[l]?.[n]?.[cf]; return v || null; });
+    const mx = Math.max(...vals.filter(Boolean).map(v => v[0]));
+    h += `<tr><td>${n}</td>` + vals.map(v => v ? `<td class="${v[0] === mx ? "best" : ""} ${v[0] < 0 ? "neg" : ""}">${fmt(v[0])} <span class="pm">± ${v[1].toFixed(1)}</span></td>` : `<td class="muted">—</td>`).join("") + "</tr>";
+  });
+  document.getElementById("tbl-v").innerHTML = h + "</tbody>";
+  [...tabv.children].forEach((b, j) => b.setAttribute("aria-pressed", j === i ? "true" : "false"));
+}
+tabv.innerHTML = VT.map((t, i) => `<button type="button" id="tv${i}">${t[2]}</button>`).join("");
+[...tabv.children].forEach((b, i) => b.addEventListener("click", () => drawV(i)));
+drawV(0);
+
+// ---------- finding 3: segments
+const KSEG = ["1/32", "1/16", "1/8", "1/4"], KSC = ["var(--n2)", "var(--n3)", "var(--n5)", "var(--n6)"];
+legend(document.getElementById("leg-s"), KSEG.map((k, i) => [`k_seg = ${k}`, KSC[i]]));
+const tabs = document.getElementById("tab-s");
+const SNS = ["64", "128", "512"];
+function drawS(i) {
+  const n = SNS[i], fs = document.getElementById("fig-s"); fs.innerHTML = "";
+  [["SDPO_fresh_b25", "traj", "Fresh SDPO, trajectory labels"], ["SDPO_fresh_b25", "approach", "Fresh SDPO, approach windows"],
+   ["SDPO_pin_b25", "traj", "Pinned SDPO, trajectory labels"], ["SDPO_pin_b25", "approach", "Pinned SDPO, approach windows"]].forEach(([a, l, t]) => {
+    const div = document.createElement("div"); div.className = "panel"; fs.appendChild(div);
+    const src = D.segments[a][l][n] || {};
+    lineChart(div, { title: `${t}, N_s = ${n}`, xlog: true, yrange: [-80, 16], yticks: [-80, -60, -40, -20, 0, 10], xticks: [1, 2, 4, 8, 16, 32, 64], xlabel: "segments S",
+      series: KSEG.map((k, j) => ({ name: `k_seg = ${k}`, color: KSC[j], pts: Object.entries(src[k] || {}).map(([S, v]) => [parseFloat(S), v[0], v[1]]).sort((x, y) => x[0] - y[0]) })),
+      tipfmt: (nm, p) => `${nm}<br>S = ${p[0]}<br>G = ${fmt(p[1])} ± ${p[2].toFixed(1)}` });
+  });
+  [...tabs.children].forEach((b, j) => b.setAttribute("aria-pressed", j === i ? "true" : "false"));
+}
+tabs.innerHTML = SNS.map((n, i) => `<button type="button" id="ts${i}">N_s = ${n}</button>`).join("");
+[...tabs.children].forEach((b, i) => b.addEventListener("click", () => drawS(i)));
+drawS(2);
+
+// ---------- finding 4: cases
+const CASES = [["Fresh SDPO, trajectory labels, 512 courses", "S = 8 (best)", C.fresh_traj512_S8], ["", "S = 16 (best)", C.fresh_traj512_S16],
+  ["", "S = 32", C.fresh_traj512_S32], ["", "S = 64", C.fresh_traj512_S64],
+  ["Pinned SDPO, approach windows, 512 courses", "S = 2 (best)", C.pin_appr512_S2], ["", "S = 32", C.pin_appr512_S32],
+  ["Pinned SDPO, trajectory labels, 64 courses", "S = 4 (best)", C.pin_traj64_S4], ["", "S = 32", C.pin_traj64_S32]];
+document.getElementById("tbl-cases").innerHTML = `<thead><tr><th>Configuration</th><th>Segments</th><th>Goal reached</th><th>Clean success</th><th>Negative rate</th><th>Contact</th><th>Jerk</th><th>Speed vs base</th></tr></thead><tbody>` +
+  `<tr><td>Base policy</td><td>—</td><td>${pct(B.success)}</td><td>${pct(B.clean)}</td><td>${pct(B.bad)}</td><td>—</td><td>—</td><td>1.00</td></tr>` +
+  CASES.map(([n, s, c]) => `<tr><td>${n}</td><td>${s}</td><td>${pct(c.success)}</td><td>${pct(c.clean)}</td><td>${pct(c.bad)}</td><td>${pct(c.collision)}</td><td>${pct(c.jerk)}</td><td>${c.speed.toFixed(2)}</td></tr>`).join("") + "</tbody>";
+
+// ---------- finding 5: drift
+const DARMS = [["SDPO_pin_b25", "pinned", "var(--s1)", ""], ["SDPO_fresh_b25", "fresh", "var(--s2)", ""], ["SDPO_own_b25_K1", "own-noise", "var(--s3)", ""],
+  ["SDPO_pin_b25_W", "pinned, winner only", "var(--s1)", "5 3"], ["SDPO_pin_b25_L", "pinned, loser only", "var(--s1)", "1.5 3"],
+  ["SDPO_fresh_b25_W", "fresh, winner only", "var(--s2)", "5 3"], ["SDPO_fresh_b25_L", "fresh, loser only", "var(--s2)", "1.5 3"]];
+legend(document.getElementById("leg-d"), DARMS.map(d => [d[1], d[2], d[3]]));
+const DT = [["traj", "512", "Trajectory labels, N_s = 512"], ["approach", "512", "Approach windows, N_s = 512"], ["traj", "64", "Trajectory labels, N_s = 64"], ["approach", "64", "Approach windows, N_s = 64"]];
+const tabd = document.getElementById("tab-d");
+const efmt = v => v >= 1 ? v.toFixed(0) : v >= 0.1 ? v.toFixed(1) : v >= 0.01 ? v.toFixed(2) : v.toFixed(3);
+function drawD(i) {
+  const [l, n] = DT[i], fd = document.getElementById("fig-d"); fd.innerHTML = "";
+  [["energy", "Energy distance, held-out states", [0.001, 2], [0.001, 0.01, 0.1, 1]], ["kl", "KL surrogate, held-out states", [0.001, 2], [0.001, 0.01, 0.1, 1]],
+   ["edit", "Weight distance", [0.1, 60], [0.1, 1, 10]], ["G", "G (points)", [-80, 15], [-80, -40, 0, 10]]].forEach(([mk, t, yr, yt]) => {
+    const div = document.createElement("div"); div.className = "panel"; fd.appendChild(div);
+    const lg = mk !== "G";
+    lineChart(div, { title: t, xlog: true, ylog: lg, yfloor: yr[0], yrange: yr, yticks: yt, yfmt: lg ? efmt : null, xticks: [50, 200, 1000, 5000], xlabel: "training steps",
+      series: DARMS.map(([a, nm, c, ds]) => ({ name: nm, color: c, dash: ds, pts: Object.entries(D.drift[a]?.[l]?.[n] || {}).map(([st, v]) => [parseFloat(st), lg ? Math.max(v[mk][0], yr[0]) : v[mk][0], lg ? 0 : v[mk][1], v[mk][0]]).sort((x, y) => x[0] - y[0]) })),
+      tipfmt: (nm, p) => `${nm}<br>${p[0]} steps<br>${t.split(",")[0]} = ${mk === "G" ? fmt(p[3]) : p[3].toFixed(4)}` });
+  });
+  [...tabd.children].forEach((b, j) => b.setAttribute("aria-pressed", j === i ? "true" : "false"));
+}
+tabd.innerHTML = DT.map((t, i) => `<button type="button" id="td${i}">${t[2]}</button>`).join("");
+[...tabd.children].forEach((b, i) => b.addEventListener("click", () => drawD(i)));
+drawD(0);
+
+// ---------- finding 6: gate
+legend(document.getElementById("leg-g"), DARMS.filter(d => !d[0].endsWith("_L") || true).map(d => [d[1], d[2], d[3]]));
+const fg = document.getElementById("fig-g");
+DT.forEach(([l, n, t]) => {
+  const div = document.createElement("div"); div.className = "panel"; fg.appendChild(div);
+  lineChart(div, { title: t, xlog: true, yrange: [0, 0.6], yticks: [0, 0.2, 0.4, 0.6], xticks: [1, 10, 100, 1000], xlabel: "training step (5,000-step runs)",
+    series: DARMS.map(([a, nm, c, ds]) => ({ name: nm, color: c, dash: ds, pts: (D.gate[a]?.[l]?.[n] || []).map(([st, gv]) => [st + 1, gv, 0]) })),
+    tipfmt: (nm, p) => `${nm}<br>step ${p[0] - 1}<br>gate = ${p[1].toFixed(3)}` });
+});
+</script>
