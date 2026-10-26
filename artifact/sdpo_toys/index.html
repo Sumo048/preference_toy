@@ -1,0 +1,495 @@
+<title>SDPO Toy Studies</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (~68ch) with a sticky contents rail on wide screens; figures break out to the full content width on a light "plate". */
+:root {
+  --bg: #f6f6f3;
+  --panel: #ffffff;
+  --plate: #fcfcfb;
+  --ink: #16181a;
+  --ink-2: #4a4d50;
+  --ink-3: #75787b;
+  --rule: #dcdcd6;
+  --accent: #2a78d6;
+  --kept: #2a78d6;
+  --gone: #eb6834;
+  --off: #1baf7a;
+  --best-bg: #dceaf9;
+  --worst-bg: #fbe4da;
+  --code-bg: #eeeee9;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151617; --panel: #1d1f21; --plate: #fcfcfb; --ink: #ecebe6; --ink-2: #c0c0b8; --ink-3: #8e8f89;
+    --rule: #34373a; --accent: #5b9be8; --kept: #3987e5; --gone: #d95926; --off: #199e70;
+    --best-bg: #1d3550; --worst-bg: #4a2a1e; --code-bg: #26292b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151617; --panel: #1d1f21; --plate: #fcfcfb; --ink: #ecebe6; --ink-2: #c0c0b8; --ink-3: #8e8f89;
+  --rule: #34373a; --accent: #5b9be8; --kept: #3987e5; --gone: #d95926; --off: #199e70;
+  --best-bg: #1d3550; --worst-bg: #4a2a1e; --code-bg: #26292b; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 40px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; font-size: 13.5px; }
+nav.toc .eyebrow { margin-bottom: 8px; }
+nav.toc ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+nav.toc a { color: var(--ink-2); text-decoration: none; display: block; padding: 3px 0 3px 10px; border-left: 2px solid var(--rule); }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--ink); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+.prose { max-width: 70ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(34px, 5vw, 50px); line-height: 1.05; margin: 10px 0 16px; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 30px; line-height: 1.15; margin: 0 0 6px; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1.25; margin: 34px 0 8px; text-wrap: balance; }
+p { margin: 0 0 12px; }
+.lede { font-size: 18.5px; color: var(--ink-2); }
+section { padding-top: 56px; margin-top: 40px; border-top: 1px solid var(--rule); scroll-margin-top: 16px; }
+section:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+.sec-head { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin-bottom: 14px; }
+.sec-head .eyebrow { flex: none; }
+code, .mono { font-family: var(--mono); font-size: 0.88em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+a { color: var(--accent); }
+.math { font-family: var(--mono); font-size: 14px; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; margin: 6px 0 16px; overflow-x: auto; white-space: pre; line-height: 1.7; }
+figure { margin: 22px 0 28px; }
+figure .plate { background: var(--plate); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; overflow-x: auto; }
+figure img { display: block; width: 100%; height: auto; max-width: 100%; }
+figure.narrow .plate { max-width: 560px; }
+figcaption { font-size: 14px; color: var(--ink-2); margin-top: 8px; max-width: 80ch; }
+figcaption b { color: var(--ink); font-weight: 600; }
+.key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: var(--ink-2); margin: 4px 0 0; }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.findings { display: grid; gap: 10px; margin: 18px 0 8px; padding: 0; list-style: none; }
+.findings li { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; }
+.findings li b { font-weight: 600; }
+.verdicts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 22px 0 6px; }
+.verdict { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; min-width: 0; }
+.verdict .eyebrow { margin-bottom: 4px; }
+.verdict .what { font-family: var(--display); font-size: 19px; font-weight: 600; line-height: 1.25; margin-bottom: 6px; }
+.verdict p { font-size: 14.5px; color: var(--ink-2); margin: 0; }
+.tbl { overflow-x: auto; margin: 14px 0 6px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.03em; color: var(--ink-3); vertical-align: bottom; }
+tbody tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--mono); font-size: 13px; }
+td.best { background: var(--best-bg); font-weight: 600; }
+td.worst { background: var(--worst-bg); }
+tr.grp td { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); background: var(--bg); padding-top: 8px; }
+tr.sdpo td:first-child { font-weight: 600; }
+.tnote { font-size: 13px; color: var(--ink-3); margin: 6px 0 18px; max-width: 90ch; }
+dl.terms { display: grid; grid-template-columns: minmax(130px, 210px) minmax(0, 1fr); gap: 0; margin: 14px 0; border-top: 1px solid var(--rule); }
+dl.terms dt, dl.terms dd { padding: 9px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+dl.terms dt { font-family: var(--mono); font-size: 13.5px; color: var(--ink); padding-right: 14px; }
+dl.terms dd { font-size: 15px; color: var(--ink-2); }
+.pill { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 10px; border: 1px solid var(--rule); color: var(--ink-2); vertical-align: 2px; margin-left: 4px; }
+.meta { font-size: 13.5px; color: var(--ink-3); margin-top: 18px; }
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 24px 60px; }
+  nav.toc { position: static; margin-bottom: 28px; }
+  nav.toc ol { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  dl.terms { grid-template-columns: minmax(0, 1fr); }
+  dl.terms dt { border-bottom: 0; padding-bottom: 0; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow">Contents</div>
+  <ol>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#terms">Terms</a></li>
+    <li><a href="#methods">Methods</a></li>
+    <li><a href="#unc">Toy 1 · Ring</a></li>
+    <li><a href="#cond">Toy 2 · Rotating ring</a></li>
+    <li><a href="#robo">Toy 3 · Short courses</a></li>
+    <li><a href="#robol">Toy 4 · Long courses</a></li>
+    <li><a href="#change">What SDPO changes</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+</nav>
+
+<main>
+<section id="summary">
+  <div class="eyebrow">toypref · branches self-dpo, robo-toy, robo-stress, robo-long</div>
+  <h1>Self-Paired DPO in Four Toys</h1>
+  <div class="prose">
+    <p class="lede">We edit a flow policy with negative labels only. Self-paired DPO (SDPO) pairs each logged negative with fresh samples from the base policy. This page shows each toy, each method, and how each method changes what the policy samples.</p>
+    <p>The four toys go from a 2-D point cloud to a long robot course. The first two toys measure mass on a ring of modes. The last two toys measure clean success of a point robot.</p>
+    <p>Every figure on this page comes from a new seed-0 run with the sweep settings. Every table comes from the sweep files. The <a href="#sources">Sources</a> section gives the file for each number.</p>
+  </div>
+  <div class="verdicts">
+    <div class="verdict"><div class="eyebrow">Toy 1 · ring</div><div class="what">Fresh SDPO, β = 1, is the best negatives-only method at 2–3 of 8 modes.</div><p>An anchored KTO with an extra unlabelled pool is better at 1, 2 and 4 bad modes.</p></div>
+    <div class="verdict"><div class="eyebrow">Toy 2 · rotating ring</div><div class="what">SDPO beats NPO. Rerouting with a basin veto beats SDPO.</div><p>Fresh SDPO at β ≥ 10 removes almost nothing when 2 or more modes are bad.</p></div>
+    <div class="verdict"><div class="eyebrow">Toy 3 · short courses</div><div class="what">Fresh SDPO, β = 25, is the only robust method: +2.5 points.</div><p>NPO, KTO, rerouting and filtering are at or below the base policy.</p></div>
+    <div class="verdict"><div class="eyebrow">Toy 4 · long courses</div><div class="what">Pinned SDPO at a small dose gains +10 to +12 points.</div><p>With re-collected negatives, fresh SDPO reaches 0.925 clean success from 0.791.</p></div>
+  </div>
+</section>
+
+<section id="terms">
+  <div class="sec-head"><span class="eyebrow">01</span><h2>Terms</h2></div>
+  <div class="prose"><p>Each term has one definition here. The page uses each term only in this sense.</p></div>
+  <dl class="terms">
+    <dt>flow policy</dt><dd>A network that maps a Gaussian noise vector ξ to an action. It integrates a learned velocity field from ξ to the action (rectified flow). In toys 1 and 2 the action is a 2-D point. In toys 3 and 4 the action is a chunk of 8 velocity steps.</dd>
+    <dt>π<sub>ref</sub> (base policy, B0)</dt><dd>The policy before the edit. It stays frozen. Every method starts from it.</dd>
+    <dt>logged noise ξ<sub>l</sub></dt><dd>The noise that produced a logged action. The toys record it with each rollout.</dd>
+    <dt>negative (loser a<sub>l</sub>)</dt><dd>A logged action with a "bad" label. The edit gets negatives only. It gets no positive labels.</dd>
+    <dt>winner a<sub>w</sub></dt><dd>For SDPO: a fresh sample from π<sub>ref</sub> at the same state as the negative. It has no label. On average it is better than the negative, because most π<sub>ref</sub> samples are good.</dd>
+    <dt>flow loss l<sub>θ</sub>(a; ξ, t)</dt><dd>The flow-matching loss of policy θ on action a, with noise ξ and time t. A low loss means that θ explains a well.</dd>
+    <dt>implicit reward r(a)</dt><dd>r(a) = l<sub>ref</sub>(a) − l<sub>θ</sub>(a). It is positive when θ explains a better than π<sub>ref</sub> does.</dd>
+    <dt>SDPO</dt><dd>Self-paired DPO. A DPO loss on (winner, negative) pairs, where the winner comes from π<sub>ref</sub> itself. The formula is below.</dd>
+    <dt>fresh / pinned</dt><dd>Two SDPO versions. <b>Fresh</b> scores winner and negative at independent new noises. <b>Pinned</b> scores both at the logged noise ξ<sub>l</sub> of the negative.</dd>
+    <dt>β</dt><dd>The DPO temperature. A large β makes the loss saturate after a small change. A small β gives a large edit.</dd>
+    <dt>gate</dt><dd>σ(β(r<sub>l</sub> − r<sub>w</sub>)), the weight of one pair in the gradient. The gate closes (goes to 0) when the margin is satisfied.</dd>
+    <dt>dose k</dt><dd>Gradient steps per labelled row. Toy 4 sweeps k from 1/32 to 16.</dd>
+    <dt>G</dt><dd>Change in clean success against the base policy, in percentage points. Each run is paired with the base rollout of its own task. Toys 3 and 4 use G.</dd>
+    <dt>tv_to_ideal</dt><dd>Total variation between the sampled mass per mode and the ideal mass: uniform over kept modes, zero on bad modes, zero off the ring. Lower is better. Toys 1 and 2 use it.</dd>
+    <dt>forgotten mass</dt><dd>Mass on the bad modes divided by the mass π<sub>ref</sub> puts there (<code>neg_mass_ratio</code>). 1 means no change. 0 means fully removed.</dd>
+    <dt>retain TV</dt><dd>Total variation among the kept modes against π<sub>ref</sub>, after renormalisation. It measures collateral damage.</dd>
+    <dt>off mass</dt><dd>Share of samples farther than 3 standard deviations from every mode centre.</dd>
+  </dl>
+  <div class="math">L_SDPO = − log σ( β · [ r(a_w; ξ_w, t) − r(a_l; ξ_l, t) ] )
+r(a; ξ, t) = l_ref(a; ξ, t) − l_θ(a; ξ, t)          t is shared inside a pair
+fresh:  ξ_w, ξ_l ~ N(0, I), new at every step
+pinned: ξ_w = ξ_l = logged noise of the negative</div>
+  <div class="prose">
+    <p>Each negative gets K = 8 winners from π<sub>ref</sub> at its own state. A training step draws one winner per pair.</p>
+    <p>The pinned version compares winner and loser through the same noise. So it gives a direct push on the map from that noise to an action. The fresh version compares two independent draws. So it gives a weak push on the whole distribution at that state.</p>
+  </div>
+</section>
+
+<section id="methods">
+  <div class="sec-head"><span class="eyebrow">02</span><h2>Methods compared</h2></div>
+  <div class="prose"><p>All methods get the same logged negatives. Methods with a "+ pool" tag also use unlabelled π<sub>ref</sub> samples. B1 is the only method with positive labels. It is a reference, not a competitor.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Name on this page</th><th style="text-align:left">What it does</th><th style="text-align:left">Toys</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="3">References</td></tr>
+      <tr><td>B0</td><td style="text-align:left;white-space:normal">π<sub>ref</sub>, no edit.</td><td style="text-align:left">1–4</td></tr>
+      <tr><td>B1</td><td style="text-align:left;white-space:normal">Behaviour cloning on 512 samples from kept modes. Needs positive labels.</td><td style="text-align:left">1</td></tr>
+      <tr class="grp"><td colspan="3">Preference-style baselines</td></tr>
+      <tr><td>NPO</td><td style="text-align:left;white-space:normal">Negative preference optimisation: (2/β)·softplus(β·r) on the negatives. It lowers the likelihood of each negative, with saturation.</td><td style="text-align:left">1–4</td></tr>
+      <tr><td>KTO</td><td style="text-align:left;white-space:normal">KTO with undesirable examples only. The reference point comes from other states.</td><td style="text-align:left">1–4</td></tr>
+      <tr><td>KTO + anchor <span class="pill">+ pool</span></td><td style="text-align:left;white-space:normal">KTO β = 10 plus flow matching on π<sub>ref</sub> samples far from every negative (<code>_Anf_dist</code>).</td><td style="text-align:left">1</td></tr>
+      <tr class="grp"><td colspan="3">Rerouting (our earlier family)</td></tr>
+      <tr><td>Reroute</td><td style="text-align:left;white-space:normal">Moves each negative's logged noise to a new π<sub>ref</sub> resample as target (<code>R_ours_neg</code>).</td><td style="text-align:left">1, 2</td></tr>
+      <tr><td>Reroute near</td><td style="text-align:left;white-space:normal">Target = nearest π<sub>ref</sub> decode at least 4 mode-std from every negative; support = logged noise plus 4 jitters (<code>R_near_nf_nhood_neg</code>).</td><td style="text-align:left">1</td></tr>
+      <tr><td>Hop</td><td style="text-align:left;white-space:normal">From ξ<sub>l</sub>, steps along random noise directions until the decode leaves the negative's basin; trains on jittered noises that stay in that basin (<code>R_hop_bsup_neg</code>).</td><td style="text-align:left">2, 3</td></tr>
+      <tr><td>Hop + veto <span class="pill">+ pool</span></td><td style="text-align:left;white-space:normal">Hop, plus a veto from the other negatives' basins and a masked anchor on unlabelled samples (<code>R_hopB_bsup_neg_AMdist</code>).</td><td style="text-align:left">2</td></tr>
+      <tr class="grp"><td colspan="3">Controls (toy 3)</td></tr>
+      <tr><td>FILTER</td><td style="text-align:left;white-space:normal">Rejection at run time: re-samples a chunk when it looks like a logged negative. No training.</td><td style="text-align:left">3</td></tr>
+      <tr><td>RAND</td><td style="text-align:left;white-space:normal">π<sub>ref</sub> plus a random weight edit with the same norm as the trained edit.</td><td style="text-align:left">3, 4</td></tr>
+      <tr class="grp"><td colspan="3">SDPO family</td></tr>
+      <tr class="sdpo"><td>SDPO fresh βX</td><td style="text-align:left;white-space:normal">SDPO, independent noises, β = X.</td><td style="text-align:left">1–4</td></tr>
+      <tr class="sdpo"><td>SDPO pinned βX</td><td style="text-align:left;white-space:normal">SDPO, both terms at the logged noise, β = X.</td><td style="text-align:left">1–4</td></tr>
+      <tr class="sdpo"><td>SDPO hop-pinned</td><td style="text-align:left;white-space:normal">Pinned SDPO with the hop target as the only winner.</td><td style="text-align:left">2</td></tr>
+      <tr class="sdpo"><td>Own-noise, iterated, shift</td><td style="text-align:left;white-space:normal">Toy 4 variants: winners at their own noise; SDPO repeated with the last result as π<sub>ref</sub>; π<sub>ref</sub> replaced inside one run.</td><td style="text-align:left">4</td></tr>
+      <tr class="sdpo"><td>Re-collected negatives (S)</td><td style="text-align:left;white-space:normal">One run in S segments. After each segment, π<sub>ref</sub> becomes the current policy, and new negatives are collected and labelled from it.</td><td style="text-align:left">4</td></tr>
+      <tr class="sdpo"><td>Winner-only / loser-only</td><td style="text-align:left;white-space:normal">Only the −log σ(β·r<sub>w</sub>) term, or only the −log σ(−β·r<sub>l</sub>) term.</td><td style="text-align:left">4</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="unc">
+  <div class="sec-head"><span class="eyebrow">03 · toy 1</span><h2>An 8-mode ring</h2></div>
+  <div class="prose">
+    <p>An unconditional flow learns an 8-mode Gaussian ring in 2-D. Then we mark n_forget modes as bad. The edit gets n_neg logged negatives per bad mode, each with its noise.</p>
+    <p>The sweep uses n_forget 1–4, n_neg 1–32 and 5 seeds. Every method trains for 5,000 steps at learning rate 10<sup>−4</sup>, batch 256.</p>
+  </div>
+  <figure class="narrow">
+    <div class="plate"><img src="fig/unc_setup.png" alt="Samples from the base policy on an 8-mode ring; two modes are orange and hold the logged negatives."></div>
+    <figcaption><b>The setup.</b> 4,000 π<sub>ref</sub> samples. Seed 0, n_forget = 2 (modes at 12 and 9 o'clock), n_neg = 8 per bad mode. Black crosses are the 16 logged negatives.</figcaption>
+    <div class="key"><span><i class="dot" style="background:var(--kept)"></i>kept mode</span><span><i class="dot" style="background:var(--gone)"></i>bad mode</span><span><i class="dot" style="background:var(--off)"></i>off the ring</span></div>
+  </figure>
+
+  <h3>Results over the sweep</h3>
+  <div class="prose"><p>The table gives tv_to_ideal, averaged over seeds 0–4 and n_neg 1–32. Lower is better. The shaded cells mark the best and worst method in each column, without B1.</p></div>
+  <div class="tbl"><table class="heat" data-skip="B1">
+    <thead><tr><th>Method</th><th>1 of 8</th><th>2 of 8</th><th>3 of 8</th><th>4 of 8</th><th>overlap σ 0.45</th><th>overlap σ 0.6</th></tr></thead>
+    <tbody>
+      <tr><td>B0 (no edit)</td><td class="num">0.145</td><td class="num">0.266</td><td class="num">0.388</td><td class="num">0.509</td><td class="num">0.296</td><td class="num">0.293</td></tr>
+      <tr><td>NPO β100</td><td class="num">0.132</td><td class="num">0.236</td><td class="num">0.374</td><td class="num">0.498</td><td class="num">0.264</td><td class="num">0.264</td></tr>
+      <tr><td>KTO β100</td><td class="num">0.180</td><td class="num">0.383</td><td class="num">0.503</td><td class="num">0.542</td><td class="num">0.274</td><td class="num">0.261</td></tr>
+      <tr><td>Reroute</td><td class="num">0.611</td><td class="num">0.557</td><td class="num">0.447</td><td class="num">0.425</td><td class="num">0.495</td><td class="num">0.462</td></tr>
+      <tr><td>Reroute near</td><td class="num">0.301</td><td class="num">0.320</td><td class="num">–</td><td class="num">0.180</td><td class="num">0.279</td><td class="num">0.434</td></tr>
+      <tr class="sdpo"><td>SDPO fresh β1</td><td class="num">0.501</td><td class="num">0.126</td><td class="num">0.234</td><td class="num">0.374</td><td class="num">0.295</td><td class="num">0.280</td></tr>
+      <tr class="sdpo"><td>SDPO fresh β25</td><td class="num">0.133</td><td class="num">0.258</td><td class="num">0.383</td><td class="num">0.504</td><td class="num">0.285</td><td class="num">0.283</td></tr>
+      <tr class="sdpo"><td>SDPO pinned β1</td><td class="num">0.600</td><td class="num">0.533</td><td class="num">0.461</td><td class="num">0.375</td><td class="num">0.504</td><td class="num">0.546</td></tr>
+      <tr class="sdpo"><td>SDPO pinned β25</td><td class="num">0.159</td><td class="num">0.213</td><td class="num">0.312</td><td class="num">0.428</td><td class="num">0.244</td><td class="num">0.244</td></tr>
+      <tr><td>KTO + anchor <span class="pill">+ pool</span></td><td class="num">0.039</td><td class="num">0.039</td><td class="num">–</td><td class="num">0.042</td><td class="num">0.200</td><td class="num">0.348</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tnote">Source: <code>results/sdpo_results.md</code>, "main sweep" and "overlapping modes" sections. Overlap columns pool seeds 0–9 and n_forget 1/2/4. "–" means the arm was not run there. B1 (positives) reaches about 0.005 forgotten mass at every n_neg (<code>docs/RESULTS.md</code>).</p>
+  <ul class="findings">
+    <li><b>Fresh SDPO β1 is the best negatives-only method at 2 and 3 bad modes.</b> It beats NPO in 28 of 30 paired cells at 2/8 and in 30 of 30 at 3/8.</li>
+    <li><b>At 1 bad mode, fresh SDPO β1 breaks the ring.</b> Its tv_to_ideal is 0.501, against 0.145 for no edit. The β25 version ties NPO (0.133 vs 0.132).</li>
+    <li><b>At 4 bad modes, "reroute near" wins.</b> It reaches 0.180, against 0.374 for the best SDPO.</li>
+    <li><b>An unlabelled anchor beats every negatives-only method.</b> KTO + anchor stays near 0.04 for 1, 2 and 4 bad modes.</li>
+  </ul>
+
+  <h3>What each method samples</h3>
+  <div class="prose"><p>The next figure decodes the same 4,000 noises through each edited policy. Each panel title gives forgotten mass and retain TV for this one run.</p></div>
+  <figure>
+    <div class="plate"><img src="fig/unc_samples.png" alt="Ten panels of ring samples after each method; colours show kept, bad and off-ring samples."></div>
+    <figcaption><b>Samples after each edit, same noises.</b> Seed 0, 2 of 8 bad, 8 negatives per bad mode, 5,000 steps. Fresh SDPO β25 leaves the ring almost as it was (0.96 forgotten mass). Fresh SDPO β1 removes most bad mass with little damage. Pinned SDPO β1 drags the ring into an off-mode arc. Reroute moves mass between kept modes and off the ring.</figcaption>
+  </figure>
+
+  <h3>How the noise map changes</h3>
+  <div class="prose">
+    <p>A flow policy is a map from noise to action. The next figure colours each noise in [−3, 3]² by where the policy sends it.</p>
+    <p>The figure shows the main difference between fresh and pinned SDPO. Fresh SDPO β25 keeps the map. Pinned SDPO β25 moves the logged noises out of the bad wedges. Pinned SDPO β1 sends most of the plane off the ring.</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/unc_noisemap.png" alt="Noise plane coloured by decoded mode for five policies; logged negative noises shown as crosses."></div>
+    <figcaption><b>Where each noise decodes.</b> Blue: a kept mode. Orange: a bad mode. Green: off the ring. Black crosses: the logged noises of the 16 negatives. The π<sub>ref</sub> map has 8 wedges. NPO β100 shrinks the bad wedges a little. Pinned SDPO β25 closes them to thin slivers near the crosses.</figcaption>
+  </figure>
+
+  <h3>Path during training</h3>
+  <figure class="narrow">
+    <div class="plate"><img src="fig/unc_paths.png" alt="Training paths in the plane of forgotten mass versus retain TV, one line per method."></div>
+    <figcaption><b>Forgotten mass (x) against retain TV (y), every 500 steps.</b> All runs start at B0 (bottom right). The ideal is the star at bottom left. Fresh SDPO β1 runs along the bottom edge, close to B1. Pinned SDPO β1 climbs to high damage. Fresh SDPO β25 barely leaves the start.</figcaption>
+  </figure>
+</section>
+
+<section id="cond">
+  <div class="sec-head"><span class="eyebrow">04 · toy 2</span><h2>A ring that rotates with a condition</h2></div>
+  <div class="prose">
+    <p>Toy 2 adds a condition c in [0, 1]. The ring turns by 1.5 mode spacings over c, and its radius is 2.5 + c.</p>
+    <p>Each logged negative has its own condition. So no two negatives share a state. This matches a robot, where a state does not repeat.</p>
+    <p>The sweep uses 4 layouts of the bad modes at n_forget = 4: random, contiguous (contig), alternating (alt), pairs, and a block of 3 plus 1 (b3p1).</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/cond_setup.png" alt="Four ring panels at conditions 0.10, 0.35, 0.60 and 0.85 with bad modes and nearby negatives."></div>
+    <figcaption><b>The setup at 4 conditions.</b> Seed 0, random layout, 4 of 8 bad, 16 negatives per bad mode (64 in total). Each panel shows the negatives with a condition within 0.1 of the panel's c.</figcaption>
+  </figure>
+
+  <h3>Results over the sweep</h3>
+  <div class="tbl"><table class="heat">
+    <thead><tr><th>Method</th><th>random 1/8</th><th>random 2/8</th><th>random 4/8</th><th>contig 4/8</th><th>alt 4/8</th><th>pairs 4/8</th><th>b3p1 4/8</th></tr></thead>
+    <tbody>
+      <tr><td>B0 (no edit)</td><td class="num">0.149</td><td class="num">0.270</td><td class="num">0.516</td><td class="num">0.513</td><td class="num">0.514</td><td class="num">0.516</td><td class="num">0.515</td></tr>
+      <tr><td>NPO β100</td><td class="num">0.143</td><td class="num">0.255</td><td class="num">0.516</td><td class="num">0.488</td><td class="num">0.519</td><td class="num">0.509</td><td class="num">0.512</td></tr>
+      <tr><td>KTO β10</td><td class="num">0.270</td><td class="num">0.519</td><td class="num">0.915</td><td class="num">0.594</td><td class="num">0.898</td><td class="num">0.893</td><td class="num">0.900</td></tr>
+      <tr><td>Reroute</td><td class="num">0.511</td><td class="num">0.567</td><td class="num">0.611</td><td class="num">0.590</td><td class="num">0.641</td><td class="num">0.525</td><td class="num">0.573</td></tr>
+      <tr><td>Hop</td><td class="num">0.188</td><td class="num">0.256</td><td class="num">0.355</td><td class="num">0.471</td><td class="num">0.261</td><td class="num">0.345</td><td class="num">0.376</td></tr>
+      <tr><td>Hop + veto <span class="pill">+ pool</span></td><td class="num">0.106</td><td class="num">0.197</td><td class="num">0.318</td><td class="num">0.203</td><td class="num">0.457</td><td class="num">0.246</td><td class="num">0.251</td></tr>
+      <tr class="sdpo"><td>SDPO fresh β1</td><td class="num">0.430</td><td class="num">0.344</td><td class="num">0.544</td><td class="num">0.434</td><td class="num">0.550</td><td class="num">0.528</td><td class="num">0.505</td></tr>
+      <tr class="sdpo"><td>SDPO fresh β10</td><td class="num">0.129</td><td class="num">0.252</td><td class="num">0.506</td><td class="num">0.493</td><td class="num">0.511</td><td class="num">0.503</td><td class="num">0.504</td></tr>
+      <tr class="sdpo"><td>SDPO fresh β25</td><td class="num">0.135</td><td class="num">0.260</td><td class="num">0.511</td><td class="num">0.505</td><td class="num">0.512</td><td class="num">0.510</td><td class="num">0.510</td></tr>
+      <tr class="sdpo"><td>SDPO pinned β25</td><td class="num">0.185</td><td class="num">0.257</td><td class="num">0.530</td><td class="num">0.431</td><td class="num">0.534</td><td class="num">0.486</td><td class="num">0.466</td></tr>
+      <tr class="sdpo"><td>SDPO hop-pinned β25</td><td class="num">0.164</td><td class="num">0.248</td><td class="num">0.460</td><td class="num">0.435</td><td class="num">0.480</td><td class="num">0.425</td><td class="num">0.440</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tnote">tv_to_ideal, seeds 0–4. Source: <code>results/sdpo_results.md</code>, "Conditional toy" sections. Seeds 5–9 and 10–14 give the same order (same file).</p>
+  <ul class="findings">
+    <li><b>SDPO beats NPO and plain reroute, but loses to hop.</b> The best SDPO arm is better than NPO in 16–20 of 20 paired cells at 4/8. At 4/8, hop is better than every SDPO arm in the random, alt, pairs and b3p1 layouts.</li>
+    <li><b>Fresh SDPO at β ≥ 10 does almost nothing at 2–4 bad modes.</b> Its forgotten mass is 0.88–0.99. Its retain TV stays at or below 0.03.</li>
+    <li><b>One bad mode is the only case where fresh SDPO helps.</b> At 1/8, fresh β10 reaches 0.129, better than NPO in 17 of 20 cells. Only hop + veto is better (0.106).</li>
+    <li><b>Pinned SDPO is best only with contiguous bad modes.</b> There it ties NPO β10 and hop.</li>
+    <li><b>With many bad modes, the winners are often bad.</b> At 4 of 8 bad, 45–50% of the π<sub>ref</sub> winners land in another bad mode (<code>sdpo_pos_frac_in_forget</code>). Then the pair says little about which way to move.</li>
+  </ul>
+
+  <h3>What each method samples</h3>
+  <figure>
+    <div class="plate"><img src="fig/cond_samples.png" alt="Eight columns of ring samples after each method at two conditions."></div>
+    <figcaption><b>Samples after each edit at c = 0.35 (top) and c = 0.85 (bottom).</b> Seed 0, random layout, 4 of 8 bad. Fresh SDPO β25 and NPO β100 look like B0. Hop + veto removes most bad mass (0.17) and keeps the ring. KTO β10 sends most samples off the plotted area (0.98 off mass). Hop-pinned SDPO removes bad mass but leaves green off-ring clusters.</figcaption>
+  </figure>
+</section>
+
+<section id="robo">
+  <div class="sec-head"><span class="eyebrow">05 · toy 3</span><h2>Short robot courses</h2></div>
+  <div class="prose">
+    <p>A point robot drives from a start to a goal past 1 to 3 disc obstacles. Each seed has 200 setups: 160 for training and 40 held out.</p>
+    <p>The policy decodes a chunk of 8 velocity steps from noise at the current state, runs it open loop, and then replans. An episode has at most 6 chunks.</p>
+    <p>An episode is negative when it hits an obstacle or when its jerk goes above 1.2·10<sup>−3</sup>. The label covers the whole episode. So every chunk of a negative episode is a loser, and only about 30% of them are the bad chunk.</p>
+    <p>On seed 0 the base logs 245 negative episodes (821 chunk rows) on 128 of the 160 training setups. Evaluation uses 64 shared noises per setup.</p>
+    <p>We report three setup groups: <b>neg</b> (training setups with negatives), <b>noneg</b> (training setups without negatives) and <b>held</b> (new setups). Base clean success is 0.855 on neg (9-seed mean).</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/robo_setup.png" alt="Four setups with 16 base rollouts each, coloured by outcome; one trajectory shows chunk boundaries."></div>
+    <figcaption><b>Four setups, 16 base rollouts each.</b> Seed 0. The setups sit at the 20th, 50th and 80th percentile of base failure, plus the worst setup (39% negative). Open dots in the first panel mark chunk boundaries. Overlapping discs come from the setup generator.</figcaption>
+    <div class="key"><span><i class="dot" style="background:var(--kept)"></i>clean success</span><span><i class="dot" style="background:var(--gone)"></i>negative (collision or jerk)</span><span><i class="dot" style="background:var(--off)"></i>timeout</span></div>
+  </figure>
+
+  <h3>Results with native labels</h3>
+  <figure class="narrow">
+    <div class="plate"><img src="fig/robo_bars.png" alt="Dot plot of gain in clean success for eight methods."></div>
+    <figcaption><b>G on the neg group, 5,000 steps.</b> Seeds 0, 1, 2, 4 (seed 3's base diverged). Only fresh SDPO β25 is above zero on every seed. Every rerouting arm loses clean success. Source: <code>cells_full_st5000_m64.csv</code>.</figcaption>
+  </figure>
+
+  <h3>Results when the labels go wrong</h3>
+  <div class="prose">
+    <p>The stress round changes the labels and keeps the evaluation. It uses 9 valid seeds and 990 runs. The conditions are below.</p>
+  </div>
+  <dl class="terms">
+    <dt>native</dt><dd>Every chunk of each negative episode. The practical case.</dd>
+    <dt>oracle</dt><dd>Only the chunk that crashed or jerked. Privileged; not a method.</dd>
+    <dt>pad18</dt><dd>Native plus 18 good chunks per negative episode. The bad chunk becomes about 5% of the rows.</dd>
+    <dt>flip0.1, flip0.25</dt><dd>That share of negative episodes is replaced by a clean episode of the same setup.</dd>
+    <dt>placebo</dt><dd>Every labelled episode is clean. It tests whether a gain comes from the labels.</dd>
+    <dt>recall0.5</dt><dd>Only half of the negative episodes get a label.</dd>
+    <dt>cover0.25</dt><dd>Only a quarter of the setups have labelled negatives.</dd>
+  </dl>
+  <div class="tbl"><table class="heat hi">
+    <thead><tr><th>Method</th><th>native</th><th>flip0.1</th><th>flip0.25</th><th>pad18</th><th>placebo</th><th>recall0.5</th><th>cover0.25</th><th>oracle, epoch-matched</th></tr></thead>
+    <tbody>
+      <tr class="sdpo"><td>SDPO fresh β25</td><td class="num">+2.5</td><td class="num">+1.7</td><td class="num">+0.8</td><td class="num">−0.9</td><td class="num">−5.0</td><td class="num">−1.5</td><td class="num">−6.4</td><td class="num">+2.0</td></tr>
+      <tr class="sdpo"><td>SDPO pinned β25</td><td class="num">+0.7</td><td class="num">+0.3</td><td class="num">−1.4</td><td class="num">−9.0</td><td class="num">−42.9</td><td class="num">−7.3</td><td class="num">−16.9</td><td class="num">+8.0</td></tr>
+      <tr><td>NPO β100</td><td class="num">−2.7</td><td class="num">−3.4</td><td class="num">−6.1</td><td class="num">−5.9</td><td class="num">−20.5</td><td class="num">−3.7</td><td class="num">−6.2</td><td class="num">+1.0</td></tr>
+      <tr><td>KTO β100</td><td class="num">−3.0</td><td class="num">−2.7</td><td class="num">−4.2</td><td class="num">−9.8</td><td class="num">−20.1</td><td class="num">−6.8</td><td class="num">−6.0</td><td class="num">+1.6</td></tr>
+      <tr><td>Hop + local anchor</td><td class="num">−0.2</td><td class="num">−0.5</td><td class="num">−1.2</td><td class="num">−0.9</td><td class="num">−3.8</td><td class="num">−3.3</td><td class="num">−4.5</td><td class="num">−3.9</td></tr>
+      <tr><td>FILTER</td><td class="num">−3.0</td><td class="num">−3.2</td><td class="num">−3.7</td><td class="num">−9.6</td><td class="num">−5.2</td><td class="num">−2.7</td><td class="num">−1.1</td><td class="num">–</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tnote">G on the neg group, points, 9 seeds; standard errors are 0.1–3.3 (see source). Higher is better; shading marks the best and worst per column. The last column scales steps with rows (exploratory, not pre-registered); the other columns use 5,000 steps. Source: <code>results/robo_stress/RESULTS.md</code>.</p>
+  <ul class="findings">
+    <li><b>Fresh SDPO β25 is the only method with a native gain.</b> +2.5 ± 0.2 on neg and +2.2 ± 0.3 on held. It beats a random edit of the same norm by +3.0 ± 0.2.</li>
+    <li><b>The gain comes from the labels.</b> With placebo labels, fresh SDPO loses 5.0 points. So native minus placebo is +7.5 ± 0.3.</li>
+    <li><b>Fresh SDPO survives 10–25% false labels.</b> It keeps +1.7 and +0.8. Dilution (pad18), missed labels and low coverage remove the gain.</li>
+    <li><b>Pinned SDPO needs the exact bad chunk.</b> With oracle chunks and enough steps it gains +8.0, the best result in this toy. With native labels it gains nothing, and with padding it collapses (−62 to −85 when steps scale with rows). Credit assignment is the lever for pinned SDPO.</li>
+    <li><b>β matters for fresh SDPO.</b> β = 25 gives +2.5, β = 50 gives +2.0, β = 100 gives +1.2. β = 10 gives −1.9 and β = 5 gives −23.1.</li>
+  </ul>
+
+  <h3>What each method does on held-out setups</h3>
+  <figure>
+    <div class="plate"><img src="fig/robo_rollouts.png" alt="Grid of rollouts on three held-out setups, one row per method."></div>
+    <figcaption><b>16 rollouts per setup, same noises in every row.</b> Seed 0, held group. Row numbers cover all 40 held setups × 64 noises. Both SDPO versions cut negatives (15.8% → 13.0% fresh, 12.1% pinned). FILTER and hop leave most paths as they were. NPO and KTO add new failures. Differences of 1–3 points between single-seed rows are within noise.</figcaption>
+  </figure>
+
+  <h3>What each method samples at one state</h3>
+  <figure>
+    <div class="plate"><img src="fig/robo_chunkfan.png" alt="Fans of 64 decoded chunks at one state for five policies, coloured by outcome."></div>
+    <figcaption><b>64 chunks at one logged bad state (setup 125, chunk 2).</b> Each chunk is coloured by the outcome of the rollout that continues from it. Black: the logged bad chunk. One state is an example only. The bottom line of each label is the fairer number: failure over all 249 bad-chunk states. Pinned SDPO lowers it most (29% → 22%), then fresh SDPO (26%). NPO and KTO leave it near the base.</figcaption>
+  </figure>
+</section>
+
+<section id="robol">
+  <div class="sec-head"><span class="eyebrow">06 · toy 4</span><h2>Long robot courses</h2></div>
+  <div class="prose">
+    <p>A point robot drives a course of 4 waypoint segments. Each segment has 1 to 3 disc obstacles. Each segment turns by up to 60°.</p>
+    <p>A contact does not end the episode. The robot slides along the obstacle and continues. So a failure can come from a drift that started many chunks earlier.</p>
+    <p>The policy decodes 8 velocity steps per chunk and then replans. An episode has at most 18 chunks.</p>
+    <p>An episode is negative when it touches an obstacle or when its jerk goes above 1.2·10<sup>−3</sup>. A timeout is not negative.</p>
+    <p>The base policy reaches the goal in 94.5% of episodes. Its clean success is 0.791, and 18.5% of its episodes are negative (5-seed mean).</p>
+    <p>The data has up to N<sub>s</sub> = 512 labelled courses. Each result uses 128 held-out courses × 32 noises and 5 seeds.</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/robol_setup.png" alt="Three courses with base rollouts coloured by outcome, and one negative episode with its chunk labels."></div>
+    <figcaption><b>Left: three held-out courses, 16 base rollouts each.</b> We chose courses with about 4 negatives in 16, so all three show 11 / 4 / 1. <b>Right: the three label types for one negative episode.</b> A trajectory label marks all 18 chunks. An approach window marks the contact chunk and the 2 chunks before it. A symptom label marks the contact chunk only. Windows and symptoms need an oracle. Trajectory labels are the practical case.</figcaption>
+    <div class="key"><span><i class="dot" style="background:var(--kept)"></i>clean success</span><span><i class="dot" style="background:var(--gone)"></i>negative (contact or jerk)</span><span><i class="dot" style="background:var(--off)"></i>timeout</span></div>
+  </figure>
+
+  <h3>The dose decides the result</h3>
+  <div class="prose">
+    <p>The first runs used 5,000 steps. At that dose, pinned SDPO, NPO and KTO all collapsed. A random edit of the same size did no harm, so the collapse came from the direction of the edit.</p>
+    <p>The dose sweep showed that 5,000 steps is an overdose for pinned SDPO. At a small dose it is the best method.</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/robol_ksweep.png" alt="Gain in clean success against dose k for four methods, four panels."></div>
+    <figcaption><b>G against dose k.</b> Bars are ±2 standard errors over 5 seeds. Pinned SDPO peaks at +12.0 (approach windows, N<sub>s</sub> 512, k = 1/16, 197 steps) and +10.3 (trajectory, N<sub>s</sub> 64, 125 steps). Fresh SDPO peaks at +5.8 and +3.9 and stays positive over a wide range of k. KTO is negative at every dose. NPO is negative with trajectory labels and reaches only +0.3 to +1.2 with approach windows at N<sub>s</sub> 16–64. Source: <code>results/robol/KSWEEP.md</code>.</figcaption>
+  </figure>
+  <ul class="findings">
+    <li><b>The best dose for pinned SDPO is a fixed number of steps.</b> It is about 100–250 total steps at every N<sub>s</sub>. A rule that scales steps with rows overdoses large datasets.</li>
+    <li><b>Trajectory labels cost little.</b> Pinned SDPO reaches 9.2–10.3 points with trajectory labels, against 8.2–12.0 with oracle windows.</li>
+  </ul>
+
+  <h3>What each method does on held-out courses</h3>
+  <figure>
+    <div class="plate"><img src="fig/robol_rollouts.png" alt="Grid of rollouts on three held-out courses, one row per method."></div>
+    <figcaption><b>16 rollouts per course, same noises in every row.</b> Seed 0, trajectory labels, N<sub>s</sub> 512. Row numbers cover all 128 held-out courses × 32 noises. Pinned SDPO at 475 steps cuts negatives from 0.195 to 0.098. The same method at 5,000 steps wanders into obstacles (0.701 negative). Fresh SDPO with 8 rounds of re-collected negatives reaches 0.935 clean success, but it adds timeouts (green, 0.047).</figcaption>
+  </figure>
+
+  <h3>What each method samples at one state</h3>
+  <div class="prose"><p>The next figure decodes 64 chunks at one state before a logged contact. Each chunk is coloured by the outcome of the rollout that continues from it.</p></div>
+  <figure>
+    <div class="plate"><img src="fig/robol_chunkfan.png" alt="Fans of 64 decoded chunks at one state for six policies, coloured by rollout outcome."></div>
+    <figcaption><b>64 chunks at a training state (episode 912, chunk 4).</b> Black: the logged bad chunk. Pinned SDPO narrows the fan and turns it away from the obstacle: 83% clean here, against 58% for B0. The overdose fans out wide. The policy with re-collected negatives reaches 97% clean here and 37% over 80 contact states, against 23% for B0. On held-out states each fan changes little.</figcaption>
+  </figure>
+
+  <h3>More rounds of negatives help, up to a limit</h3>
+  <div class="prose">
+    <p>Variants that reset π<sub>ref</sub> without new negatives make the policy worse. Iterated pinned SDPO goes from +9.2 to −8.0 to −51.0 over three rounds (trajectory, N<sub>s</sub> 512).</p>
+    <p>New negatives at each reset change this. Fresh SDPO with trajectory labels climbs from +3.9 (1 segment) to +13.4 (8 segments) at N<sub>s</sub> 512. Pinned SDPO with approach windows reaches +14.1 at 2 segments.</p>
+    <p>Each segment needs a new round of labels. Eight segments use about eight times the labels of one run.</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/robol_segments.png" alt="Gain against number of segments for fresh and pinned SDPO, four panels."></div>
+    <figcaption><b>G against segments S.</b> Solid: k<sub>seg</sub> = 1/8. Dashed: k<sub>seg</sub> = 1/32. Each configuration has a best S, and then it collapses. Past that point, fresh SDPO stops the labelled failures and stops finishing: at S = 64 its clean success is 0.110, with speed 0.69 of the base. Pinned SDPO turns jerky (jerk in 35% of episodes at S = 32). Source: <code>results/robol/SEGMENTS.md</code>, <code>VARIANTS.md</code>.</figcaption>
+  </figure>
+
+  <h3>Pinned SDPO moves the whole distribution</h3>
+  <div class="prose">
+    <p>We measured the energy distance from the base, on held-out states, at fixed step counts. Energy distance compares two sets of sampled actions at a state.</p>
+    <p>At matched steps, pinned SDPO drifts 3 to 10 times more than fresh SDPO. The drift is the same on labelled and held-out states. So it is not local to the negatives.</p>
+    <p>The loser term alone destroys the policy within 50 steps. The winner term alone barely moves it. Pinned SDPO closes its gate to about 0.2. The gate of fresh SDPO stays near 0.5.</p>
+  </div>
+  <figure>
+    <div class="plate"><img src="fig/robol_drift.png" alt="Energy distance and gain against training steps for full, winner-only and loser-only SDPO."></div>
+    <figcaption><b>Top: energy distance to the base (symlog). Bottom: G.</b> Trajectory labels, N<sub>s</sub> 64 (left) and 512 (right). The energy estimate is unbiased, so values near zero can be negative. Source: <code>results/robol/DRIFT.md</code>.</figcaption>
+  </figure>
+</section>
+
+<section id="change">
+  <div class="sec-head"><span class="eyebrow">07</span><h2>How each method changes what the policy samples</h2></div>
+  <div class="prose">
+    <p>The four toys show the same pattern for each method.</p>
+  </div>
+  <ul class="findings">
+    <li><b>Fresh SDPO gives a small, broad change.</b> Its margin compares two independent draws, so the margin is noisy and the gate stays open. At β ≥ 10 it keeps the noise map of π<sub>ref</sub>. It removes little bad mass in the 2-D toys, and it gains a few safe points in the robot toys. It is the most robust method under label noise and over a wide dose range.</li>
+    <li><b>Pinned SDPO rewrites the map at the logged noises.</b> It moves those noises out of the bad region (toy 1 noise map). The optimiser satisfies the pinned margin by moving the action distribution at every state. At a small dose this gives the largest gains (toy 4). At a large dose it makes the policy jerky or broken.</li>
+    <li><b>β sets the size of the edit.</b> With β = 1, fresh SDPO removes most bad mass in toy 1. Pinned SDPO at β = 1 breaks the ring.</li>
+    <li><b>NPO and KTO push mass away without a target.</b> NPO β100 changes little. KTO removes bad mass but sends it off the ring (toys 1, 2) or into new failures (toys 3, 4).</li>
+    <li><b>Rerouting needs a good target.</b> Plain reroute moves mass between kept modes. Hop with a basin veto finds safe targets in the conditional ring and wins there. In the robot toys, hop does not beat the base.</li>
+    <li><b>The winner is the anchor.</b> The loser term alone destroys the policy in toy 4. The winner term keeps it near π<sub>ref</sub>. SDPO is a stable negatives-only method because the winners come from π<sub>ref</sub> itself.</li>
+  </ul>
+</section>
+
+<section id="sources">
+  <div class="sec-head"><span class="eyebrow">08</span><h2>Sources and method notes</h2></div>
+  <div class="prose">
+    <p>Code and results are in <code>~/repos/toypref-report</code>, branch <code>sdpo-report</code>. That branch merges <code>robo-long</code> and <code>self-dpo</code>.</p>
+    <p>Sweep tables: <code>results/sdpo_results.md</code>, <code>results/practical_best.md</code>, <code>results/robo/summary_full_st5000_m64.csv</code>, <code>results/robo_stress/RESULTS.md</code>, <code>results/robol/{RESULTS,RESULTS_round2,KSWEEP,VARIANTS,SEGMENTS,DRIFT}.md</code>.</p>
+    <p>Figure scripts: <code>scripts/report/</code>. Figure runs: <code>/grogu/datasets/rollout/soumojib/toypref/report_{2d,robo,robol}</code>.</p>
+    <p>All figures use seed 0. Single-run numbers in figure titles do not match the pooled tables exactly. The tables are the evidence. The figures show the mechanism.</p>
+    <p>The best doses in toy 4 come from the same evaluation courses. A real robot must choose its dose without that evaluation. So the toy-4 peaks are optimistic.</p>
+  </div>
+  <p class="meta">Built 2026-10-25 from the toypref sweeps.</p>
+</section>
+</main>
+</div>
+
+<script>
+// Mark best (lowest) and worst cell per column in .heat tables; rows named in data-skip are ignored.
+function num(td) { return parseFloat(td.textContent.replace("\u2212", "-")); }
+document.querySelectorAll("table.heat").forEach(function (t) {
+  var skip = (t.dataset.skip || "").split(",").filter(Boolean);
+  var rows = Array.prototype.filter.call(t.tBodies[0].rows, function (r) {
+    var name = r.cells[0].textContent.trim();
+    return !skip.some(function (s) { return name.indexOf(s) === 0; });
+  });
+  var ncol = t.tHead.rows[0].cells.length;
+  for (var c = 1; c < ncol; c++) {
+    var cells = rows.map(function (r) { return r.cells[c]; }).filter(function (td) { return td && !isNaN(num(td)); });
+    if (!cells.length) continue;
+    var vals = cells.map(function (td) { return num(td); });
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    if (t.classList.contains("hi")) { var tmp = lo; lo = hi; hi = tmp; }
+    cells.forEach(function (td, i) {
+      if (vals[i] === lo) { td.classList.add("best"); td.title = "best in column"; }
+      else if (vals[i] === hi) { td.classList.add("worst"); td.title = "worst in column"; }
+    });
+  }
+});
+</script>
