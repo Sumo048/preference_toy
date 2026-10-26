@@ -17,7 +17,7 @@ import numpy as np
 import torch
 
 from toypref import seeds
-from toypref.arms import ARMS, RW_ARMS, ArmContext, run_arm
+from toypref.arms import ARMS, RW_ARMS, SDPO_ARMS, ArmContext, run_arm
 from toypref.config import DEFAULT, RUNS, base_path, cell_name, parse_regime, regime_tag
 from toypref.editset import apply_regime, build_editset, make_pool
 from toypref.flow import load_policy
@@ -40,7 +40,7 @@ def main():
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--regime", default="", help="e.g. 'std=0.45' or 'cover=0.5' or 'contam=0.2' (round rw)")
     args = ap.parse_args()
-    args.arms_rw = args.arms == "rw"
+    args.arms_rw = args.arms in ("rw", "sdpo")
     n_pos = DEFAULT.n_pos if args.n_pos is None else args.n_pos
     reg = parse_regime(args.regime)
     if args.out is None:
@@ -89,6 +89,8 @@ def main():
         names = [n for n, sp in ARMS.items() if not sp.round_]
     elif args.arms == "rw":
         names = list(RW_ARMS)
+    elif args.arms == "sdpo":
+        names = list(SDPO_ARMS)
     else:
         names = args.arms.split(",")
     todo = [n for n in names if args.force or not os.path.exists(os.path.join(out_dir, f"{n}.json"))]

@@ -52,6 +52,9 @@ class ArmSpec:
     lambda_anchor: float = 1.0
     #: run only by an explicit arm list (kept out of the default "all" sweep)
     round_: str = ""
+    #: self-paired DPO (user idea): noise "fresh" | "pin"; positive "rand" | "nearnf"
+    sdpo_noise: str = ""
+    sdpo_pos: str = "rand"
 
 
 ARMS: Dict[str, ArmSpec] = {}
@@ -230,6 +233,17 @@ _add(ArmSpec("R_near_filt_log_neg_Anf_map", "reroute", "reroute_rw",
 
 RW_ARMS = [n for n, s_ in ARMS.items() if s_.round_ == RW]
 
+# --- self-paired DPO (user idea, 2026-10-09) ---------------------------------
+for _b in (1.0, 25.0):
+    for _nz in ("fresh", "pin"):
+        _add(ArmSpec(f"SDPO_{_nz}_b{_b:g}", "sdpo", "baseline",
+                     "self-paired DPO: loser = logged negative, winner = fresh pi_ref sample",
+                     beta=_b, mix="neg", negonly=True, sdpo_noise=_nz, round_="sdpo"))
+_add(ArmSpec("SDPO_nearnf_pin_b1", "sdpo", "baseline",
+             "self-paired DPO with the near_nf target as winner (logged noise shared)",
+             beta=1.0, mix="neg", negonly=True, sdpo_noise="pin", sdpo_pos="nearnf", round_="sdpo"))
+SDPO_ARMS = [n for n, s_ in ARMS.items() if s_.round_ == "sdpo"]
+
 
 # =========================================================================
 @dataclass
@@ -358,6 +372,44 @@ def dpo_step_fn(ctx, spec):
         r_l, _ = O.surrogate_r(policy, ctx.ref, a_l, torch.randn(a_l.shape, generator=g), t)
         pair = O.dpo_pair_term(r_w, r_l, spec.beta).mean()
         return bc + pair, {"bc": _f(bc), "pair": _f(pair), "margin": _f((r_w - r_l).mean())}
+    return step
+
+
+K_SDPO = 8
+
+
+@torch.no_grad()
+def sdpo_positives(ctx, spec):
+    """(N, K, 2) winners per negative: K fresh pi_ref samples (own per-row stream), or the near_nf target."""
+    if spec.sdpo_pos == "nearnf":
+        rows = build_rows(ctx.ref, ctx.xi_neg, ctx.a_neg, ctx.neg_pool_idx, "near_nf", "log", ctx.seed,
+                          ctx.mix_cfg, ctx.forget, d0=ctx.d0, typical=ctx.typical)
+        return rows.target.reshape(-1, 1, rows.target.shape[1])
+    out = []
+    for i in range(ctx.xi_neg.shape[0]):
+        g = seeds.row_gen(ctx.seed, int(ctx.neg_pool_idx[i]), 5)
+        out.append(ctx.ref.sample(torch.randn(K_SDPO, ctx.xi_neg.shape[1], generator=g)))
+    return torch.stack(out)
+
+
+def sdpo_step_fn(ctx, spec, pos):
+    P = ctx.tcfg.batch // 2
+    N, K = pos.shape[0], pos.shape[1]
+
+    def step(policy, g):
+        i = _pick(N, P, g)
+        k = _pick(K, P, g)
+        aw, al = pos[i, k], ctx.a_neg[i]
+        t = FlowPolicy.sample_time(P, g)
+        if spec.sdpo_noise == "pin":
+            nw = nl = ctx.xi_neg[i]
+        else:
+            nw = torch.randn(aw.shape, generator=g)
+            nl = torch.randn(al.shape, generator=g)
+        rw, _ = O.surrogate_r(policy, ctx.ref, aw, nw, t)
+        rl, _ = O.surrogate_r(policy, ctx.ref, al, nl, t)
+        loss = O.dpo_pair_term(rw, rl, spec.beta).mean()
+        return loss, {"margin": _f((rw - rl).mean())}
     return step
 
 
@@ -506,6 +558,13 @@ def run_arm(spec: ArmSpec, ctx: ArmContext, log=None, probe=None):
         fn = kto_step_fn(ctx, spec)
     elif spec.kind == "dpo":
         fn = dpo_step_fn(ctx, spec)
+    elif spec.kind == "sdpo":
+        pos = sdpo_positives(ctx, spec)
+        from .mixture import assign_modes
+        lab = assign_modes(ctx.mix_cfg, pos.reshape(-1, pos.shape[-1]))
+        info["sdpo_pos_frac_in_forget"] = float(np.isin(lab, ctx.forget).mean())   # diagnostic only
+        info["sdpo_pos_frac_off"] = float((lab == -1).mean())
+        fn = sdpo_step_fn(ctx, spec, pos)
     elif spec.kind == "ga":
         fn = ga_step_fn(ctx, spec)
     else:
