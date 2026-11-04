@@ -16,4 +16,4 @@ Prereg: `docs/A3LF_PREREG.md`, pushed at cb7575c before any seed 5-9 cell was lo
 - After the 20 main cells: `tick --extra` (k1, contig, b3p1 at npm 4).
 
 ## Status
-- 18:05 UTC: 8 k4 runs (s5-s8) in their first surgeon session.
+- 18:50 UTC: 8 k4 runs (s5-s8), sessions 3-4 each; 9 accepts from 14 surgeon sessions; no run stopped yet.
