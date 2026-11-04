@@ -1,0 +1,278 @@
+{
+ "arm": "A2",
+ "cell": "cond_k1_s5_n16",
+ "setting": "k1",
+ "seed": 5,
+ "npm": 16,
+ "run_id": "grid_cond_k1_s5_n16_A2",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s5_n16_A2",
+ "output": {
+  "version": "v5",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v1",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0001"
+    ]
+   },
+   {
+    "version": "v5",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0001",
+     "p0005"
+    ]
+   }
+  ],
+  "gate_checks": 5,
+  "gate_cap": 12,
+  "decodes": 469598.0,
+  "sessions": 3,
+  "cost_usd": 1.783069,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT accepted v1 gated linear graft on out from blocks.2.act probe, steps 4-10, pushes cluster decodes sideways to neighbour modes",
+   "calls": 13,
+   "submissions": 1,
+   "accepted": "v1",
+   "cost_usd": 0.345748,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT no-accept - late-step gated rotation and signed nearest-mode grafts at out cut target ~0.0155, but progress test failed twice",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.848289,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 1,
+   "summary": "RESULT accepted v5 gated out-layer graft: blocks.2.act probe at steps 10-16 rotates bad-mode trajectories ccw toward neighbour mode",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": "v5",
+   "cost_usd": 0.546913,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.015995
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.009949
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.016175
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.10186767578125,
+    "target_fall_ci": [
+     0.09716796875,
+     0.10662841796875
+    ]
+   }
+  },
+  {
+   "version": "v2",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.015380859375,
+    "target_fall_ci": [
+     0.013427734375,
+     0.0172119140625
+    ]
+   }
+  },
+  {
+   "version": "v3",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.015869140625,
+    "target_fall_ci": [
+     0.0140380859375,
+     0.017822265625
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0167236328125,
+    "target_fall_ci": [
+     0.0147705078125,
+     0.01873779296875
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01611328125,
+    "target_fall_ci": [
+     0.0142822265625,
+     0.01806640625
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.10088571428571427,
+  "removed": 0.976857490864799,
+  "collateral": 0.08522584236841367,
+  "mass_off": 0.0307,
+  "collateral_plan": 0.08314614139034343,
+  "toypref": {
+   "mass_m0": 0.1226,
+   "mass_m1": 0.1536,
+   "mass_m2": 0.00285,
+   "mass_m3": 0.19945,
+   "mass_m4": 0.12365,
+   "mass_m5": 0.12055,
+   "mass_m6": 0.1205,
+   "mass_m7": 0.1261,
+   "mass_off": 0.0307,
+   "neg_mass_ratio": 0.023142509135200977,
+   "retain_tv": 0.08522584236841367,
+   "tv_to_ideal": 0.10088571428571427,
+   "tv_to_ideal_ref": 0.15184999999999996,
+   "retain_noise_flip": 0.008194305252608619,
+   "neg_noise_to_retain": 0.9451887941534713,
+   "neg_noise_still_forget": 0.017864393016646368,
+   "disp_retain_mean": 0.03308868780732155,
+   "neg_still_forget_near": 0.015006821282401092,
+   "n_eval_neg_near": 733.0,
+   "neg_still_forget_far": 0.04424778761061947,
+   "n_eval_neg_far": 565.0
+  },
+  "final_pool": {
+   "D": 0.10793195452008927,
+   "removed": 0.9747982619490999,
+   "collateral": 0.08433317713460552,
+   "mass_off": 0.0291595458984375,
+   "retain_tv": 0.0859640754233534,
+   "n": 65536,
+   "mass": [
+    0.1213531494140625,
+    0.1576995849609375,
+    0.0030975341796875,
+    0.2036895751953125,
+    0.1208953857421875,
+    0.12237548828125,
+    0.1189422607421875,
+    0.1227874755859375,
+    0.0291595458984375
+   ],
+   "mass_ref": [
+    0.1215667724609375,
+    0.1215362548828125,
+    0.1229095458984375,
+    0.1224517822265625,
+    0.1179656982421875,
+    0.1219482421875,
+    0.1211700439453125,
+    0.122100830078125,
+    0.028350830078125
+   ]
+  }
+ }
+}

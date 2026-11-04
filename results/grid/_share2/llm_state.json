@@ -1,36 +1,36 @@
 {
  "inflight": {
-  "grid_cond_k1_s5_n16_A1": {
+  "grid_cond_k1_s9_n4_A2": {
    "agent": "surgeon",
-   "token": "9VqhYgTAQrnU6m96"
-  },
-  "grid_cond_k1_s6_n16_A3": {
-   "agent": "surgeon",
-   "token": "ArVmprPh8GQgDKDk"
-  },
-  "grid_cond_k1_s6_n16_A1": {
-   "agent": "triage",
-   "token": "wXZnVcFr4Qw4eLpx"
-  },
-  "grid_cond_k1_s7_n4_A2": {
-   "agent": "surgeon",
-   "token": "dPYAzuGiLE7Dqo47"
+   "token": "ByziNLhTExwBRFpH"
   },
   "grid_cond_k1_s7_n4_A1": {
    "agent": "surgeon",
-   "token": "7vUthigxrfiT4QJt"
+   "token": "2TPGrikvrCcNh6d9"
   },
-  "grid_cond_k1_s7_n16_A3": {
-   "agent": "triage",
-   "token": "E7mHTKEZ43twdXvN"
+  "grid_cond_k1_s8_n4_A2": {
+   "agent": "surgeon",
+   "token": "38hkHCCf533TR79m"
   },
-  "grid_cond_k1_s7_n16_A2": {
+  "grid_cond_k1_s8_n4_A1": {
    "agent": "triage",
-   "token": "gz7FmmnTzsp5NHdd"
+   "token": "PhWh9sUMPYmeBUwD"
   },
-  "grid_cond_k1_s5_n4_A3": {
+  "grid_cond_k1_s8_n16_A1": {
+   "agent": "surgeon",
+   "token": "oyQWhaG3ZXupkTcX"
+  },
+  "grid_cond_k1_s9_n4_A3": {
    "agent": "triage",
-   "token": "8uZhR25UniN2Jd9q"
+   "token": "rrMsrYkxwDumJUwM"
+  },
+  "grid_cond_k1_s9_n4_A1": {
+   "agent": "surgeon",
+   "token": "rgihLwpJHJkfsuPC"
+  },
+  "grid_cond_k1_s9_n16_A3": {
+   "agent": "surgeon",
+   "token": "ULpZ49RKtxkwY24i"
   }
  },
  "done": [
@@ -42,7 +42,18 @@
   "grid_cond_k1_s7_n4_A3",
   "grid_cond_k1_s5_n16_A3",
   "grid_cond_k1_s5_n16_A2",
-  "grid_cond_k1_s6_n4_A1"
+  "grid_cond_k1_s6_n4_A1",
+  "grid_cond_k1_s7_n4_A2",
+  "grid_cond_k1_s7_n16_A2",
+  "grid_cond_k1_s5_n4_A3",
+  "grid_cond_k1_s7_n16_A3",
+  "grid_cond_k1_s6_n16_A3",
+  "grid_cond_k1_s8_n4_A3",
+  "grid_cond_k1_s6_n16_A1",
+  "grid_cond_k1_s8_n16_A3",
+  "grid_cond_k1_s5_n16_A1",
+  "grid_cond_k1_s7_n16_A1",
+  "grid_cond_k1_s8_n16_A2"
  ],
  "eval_started": [
   "grid_cond_k1_s5_n4_A2",
@@ -53,6 +64,17 @@
   "grid_cond_k1_s7_n4_A3",
   "grid_cond_k1_s5_n16_A3",
   "grid_cond_k1_s5_n16_A2",
-  "grid_cond_k1_s6_n4_A1"
+  "grid_cond_k1_s6_n4_A1",
+  "grid_cond_k1_s7_n4_A2",
+  "grid_cond_k1_s7_n16_A2",
+  "grid_cond_k1_s5_n4_A3",
+  "grid_cond_k1_s7_n16_A3",
+  "grid_cond_k1_s6_n16_A3",
+  "grid_cond_k1_s8_n4_A3",
+  "grid_cond_k1_s6_n16_A1",
+  "grid_cond_k1_s8_n16_A3",
+  "grid_cond_k1_s5_n16_A1",
+  "grid_cond_k1_s7_n16_A1",
+  "grid_cond_k1_s8_n16_A2"
  ]
 }

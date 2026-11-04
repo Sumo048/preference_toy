@@ -1,0 +1,463 @@
+{
+ "arm": "A1",
+ "cell": "cond_k1_s5_n16",
+ "setting": "k1",
+ "seed": 5,
+ "npm": 16,
+ "run_id": "grid_cond_k1_s5_n16_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s5_n16_A1",
+ "output": {
+  "version": "v11",
+  "stop": "gate_cap",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v11",
+    "call": "targeted_train",
+    "patches": [
+     "p0011"
+    ]
+   }
+  ],
+  "gate_checks": 12,
+  "gate_cap": 12,
+  "decodes": 2784917.0,
+  "sessions": 5,
+  "cost_usd": 1.956358,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT no-accept - BC hopB/hopVB rescue edits (v1,v5,v6) removed bad mass in range; gate still failed target and between tests.",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.242841,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc to nearest-mode targets (v8), npo (v9), npo on v8 (v10); target fall stuck near 0.05; between failed",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.351104,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 0,
+   "summary": "RESULT accepted v11 BC on blocks.1,blocks.2,out to the good mode 45 deg counterclockwise of each member bad mode, bsup support, dist anchor",
+   "calls": 11,
+   "submissions": 1,
+   "accepted": "v11",
+   "cost_usd": 0.465293,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s008",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc rescue to clockwise neighbour modes from v11 (v12, v13, v14); target fall too small; submissions used up",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.404117,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s010",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc from v11 on blocks.2,out with custom high-angle rescue targets and dist anchor; best fall 0.0143, target test failed.",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.433954,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.015903
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010324
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.011022
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010991
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010809
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0577392578125,
+    "target_fall_ci": [
+     0.053466796875,
+     0.06219482421875
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0560302734375,
+    "target_fall_ci": [
+     0.05230560302734375,
+     0.0601806640625
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0452880859375,
+    "target_fall_ci": [
+     0.04132080078125,
+     0.04962310791015624
+    ]
+   }
+  },
+  {
+   "version": "v8",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.05419921875,
+    "target_fall_ci": [
+     0.05016937255859375,
+     0.0584716796875
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.04925537109375,
+    "target_fall_ci": [
+     0.04534759521484375,
+     0.05322265625
+    ]
+   }
+  },
+  {
+   "version": "v10",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.05096435546875,
+    "target_fall_ci": [
+     0.046875,
+     0.05474853515625
+    ]
+   }
+  },
+  {
+   "version": "v11",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.09027099609375,
+    "target_fall_ci": [
+     0.08526611328125,
+     0.09521636962890624
+    ]
+   }
+  },
+  {
+   "version": "v12",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01336669921875,
+    "target_fall_ci": [
+     0.01104583740234375,
+     0.015869140625
+    ]
+   }
+  },
+  {
+   "version": "v14",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": -0.03350830078125,
+    "target_fall_ci": [
+     -0.03759765625,
+     -0.02947845458984376
+    ]
+   }
+  },
+  {
+   "version": "v13",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01043701171875,
+    "target_fall_ci": [
+     0.00799560546875,
+     0.01275634765625
+    ]
+   }
+  },
+  {
+   "version": "v17",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01275634765625,
+    "target_fall_ci": [
+     0.01031494140625,
+     0.01531982421875
+    ]
+   }
+  },
+  {
+   "version": "v19",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01434326171875,
+    "target_fall_ci": [
+     0.01190185546875,
+     0.016845703125
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.10141428571428573,
+  "removed": 0.7515225334957369,
+  "collateral": 0.08878605976358678,
+  "mass_off": 0.0314,
+  "collateral_plan": 0.0861529184092123,
+  "toypref": {
+   "mass_m0": 0.13315,
+   "mass_m1": 0.05115,
+   "mass_m2": 0.0306,
+   "mass_m3": 0.16545,
+   "mass_m4": 0.145,
+   "mass_m5": 0.14965,
+   "mass_m6": 0.1435,
+   "mass_m7": 0.1501,
+   "mass_off": 0.0314,
+   "neg_mass_ratio": 0.24847746650426308,
+   "retain_tv": 0.08878605976358678,
+   "tv_to_ideal": 0.10141428571428573,
+   "tv_to_ideal_ref": 0.15184999999999996,
+   "retain_noise_flip": 0.24488592819666333,
+   "neg_noise_to_retain": 0.8282582216808769,
+   "neg_noise_still_forget": 0.13885505481120586,
+   "disp_retain_mean": 0.5762224793434143,
+   "neg_still_forget_near": 0.07639836289222374,
+   "n_eval_neg_near": 733.0,
+   "neg_still_forget_far": 0.184070796460177,
+   "n_eval_neg_far": 565.0
+  },
+  "final_pool": {
+   "D": 0.10056849888392858,
+   "removed": 0.74723774053383,
+   "collateral": 0.08539908359996257,
+   "mass_off": 0.031097412109375,
+   "retain_tv": 0.08806180573345089,
+   "n": 65536,
+   "mass": [
+    0.1338348388671875,
+    0.0522003173828125,
+    0.03106689453125,
+    0.168792724609375,
+    0.145965576171875,
+    0.150390625,
+    0.1419677734375,
+    0.144683837890625,
+    0.031097412109375
+   ],
+   "mass_ref": [
+    0.1215667724609375,
+    0.1215362548828125,
+    0.1229095458984375,
+    0.1224517822265625,
+    0.1179656982421875,
+    0.1219482421875,
+    0.1211700439453125,
+    0.122100830078125,
+    0.028350830078125
+   ]
+  }
+ }
+}

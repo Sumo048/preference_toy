@@ -1,0 +1,161 @@
+{
+ "arm": "A3",
+ "cell": "cond_k1_s8_n4",
+ "setting": "k1",
+ "seed": 8,
+ "npm": 4,
+ "run_id": "grid_cond_k1_s8_n4_A3",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s8_n4_A3",
+ "output": {
+  "version": "v2",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v2",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002"
+    ]
+   }
+  ],
+  "gate_checks": 2,
+  "gate_cap": 9,
+  "decodes": 197040.0,
+  "sessions": 1,
+  "cost_usd": 0.41180100000000003,
+  "n_first_clusters": 1
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT accepted v2 Gated graft on out: blocks.2 logistic detector at steps 6-11 adds a rotational velocity that moves bad-track samples to the next mode.",
+   "calls": 16,
+   "submissions": 2,
+   "accepted": "v2",
+   "cost_usd": 0.402285,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.009516
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.038818359375,
+    "target_fall_ci": [
+     0.034423828125,
+     0.043212890625
+    ]
+   }
+  },
+  {
+   "version": "v2",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.11224365234375,
+    "target_fall_ci": [
+     0.107421875,
+     0.11700439453125
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.13244285714285714,
+  "removed": 0.8699792960662526,
+  "collateral": 0.09480116049413284,
+  "mass_off": 0.032,
+  "collateral_plan": 0.09262898648965043,
+  "toypref": {
+   "mass_m0": 0.12565,
+   "mass_m1": 0.1219,
+   "mass_m2": 0.1219,
+   "mass_m3": 0.1212,
+   "mass_m4": 0.11365,
+   "mass_m5": 0.0157,
+   "mass_m6": 0.2276,
+   "mass_m7": 0.1204,
+   "mass_off": 0.032,
+   "neg_mass_ratio": 0.1300207039337474,
+   "retain_tv": 0.09480116049413284,
+   "tv_to_ideal": 0.13244285714285714,
+   "tv_to_ideal_ref": 0.14839999999999998,
+   "retain_noise_flip": 0.004873179896665101,
+   "neg_noise_to_retain": 0.8256728778467909,
+   "neg_noise_still_forget": 0.11842650103519668,
+   "disp_retain_mean": 0.01683272235095501,
+   "neg_still_forget_near": 0.05228758169934641,
+   "n_eval_neg_near": 153.0,
+   "neg_still_forget_far": 0.13546666666666668,
+   "n_eval_neg_far": 1875.0
+  },
+  "final_pool": {
+   "D": 0.13592093331473212,
+   "removed": 0.8815399802566634,
+   "collateral": 0.09651424631306126,
+   "mass_off": 0.0330657958984375,
+   "retain_tv": 0.09932115607569851,
+   "n": 65536,
+   "mass": [
+    0.1221771240234375,
+    0.1211700439453125,
+    0.120361328125,
+    0.1212158203125,
+    0.1158599853515625,
+    0.0146484375,
+    0.2310638427734375,
+    0.1204376220703125,
+    0.0330657958984375
+   ],
+   "mass_ref": [
+    0.1221771240234375,
+    0.1211700439453125,
+    0.120361328125,
+    0.1212158203125,
+    0.1206512451171875,
+    0.1236572265625,
+    0.1214599609375,
+    0.1204376220703125,
+    0.02886962890625
+   ]
+  }
+ }
+}

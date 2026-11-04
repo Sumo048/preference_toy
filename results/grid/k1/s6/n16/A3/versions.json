@@ -1,0 +1,87 @@
+{
+ "v0": {
+  "parent": null,
+  "patches": [],
+  "session": null,
+  "call": null
+ },
+ "v1": {
+  "parent": "v0",
+  "patches": [
+   "p0001"
+  ],
+  "session": "s002",
+  "call": "targeted_train"
+ },
+ "v2": {
+  "parent": "v0",
+  "patches": [
+   "p0002"
+  ],
+  "session": "s002",
+  "call": "targeted_train"
+ },
+ "v3": {
+  "parent": "v0",
+  "patches": [
+   "p0003"
+  ],
+  "session": "s002",
+  "call": "graft_gated_path"
+ },
+ "v4": {
+  "parent": "v3",
+  "patches": [
+   "p0003",
+   "p0004"
+  ],
+  "session": "s004",
+  "call": "targeted_train"
+ },
+ "v5": {
+  "parent": "v3",
+  "patches": [
+   "p0003",
+   "p0005"
+  ],
+  "session": "s004",
+  "call": "graft_gated_path"
+ },
+ "v6": {
+  "parent": "v5",
+  "patches": [
+   "p0003",
+   "p0005",
+   "p0006"
+  ],
+  "session": "s004",
+  "call": "targeted_train"
+ },
+ "v7": {
+  "parent": "v3",
+  "patches": [
+   "p0003",
+   "p0007"
+  ],
+  "session": "s004",
+  "call": "graft_gated_path"
+ },
+ "v8": {
+  "parent": "v3",
+  "patches": [
+   "p0003",
+   "p0008"
+  ],
+  "session": "s006",
+  "call": "graft_gated_path"
+ },
+ "v9": {
+  "parent": "v3",
+  "patches": [
+   "p0003",
+   "p0009"
+  ],
+  "session": "s006",
+  "call": "graft_gated_path"
+ }
+}

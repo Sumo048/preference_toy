@@ -1,1 +1,3 @@
 === start 2026-11-04 13:52:13 cmd=['python', 'scripts/grid_share2.py', 'code', '--arm', 'D1', '--setting', 'k1', '--seed', '8', '--npm', '4']
+[D1 cond_k1_s8_n4] D 0.1062 removed 0.512 collateral 0.074 stop no_open_cluster gate_checks 1 (173.8s)
+=== end rc=0 179.1s 

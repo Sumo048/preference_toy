@@ -1,0 +1,304 @@
+{
+ "arm": "A1",
+ "cell": "cond_k1_s6_n4",
+ "setting": "k1",
+ "seed": 6,
+ "npm": 4,
+ "run_id": "grid_cond_k1_s6_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s6_n4_A1",
+ "output": {
+  "version": "v0",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [],
+  "gate_checks": 7,
+  "gate_cap": 12,
+  "decodes": 1130558.0,
+  "sessions": 3,
+  "cost_usd": 1.03989,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc targeted_train on blocks.2,out (hopB, then own neighbour-mode target); between test failed on all three submissions.",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.23305,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 0,
+   "summary": "RESULT no-accept - bc targeted_train on blocks.2,out (mode-center and hopVB targets); hopVB v10 passed all but 5_between",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.399028,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc to neighbour-mode target, npo, kto on blocks.2,out; all moved too much, failing between, drift, progress.",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.370818,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.009584
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.010827
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.016583
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.09808349609375,
+    "target_fall_ci": [
+     0.093017578125,
+     0.10296630859375
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0948486328125,
+    "target_fall_ci": [
+     0.09002685546875,
+     0.099853515625
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.08050537109375,
+    "target_fall_ci": [
+     0.07580413818359374,
+     0.08526611328125
+    ]
+   }
+  },
+  {
+   "version": "v8",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.05322265625,
+    "target_fall_ci": [
+     0.04772796630859375,
+     0.05865631103515624
+    ]
+   }
+  },
+  {
+   "version": "v10",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.08795166015625,
+    "target_fall_ci": [
+     0.083251953125,
+     0.09253234863281248
+    ]
+   }
+  },
+  {
+   "version": "v14",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.069091796875,
+    "target_fall_ci": [
+     0.06500091552734374,
+     0.0731201171875
+    ]
+   }
+  },
+  {
+   "version": "v15",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.06390380859375,
+    "target_fall_ci": [
+     0.06024169921875,
+     0.0677490234375
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.14855,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0275,
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.1225,
+   "mass_m1": 0.12105,
+   "mass_m2": 0.11925,
+   "mass_m3": 0.1251,
+   "mass_m4": 0.11935,
+   "mass_m5": 0.1207,
+   "mass_m6": 0.12135,
+   "mass_m7": 0.1232,
+   "mass_off": 0.0275,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.14855,
+   "tv_to_ideal_ref": 0.14855,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 181.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 1500.0
+  },
+  "final_pool": {
+   "D": 0.14921569824218747,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.027435302734375,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.122161865234375,
+    0.1217803955078125,
+    0.11962890625,
+    0.1218719482421875,
+    0.11907958984375,
+    0.123626708984375,
+    0.1207275390625,
+    0.123687744140625,
+    0.027435302734375
+   ],
+   "mass_ref": [
+    0.122161865234375,
+    0.1217803955078125,
+    0.11962890625,
+    0.1218719482421875,
+    0.11907958984375,
+    0.123626708984375,
+    0.1207275390625,
+    0.123687744140625,
+    0.027435302734375
+   ]
+  }
+ }
+}

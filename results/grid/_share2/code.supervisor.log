@@ -46,3 +46,35 @@
 2026-11-04 13:49:27 [4586] cond_k1_s7_n16_R0 launched
 2026-11-04 13:52:13 [4586] cond_k1_s7_n16_R0 wrapper exit 0
 2026-11-04 13:52:13 [4586] cond_k1_s8_n4_D1 launched
+2026-11-04 13:55:13 [4586] cond_k1_s8_n4_D1 wrapper exit 0
+2026-11-04 13:55:13 [4586] cond_k1_s8_n4_B4 launched
+2026-11-04 13:56:57 [4586] cond_k1_s7_n16_B5 wrapper exit 0
+2026-11-04 13:56:57 [4586] cond_k1_s8_n4_B5 launched
+2026-11-04 13:59:19 [4586] cond_k1_s8_n4_B4 wrapper exit 0
+2026-11-04 13:59:19 [4586] cond_k1_s8_n4_R0 launched
+2026-11-04 14:00:02 [4586] cond_k1_s7_n16_D1 wrapper exit 0
+2026-11-04 14:00:02 [4586] cond_k1_s8_n16_D1 launched
+2026-11-04 14:02:41 [4586] cond_k1_s8_n4_R0 wrapper exit 0
+2026-11-04 14:02:41 [4586] cond_k1_s8_n16_B4 launched
+2026-11-04 14:04:42 [4586] cond_k1_s8_n16_D1 wrapper exit 0
+2026-11-04 14:04:42 [4586] cond_k1_s8_n16_B5 launched
+2026-11-04 14:06:30 [4586] cond_k1_s8_n4_B5 wrapper exit 0
+2026-11-04 14:06:30 [4586] cond_k1_s8_n16_R0 launched
+2026-11-04 14:07:48 [4586] cond_k1_s8_n16_B4 wrapper exit 0
+2026-11-04 14:07:48 [4586] cond_k1_s9_n4_D1 launched
+2026-11-04 14:10:19 [4586] cond_k1_s8_n16_R0 wrapper exit 0
+2026-11-04 14:10:19 [4586] cond_k1_s9_n4_B4 launched
+2026-11-04 14:15:14 [4586] cond_k1_s8_n16_B5 wrapper exit 0
+2026-11-04 14:15:14 [4586] cond_k1_s9_n4_B5 launched
+2026-11-04 14:18:05 [4586] cond_k1_s9_n4_B4 wrapper exit 0
+2026-11-04 14:18:05 [4586] cond_k1_s9_n4_R0 launched
+2026-11-04 14:20:55 [4586] cond_k1_s9_n4_R0 wrapper exit 0
+2026-11-04 14:20:55 [4586] cond_k1_s9_n16_D1 launched
+2026-11-04 14:22:09 [4586] cond_k1_s9_n4_D1 wrapper exit 0
+2026-11-04 14:22:09 [4586] cond_k1_s9_n16_B4 launched
+2026-11-04 14:23:14 [4586] cond_k1_s9_n4_B5 wrapper exit 0
+2026-11-04 14:23:14 [4586] cond_k1_s9_n16_B5 launched
+2026-11-04 14:29:57 [4586] cond_k1_s9_n16_B5 wrapper exit 0
+2026-11-04 14:29:57 [4586] cond_k1_s9_n16_R0 launched
+2026-11-04 14:30:07 [4586] cond_k1_s9_n16_B4 wrapper exit 0
+2026-11-04 14:30:07 [4586] cond_contig_s5_n4_D1 launched
