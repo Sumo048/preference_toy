@@ -66,10 +66,17 @@ def manifest(grid: str) -> Path:
             k, layout = SPEC[setting]
             cfgs = list(dict.fromkeys(c for _, c in arms_for(setting)))
             for seed in g["seeds"]:
-                cmd = ["python", "scripts/cond_cell.py", "--seed", str(seed), "--n_forget", str(k),
-                       "--n_neg", str(npm), "--layout", layout, "--arms", ",".join(cfgs),
-                       "--out", str((REPO / "results" / grid / setting).relative_to(REPO))]
-                lines.append({"id": f"{setting}_s{seed}_n{npm}", "cmd": cmd})
+                # one unit per (cell, arm): an npm-64 training arm takes ~8 min on one thread, so
+                # a whole cell would come close to the 20-minute unit cap (SESSION_PROMPTS rule 9)
+                # B0 (seconds) rides with B1a; B1b is skipped when it is the same config (k1, contig)
+                groups = [[B0, B1A]] + [[c] for c in cfgs if c not in (B0, B1A)]
+                for grp in groups:
+                    cmd = ["python", "scripts/cond_cell.py", "--seed", str(seed), "--n_forget", str(k),
+                           "--n_neg", str(npm), "--layout", layout, "--arms", ",".join(grp),
+                           "--out", str((REPO / "results" / grid / setting).relative_to(REPO))]
+                    marker = cell_dir(grid, setting, seed, npm) / f"{grp[-1]}.json"
+                    lines.append({"id": f"{setting}_s{seed}_n{npm}_{grp[-1]}", "cmd": cmd,
+                                  "out": str(marker.relative_to(REPO))})
     out.write_text("".join(json.dumps(u) + "\n" for u in lines))
     print(f"wrote {len(lines)} units to {out.relative_to(REPO)}")
     return out

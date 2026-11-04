@@ -85,9 +85,22 @@ class Services:
     make_version: Callable          # policy.Version(...)
 
 
+def _base_version_adapter(cell):
+    """Local adapter for ``policy.base_version`` until W1-A1 merges: v0 = deep copy of pi_ref's net."""
+    import copy
+    from toyrepair import policy
+    try:
+        return policy.base_version(cell)
+    except NotImplementedError:
+        net = copy.deepcopy(cell.ref.net).eval()
+        for p in net.parameters():
+            p.requires_grad_(False)
+        return policy.Version(id="v0", parent=None, patches=(), net=net, grid=cell.grid, meta={"adapter": True})
+
+
 def real_services() -> Services:
     from toyrepair import flowstate, gate, miner, patches, policy, train
-    return Services(base_version=policy.base_version, decode=policy.decode, velocity=policy.velocity,
+    return Services(base_version=_base_version_adapter, decode=policy.decode, velocity=policy.velocity,
                     mine=miner.mine, branch=flowstate.branch,
                     restore_and_decode=flowstate.restore_and_decode, flow_state=flowstate.FlowState,
                     gate_check=gate.gate_check, targeted_train=train.targeted_train,

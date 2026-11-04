@@ -96,18 +96,19 @@ class ControlledNet(nn.Module):
         return v - (self.alpha / self.h) * self.u.reshape(1, 2) * m.reshape(-1, 1).to(v.dtype) / DT
 
 
-def _draw(cell, n: int, salt: int):
+def _rng(cell, salt: int) -> np.random.Generator:
+    """A generator derived from the cell's mining stream (pool 1, check index 0), salted by the
+    cluster id so each cluster's detector data differ."""
     from toyrepair import pools
     g = pools.rng(pools.MINING, cell.index, 0)
-    g = np.random.default_rng(g.integers(2**63 - 1) + salt)
-    return g
+    return np.random.default_rng([int(g.integers(2**62)), int(salt)])
 
 
 def detector_data(ctx: RepairContext, k: int):
     """(features (P, d) float32, labels (P,) int) at step k under the current version."""
     cell, svc = ctx.cell, ctx.svc
     rows = np.asarray(ctx.cluster.members, dtype=np.int64)
-    g = _draw(cell, 0, int(ctx.card.cluster))
+    g = _rng(cell, int(ctx.card.cluster))
     cs = cell.neg.c[rows].numpy().astype(np.float32)
     # member conditions
     c_m = np.repeat(cs, N_PER_MEMBER).astype(np.float32)
@@ -117,9 +118,10 @@ def detector_data(ctx: RepairContext, k: int):
     c_all = np.concatenate([c_m, c_r])
     xi = torch.from_numpy(g.standard_normal((len(c_all), 2)).astype(np.float32))
     c_t = torch.from_numpy(c_all)
-    dec = svc.decode(ctx.current, xi, c_t, capture=(LAYER,))
-    f = dec.acts[LAYER][k].numpy()
-    a = dec.action
+    with torch.no_grad():
+        dec = svc.decode(ctx.current, xi, c_t, capture=(LAYER,))
+    f = dec.acts[LAYER][k].detach().numpy()
+    a = dec.action.detach()
     near = np.abs(c_r[:, None] - cs[None, :])
     j = near.argmin(1)
     owner_r = np.where(near.min(1) < C_NEAR, j, -1)
