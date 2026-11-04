@@ -210,3 +210,10 @@ send the same resume message; record it in the run's notes. No limit or prompt c
   `toyrepair/tracks.py` to label a cluster's behaviour (since Phase 4); unchanged.
 - An independent session (E4, branch `art/confirm-E4`) is running the same E3 spec on seeds 5-9 with its own
   code; W4 can cross-check B6 against it.
+- Done (W2b, 2026-11-04 12:20 ET): B6 on all 140 cells of seeds 5-9, 0 failures (`results/b6/`, summary in
+  `results/b6/summary.md`). Mean D 0.024 (Removed 0.996, Collateral 0.018) against B0 0.427, B1a 0.246, B1b 0.210;
+  B6 lower than B1a in 35 of 35 (setting, seed) pairs. B0/B1a match PLAN 5.2's reference values. On 4 spot-checked
+  cells B6 equals E4's independent run of the same spec (`art/confirm-E4`) to the last digit.
+- Phase 4 final patch stacks exported to `results/phase4/patches/<run_id>/` (rebuild-checked,
+  `scripts/export_patches.py`). Pilot A1/A2 stacks are not available: their run dirs were never committed by W2a
+  (`results/pilot/patches/README.md`).

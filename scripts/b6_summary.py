@@ -19,7 +19,8 @@ B1B = {"k1": "R_hopB_bsup_neg_AMdist", "k2": "R_hopB_bsup_mine_neg_AMmap", "k4":
 
 
 def base(setting, seed, npm, cfg):
-    p = R / "results" / "baselines" / setting / f"s{seed}_{setting}_n{npm}" / f"{cfg}.json"
+    kdir = setting if setting in ("k1", "k2", "k4") else "k4"      # W1-C names dirs by forget count
+    p = R / "results" / "baselines" / setting / f"s{seed}_{kdir}_n{npm}" / f"{cfg}.json"
     if not p.exists():
         return None
     d = json.loads(p.read_text())

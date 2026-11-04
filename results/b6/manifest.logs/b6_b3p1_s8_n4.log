@@ -1,0 +1,3 @@
+=== start 2026-11-04 16:16:49 cmd=['python', 'scripts/run_arm.py', '--arm', 'B6', '--setting', 'b3p1', '--seed', '8', '--npm', '4', '--out', 'results/b6']
+[B6 cond_b3p1_s8_n4] D 0.0253 removed 0.993 collateral 0.020 stop single gate_checks 0 (435.4s)
+=== end rc=0 439.0s 

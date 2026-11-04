@@ -1,0 +1,98 @@
+{
+ "arm": "B6",
+ "cell": "cond_k2_s8_n1",
+ "grid": "cond",
+ "setting": "k2",
+ "seed": 8,
+ "npm": 1,
+ "run_id": "B6_cond_k2_s8_n1",
+ "run_dir": "/home/user/preference_toy/runs/repair/B6_cond_k2_s8_n1",
+ "output": {
+  "arm": "B6",
+  "version": "v1",
+  "accepted": [
+   "v1"
+  ],
+  "gate_checks": 0,
+  "decodes": 0.0,
+  "stop": "single",
+  "meta": {
+   "spec": "a=track60k-w=1-st=20000",
+   "steps": 20000,
+   "track_n": 15,
+   "track_bad": 2,
+   "track_neg_miss": 0.0,
+   "track_keep": 37539,
+   "track_unassigned": 0.17113333333333333,
+   "train_s": 321.4
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.021166666666666643,
+  "removed": 0.9933035714285714,
+  "collateral": 0.014461674910294028,
+  "mass_off": 0.01425,
+  "toypref": {
+   "mass_m0": 0.00015,
+   "mass_m1": 0.16575,
+   "mass_m2": 0.1672,
+   "mass_m3": 0.16325,
+   "mass_m4": 0.1714,
+   "mass_m5": 0.0015,
+   "mass_m6": 0.15695,
+   "mass_m7": 0.15955,
+   "mass_off": 0.01425,
+   "neg_mass_ratio": 0.006696428571428571,
+   "retain_tv": 0.014461674910294028,
+   "tv_to_ideal": 0.021166666666666643,
+   "tv_to_ideal_ref": 0.27404999999999996,
+   "retain_noise_flip": 0.12314897720228665,
+   "neg_noise_to_retain": 0.9772727272727273,
+   "neg_noise_still_forget": 0.006493506493506494,
+   "disp_retain_mean": 0.34598997235298157,
+   "neg_still_forget_near": 0.0,
+   "n_eval_neg_near": 199.0,
+   "neg_still_forget_far": 0.006619144602851324,
+   "n_eval_neg_far": 3928.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.028158772882900102,
+  "final_pool": {
+   "D": 0.024241129557291657,
+   "removed": 0.993725838139299,
+   "collateral": 0.028566657971679416,
+   "mass_off": 0.0127105712890625,
+   "retain_tv": 0.014153235117212531,
+   "n": 65536,
+   "mass": [
+    0.0001373291015625,
+    0.1630859375,
+    0.1693267822265625,
+    0.1626129150390625,
+    0.1740264892578125,
+    0.001373291015625,
+    0.156524658203125,
+    0.1602020263671875,
+    0.0127105712890625
+   ],
+   "mass_ref": [
+    0.1204833984375,
+    0.122467041015625,
+    0.123016357421875,
+    0.119964599609375,
+    0.1215972900390625,
+    0.1202850341796875,
+    0.1213531494140625,
+    0.1220550537109375,
+    0.028778076171875
+   ]
+  }
+ },
+ "wall_s_arm": 387.9,
+ "wall_s_total": 437.5,
+ "cpu_s": 432.1,
+ "max_rss_mb": 862.2,
+ "threads": 1
+}

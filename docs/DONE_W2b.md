@@ -14,3 +14,13 @@ STATUS: PASS-WITH-ISSUES — (1) the pilot decision rule had failed (W2a); work 
    - Build the cell and track caches first (`tracks.get`).
    - Expect about 25-30 LLM runs per share by 23:00 ET.
 7. **Open interface requests:** none.
+
+## Addendum (2026-11-04, after DONE; user requests)
+
+8. **B6 (PREREG Amendment 1):** E3's track-masked BC ported to `toyrepair/arms/b6_track.py`. It reproduces E3
+   exactly on k4 s0 n4 and alt s1 n16. On all 140 cond cells of seeds 5-9 (0 failures): **D 0.024**, against
+   B0 0.427, B1a 0.246, B1b 0.210, lower than B1a in 35 of 35 (setting, seed) pairs (`results/b6/summary.md`).
+   T1 now includes T1c (A3 vs B6), with Holm over six tests. The surgeon arms do not get the tracker. The full seed
+   5-9 baselines were copied from `art/arms` into `results/baselines/`.
+9. **Patch stacks:** the final stacks of all 40 Phase 4 runs are in `results/phase4/patches/` (rebuild recipe in
+   its README). The pilot A1/A2 stacks were lost with W2a's VM.

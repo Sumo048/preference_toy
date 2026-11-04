@@ -1,1 +1,3 @@
 === start 2026-11-04 15:53:14 cmd=['python', 'scripts/run_arm.py', '--arm', 'B6', '--setting', 'pairs', '--seed', '9', '--npm', '64', '--out', 'results/b6']
+[B6 cond_pairs_s9_n64] D 0.0191 removed 0.998 collateral 0.020 stop single gate_checks 0 (490.5s)
+=== end rc=0 494.8s 
