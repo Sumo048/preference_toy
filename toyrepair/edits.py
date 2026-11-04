@@ -644,12 +644,6 @@ def apply_call(net: nn.Module, call: str, args: Dict, arrays: Dict[str, np.ndarr
 
 
 # =============================================================== unit tests (gate test 6)
-def _hybrid(base_net: nn.Module, new_net: nn.Module) -> nn.Module:
-    """base's weights with all of new's grafts (= new minus its non-graft weight changes)."""
-    gs = [copy.deepcopy(g) for g in grafts_of(new_net)]
-    return EditedNet(copy.deepcopy(base_of(base_net)), gs) if gs else copy.deepcopy(base_of(base_net))
-
-
 @torch.no_grad()
 def graft_identity(base, new, n_states: int = N_IDENTITY_STATES, seed: int = 0) -> bool:
     """With every graft's detector forced off, velocities of ``new`` (minus its non-graft weight
@@ -663,18 +657,28 @@ def graft_identity(base, new, n_states: int = N_IDENTITY_STATES, seed: int = 0) 
         return True
     _, unc = core_of(bnet)
     x, t, c = reference_states(bnet, n_states, seed, uncond=unc)
-    hyb = _hybrid(bnet, nnet)
-    v_base, _ = run_forward(bnet, x, t, c)
-    v_off, _ = run_forward(hyb, x, t, c, disabled=new_ids)
-    if not torch.equal(v_base, v_off):
+    # reference without the new grafts: base itself if new kept base's weights, else new's
+    # weights with only the old grafts (= new minus the new grafts)
+    same_w = all(torch.equal(a, b) for a, b in zip(_param_dict(bnet).values(), _param_dict(nnet).values()))
+    if same_w:
+        v_ref = bnet(x, t, c)
+    else:
+        v_ref, _ = run_forward(nnet, x, t, c, disabled=new_ids)
+    # 1) new's own forward with the new grafts forced off
+    nnet = copy.deepcopy(nnet)
+    nnet.disabled = tuple(new_ids)
+    if not torch.equal(nnet(x, t, c), v_ref):
         return False
+    nnet.disabled = ()
+    # 2) new's own forward, rows where no new graft fires
     fired: Dict[str, torch.Tensor] = {}
-    v_on, _ = run_forward(hyb, x, t, c, fired=fired)
+    run_forward(nnet, x, t, c, fired=fired)
+    v_on = nnet(x, t, c)
     quiet = torch.ones(x.shape[0], dtype=torch.bool)
     for gid in new_ids:
         if gid in fired:
             quiet &= ~fired[gid]
-    return bool(torch.equal(v_on[quiet], v_base[quiet]))
+    return bool(torch.equal(v_on[quiet], v_ref[quiet]))
 
 
 def unit_tests(new, current) -> UnitTestResult:
