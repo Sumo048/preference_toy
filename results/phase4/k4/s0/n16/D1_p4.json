@@ -1,0 +1,277 @@
+{
+ "arm": "D1",
+ "cell": "cond_k4_s0_n16",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 0,
+ "npm": 16,
+ "run_id": "D1_p4_cond_k4_s0_n16",
+ "run_dir": "/home/user/preference_toy/runs/repair/D1_p4_cond_k4_s0_n16",
+ "output": {
+  "arm": "D1",
+  "version": "v13",
+  "accepted": [
+   "v5",
+   "v13"
+  ],
+  "gate_checks": 22,
+  "decodes": 63129.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 7,
+   "gate_cap": 27,
+   "rounds": [
+    {
+     "cluster": 1,
+     "r_cur": 0.12890625,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v2",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 14,
+     "primitive": "push(d2,2r,k10,h3)"
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.1232638888888889,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v5",
+       "variant": "all_1500",
+       "accepted": true
+      }
+     ],
+     "accepted": "v5",
+     "k_commit": 12,
+     "primitive": "push(d0,2r,k8,h3)"
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.10546875,
+     "tried": [
+      {
+       "version": "v6",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v7",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v8",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d0,0.5r,k12,h3)"
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.1376953125,
+     "tried": [
+      {
+       "version": "v9",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v10",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v11",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 14,
+     "primitive": "push(d2,1r,k10,h3)"
+    },
+    {
+     "cluster": 2,
+     "r_cur": 0.044596354166666664,
+     "tried": [
+      {
+       "version": "v12",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v13",
+       "variant": "all_1500",
+       "accepted": true
+      }
+     ],
+     "accepted": "v13",
+     "k_commit": 16,
+     "primitive": "hop(1.35,n33)"
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.109375,
+     "tried": [
+      {
+       "version": "v14",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v15",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v16",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d0,0.5r,k12,h3)"
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.1123046875,
+     "tried": [
+      {
+       "version": "v17",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v18",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v19",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d5,1r,k16,h3)"
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.0390625,
+     "tried": [
+      {
+       "version": "v20",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v21",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v22",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.85,n9)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.18864999999999998,
+  "removed": 0.7422617223414036,
+  "collateral": 0.08859871533067362,
+  "mass_off": 0.05235,
+  "toypref": {
+   "mass_m0": 0.1419,
+   "mass_m1": 0.21825,
+   "mass_m2": 0.05565,
+   "mass_m3": 0.0044,
+   "mass_m4": 0.03595,
+   "mass_m5": 0.26015,
+   "mass_m6": 0.2012,
+   "mass_m7": 0.03015,
+   "mass_off": 0.05235,
+   "neg_mass_ratio": 0.25773827765859636,
+   "retain_tv": 0.08859871533067362,
+   "tv_to_ideal": 0.18864999999999998,
+   "tv_to_ideal_ref": 0.51595,
+   "retain_noise_flip": 0.30141514306373307,
+   "neg_noise_to_retain": 0.6961896005720707,
+   "neg_noise_still_forget": 0.23219940749821227,
+   "disp_retain_mean": 0.7670345902442932,
+   "neg_still_forget_near": 0.2199663959675161,
+   "n_eval_neg_near": 7142.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.08734226446457634,
+  "final_pool": {
+   "D": 0.18975830078125,
+   "removed": 0.7378357154075703,
+   "collateral": 0.09112352580033314,
+   "mass_off": 0.0511627197265625,
+   "retain_tv": 0.09431467478128293,
+   "n": 65536,
+   "mass": [
+    0.1416015625,
+    0.22235107421875,
+    0.0560150146484375,
+    0.003692626953125,
+    0.0362548828125,
+    0.2612457275390625,
+    0.1962890625,
+    0.0313873291015625,
+    0.0511627197265625
+   ],
+   "mass_ref": [
+    0.121673583984375,
+    0.1215362548828125,
+    0.1216278076171875,
+    0.1215362548828125,
+    0.1219329833984375,
+    0.11895751953125,
+    0.124298095703125,
+    0.12066650390625,
+    0.02777099609375
+   ]
+  }
+ },
+ "wall_s_arm": 3577.1,
+ "wall_s_total": 3632.2,
+ "cpu_s": 2133.7,
+ "max_rss_mb": 982.4,
+ "threads": 1
+}

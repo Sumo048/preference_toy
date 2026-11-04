@@ -176,3 +176,13 @@ the largest-residual cluster. That happened for the first triage of 6 Phase 4 A3
 s4 n4, s1 n16, s4 n16; the fallback matched triage's choice in 2). From then on the main agent passes the
 triage JSON (and the surgeon's RESULT line) to `record --summary`. The fallback is PLAN 7.1's own rule, so
 those runs stay valid; the ledger marks them `fallback: true`. W3 must pass `--summary` the same way.
+
+### Surgeon calls that go to the background (W2b, Phase 4)
+
+A surgeon call that runs past Bash's 120 s default (`targeted_train`, long sandbox fits) is moved to the
+background by Claude Code. The surgeon then sometimes ends its turn "waiting on background work" and does not
+resume: run p4_cond_k4_s1_n16_A3 session s002 sat idle for 45 min after its `targeted_train` finished. The main
+agent resumed it with one message ("your background command finished; continue in the foreground"), and the
+session then finished normally (accepted). Several surgeons also reported a lost call when the output of a
+backgrounded sandbox command could not be read. W3: if a surgeon is idle more than 10 minutes with calls left,
+send the same resume message; record it in the run's notes. No limit or prompt changes.

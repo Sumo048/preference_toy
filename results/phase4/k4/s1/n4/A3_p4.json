@@ -1,0 +1,352 @@
+{
+ "arm": "A3",
+ "cell": "cond_k4_s1_n4",
+ "setting": "k4",
+ "seed": 1,
+ "npm": 4,
+ "run_id": "p4_cond_k4_s1_n4_A3",
+ "run_dir": "/home/user/preference_toy/runs/repair/p4_cond_k4_s1_n4_A3",
+ "output": {
+  "version": "v8",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v2",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002"
+    ]
+   },
+   {
+    "version": "v4",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0004"
+    ]
+   },
+   {
+    "version": "v5",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0004",
+     "p0005"
+    ]
+   },
+   {
+    "version": "v6",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0004",
+     "p0005",
+     "p0006"
+    ]
+   },
+   {
+    "version": "v8",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0004",
+     "p0005",
+     "p0006",
+     "p0008"
+    ]
+   }
+  ],
+  "gate_checks": 6,
+  "gate_cap": 21,
+  "decodes": 1611609.0,
+  "sessions": 4,
+  "cost_usd": 1.821097,
+  "n_first_clusters": 5
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 1,
+   "summary": "RESULT accepted v2 gated constant velocity offset (-3,4) on out, blocks.1 contrast detector, steps 0-8",
+   "calls": 15,
+   "submissions": 1,
+   "accepted": "v2",
+   "cost_usd": 0.373083,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 0,
+   "summary": "RESULT accepted v4 gated out-layer graft: constant velocity push (0,-12) at steps 0-4 when blocks.1.act contrast detector fires",
+   "calls": 13,
+   "submissions": 1,
+   "accepted": "v4",
+   "cost_usd": 0.292254,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 3,
+   "summary": "RESULT accepted v6 Probe-gated out-layer rotation grafts at steps 8-11 split cluster-3 track between neighbouring modes, CCW and CW.",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": "v6",
+   "cost_usd": 0.552462,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s008",
+   "cluster": 3,
+   "summary": "RESULT accepted v8 graft on out gated by blocks.2.act contrast probe (thr 1, k0-16), constant velocity push (+20,-20)",
+   "calls": 18,
+   "submissions": 2,
+   "accepted": "v8",
+   "cost_usd": 0.513236,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 1,
+   "fallback": true,
+   "cost_usd": 0.022612
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.022469
+  },
+  {
+   "cluster": 3,
+   "fallback": false,
+   "cost_usd": 0.022505
+  },
+  {
+   "cluster": 3,
+   "fallback": false,
+   "cost_usd": 0.022476
+  }
+ ],
+ "gates": [
+  {
+   "version": "v2",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0948486328125,
+    "target_fall_ci": [
+     0.09026947021484374,
+     0.099365234375
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.11260986328125,
+    "target_fall_ci": [
+     0.1079681396484375,
+     0.11737213134765624
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 3,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": false,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.16607666015625,
+    "target_fall_ci": [
+     0.16033935546875,
+     0.17199859619140623
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 3,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.1424560546875,
+    "target_fall_ci": [
+     0.136962890625,
+     0.14788818359375
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 3,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.03131103515625,
+    "target_fall_ci": [
+     0.0286865234375,
+     0.03399658203125
+    ]
+   }
+  },
+  {
+   "version": "v8",
+   "cluster": 3,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01922607421875,
+    "target_fall_ci": [
+     0.01708831787109375,
+     0.02142333984375
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.16375,
+  "removed": 0.869658776513987,
+  "collateral": 0.12145936125222852,
+  "mass_off": 0.0559,
+  "collateral_plan": 0.1185020825111815,
+  "toypref": {
+   "mass_m0": 0.0143,
+   "mass_m1": 0.2829,
+   "mass_m2": 0.0386,
+   "mass_m3": 0.1591,
+   "mass_m4": 0.17715,
+   "mass_m5": 0.0058,
+   "mass_m6": 0.0049,
+   "mass_m7": 0.26135,
+   "mass_off": 0.0559,
+   "neg_mass_ratio": 0.13034122348601293,
+   "retain_tv": 0.12145936125222852,
+   "tv_to_ideal": 0.16375,
+   "tv_to_ideal_ref": 0.51415,
+   "retain_noise_flip": 0.0653493876710919,
+   "neg_noise_to_retain": 0.8077671892611948,
+   "neg_noise_still_forget": 0.11425350958089968,
+   "disp_retain_mean": 0.20890510082244873,
+   "neg_still_forget_near": 0.09934258582907232,
+   "n_eval_neg_near": 2738.0,
+   "neg_still_forget_far": 0.11646418098031001,
+   "n_eval_neg_far": 2387.0
+  },
+  "final_pool": {
+   "D": 0.161895751953125,
+   "removed": 0.8721236550607802,
+   "collateral": 0.11396149244803122,
+   "mass_off": 0.0550994873046875,
+   "retain_tv": 0.11813279299083893,
+   "n": 65536,
+   "mass": [
+    0.0128936767578125,
+    0.2896575927734375,
+    0.0356903076171875,
+    0.165863037109375,
+    0.1722412109375,
+    0.0066375732421875,
+    0.006256103515625,
+    0.2556610107421875,
+    0.0550994873046875
+   ],
+   "mass_ref": [
+    0.1190185546875,
+    0.1217498779296875,
+    0.1192474365234375,
+    0.127105712890625,
+    0.1191253662109375,
+    0.1205902099609375,
+    0.1219024658203125,
+    0.1236419677734375,
+    0.027618408203125
+   ]
+  }
+ }
+}
