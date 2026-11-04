@@ -1,0 +1,24 @@
+  balanced target fill {2: 0.242, 3: 0.229, 4: 0.238, 5: 0.221}
+  it 0 loss 4.4378
+[test] k4_s0_n4 round 1 checkpoint at it 20 (276s)
+[test] k4_s0_n4 round 1 checkpoint at it 40 (39s)
+  it 59 loss 3.2118
+  detector {'det_tpr0': 0.8717339667458432, 'det_fpr0': 0.08335225982284805}
+  round 1: D 0.250 Rem 0.569 Col 0.113 off 0.040
+[test] k4_s0_n4 round 1 done, checkpoint (44s)
+  it 0 loss 1.0700
+[test] k4_s0_n4 round 2 checkpoint at it 20 (42s)
+[test] k4_s0_n4 round 2 checkpoint at it 40 (41s)
+  it 59 loss 1.0940
+  detector {'det_tpr0': 0.6214728148657949, 'det_fpr0': 0.031310283424840483}
+  round 2: D 0.235 Rem 0.607 Col 0.111 off 0.043
+[test] k4_s0_n4 D 0.235 Rem 0.607 Col 0.111 off 0.043 DONE
+chunked: units 6
+  balanced target fill {2: 0.242, 3: 0.229, 4: 0.238, 5: 0.221}
+  it 0 loss 4.4378
+  it 59 loss 3.2118
+  detector {'det_tpr0': 0.8717339667458432, 'det_fpr0': 0.08335225982284805}
+  it 0 loss 1.0700
+  it 59 loss 1.0940
+  detector {'det_tpr0': 0.6214728148657949, 'det_fpr0': 0.031310283424840483}
+bit-identical: True
