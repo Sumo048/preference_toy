@@ -1,0 +1,36 @@
+2026-11-04 12:46:19 [1891] start workers=3 retry_failed=False
+2026-11-04 12:46:19 [1891] cond_k4_s5_n4_D1 launched
+2026-11-04 12:46:19 [1891] cond_k4_s5_n4_B4 launched
+2026-11-04 12:46:19 [1891] cond_k4_s5_n4_B5 launched
+2026-11-04 13:06:22 [1891] cond_k4_s5_n4_B4 wrapper exit 0
+2026-11-04 13:06:22 [1891] cond_k4_s5_n4_R0 launched
+2026-11-04 13:07:04 [1891] cond_k4_s5_n4_B5 wrapper exit 0
+2026-11-04 13:07:04 [1891] cond_k4_s5_n16_D1 launched
+2026-11-04 13:08:23 [1891] cond_k4_s5_n4_R0 wrapper exit 0
+2026-11-04 13:08:23 [1891] cond_k4_s5_n16_B4 launched
+2026-11-04 13:13:15 [1891] cond_k4_s5_n4_D1 wrapper exit 0
+2026-11-04 13:13:15 [1891] cond_k4_s5_n16_B5 launched
+2026-11-04 13:22:46 [1891] cond_k4_s5_n16_B4 wrapper exit 0
+2026-11-04 13:22:46 [1891] cond_k4_s5_n16_R0 launched
+2026-11-04 13:27:47 [1891] cond_k4_s5_n16_R0 wrapper exit 0
+2026-11-04 13:27:47 [1891] cond_k4_s6_n4_D1 launched
+2026-11-04 13:33:43 [1891] cond_k4_s5_n16_D1 wrapper exit 0
+2026-11-04 13:33:43 [1891] cond_k4_s6_n4_B4 launched
+2026-11-04 13:37:05 [1891] cond_k4_s5_n16_B5 wrapper exit 0
+2026-11-04 13:37:05 [1891] cond_k4_s6_n4_B5 launched
+2026-11-04 13:53:04 [1891] cond_k4_s6_n4_B5 wrapper exit 0
+2026-11-04 13:53:04 [1891] cond_k4_s6_n4_R0 launched
+2026-11-04 13:53:52 [1891] cond_k4_s6_n4_B4 wrapper exit 0
+2026-11-04 13:53:52 [1891] cond_k4_s6_n16_D1 launched
+2026-11-04 13:57:41 [1891] cond_k4_s6_n4_R0 wrapper exit 0
+2026-11-04 13:57:41 [1891] cond_k4_s6_n16_B4 launched
+2026-11-04 13:58:49 [1891] cond_k4_s6_n4_D1 wrapper exit 0
+2026-11-04 13:58:49 [1891] cond_k4_s6_n16_B5 launched
+2026-11-04 14:08:44 [1891] cond_k4_s6_n16_B4 wrapper exit 0
+2026-11-04 14:08:44 [1891] cond_k4_s6_n16_R0 launched
+2026-11-04 14:14:13 [1891] cond_k4_s6_n16_R0 wrapper exit 0
+2026-11-04 14:14:13 [1891] cond_k4_s7_n4_D1 launched
+2026-11-04 14:23:51 [1891] cond_k4_s6_n16_D1 wrapper exit 0
+2026-11-04 14:23:51 [1891] cond_k4_s7_n4_B4 launched
+2026-11-04 14:25:08 [1891] cond_k4_s6_n16_B5 wrapper exit 0
+2026-11-04 14:25:08 [1891] cond_k4_s7_n4_B5 launched

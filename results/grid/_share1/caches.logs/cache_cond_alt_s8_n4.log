@@ -1,0 +1,3 @@
+=== start 2026-11-04 12:55:59 cmd=['python', 'scripts/grid_share1.py', 'cache', '--setting', 'alt', '--seed', '8', '--npm', '4']
+cached cond_alt_s8_n4
+=== end rc=0 256.7s 

@@ -1,0 +1,6 @@
+13:10 resumed (idle>10min after background call): k4_s5_n4_A2 s?, k4_s5_n16_A3 s?, k4_s5_n16_A1 s?
+13:38 k4_s6_n4_A2 (aa42e42de16af4fab) backgrounded
+13:50 resumed k4_s6_n4_A2 (aa42e42de16af4fab)
+14:16 k4_s6_n4_A2 surgeon aa5a09dd3949775b6 backgrounded
+14:23 k4_s5_n16_A3 a09ff21fbf50cfd5e backgrounded
+14:30 resumed k4_s6_n4_A2 again

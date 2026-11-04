@@ -1,0 +1,42 @@
+2026-11-04 12:44:46 [1781] start workers=4 retry_failed=False
+2026-11-04 12:44:46 [1781] cache_cond_k4_s5_n4 launched
+2026-11-04 12:44:46 [1781] cache_cond_k4_s5_n16 launched
+2026-11-04 12:44:46 [1781] cache_cond_k4_s6_n4 launched
+2026-11-04 12:44:47 [1781] cache_cond_k4_s6_n16 launched
+2026-11-04 12:46:05 [1781] cache_cond_k4_s6_n4 wrapper exit 0
+2026-11-04 12:46:05 [1781] cache_cond_k4_s7_n4 launched
+2026-11-04 12:46:08 [1781] cache_cond_k4_s5_n4 wrapper exit 0
+2026-11-04 12:46:08 [1781] cache_cond_k4_s7_n16 launched
+2026-11-04 12:46:09 [1781] cache_cond_k4_s6_n16 wrapper exit 0
+2026-11-04 12:46:09 [1781] cache_cond_k4_s8_n4 launched
+2026-11-04 12:46:10 [1781] cache_cond_k4_s5_n16 wrapper exit 0
+2026-11-04 12:46:10 [1781] cache_cond_k4_s8_n16 launched
+2026-11-04 12:48:39 [1781] cache_cond_k4_s7_n4 wrapper exit 0
+2026-11-04 12:48:39 [1781] cache_cond_k4_s9_n4 launched
+2026-11-04 12:48:45 [1781] cache_cond_k4_s8_n4 wrapper exit 0
+2026-11-04 12:48:45 [1781] cache_cond_k4_s9_n16 launched
+2026-11-04 12:48:52 [1781] cache_cond_k4_s8_n16 wrapper exit 0
+2026-11-04 12:48:52 [1781] cache_cond_alt_s5_n4 launched
+2026-11-04 12:49:01 [1781] cache_cond_k4_s7_n16 wrapper exit 0
+2026-11-04 12:49:01 [1781] cache_cond_alt_s5_n16 launched
+2026-11-04 12:51:17 [1781] cache_cond_k4_s9_n4 wrapper exit 0
+2026-11-04 12:51:17 [1781] cache_cond_alt_s6_n4 launched
+2026-11-04 12:51:25 [1781] cache_cond_k4_s9_n16 wrapper exit 0
+2026-11-04 12:51:25 [1781] cache_cond_alt_s5_n4 wrapper exit 0
+2026-11-04 12:51:25 [1781] cache_cond_alt_s6_n16 launched
+2026-11-04 12:51:25 [1781] cache_cond_alt_s7_n4 launched
+2026-11-04 12:51:56 [1781] cache_cond_alt_s5_n16 wrapper exit 0
+2026-11-04 12:51:56 [1781] cache_cond_alt_s7_n16 launched
+2026-11-04 12:55:59 [1781] cache_cond_alt_s6_n4 wrapper exit 0
+2026-11-04 12:55:59 [1781] cache_cond_alt_s8_n4 launched
+2026-11-04 12:56:15 [1781] cache_cond_alt_s7_n4 wrapper exit 0
+2026-11-04 12:56:15 [1781] cache_cond_alt_s8_n16 launched
+2026-11-04 12:56:28 [1781] cache_cond_alt_s6_n16 wrapper exit 0
+2026-11-04 12:56:28 [1781] cache_cond_alt_s9_n4 launched
+2026-11-04 12:57:03 [1781] cache_cond_alt_s7_n16 wrapper exit 0
+2026-11-04 12:57:03 [1781] cache_cond_alt_s9_n16 launched
+2026-11-04 13:00:16 [1781] cache_cond_alt_s8_n4 wrapper exit 0
+2026-11-04 13:00:40 [1781] cache_cond_alt_s8_n16 wrapper exit 0
+2026-11-04 13:00:41 [1781] cache_cond_alt_s9_n4 wrapper exit 0
+2026-11-04 13:01:07 [1781] cache_cond_alt_s9_n16 wrapper exit 0
+2026-11-04 13:01:07 [1781] exit

@@ -1,0 +1,42 @@
+{
+ "inflight": {
+  "grid_cond_k4_s6_n4_A2": {
+   "agent": "surgeon",
+   "token": "6wsjy5RhqjWpJSuz"
+  },
+  "grid_cond_k4_s5_n16_A1": {
+   "agent": "surgeon",
+   "token": "aj6WmA2oT8mKyztC"
+  },
+  "grid_cond_k4_s5_n16_A3": {
+   "agent": "surgeon",
+   "token": "2NUT2T8UJzfNdU86"
+  },
+  "grid_cond_k4_s5_n4_A3": {
+   "agent": "surgeon",
+   "token": "xSbDZKF5PgZS5vh5"
+  },
+  "grid_cond_k4_s5_n4_A2": {
+   "agent": "surgeon",
+   "token": "joMaqxUZNQjva3QA"
+  },
+  "grid_cond_k4_s5_n4_A1": {
+   "agent": "surgeon",
+   "token": "sqE73jXRMvtJvQZB"
+  },
+  "grid_cond_k4_s5_n16_A2": {
+   "agent": "surgeon",
+   "token": "QnFt7zsvPuyBSCRT"
+  },
+  "grid_cond_k4_s6_n4_A1": {
+   "agent": "triage",
+   "token": "LdvfQW99kV7KcyGr"
+  }
+ },
+ "done": [
+  "grid_cond_k4_s6_n4_A3"
+ ],
+ "eval_started": [
+  "grid_cond_k4_s6_n4_A3"
+ ]
+}
