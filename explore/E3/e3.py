@@ -8,6 +8,9 @@ Method spec (string, '-'-separated key=value; defaults reproduce B1a = R_hopB_bs
                 | lora<r> (rank-r adapters on every Linear in inp/blocks/out, base frozen)
                 | lorab<r> (rank-r adapters on blocks' fc1/fc2 only)
   a=<anchor>    dist | map | local | lmap (local+map) | none | full (unmasked anchor pool, fresh noise)
+                | dist20k (vote mask over all 20k anchor samples) | omask / omaskmap (PRIVILEGED:
+                anchor = anchor-pool samples whose oracle label is retained; fresh / own noise)
+                w=1 drops the method term (anchor-only training, e.g. PSEUDO_vote_dist = a=dist-w=1)
   w=<float>     anchor weight; loss = (1-w)*method + w*anchor  (0.5 = B1a)
   st=<int>      steps (5000)
   lr=<float>    peak lr (1e-4)
@@ -26,6 +29,7 @@ import copy
 import json
 import math
 import os
+import re
 import sys
 import time
 
@@ -55,7 +59,7 @@ DEFAULT = {"p": "all", "a": "dist", "w": "0.5", "st": "5000", "lr": "1e-4", "r":
 def parse(spec: str) -> dict:
     d = dict(DEFAULT)
     if spec not in ("B1a", "default"):
-        for kv in spec.split("-"):
+        for kv in re.split(r"-(?=[a-z]+=)", spec):
             k, v = kv.split("=")
             assert k in d, k
             d[k] = v
@@ -187,6 +191,24 @@ def anchor_fn(cell: Cell, kind: str):
             t = FlowPolicy.sample_time(B, g)
             return pol.flow_loss(P.a[j], torch.randn(P.a[j].shape, generator=g), t, P.c[j]).mean()
         return loss
+    if kind in ("omask", "dist20k", "omaskmap"):
+        # omask: PRIVILEGED anchor mask = oracle label is retained (the perfect bad-detector).
+        # dist20k: label-free vote mask over all 20,000 anchor samples instead of the first 4,096.
+        P, B = ctx.anchor, ctx.batch
+        if kind.startswith("omask"):
+            keep = torch.from_numpy(np.isin(P.mode, cell.ed.retain))
+        else:
+            bank = E.get_vote(ctx)[0]
+            keep = bank.rate(P.xi) < bank.theta
+        c, xi, a = P.c[keep], P.xi[keep], P.a[keep]
+        mapn = kind == "omaskmap"
+
+        def loss(pol, g):
+            j = E._pick(c.shape[0], B, g)
+            t = FlowPolicy.sample_time(B, g)
+            noise = xi[j] if mapn else torch.randn(a[j].shape, generator=g)
+            return pol.flow_loss(a[j], noise, t, c[j]).mean()
+        return loss
     return E.masked_anchor_loss(ctx, {"lmap": "local+map"}.get(kind, kind))
 
 
@@ -210,6 +232,8 @@ def run_method(cell: Cell, spec: str):
     w = float(d["w"])
     if al is None:
         fn = method
+    elif w == 1.0:
+        fn = al
     elif w == 0.5:
         def fn(pol, g):
             return 0.5 * (method(pol, g) + al(pol, g))
