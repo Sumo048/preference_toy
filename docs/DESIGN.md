@@ -1,0 +1,168 @@
+# toypref: every preference-learning arm on a 2-D multimodal flow
+
+## Question
+
+An unconditional flow policy captures 8 modes in R^2. We want it to **forget**
+`n_forget` of them, and we hold only `n_neg` logged samples from each forgotten mode.
+For each algorithm in the robopref project, how much does forgotten-mode mass go
+down, and how much else breaks?
+
+Swept: `n_forget in {1,2,3,4}` x `n_neg in {1,2,4,8,16,32}` (per forgotten mode),
+5 seeds. Fixed: 8 modes, output dimension 2, |T_p| = 512.
+
+## Setup
+
+| piece | choice |
+|---|---|
+| target | 8 equal-weight isotropic Gaussians on a ring, radius 3, std 0.25 |
+| labelling | nearest centre; OFF if > 0.75 (3 std) from every centre |
+| policy | rectified flow, MLP 128 x 3 residual blocks, sinusoidal time |
+| flow convention | x_t = t xi + (1-t) a, t=1 noise, Beta(1.5,1) times, Euler 1 -> 0, 20 steps (pi0 / openpi, as in the preference repo) |
+| base | 30k steps on true samples, batch 1024, lr 1e-3 cosine, EMA 0.999; one per seed |
+| "rollouts" | xi ~ N(0,I) decoded by pi_ref; 100k-row pool per seed |
+| T_n | first `n_neg` pool rollouts in each forgotten mode (with their logged xi) |
+| T_p | first 512 pool rollouts in retained modes |
+| fine-tune | 5000 steps, AdamW (0.9, 0.95), wd 1e-10, clip 1.0, cosine 500 warmup -> 0.1x peak 1e-4, no EMA, batch 256 (the preference repo's arm budget; LR from the pilot below) |
+| probe | every 500 steps: forget-mass ratio, retain TV, off mass, retain flips on 4000 common noises (`train_history[*].probe_*`) |
+
+### LR pilot (2026-10-06, seed 0, 2 forgotten, 8 neg/mode; `slurm/submit_pilot.sh`)
+
+One peak LR for every arm, chosen before the sweep. At 3e-4 B1, NPO-b10, KTO-b10 and
+R_spread_nhood_* all reach forget ratio <= 0.001, i.e. the forgetting axis saturates and
+only collateral separates arms; at 1e-4 R_ours_both (0.20) and NPO-b10 (0.026) are still
+off the floor. 1e-4 is used. Whatever the LR, the per-500-step probe records each arm's
+whole forgetting-vs-collateral path, so no conclusion depends on the step budget alone.
+The pilot also showed B1 (BC on 512 positives) forgetting almost completely (0.005): with
+an unconditional policy and abundant positives, plain BC on retained samples is nearly the
+oracle, so the `both`-mix arms are judged against a strong B1. The repo's own regime had
+abundant positives too (97k rows).
+
+## Arms (51), ported from the preference repo's code
+
+Sources: `ours_v2_r2` / `reroute_dataset.py` (Ours), `worktree-reroute-ablation`
+(2x2x2 grid, patch 0018 KL, online loop), `worktree-reroute-inverse` (inverted
+ball, S-reach), `worktree-inv-nhood` (spherical nhood, S-select, noised partial
+inversion, patch 0021), `worktree-baselines` (patches 0010/0014/0016: NPO, KTO,
+Flow-DPO, BT reward + best-of-N). `src/toypref/arms.py` is the registry.
+
+* **References**: `B0_frozen`; `ORACLE_retain_bc` (privileged: BC on 20k pi_ref
+  samples in retained modes, i.e. what a perfect filter would produce).
+* **Baselines**: `B1_filtered` (BC on T_p); `B3_npo_b{0.1,1,10,100}` (NPO + lambda_+=1
+  BC); `B5_kto_b{...}` (KTO, class-ratio lambda_D, mismatched z0 clamped at 0);
+  `B3_npo_b100_negonly`, `B5_kto_b100_negonly`; `DPO_cpl_b{1,25}`; `RM_bon8`;
+  `B4_naive_ga` (negative control). All likelihood-ratio arms use the shared
+  surrogate r = sg(l_ref) - l_theta at a shared (t, noise), fresh noise on negatives.
+* **Rerouting**: `R_ours_{both,neg}` (4 fresh pi_ref resamples per negative, S-log);
+  `R_{spread,guide}_{log,nhood}_{both,neg}` (farthest-of-8; spread = FPS over a
+  256-noise pool; guide = repulsive sampler alpha 0.3; nhood = +4 jitters sigma 0.3);
+  `R_spread_nhood_neg_kl{0.1,0.3,1}`; `R_spread_nhood_sph{0.485,0.867}_neg`;
+  `R_spread_select0.867_neg`; `R_spread_inv_r{0.5,1.5,3}_{both,neg}`;
+  `R_spread_reach_{near,mid,far}_both`; `R_spread_ninv_t{0.4,0.6,0.8}_fresh_{both,neg}`,
+  `R_spread_ninv_t0.4_mix_{both,neg}`; `R_online2_spread_nhood_neg` (2 rounds;
+  flagged `extra_label_budget`: round 2 labels up to `n_neg` more per mode).
+
+### Deviations from the preference repo (all arms alike)
+
+1. **No state.** The policy is unconditional, so "same state" means nothing and
+   KTO's mismatched-pair z0 reduces to a roll within the batch.
+2. **Stratified batches.** The repo samples rows i.i.d. with per-row weights that
+   give the two groups equal summed weight at lambda = 1. With 1-32 negatives vs
+   512 positives that puts 0-8 enormously weighted rows in a batch, so here every
+   two-group arm draws half its batch from each group and combines group means
+   with the same lambda: same expectation, far lower variance. KTO's lambda_D
+   follows the same class-ratio rule (1.01) for the half/half batch.
+3. **Full fine-tune** of a small MLP, not LoRA on a 3B model, so batch and LR are
+   the toy's own.
+4. **KL retain loader** is T_p with fresh noise (there are no off-scope rows).
+5. **Decision windows** (`worktree-reroute-window`) need time within an episode
+   and have no toy counterpart; not run.
+
+## Fairness (seeding)
+
+`src/toypref/seeds.py`: every stream is keyed by (seed, purpose[, pool row]),
+never by arm or cell. Per seed, all arms share the base policy, the 20k eval
+noises (common random numbers, so per-noise flips are paired with B0), the test
+samples, and the fine-tune minibatch stream. Each logged negative's candidates,
+target and support noises come from a stream keyed by its pool index, so they are
+identical in every cell and every arm that shares the construction (e.g. all
+`R_spread_*` share the target). Forget sets are nested in `n_forget`, edit sets
+in `n_neg`. `tests/test_fairness.py` checks all of this.
+
+## Metrics (`src/toypref/metrics.py`)
+
+Downweighting: `neg_mass`, `neg_mass_ratio` (vs pi_ref), per-mode min/max ratio;
+the fate of the eval noises pi_ref sent to a forgotten mode (`neg_noise_stay_same`,
+`_to_other_neg`, `_to_retain`, `_to_off`); the same for the logged training noises
+(`train_neg_*`) and the gap between the two (`neg_generalisation_gap`); delta log p
+on held-out true forgotten-mode samples and on T_n itself.
+
+Forgetting / collateral: per-mode masses, `mass_off`, `retain_tv`, `retain_kl`,
+`retain_ratio_{min,max,mean}`, modes below 50% / 10% of their pi_ref mass, mass CV,
+adjacent-vs-far ratios, `tv_to_ideal`; paired per-noise `retain_noise_flip` (and
+its split into other-retain / forgotten / off), action displacement on retain
+noises; within-mode centre error and spread ratio; MMD^2 and sliced-W2 against
+the ideal distribution and against pi_ref's retained samples; delta log p on
+held-out retained-mode samples (mean and worst mode) and on T_p; velocity drift
+E||v - v_ref||^2 on pi_ref paths (retain vs forget); relative parameter drift.
+Plus the full 9x9 transition matrix and per-mode vectors in `extras.jsonl`, and
+2000 decoded samples per arm on disk.
+
+log p is the continuous-ODE density (100-step Euler with exact divergence), not
+the 20-step sampler's; best-of-N has no density and reports none.
+
+## Running
+
+```
+sbatch slurm/submit_base.sh                         # 5 base policies
+python scripts/build_manifest.py 3                  # 360 tasks = 120 cells x 3 arm chunks
+sbatch --array=0-359%60 --dependency=afterok:<base> slurm/submit_sweep.sh
+sbatch --dependency=afterany:<sweep> slurm/submit_aggregate.sh
+```
+Outputs: `/grogu/datasets/rollout/soumojib/toypref/runs/cells/<cell>/<arm>.json`
+(+ `_samples.npy`), then `results/{all_runs,summary,paired_vs_B0}.csv`,
+`results/extras.jsonl`, `results/figures/`.
+
+## Next steps (launched 2026-10-07)
+
+Both follow from `docs/RESULTS.md`. Outputs never mix with the main sweep's tables:
+aggregation writes only `results/next_steps/` (`all_runs.csv`, `summary.csv`, `probes.csv`,
+`report_tables.md` from `scripts/report_next_steps.py`).
+
+### 1. |T_p| sweep: n_pos in {4, 16, 64} (512 = the main sweep)
+
+`run_cell.py --n_pos N` cuts T_p as the first N pool rollouts in retained modes, so T_p is
+nested across n_pos (`tests/test_fairness.py::test_positives_nested_in_n_pos`); T_n, eval
+noises and every other stream are unchanged. Outputs: `$RUNS/cells_npos{N}/<cell>/`, with
+`n_pos` recorded in every JSON. Arms rerun = every arm whose training touches T_p
+(`arms.depends_on_tp`): B0 (pairing), B1, NPO/KTO beta {0.1,1,10,100}, DPO beta {1,25},
+RM_bon8, B4_naive_ga, every `R_*_both`, the `R_spread_nhood_neg_kl*` arms (their retain
+loader is T_p) and the filtered `_both` / `_kl1` arms: 36 arms. NOT rerun, because they never
+read T_p: ORACLE_retain_bc (own 20k retain samples) and every negatives-only arm (their
+n_pos=512 results are already their results at any n_pos).
+Manifest `results/next_steps/manifest_npos.csv`: 3 n_pos x 120 cells x 2 arm chunks = 720 tasks.
+
+### 2. Label-filtered rerouting targets
+
+The method's candidates are unlabelled pi_ref decodes, and 23-29% of targets landed in a
+forgotten mode. The filtered arms label each candidate decode with the mode classifier and
+allow only RETAINED-mode candidates (`reroute.make_targets`, `*_filt`):
+
+* `resample4_filt` (Ours): blocks of 4 draws from the same per-row stream as `resample4`
+  (block 1 = the unfiltered draw), keeping retained decodes in draw order until 4 are kept;
+  cap 64 draws, then repeat the kept ones (`filt_fallback_resample`), or with none kept use
+  the unfiltered draw (`filt_fallback_unfiltered`).
+* `spread_filt`: farthest-of-8 among the retained FPS candidates (identical to `spread`
+  whenever its pick is already retained). If none of the 8 is retained: decode the whole
+  256-noise pool, restrict to retained decodes, rerun FPS seeded away from xi_log and pick
+  the farthest (`filt_fallback_pool`). Counters are in every JSON as `rows_filt_*`.
+
+Arms (flagged `extra_label_budget`: labels on candidate actions are information the repo's
+method does not have): `R_ours_filt_{both,neg}`, `R_spread_filt_{log,nhood}_{both,neg}`,
+`R_spread_filt_nhood_neg_kl1`. Run on the 120 n_pos=512 cells (new arm files in the existing
+cell dirs; manifest `manifest_filt512.csv`, 120 tasks) and, where they read T_p, in the n_pos
+sweep.
+
+Jobs (all `shubhamlong` CPU except aggregation, `--exclude=grogu-0-25`): filtered arms
+3990444 (`--array=0-119%20`), n_pos sweep 3990445 (`--array=0-719%50`), aggregation 3990446
+(`afterany` on both, `all`). Scripts: `slurm/submit_next.sh`, `slurm/submit_aggregate_next.sh`,
+`scripts/build_manifest_next.py`, `scripts/report_next_steps.py`.
