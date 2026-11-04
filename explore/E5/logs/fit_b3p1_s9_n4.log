@@ -2,3 +2,22 @@
 === 2026-11-04 20:33:39 /home/user/preference_toy/explore/E5/e5.py fit --setting b3p1 --seed 9 --npm 4
   balanced target fill {3: 0.223, 4: 0.238, 7: 0.232, 8: 0.234}
   it 0 loss 4.8212
+  it 300 loss 1.9696
+  it 600 loss 1.4275
+  it 900 loss 1.9386
+  it 1200 loss 1.7132
+  it 1499 loss 1.3966
+  detector {'det_tpr0': 0.8257839721254355, 'det_fpr0': 0.10939251288948666}
+  round 1: D 0.122 Rem 0.866 Col 0.068 off 0.046
+  it 0 loss 0.2675
+[K10c] b3p1_s9_n4 round 2 checkpoint at it 250 (773s)
+
+=== 2026-11-04 20:46:36 /home/user/preference_toy/explore/E5/e5.py fit --setting b3p1 --seed 9 --npm 4
+  it 300 loss 0.3814
+  it 600 loss 0.2879
+  it 900 loss 0.2850
+  it 1200 loss 0.2337
+  it 1499 loss 0.1770
+  detector {'det_tpr0': 0.09221902017291066, 'det_fpr0': 0.004079031230082855}
+  round 2: D 0.112 Rem 0.900 Col 0.071 off 0.049
+[K10c] b3p1_s9_n4 D 0.112 Rem 0.900 Col 0.071 off 0.049 DONE
