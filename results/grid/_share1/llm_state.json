@@ -1,42 +1,56 @@
 {
  "inflight": {
-  "grid_cond_k4_s6_n4_A2": {
+  "grid_cond_k4_s7_n4_A3": {
    "agent": "surgeon",
-   "token": "6wsjy5RhqjWpJSuz"
+   "token": "ZphFnqvcpeaVAdDF"
   },
-  "grid_cond_k4_s5_n16_A1": {
+  "grid_cond_k4_s7_n4_A2": {
    "agent": "surgeon",
-   "token": "aj6WmA2oT8mKyztC"
+   "token": "ZfgroJsHcE8dcmA3"
   },
-  "grid_cond_k4_s5_n16_A3": {
+  "grid_cond_k4_s6_n16_A1": {
    "agent": "surgeon",
-   "token": "2NUT2T8UJzfNdU86"
-  },
-  "grid_cond_k4_s5_n4_A3": {
-   "agent": "surgeon",
-   "token": "xSbDZKF5PgZS5vh5"
-  },
-  "grid_cond_k4_s5_n4_A2": {
-   "agent": "surgeon",
-   "token": "joMaqxUZNQjva3QA"
-  },
-  "grid_cond_k4_s5_n4_A1": {
-   "agent": "surgeon",
-   "token": "sqE73jXRMvtJvQZB"
-  },
-  "grid_cond_k4_s5_n16_A2": {
-   "agent": "surgeon",
-   "token": "QnFt7zsvPuyBSCRT"
+   "token": "sHPSm93TCVRdfoj3"
   },
   "grid_cond_k4_s6_n4_A1": {
+   "agent": "surgeon",
+   "token": "wg3iUT7vhJ54Tw3b"
+  },
+  "grid_cond_k4_s6_n16_A2": {
+   "agent": "surgeon",
+   "token": "doyCUVdjokuj6mSm"
+  },
+  "grid_cond_k4_s7_n16_A3": {
+   "agent": "surgeon",
+   "token": "98WMzDB3THtsydRK"
+  },
+  "grid_cond_k4_s6_n16_A3": {
    "agent": "triage",
-   "token": "LdvfQW99kV7KcyGr"
+   "token": "8aScF5wh4637yiGB"
+  },
+  "grid_cond_k4_s7_n4_A1": {
+   "agent": "surgeon",
+   "token": "QYGMMC9NYUy2wZZU"
   }
  },
  "done": [
-  "grid_cond_k4_s6_n4_A3"
+  "grid_cond_k4_s6_n4_A3",
+  "grid_cond_k4_s5_n4_A3",
+  "grid_cond_k4_s5_n4_A2",
+  "grid_cond_k4_s5_n16_A1",
+  "grid_cond_k4_s5_n4_A1",
+  "grid_cond_k4_s5_n16_A3",
+  "grid_cond_k4_s6_n4_A2",
+  "grid_cond_k4_s5_n16_A2"
  ],
  "eval_started": [
-  "grid_cond_k4_s6_n4_A3"
+  "grid_cond_k4_s6_n4_A3",
+  "grid_cond_k4_s5_n4_A3",
+  "grid_cond_k4_s5_n4_A2",
+  "grid_cond_k4_s5_n16_A1",
+  "grid_cond_k4_s5_n4_A1",
+  "grid_cond_k4_s5_n16_A3",
+  "grid_cond_k4_s6_n4_A2",
+  "grid_cond_k4_s5_n16_A2"
  ]
 }

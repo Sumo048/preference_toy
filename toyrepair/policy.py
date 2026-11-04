@@ -137,6 +137,11 @@ def _core(net: nn.Module) -> Tuple[nn.Module, str]:
     inner = getattr(net, "inner", None)
     if isinstance(inner, nn.Module) and hasattr(inner, "inp"):
         return inner, "inner."
+    if isinstance(inner, nn.Module):
+        # nested wrappers, e.g. R0's ControlledNet around an earlier ControlledNet
+        # (W3-1 bug fix, PREREG Amendment 1: no method change)
+        core, prefix = _core(inner)
+        return core, "inner." + prefix
     raise ValueError("unknown velocity-network layout (no inp/blocks)")
 
 

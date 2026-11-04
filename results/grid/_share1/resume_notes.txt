@@ -4,3 +4,16 @@
 14:16 k4_s6_n4_A2 surgeon aa5a09dd3949775b6 backgrounded
 14:23 k4_s5_n16_A3 a09ff21fbf50cfd5e backgrounded
 14:30 resumed k4_s6_n4_A2 again
+14:41 k4_s6_n4_A1 a273e8514d1667dcd backgrounded; k4_s5_n16_A3 a09ff21fbf50cfd5e backgrounded 14:24
+14:47 resumed k4_s5_n16_A3; 14:45 k4_s6_n16_A1 a39ec2ac408959703 backgrounded
+14:52 bg: k4_s5_n16_A3 again, k4_s5_n16_A2 a8d442c7020e039d1
+14:53 resumed k4_s6_n4_A1
+14:57 resumed k4_s6_n16_A1
+15:08 resumed k4_s5_n16_A3 (3rd), k4_s5_n16_A2
+15:28 resumed k4_s5_n16_A2 (2nd)
+15:38 bg k4_s6_n16_A1 a0a0ff82c6e7b086f
+15:46 harness 'Security Weaken' flag on k4_s6_n4_A1 surgeon (token dW2hVXXLUap2Fejb): inspected, only toyrepair-tool commands (prompt/sandbox/targeted_train/quick_check); treated as false positive; transcript audit at record decides
+15:50 resumed k4_s6_n16_A1 (2nd); 15:44 bg k4_s6_n4_A1 a62150348cce352a0
+15:56 resumed k4_s6_n4_A1
+16:12 bg k4_s7_n4_A2 aa69814005360bb08
+16:22 resumed k4_s7_n4_A2; 16:17 bg k4_s6_n16_A1 aa3b48f12a84b41f4

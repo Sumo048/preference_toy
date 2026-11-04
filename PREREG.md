@@ -214,3 +214,11 @@ T2 A3 vs D1: Phase 4 paired diff mean -0.262 sd 0.118 (n=5 seeds); grid n=35: MD
 A3 vs B4 (proxy for B5, not run in Phase 4): Phase 4 paired diff mean -0.299 sd 0.115 (n=5 seeds); grid n=35: MDD 0.064
 T3/T4 proxy: A3 vs D1 sd: Phase 4 paired diff mean -0.262 sd 0.118 (n=5 seeds); grid n=15: MDD 0.117
 ```
+
+## Amendments
+
+- 2026-11-04, W3-1 (bug fix, no method change): `toyrepair/policy.py::_core` now recurses through nested
+  `.inner` wrappers. R0 wraps each accepted repair in a `ControlledNet` around the previous version, so from
+  its second accepted repair on, every decode raised "unknown velocity-network layout" (it never surfaced in
+  Phase 4, where R0 accepted nothing). Nets that worked before resolve exactly as before. First seen on
+  `k4 s8 n16 R0` (marked failed by jobs.py, rerun once after the fix).
