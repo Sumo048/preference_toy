@@ -40,7 +40,8 @@ SESSION_CALLS = 20
 SESSION_SUBMISSIONS = 3
 OUTPUT_TOKEN_CAP = 2000
 #: commands with their own caps (the dossier parts are capped piecewise in toyrepair.dossier)
-COMMAND_TOKEN_CAPS = {"prompt": 4000 + 6000 + 50, "dossier": 6000 + 50, "triage-input": 1000 + 1500 + 2000 + 50}
+COMMAND_TOKEN_CAPS = {"prompt": 4000 + 6000 + 50, "dossier": 6000 + 50, "triage-input": 1000 + 1500 + 2000 + 50,
+                      "contrast": 800, "unit_card": 800}   # PLAN 6.5: 800 tokens per activation-tool output
 
 #: command -> one-line help
 COMMANDS = {
@@ -58,8 +59,8 @@ COMMANDS = {
     "set_units": "edit: write selected units' weights",
     "targeted_train": "edit: targeted training with the locality penalty",
     "submit_edit": "send a candidate version to the gate (max 3 per session)",
-    "contrast": "activation contrast at step k for a cluster (Phase 4)",
-    "unit_card": "correlates of one unit (Phase 4)",
+    "contrast": "activations of decodes ending in your cluster's behaviour (all c) vs the rest; saves a probe",
+    "unit_card": "correlates of one unit with inputs, step and your cluster's behaviour",
 }
 
 #: command -> option syntax (shown in the surgeon's static prompt)
@@ -69,7 +70,7 @@ USAGE = {
     "atlas": ": cards of all open clusters.",
     "branch": "`[--cluster ID] [--steps 0,2,4] [--M 32]`: branch table of a cluster (default yours).",
     "inspect": "`--neg UID [--version V] [--units LAYER:i,j]`: one decode of a negative: step, t, x, x_hat, |v|, x_hat in B_i, units.",
-    "sandbox": "`--stdin` or `--file F.py`, `[--version V]`: Python (numpy, torch) in scratch; `export/` has weights.pt, model.py (net, decode(xi, c)), negatives.npz, basins.npz.",
+    "sandbox": "`--stdin` or `--file F.py`, `[--version V]`: Python (numpy, torch) in scratch on `export/` (see Sandbox).",
     "quick_check": "`--version V`: still_bad (share of logged noises still in their basins), residual, drift (share of 4096 actions moved > median basin radius).",
     "graft_gated_path": "`--layer L --n_units N --w_in F --w_out F [--b_in F] [--src S] [--act silu|relu|linear] --det_source S --det_w F [--det_b B] [--det_thr T] [--det_k LO:HI] [--parent V]`",
     "rank1": "`--layer L --u F --v F --s S [--parent V]`",
@@ -77,8 +78,8 @@ USAGE = {
     "set_units": "`--layer L --idx 3,17 --w_in F --b F --w_out F [--parent V]`",
     "targeted_train": "`--params blocks.2,out --objective bc|npo|kto --steps N [--anchor dist|map|local|local_map|none] [--beta B] [--lr LR] [--data toypref:hopB:bsup | rescue:F.npy:bsup] [--parent V]`; bc needs --data; F.npy: one target row per member.",
     "submit_edit": "`--version V`: run the gate on a candidate.",
-    "contrast": "`--layer L --k K [--cluster ID]`: top units, probe direction and AUC, velocity difference.",
-    "unit_card": "`--layer L --idx I`: correlates of one unit.",
+    "contrast": "`--layer L --k K [--cluster ID] [--version V]`: target share per c decile, probe AUC by step, detector file for steps 0..K, top units.",
+    "unit_card": "`--layer L --idx I [--version V]`: one unit vs x_k, c, t and your cluster.",
 }
 
 DIAG = ("prompt", "dossier", "atlas", "branch", "inspect", "sandbox", "quick_check", "submit_edit")
@@ -186,9 +187,11 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--layer", required=True)
     c.add_argument("--k", type=int, required=True)
     c.add_argument("--cluster", type=int)
+    c.add_argument("--version")
     u = P["unit_card"]
     u.add_argument("--layer", required=True)
     u.add_argument("--idx", type=int, required=True)
+    u.add_argument("--version")
     return ap
 
 
@@ -433,10 +436,26 @@ class RealBackend:
         return res
 
     def contrast(self, run, args):
-        raise ToolError("contrast is not available until Phase 4")
+        from . import act_tools
+        cid = args.cluster if args.cluster is not None else run_session_cluster(run, args)
+        cl = self.cluster(run, cid)
+        vid = getattr(args, "_version", None) or run.current
+        try:
+            return act_tools.contrast(self.cell(run), self.version(run, vid), list(map(int, cl.uids)), cid,
+                                      args.layer, args.k, run.scratch)
+        except act_tools.ToolInputError as e:
+            raise ToolError(str(e))
 
     def unit_card(self, run, args):
-        raise ToolError("unit_card is not available until Phase 4")
+        from . import act_tools
+        cid = run_session_cluster(run, args)
+        cl = self.cluster(run, cid)
+        vid = getattr(args, "_version", None) or run.current
+        try:
+            return act_tools.unit_card(self.cell(run), self.version(run, vid), list(map(int, cl.uids)), cid,
+                                       args.layer, args.idx)
+        except act_tools.ToolInputError as e:
+            raise ToolError(str(e))
 
 
 def run_session_cluster(run, args) -> int:
@@ -723,10 +742,12 @@ def execute(run, sess, args, stdin_text: str = "") -> (str, Dict):
             run.current = vid
         return _fmt_gate(res, SESSION_SUBMISSIONS - sess.submissions), info
     if cmd == "contrast":
+        args._version = _version_arg(run, sess, args.version)
         text, dec = be.contrast(run, args)
         info["decodes"] = dec
         return text, info
     if cmd == "unit_card":
+        args._version = _version_arg(run, sess, args.version)
         text, dec = be.unit_card(run, args)
         info["decodes"] = dec
         return text, info
