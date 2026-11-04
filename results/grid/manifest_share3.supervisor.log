@@ -159,3 +159,11 @@
 2026-11-04 20:39:11 [28929] g3_cond_k4_s9_n64_B5 launched
 2026-11-04 20:56:37 [28929] g3_cond_k4_s9_n64_D1 wrapper exit 0
 2026-11-04 20:56:37 [28929] g3_cond_alt_s5_n1_B4 launched
+2026-11-04 21:04:20 [28929] g3_cond_alt_s5_n1_B4 wrapper exit 0
+2026-11-04 21:04:20 [28929] g3_cond_alt_s5_n1_R0 launched
+2026-11-04 21:06:38 [28929] g3_cond_alt_s5_n1_R0 wrapper exit 0
+2026-11-04 21:06:38 [28929] g3_cond_alt_s5_n1_D1 launched
+2026-11-04 21:17:10 [28929] g3_cond_alt_s5_n1_D1 wrapper exit 0
+2026-11-04 21:17:11 [28929] g3_cond_alt_s5_n1_B5 launched
+2026-11-04 21:25:35 [28929] g3_cond_alt_s5_n1_B5 wrapper exit 0
+2026-11-04 21:25:35 [28929] g3_cond_alt_s5_n64_B4 launched

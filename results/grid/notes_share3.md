@@ -29,3 +29,5 @@
 - 16:44 UTC g3_cond_k4_s8_n64_A3 surgeon flagged 'Create RCE Surface'; reviewed: only toyrepair-tool prompt/targeted_train/dossier calls. Benign.
 - 17:19 UTC g3_cond_alt_s5_n64_A3 surgeon flagged 'Security Weaken'; reviewed: only toyrepair-tool prompt/targeted_train/dossier calls. Benign.
 - 20:45 UTC g3_cond_b3p1_s5_n16_A3_rep1 s002: surgeon RESULT line claimed 'accepted v4', but the gate ledger records v4 (and v1, v3) as rejected; run stays at v0. Ledger is authoritative; recorded as-is.
+- 21:24 UTC g3_cond_b3p1_s5_n16_A3_rep1 s010: surgeon reports its v13 targeted_train hit the 120 s Bash timeout and went to background; it submitted v13 without seeing the train output (gate rejected, 5 tests failed). Logged as surgeon process error; ledger is authoritative, no rerun (the gate result is valid).
+- 21:24 UTC rep1 DONE: b3p1 s7n4 (no_open_cluster); 21:26 b3p1 s5n4 (no_open_cluster).
