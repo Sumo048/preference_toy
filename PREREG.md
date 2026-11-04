@@ -17,12 +17,14 @@ setting (PLAN 9.5). D = toypref `compute` `tv_to_ideal` on the final-evaluation 
 | T1a | A3 vs B1a | paired t, one-sided | A3 lower |
 | T1b | A3 vs B5 | paired t, one-sided | A3 lower |
 | T1c | A3 vs B6 | paired t, one-sided | A3 lower (added by PREREG Amendment 1) |
-| T2 | A3 vs D1 | paired t, one-sided | A3 lower |
+| T2a | A3 vs D1 | paired t, one-sided | A3 lower |
+| T2b | A3 vs B6 | the T1c test (shared, counted once in Holm) | A3 lower (Amendment 2) |
 | T3 | A2 vs A1 | paired t, two-sided | either |
 | T4 | A2 vs R0 | paired t, two-sided | either |
 
-T1 is supported only if T1a, T1b and T1c are all supported (Amendment 1). Holm correction over the six tests
-together (T1a, T1b, T1c, T2, T3, T4), at family-wise α = 0.05. Pairs: every (setting, seed) where both arms have a valid final evaluation on every npm
+T1 is supported only if T1a, T1b and T1c are all supported (Amendment 1). T2 is supported only if T2a and T2b
+are both supported (Amendment 2). Holm correction over the six distinct tests together (A3 vs B1a, A3 vs B5,
+A3 vs B6, A3 vs D1, A2 vs A1, A2 vs R0), at family-wise α = 0.05; A3 vs B6 enters once and serves T1c and T2b. Pairs: every (setting, seed) where both arms have a valid final evaluation on every npm
 the comparison uses (A1/A2 comparisons: items 1-3 of Section 4; A3 comparisons: every A3 cell).
 
 Labels (PLAN 9.5):
@@ -253,3 +255,17 @@ every Phase 4 arm. A claim that A3 beats the best recipes must include it.
 **Phase 4 context** (k4, npm 4/16, seeds 0-4; B6 values from E3's runs of the same spec): B6 D 0.031 against A3
 0.165; A3 is lower in 0 of 10 cells. Per-seed paired difference A3 - B6: mean +0.135, sd 0.053. MDD at 80% power
 (grid n = 35, Holm first step α = 0.05/6): 0.030.
+
+## Amendment 2 (2026-11-04, W2b, at the user's request): B6 also in T2
+
+**Change.** T2 (LLM value) now has two parts: T2a, A3 vs D1 (as before), and T2b, A3 vs B6. T2 is supported only
+if both are supported (labels as in Section 1, Collateral condition included). T2b uses the same paired test as
+T1c, so it adds no test to the Holm family: there are six distinct tests and A3 vs B6 is counted once.
+
+**Scope.** B6 already covers every grid cell with an LLM arm: it ran on all 140 conditional cells of seeds 5-9
+(Amendment 1, `results/b6/`). The frozen reference implementation is E4's run of the same spec on `art/confirm-E4`;
+B6 equals it to the last digit on the 4 cells checked (DEV_LOG).
+
+**Timing and reason.** This was written after Amendment 1 and before any seed 5-9 LLM result was read by W2b. The
+reason: D1 is code doing the A3 loop without the LLM; B6 is code that needs no loop at all. T2 asks whether the LLM
+adds value over code, so it should face the strongest code method too.

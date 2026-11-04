@@ -217,3 +217,7 @@ send the same resume message; record it in the run's notes. No limit or prompt c
 - Phase 4 final patch stacks exported to `results/phase4/patches/<run_id>/` (rebuild-checked,
   `scripts/export_patches.py`). Pilot A1/A2 stacks are not available: their run dirs were never committed by W2a
   (`results/pilot/patches/README.md`).
+- PREREG Amendment 2 (user request, 2026-11-04 12:20 ET): B6 also enters T2 as T2b (A3 vs B6) beside T2a (A3 vs D1);
+  T2 needs both. T2b reuses the T1c test, so the Holm family stays six distinct tests. No new runs: B6 already
+  covers all 140 cells, a superset of the cells with an LLM arm. E4 (`art/confirm-E4`) is the frozen reference run
+  of the same spec; B6 matches it exactly on the cells checked.
