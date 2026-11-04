@@ -1,0 +1,5 @@
+cell,version,cluster,n,purity,open
+cond_k1_s7_n4,v0,0,1,1.0000,0
+cond_k1_s7_n4,v0,1,3,1.0000,1
+cond_k1_s7_n4,v5,0,1,1.0000,0
+cond_k1_s7_n4,v5,1,3,1.0000,0
