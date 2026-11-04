@@ -1,9 +1,5 @@
 {
  "inflight": {
-  "a3lf_cond_b3p1_s5_n4": {
-   "agent": "surgeon",
-   "token": "nC3Q6h7nnsDhhaSD"
-  },
   "a3lf_cond_b3p1_s9_n4": {
    "agent": "surgeon",
    "token": "CkGn8kzfeyvTzv2E"
@@ -19,6 +15,10 @@
   "a3lf_cond_b3p1_s8_n4": {
    "agent": "surgeon",
    "token": "LNfnPuTe3rtnCbxY"
+  },
+  "a3lf_cond_b3p1_s5_n4": {
+   "agent": "triage",
+   "token": "aEqNneUSvM2jtuUj"
   }
  },
  "done": [
