@@ -137,3 +137,65 @@
 2026-11-04 14:53:34 [16496] b6_contig_s7_n4 launched
 2026-11-04 14:55:39 [16496] b6_contig_s6_n16 wrapper exit 0
 2026-11-04 14:55:39 [16496] b6_contig_s7_n16 launched
+2026-11-04 15:00:46 [16496] b6_contig_s7_n1 wrapper exit 0
+2026-11-04 15:00:46 [16496] b6_contig_s7_n64 launched
+2026-11-04 15:00:59 [16496] b6_contig_s7_n4 wrapper exit 0
+2026-11-04 15:00:59 [16496] b6_contig_s8_n1 launched
+2026-11-04 15:01:12 [16496] b6_contig_s6_n64 wrapper exit 0
+2026-11-04 15:01:12 [16496] b6_contig_s8_n4 launched
+2026-11-04 15:03:06 [16496] b6_contig_s7_n16 wrapper exit 0
+2026-11-04 15:03:06 [16496] b6_contig_s8_n16 launched
+2026-11-04 15:08:24 [16496] b6_contig_s8_n1 wrapper exit 0
+2026-11-04 15:08:24 [16496] b6_contig_s8_n64 launched
+2026-11-04 15:08:32 [16496] b6_contig_s8_n4 wrapper exit 0
+2026-11-04 15:08:32 [16496] b6_contig_s9_n1 launched
+2026-11-04 15:08:34 [16496] b6_contig_s7_n64 wrapper exit 0
+2026-11-04 15:08:34 [16496] b6_contig_s9_n4 launched
+2026-11-04 15:10:37 [16496] b6_contig_s8_n16 wrapper exit 0
+2026-11-04 15:10:37 [16496] b6_contig_s9_n16 launched
+2026-11-04 15:16:03 [16496] b6_contig_s9_n4 wrapper exit 0
+2026-11-04 15:16:03 [16496] b6_contig_s9_n64 launched
+2026-11-04 15:16:07 [16496] b6_contig_s9_n1 wrapper exit 0
+2026-11-04 15:16:07 [16496] b6_pairs_s5_n1 launched
+2026-11-04 15:16:25 [16496] b6_contig_s8_n64 wrapper exit 0
+2026-11-04 15:16:25 [16496] b6_pairs_s5_n4 launched
+2026-11-04 15:18:22 [16496] b6_contig_s9_n16 wrapper exit 0
+2026-11-04 15:18:22 [16496] b6_pairs_s5_n16 launched
+2026-11-04 15:23:26 [16496] b6_pairs_s5_n1 wrapper exit 0
+2026-11-04 15:23:26 [16496] b6_pairs_s5_n64 launched
+2026-11-04 15:23:50 [16496] b6_pairs_s5_n4 wrapper exit 0
+2026-11-04 15:23:50 [16496] b6_pairs_s6_n1 launched
+2026-11-04 15:23:52 [16496] b6_contig_s9_n64 wrapper exit 0
+2026-11-04 15:23:52 [16496] b6_pairs_s6_n4 launched
+2026-11-04 15:25:53 [16496] b6_pairs_s5_n16 wrapper exit 0
+2026-11-04 15:25:53 [16496] b6_pairs_s6_n16 launched
+2026-11-04 15:31:03 [16496] b6_pairs_s6_n4 wrapper exit 0
+2026-11-04 15:31:03 [16496] b6_pairs_s6_n64 launched
+2026-11-04 15:31:05 [16496] b6_pairs_s6_n1 wrapper exit 0
+2026-11-04 15:31:05 [16496] b6_pairs_s7_n1 launched
+2026-11-04 15:31:09 [16496] b6_pairs_s5_n64 wrapper exit 0
+2026-11-04 15:31:09 [16496] b6_pairs_s7_n4 launched
+2026-11-04 15:33:14 [16496] b6_pairs_s6_n16 wrapper exit 0
+2026-11-04 15:33:14 [16496] b6_pairs_s7_n16 launched
+2026-11-04 15:38:25 [16496] b6_pairs_s7_n1 wrapper exit 0
+2026-11-04 15:38:25 [16496] b6_pairs_s7_n64 launched
+2026-11-04 15:38:26 [16496] b6_pairs_s7_n4 wrapper exit 0
+2026-11-04 15:38:26 [16496] b6_pairs_s8_n1 launched
+2026-11-04 15:39:01 [16496] b6_pairs_s6_n64 wrapper exit 0
+2026-11-04 15:39:01 [16496] b6_pairs_s8_n4 launched
+2026-11-04 15:40:50 [16496] b6_pairs_s7_n16 wrapper exit 0
+2026-11-04 15:40:50 [16496] b6_pairs_s8_n16 launched
+2026-11-04 15:45:26 [16496] b6_pairs_s8_n1 wrapper exit 0
+2026-11-04 15:45:26 [16496] b6_pairs_s8_n64 launched
+2026-11-04 15:46:00 [16496] b6_pairs_s7_n64 wrapper exit 0
+2026-11-04 15:46:00 [16496] b6_pairs_s9_n1 launched
+2026-11-04 15:46:03 [16496] b6_pairs_s8_n4 wrapper exit 0
+2026-11-04 15:46:03 [16496] b6_pairs_s9_n4 launched
+2026-11-04 15:48:14 [16496] b6_pairs_s8_n16 wrapper exit 0
+2026-11-04 15:48:14 [16496] b6_pairs_s9_n16 launched
+2026-11-04 15:53:14 [16496] b6_pairs_s9_n4 wrapper exit 0
+2026-11-04 15:53:14 [16496] b6_pairs_s9_n64 launched
+2026-11-04 15:53:15 [16496] b6_pairs_s9_n1 wrapper exit 0
+2026-11-04 15:53:15 [16496] b6_b3p1_s5_n1 launched
+2026-11-04 15:53:19 [16496] b6_pairs_s8_n64 wrapper exit 0
+2026-11-04 15:53:19 [16496] b6_b3p1_s5_n4 launched

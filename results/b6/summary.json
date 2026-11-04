@@ -1547,7 +1547,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.029949999999999997,
+    "removed": 0.9988645747316267,
+    "collateral": 0.022180988526165762
+   }
   },
   {
    "setting": "contig",
@@ -1556,7 +1560,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.027700000000000016,
+    "removed": 1.0,
+    "collateral": 0.01816859675069045
+   }
   },
   {
    "setting": "contig",
@@ -1565,7 +1573,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.027700000000000016,
+    "removed": 1.0,
+    "collateral": 0.01816859675069045
+   }
   },
   {
    "setting": "contig",
@@ -1574,7 +1586,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.027700000000000016,
+    "removed": 1.0,
+    "collateral": 0.01816859675069045
+   }
   },
   {
    "setting": "contig",
@@ -1583,7 +1599,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.027700000000000016,
+    "removed": 1.0,
+    "collateral": 0.01816859675069045
+   }
   },
   {
    "setting": "contig",
@@ -1592,7 +1612,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.030600000000000002,
+    "removed": 0.9934780393355752,
+    "collateral": 0.0229076713928225
+   }
   },
   {
    "setting": "contig",
@@ -1601,7 +1625,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.030600000000000002,
+    "removed": 0.9934780393355752,
+    "collateral": 0.0229076713928225
+   }
   },
   {
    "setting": "contig",
@@ -1610,7 +1638,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.030600000000000002,
+    "removed": 0.9934780393355752,
+    "collateral": 0.0229076713928225
+   }
   },
   {
    "setting": "contig",
@@ -1619,7 +1651,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.030600000000000002,
+    "removed": 0.9934780393355752,
+    "collateral": 0.0229076713928225
+   }
   },
   {
    "setting": "contig",
@@ -1628,7 +1664,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.049399999999999986,
+    "removed": 1.0,
+    "collateral": 0.0492943058244877
+   }
   },
   {
    "setting": "contig",
@@ -1637,7 +1677,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.049399999999999986,
+    "removed": 1.0,
+    "collateral": 0.0492943058244877
+   }
   },
   {
    "setting": "contig",
@@ -1646,7 +1690,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.049399999999999986,
+    "removed": 1.0,
+    "collateral": 0.0492943058244877
+   }
   },
   {
    "setting": "contig",
@@ -1655,7 +1703,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.049399999999999986,
+    "removed": 1.0,
+    "collateral": 0.0492943058244877
+   }
   },
   {
    "setting": "alt",
@@ -1924,7 +1976,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015699999999999992,
+    "removed": 0.9984430143242682,
+    "collateral": 0.009126634028255115
+   }
   },
   {
    "setting": "pairs",
@@ -1933,7 +1989,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015699999999999992,
+    "removed": 0.9984430143242682,
+    "collateral": 0.009126634028255115
+   }
   },
   {
    "setting": "pairs",
@@ -1942,7 +2002,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015699999999999992,
+    "removed": 0.9984430143242682,
+    "collateral": 0.009126634028255115
+   }
   },
   {
    "setting": "pairs",
@@ -1951,7 +2015,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015699999999999992,
+    "removed": 0.9984430143242682,
+    "collateral": 0.009126634028255115
+   }
   },
   {
    "setting": "pairs",
@@ -1960,7 +2028,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.018950000000000005,
+    "removed": 0.993147883002659,
+    "collateral": 0.013644582773890176
+   }
   },
   {
    "setting": "pairs",
@@ -1969,7 +2041,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.018950000000000005,
+    "removed": 0.993147883002659,
+    "collateral": 0.013644582773890176
+   }
   },
   {
    "setting": "pairs",
@@ -1978,7 +2054,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.02255,
+    "removed": 0.9967273471057476,
+    "collateral": 0.015520023599675567
+   }
   },
   {
    "setting": "pairs",
@@ -1987,7 +2067,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.02255,
+    "removed": 0.9967273471057476,
+    "collateral": 0.015520023599675567
+   }
   },
   {
    "setting": "pairs",
@@ -1996,7 +2080,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015199999999999998,
+    "removed": 0.9988792664289353,
+    "collateral": 0.011940945633449995
+   }
   },
   {
    "setting": "pairs",
@@ -2005,7 +2093,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015199999999999998,
+    "removed": 0.9988792664289353,
+    "collateral": 0.011940945633449995
+   }
   },
   {
    "setting": "pairs",
@@ -2014,7 +2106,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015199999999999998,
+    "removed": 0.9988792664289353,
+    "collateral": 0.011940945633449995
+   }
   },
   {
    "setting": "pairs",
@@ -2023,7 +2119,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.015199999999999998,
+    "removed": 0.9988792664289353,
+    "collateral": 0.011940945633449995
+   }
   },
   {
    "setting": "pairs",
@@ -2032,7 +2132,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.017500000000000005,
+    "removed": 0.990741693241436,
+    "collateral": 0.010434268352429915
+   }
   },
   {
    "setting": "pairs",
@@ -2041,7 +2145,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.016500000000000015,
+    "removed": 0.9917703939923876,
+    "collateral": 0.006169073261914543
+   }
   },
   {
    "setting": "pairs",
@@ -2050,7 +2158,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.016500000000000015,
+    "removed": 0.9917703939923876,
+    "collateral": 0.006169073261914543
+   }
   },
   {
    "setting": "pairs",
@@ -2059,7 +2171,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.016500000000000015,
+    "removed": 0.9917703939923876,
+    "collateral": 0.006169073261914543
+   }
   },
   {
    "setting": "pairs",
@@ -2068,7 +2184,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.01905000000000001,
+    "removed": 0.9981206932553769,
+    "collateral": 0.020090259285786047
+   }
   },
   {
    "setting": "pairs",
@@ -2077,7 +2197,11 @@
    "B0": null,
    "B1a": null,
    "B1b": null,
-   "B6": null
+   "B6": {
+    "D": 0.01905000000000001,
+    "removed": 0.9981206932553769,
+    "collateral": 0.020090259285786047
+   }
   },
   {
    "setting": "pairs",
