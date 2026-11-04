@@ -54,3 +54,11 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 18:55 UTC in flight: ac942 k1s9n16A1, a8acf c-s5n16 (bg wait 18:52), a1447 c-s8n16 (bg wait 18:52); triage a6275 c-s6n4, a4786 c-s6n16, a4707 c-s7n16, a0bc9 c-s8n4, a1d0e c-s9n4
 - 19:05 UTC resumed a8acf (c-s5n16) and a1447 (c-s8n16), idle >10 min
 - 19:10 UTC in flight: a8acf c-s5n16, a1447 c-s8n16, a9c3c c-s6n4, aebd7 c-s6n16, ade54 c-s7n16, a7577 c-s8n4, a7173 c-s9n4; triage ae2db k1s9n16A1
+- 19:15 UTC +ada4a k1s9n16A1
+- 19:30 UTC in flight: a8acf c-s5n16 (bg), a1447 c-s8n16 (bg), ada4a k1s9n16A1; triage a0ac5 c-s6n4, ab0a3 c-s6n16, ada34 c-s7n16, af40a c-s8n4, aa42d c-s9n4
+- 19:40 UTC resumed a8acf and a1447 again
+- 19:45 UTC in flight: a8acf c-s5n16, a1447 c-s8n16, add78 c-s6n4, af6ad c-s6n16, a0849 c-s7n16, a800c c-s8n4, a779a c-s9n4; triage acd24 k1s9n16A1
+- 19:55 UTC +ae6cd k1s9n16A1, triage a3b34 c-s8n16
+- 20:10 UTC code unit cond_contig_s8_n4_R0 failed (ValueError unknown velocity-network layout in policy._core); retrying once per W3 rule
+- 20:15 UTC pairs started. in flight: ae6cd k1s9n16A1, ad710 c-s8n16; triage a2343 c-s5n16, ab652 c-s8n4, a1f01 c-s9n4, a70d4 c-s9n16, ae4ce pairs s5n4, a5bd4 c-s6n16
+- 20:30 UTC in flight: ad710 c-s8n16, a1709 c-s5n16, afade c-s6n16, a904c c-s8n4, a4a5b c-s9n4, a8cdf c-s9n16, a8afa pairs s5n4; triage a5053 k1s9n16A1

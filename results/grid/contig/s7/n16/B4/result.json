@@ -1,0 +1,193 @@
+{
+ "arm": "B4",
+ "cell": "cond_contig_s7_n16",
+ "grid": "cond",
+ "setting": "contig",
+ "seed": 7,
+ "npm": 16,
+ "run_id": "B4_grid_cond_contig_s7_n16",
+ "run_dir": "/home/user/preference_toy/runs/repair/B4_grid_cond_contig_s7_n16",
+ "output": {
+  "arm": "B4",
+  "version": "v4",
+  "accepted": [
+   "v1",
+   "v4"
+  ],
+  "gate_checks": 7,
+  "decodes": 0.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 6,
+   "gate_cap": 24,
+   "rounds": [
+    {
+     "cluster": 2,
+     "r_cur": 0.130859375,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "frozen_recipe_cluster",
+       "accepted": true
+      }
+     ],
+     "accepted": "v1",
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.125,
+     "tried": [
+      {
+       "version": "v2",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 0,
+     "r_cur": 0.08928571428571429,
+     "tried": [
+      {
+       "version": "v3",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.03236607142857143,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "frozen_recipe_cluster",
+       "accepted": true
+      }
+     ],
+     "accepted": "v4",
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.12734375,
+     "tried": [
+      {
+       "version": "v5",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 0,
+     "r_cur": 0.08649553571428571,
+     "tried": [
+      {
+       "version": "v6",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.12734375,
+     "tried": [
+      {
+       "version": "v7",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.14645,
+  "removed": 0.7955469703131354,
+  "collateral": 0.07465331591215008,
+  "mass_off": 0.04135,
+  "toypref": {
+   "mass_m0": 0.04585,
+   "mass_m1": 0.01735,
+   "mass_m2": 0.0118,
+   "mass_m3": 0.02555,
+   "mass_m4": 0.1786,
+   "mass_m5": 0.25455,
+   "mass_m6": 0.24355,
+   "mass_m7": 0.1814,
+   "mass_off": 0.04135,
+   "neg_mass_ratio": 0.2044530296868646,
+   "retain_tv": 0.07465331591215008,
+   "tv_to_ideal": 0.14645,
+   "tv_to_ideal_ref": 0.5185,
+   "retain_noise_flip": 0.34963655244029074,
+   "neg_noise_to_retain": 0.7447132980886539,
+   "neg_noise_still_forget": 0.2010980073200488,
+   "disp_retain_mean": 0.8201637268066406,
+   "neg_still_forget_near": 0.19948593459945738,
+   "n_eval_neg_near": 7003.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.07454241079461538,
+  "final_pool": {
+   "D": 0.1459503173828125,
+   "removed": 0.7916653472244213,
+   "collateral": 0.08384695160840902,
+   "mass_off": 0.0413360595703125,
+   "retain_tv": 0.08439716125491947,
+   "n": 65536,
+   "mass": [
+    0.0437469482421875,
+    0.017730712890625,
+    0.012969970703125,
+    0.02593994140625,
+    0.1790924072265625,
+    0.2542266845703125,
+    0.2459869384765625,
+    0.1789703369140625,
+    0.0413360595703125
+   ],
+   "mass_ref": [
+    0.11993408203125,
+    0.1189727783203125,
+    0.12286376953125,
+    0.120086669921875,
+    0.1223602294921875,
+    0.1221160888671875,
+    0.1225433349609375,
+    0.1238555908203125,
+    0.0272674560546875
+   ]
+  }
+ },
+ "wall_s_arm": 852.4,
+ "wall_s_total": 895.3,
+ "cpu_s": 631.3,
+ "max_rss_mb": 980.9,
+ "threads": 1
+}
