@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/tools/role_hook_dispatch.py\"; [ -f \"$f\" ] || exit 0; python3 -I \"$f\""
+          }
+        ]
+      }
+    ]
+  }
+}
