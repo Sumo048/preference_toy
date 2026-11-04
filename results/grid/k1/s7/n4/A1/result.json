@@ -1,0 +1,314 @@
+{
+ "arm": "A1",
+ "cell": "cond_k1_s7_n4",
+ "setting": "k1",
+ "seed": 7,
+ "npm": 4,
+ "run_id": "grid_cond_k1_s7_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s7_n4_A1",
+ "output": {
+  "version": "v1",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v1",
+    "call": "targeted_train",
+    "patches": [
+     "p0001"
+    ]
+   }
+  ],
+  "gate_checks": 6,
+  "gate_cap": 9,
+  "decodes": 1174480.0,
+  "sessions": 4,
+  "cost_usd": 1.2004299999999999,
+  "n_first_clusters": 1
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 1,
+   "summary": "RESULT accepted v1 BC targeted_train on blocks.2,out with hopB bsup rescue targets, dist anchor, 1500 steps",
+   "calls": 6,
+   "submissions": 1,
+   "accepted": "v1",
+   "cost_usd": 0.071124,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc hopB/nhood and npo edits on v1; best fall 0.017, about 45%, failed target test",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.271404,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 1,
+   "summary": "RESULT no-accept - chained bc hopB/hopVB on blocks.1-2,out then inp,blocks.0; target fall only 0.016-0.019, test 1 failed.",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.34297,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s008",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc (all, inp) and npo edits cut target share 0.037 to 0.021; c extremes untouched, so skipped submitting",
+   "calls": 15,
+   "submissions": 0,
+   "accepted": null,
+   "cost_usd": 0.474507,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.009516
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.009769
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010441
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010699
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.083984375,
+    "target_fall_ci": [
+     0.0784912109375,
+     0.08935546875
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01177978515625,
+    "target_fall_ci": [
+     0.0081787109375,
+     0.0152587890625
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.016845703125,
+    "target_fall_ci": [
+     0.0137939453125,
+     0.02008209228515624
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01702880859375,
+    "target_fall_ci": [
+     0.013916015625,
+     0.0201416015625
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0162353515625,
+    "target_fall_ci": [
+     0.01318359375,
+     0.01953125
+    ]
+   }
+  },
+  {
+   "version": "v11",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01910400390625,
+    "target_fall_ci": [
+     0.01568603515625,
+     0.02258453369140624
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.14263571428571425,
+  "removed": 0.6810990840965861,
+  "collateral": 0.10700100545016217,
+  "mass_off": 0.03655,
+  "collateral_plan": 0.10733114895567869,
+  "toypref": {
+   "mass_m0": 0.1397,
+   "mass_m1": 0.13285,
+   "mass_m2": 0.1242,
+   "mass_m3": 0.1119,
+   "mass_m4": 0.063,
+   "mass_m5": 0.0383,
+   "mass_m6": 0.14425,
+   "mass_m7": 0.20925,
+   "mass_off": 0.03655,
+   "neg_mass_ratio": 0.31890091590341385,
+   "retain_tv": 0.10700100545016217,
+   "tv_to_ideal": 0.14263571428571425,
+   "tv_to_ideal_ref": 0.14679999999999999,
+   "retain_noise_flip": 0.23030942334739804,
+   "neg_noise_to_retain": 0.8576186511240633,
+   "neg_noise_still_forget": 0.11490424646128226,
+   "disp_retain_mean": 0.5495665073394775,
+   "neg_still_forget_near": 0.05235602094240838,
+   "n_eval_neg_near": 191.0,
+   "neg_still_forget_far": 0.1288196524865189,
+   "n_eval_neg_far": 1669.0
+  },
+  "final_pool": {
+   "D": 0.14960370744977677,
+   "removed": 0.6845779827951627,
+   "collateral": 0.1060746115126111,
+   "mass_off": 0.0360565185546875,
+   "retain_tv": 0.10644124156201178,
+   "n": 65536,
+   "mass": [
+    0.1360931396484375,
+    0.130035400390625,
+    0.123809814453125,
+    0.1118011474609375,
+    0.0629425048828125,
+    0.038604736328125,
+    0.14813232421875,
+    0.2125244140625,
+    0.0360565185546875
+   ],
+   "mass_ref": [
+    0.1217193603515625,
+    0.120391845703125,
+    0.119384765625,
+    0.1217193603515625,
+    0.122833251953125,
+    0.1223907470703125,
+    0.1221771240234375,
+    0.1220550537109375,
+    0.0273284912109375
+   ]
+  }
+ }
+}

@@ -1,0 +1,204 @@
+{
+ "arm": "D1",
+ "cell": "cond_contig_s5_n4",
+ "grid": "cond",
+ "setting": "contig",
+ "seed": 5,
+ "npm": 4,
+ "run_id": "D1_grid_cond_contig_s5_n4",
+ "run_dir": "/home/user/preference_toy/runs/repair/D1_grid_cond_contig_s5_n4",
+ "output": {
+  "arm": "D1",
+  "version": "v4",
+  "accepted": [
+   "v4"
+  ],
+  "gate_checks": 13,
+  "decodes": 17999.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 5,
+   "gate_cap": 21,
+   "rounds": [
+    {
+     "cluster": 3,
+     "r_cur": 0.12890625,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v2",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "push(d4,2r,k8,h3)"
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.123046875,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "all_5000",
+       "accepted": true
+      }
+     ],
+     "accepted": "v4",
+     "k_commit": 12,
+     "primitive": "hop(0.80,n29)"
+    },
+    {
+     "cluster": 4,
+     "r_cur": 0.08203125,
+     "tried": [
+      {
+       "version": "v5",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v6",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v7",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d0,0.5r,k12,h3)"
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.234375,
+     "tried": [
+      {
+       "version": "v8",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v9",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v10",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "push(d0,2r,k8,h3)"
+    },
+    {
+     "cluster": 0,
+     "r_cur": 0.0537109375,
+     "tried": [
+      {
+       "version": "v11",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v12",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v13",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d4,0.5r,k12,h3)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.25775,
+  "removed": 0.5489871847871022,
+  "collateral": 0.057043880785207876,
+  "mass_off": 0.03955,
+  "toypref": {
+   "mass_m0": 0.0662,
+   "mass_m1": 0.0395,
+   "mass_m2": 0.0142,
+   "mass_m3": 0.0983,
+   "mass_m4": 0.1912,
+   "mass_m5": 0.2055,
+   "mass_m6": 0.1962,
+   "mass_m7": 0.14935,
+   "mass_off": 0.03955,
+   "neg_mass_ratio": 0.4510128152128979,
+   "retain_tv": 0.057043880785207876,
+   "tv_to_ideal": 0.25775,
+   "tv_to_ideal_ref": 0.5125,
+   "retain_noise_flip": 0.26882051282051284,
+   "neg_noise_to_retain": 0.49834642414220753,
+   "neg_noise_still_forget": 0.4433650268706077,
+   "disp_retain_mean": 0.6551998853683472,
+   "neg_still_forget_near": 0.4415337889141989,
+   "n_eval_neg_near": 2634.0,
+   "neg_still_forget_far": 0.45101258894362345,
+   "n_eval_neg_far": 1827.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.057874421072423604,
+  "final_pool": {
+   "D": 0.261505126953125,
+   "removed": 0.5509113077187607,
+   "collateral": 0.048833644141481815,
+   "mass_off": 0.0423126220703125,
+   "retain_tv": 0.051326150756811045,
+   "n": 65536,
+   "mass": [
+    0.0655364990234375,
+    0.0406341552734375,
+    0.015289306640625,
+    0.0977325439453125,
+    0.194427490234375,
+    0.20440673828125,
+    0.191741943359375,
+    0.147918701171875,
+    0.0423126220703125
+   ],
+   "mass_ref": [
+    0.122955322265625,
+    0.1214447021484375,
+    0.122222900390625,
+    0.1214599609375,
+    0.12017822265625,
+    0.1218109130859375,
+    0.120208740234375,
+    0.1217803955078125,
+    0.0279388427734375
+   ]
+  }
+ },
+ "wall_s_arm": 1008.1,
+ "wall_s_total": 1050.0,
+ "cpu_s": 690.9,
+ "max_rss_mb": 977.3,
+ "threads": 1
+}

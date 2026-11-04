@@ -78,3 +78,25 @@
 2026-11-04 14:29:57 [4586] cond_k1_s9_n16_R0 launched
 2026-11-04 14:30:07 [4586] cond_k1_s9_n16_B4 wrapper exit 0
 2026-11-04 14:30:07 [4586] cond_contig_s5_n4_D1 launched
+2026-11-04 14:33:00 [4586] cond_k1_s9_n16_R0 wrapper exit 0
+2026-11-04 14:33:00 [4586] cond_contig_s5_n4_B4 launched
+2026-11-04 14:35:31 [4586] cond_k1_s9_n16_D1 wrapper exit 0
+2026-11-04 14:35:31 [4586] cond_contig_s5_n4_B5 launched
+2026-11-04 14:43:39 [4586] cond_contig_s5_n4_B5 wrapper exit 0
+2026-11-04 14:43:39 [4586] cond_contig_s5_n4_R0 launched
+2026-11-04 14:44:29 [4586] cond_contig_s5_n4_B4 wrapper exit 0
+2026-11-04 14:44:29 [4586] cond_contig_s5_n16_D1 launched
+2026-11-04 14:45:30 [4586] cond_contig_s5_n4_R0 wrapper exit 0
+2026-11-04 14:45:30 [4586] cond_contig_s5_n16_B4 launched
+2026-11-04 14:47:41 [4586] cond_contig_s5_n4_D1 wrapper exit 0
+2026-11-04 14:47:41 [4586] cond_contig_s5_n16_B5 launched
+2026-11-04 14:55:48 [4586] cond_contig_s5_n16_B4 wrapper exit 0
+2026-11-04 14:55:48 [4586] cond_contig_s5_n16_R0 launched
+2026-11-04 14:59:27 [4586] cond_contig_s5_n16_R0 wrapper exit 0
+2026-11-04 14:59:27 [4586] cond_contig_s6_n4_D1 launched
+2026-11-04 15:02:15 [4586] cond_contig_s5_n16_D1 wrapper exit 0
+2026-11-04 15:02:15 [4586] cond_contig_s6_n4_B4 launched
+2026-11-04 15:05:25 [4586] cond_contig_s5_n16_B5 wrapper exit 0
+2026-11-04 15:05:25 [4586] cond_contig_s6_n4_B5 launched
+2026-11-04 15:10:15 [4586] cond_contig_s6_n4_B4 wrapper exit 0
+2026-11-04 15:10:15 [4586] cond_contig_s6_n4_R0 launched
