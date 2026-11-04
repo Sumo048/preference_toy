@@ -24,13 +24,13 @@
    "agent": "surgeon",
    "token": "UTuDKx7wjLqVtHyw"
   },
-  "a3lf_cond_b3p1_s6_n4": {
-   "agent": "triage",
-   "token": "R47jET6XAVu4ELfz"
-  },
   "a3lf_cond_b3p1_s7_n4": {
    "agent": "surgeon",
    "token": "pMooxSp7fpJkUyFJ"
+  },
+  "a3lf_cond_b3p1_s6_n4": {
+   "agent": "surgeon",
+   "token": "Eqd9WQrxctogfuPg"
   }
  },
  "done": [
