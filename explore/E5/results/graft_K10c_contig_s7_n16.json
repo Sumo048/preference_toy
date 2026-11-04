@@ -1,0 +1,116 @@
+{
+ "cell": "contig_s7_n16",
+ "setting": "contig",
+ "seed": 7,
+ "layout": "contig",
+ "npm": 16,
+ "tag": "K10c",
+ "cfg": {
+  "det_layer": "b2.z",
+  "feat_layer": "b2.z",
+  "out_layer": "out",
+  "k_gate": 10,
+  "det_steps": 8,
+  "det_q": 0.5,
+  "n_units": 128,
+  "n_train": 8192,
+  "iters": 1500,
+  "lr": 0.001,
+  "w_good": 4.0,
+  "hop_dirs": 16,
+  "hop_max": 2.5,
+  "hop_step": 0.1,
+  "per_track": true,
+  "balance": true,
+  "clip": 1.0,
+  "rounds": 2
+ },
+ "tracker": {
+  "n_tracks": 287,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.8799308662057747,
+  "flag_frac": 0.43275
+ },
+ "bad_tracks": [
+  3,
+  4,
+  6,
+  11
+ ],
+ "det_tpr0": 0.38636363636363635,
+ "det_fpr0": 0.0012339585389930898,
+ "fit_s": 510.4,
+ "target_s": 4.0,
+ "n_bad": 88,
+ "hop_ok": 0.9852492370295015,
+ "quick": {
+  "bad_frac_ref": 0.478515625,
+  "bad_frac_new": 0.0067138671875,
+  "good_moved": 0.12148876404494383,
+  "off_new": 0.0595703125,
+  "off_ref": 0.0521240234375,
+  "good_fill": {
+   "0": 0.2069,
+   "1": 0.266,
+   "2": 0.2104,
+   "13": 0.2499
+  }
+ },
+ "units": 128,
+ "params_added": 38144,
+ "rounds": [
+  {
+   "round": 1,
+   "D": 0.058050000000000004,
+   "Removed": 0.9728548190321269,
+   "Collateral": 0.03518976613538578,
+   "off": 0.03685,
+   "D_ref": 0.5185,
+   "quick": {
+    "bad_frac_ref": 0.478515625,
+    "bad_frac_new": 0.0120849609375,
+    "good_moved": 0.11961610486891386,
+    "off_new": 0.06103515625,
+    "off_ref": 0.0521240234375,
+    "good_fill": {
+     "0": 0.2068,
+     "1": 0.2629,
+     "2": 0.2101,
+     "13": 0.2467
+    }
+   },
+   "det_tpr0": 0.8491861648016277,
+   "det_fpr0": 0.05892018779342723
+  },
+  {
+   "round": 2,
+   "D": 0.05505,
+   "Removed": 0.9825132167547783,
+   "Collateral": 0.03707497873731458,
+   "off": 0.0365,
+   "D_ref": 0.5185,
+   "quick": {
+    "bad_frac_ref": 0.478515625,
+    "bad_frac_new": 0.0067138671875,
+    "good_moved": 0.12148876404494383,
+    "off_new": 0.0595703125,
+    "off_ref": 0.0521240234375,
+    "good_fill": {
+     "0": 0.2069,
+     "1": 0.266,
+     "2": 0.2104,
+     "13": 0.2499
+    }
+   },
+   "det_tpr0": 0.38636363636363635,
+   "det_fpr0": 0.0012339585389930898
+  }
+ ],
+ "D": 0.05505,
+ "Removed": 0.9825132167547783,
+ "Collateral": 0.03707497873731458,
+ "off": 0.0365,
+ "D_ref": 0.5185,
+ "note": "graft fitted on contig_s7_n4; same bad tracks [3, 4, 6, 11], so the npm-16 fit is identical"
+}

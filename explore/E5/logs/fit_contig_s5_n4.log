@@ -1,2 +1,23 @@
 
 === 2026-11-04 19:23:32 /home/user/preference_toy/explore/E5/e5.py fit --setting contig --seed 5 --npm 4
+  balanced target fill {0: 0.255, 2: 0.204, 6: 0.254, 7: 0.214}
+  it 0 loss 6.9095
+  it 300 loss 2.5087
+  it 600 loss 1.3433
+  it 900 loss 1.2201
+  it 1200 loss 1.6585
+  it 1499 loss 1.2876
+  detector {'det_tpr0': 0.8756271454977554, 'det_fpr0': 0.053575482406356414}
+  round 1: D 0.115 Rem 0.955 Col 0.086 off 0.041
+  it 0 loss 0.0547
+[K10c] contig_s5_n4 round 2 checkpoint at it 250 (784s)
+
+=== 2026-11-04 19:36:39 /home/user/preference_toy/explore/E5/e5.py fit --setting contig --seed 5 --npm 4
+  it 300 loss 0.0227
+  it 600 loss 0.0279
+  it 900 loss 0.0349
+  it 1200 loss 0.0264
+  it 1499 loss 0.0381
+  detector {'det_tpr0': 0.2698412698412698, 'det_fpr0': 0.0017356806347632037}
+  round 2: D 0.115 Rem 0.971 Col 0.089 off 0.042
+[K10c] contig_s5_n4 D 0.115 Rem 0.971 Col 0.089 off 0.042 DONE
