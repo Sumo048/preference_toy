@@ -1,0 +1,17 @@
+{
+ "cost_cap_usd": 8.0,
+ "cost_usd": 0.99954,
+ "cpu_s": 0.0,
+ "decodes": 267018.0,
+ "decodes_by": {},
+ "gate_cap": 12,
+ "gate_checks": 3,
+ "no_accept_streak": 0,
+ "sessions": 2,
+ "tokens": {
+  "cache_read": 0,
+  "cache_write": 0,
+  "input": 0,
+  "output": 0
+ }
+}

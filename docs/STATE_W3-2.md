@@ -106,3 +106,7 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - NOTE: real clock check 19:16 UTC (14:16 ET); earlier '~HH:MM' stamps in this file after 17:46 ran ahead of real time. Deadline 23:00 ET = 04:00 UTC.
 - 19:17Z: triage recorded (reps k1 s9n16 c0, s9n4 c0, contig s6n4 c1, s6n16 c2, s7n4 c2, s5n16 c0, s5n4 c0; pairs s8n16 c6). Surgeons: k1 s9n4=a838d84f, s9n16=ad6845ab, contig s6n4=ab5b61dc, s6n16=a1a96426, s7n4=ab01465a, s5n4=a79032b9, s5n16=ab7cfba4; pairs s8n16=af3af902.
 - 19:28Z: recorded pairs s8n16 v13; reps contig s5n4 v6, s5n16 v6, k1 s9n4 v4 (DONE), no-accept contig s6n4, s7n4, s6n16, k1 s9n16. 8 triages launched (pairs s8n16; reps k1 s9n16, contig s5n4,s5n16,s6n4,s6n16,s7n4,s7n16).
+- 19:29Z: 8 triages recorded; surgeons pairs s8n16=ae688f18, reps k1 s9n16=aa415758, contig s5n4=a55a890f, s5n16=abb69ad6, s6n4=af64e43f, s6n16=a9b30901, s7n4=a2045036, s7n16=a06730f2.
+- 19:40Z: ALL 50 SHARE LLM RUNS DONE (pairs_s8_n16 last, v14). Reps recorded: contig s6n4 v8, s7n4 v6, s5n4 v9, s7n16 v3, s6n16 v8; no-accept contig s5n16, k1 s9n16. 8 rep triages launched (k1 s9n16; contig s5n4,s5n16,s6n4,s6n16,s7n4,s7n16,s8n4).
+- 19:40Z: share complete (pairs s8n16 eval written). Surgeons for 8 reps (k1 s9n16; contig s5n4,s5n16,s6n4,s6n16,s7n4,s7n16,s8n4).
+- 19:41Z: wrote draft docs/DONE_W3-2.md + share2_table (regenerate with scratchpad/done.py at the end).
