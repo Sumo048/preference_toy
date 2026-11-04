@@ -22,3 +22,8 @@ unit train contig s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 332s
 unit train alt s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 334s
 unit train k4 s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 328s
 unit train pairs s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 337s
+unit train pairs s0 n4 TA-f=s19-N8000 exit 0 565s
+unit train contig s0 n4 TA-f=s19-N8000 exit 0 568s
+unit train alt s0 n4 TA-f=s19-N8000 exit 0 572s
+unit train k4 s0 n4 TA-f=s19-N8000 exit 0 566s
+QUEUE_DONE

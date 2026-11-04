@@ -1,0 +1,6 @@
+unit train alt s6 n1 B1a exit 0 387s
+unit train k4 s5 n4 B1a exit 0 427s
+unit train k4 s5 n4 B6 exit 0 561s
+unit train alt s6 n1 B6 exit 0 565s
+unit masks k1 s5 n4 TA,TB,TC:8000 exit 0 178s
+unit masks k2 s5 n4 TA,TB,TC:8000 exit 0 160s
