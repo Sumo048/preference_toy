@@ -127,3 +127,5 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 21:10Z: 5 triages recorded; triage contig s5n4=a02a09e1, pairs s6n4=ab9f7031, s6n16=abfd3642; surgeons contig s8n4=af581a3d, s9n4=a9f3e597, s9n16=afaed5c7, pairs s5n4=aff0b553, s5n16=affb19da.
 - 21:10Z: 3 triages recorded; surgeons contig s5n4=a86a1d67, pairs s6n4=a5023f5d, s6n16=ac5b6c49.
 - 21:22Z: reps accepted pairs s5n16 v5, s6n4 v3; contig s8n4 v12, s9n16 v7, s9n4 v9 (all three DONE); no-accept pairs s5n4, pairs s6n16 (NOTE: surgeon RESULT line said 'accepted v3' but ledger gate shows v3 rejected; harness accepted=None), contig s5n4 (DONE no_accept_streak). All contig reps done. 8 pairs rep triages launched (s5-s8).
+- 21:23Z: 8 pairs rep triages recorded; surgeons pairs s5n4=a888f1b8, s5n16=acd5113f, s6n4=a47315a6, s6n16=ab7b6f28, s7n4=a3e01108, s7n16=a9d7bf3e, s8n4=a24f4b0f, s8n16=ad9134b0.
+- 21:34Z: pairs reps accepted s7n4 v1, s8n4 v3, s6n4 v5, s5n16 v7, s7n16 v3, s8n16 v3; no-accept s5n4, s6n16. 8 triages launched.
