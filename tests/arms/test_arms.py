@@ -392,3 +392,15 @@ def test_r0_fits_detector_and_submits_thresholds(tmp_path):
     tried = out.meta["rounds"][0]["tried"]
     assert [t["variant"] for t in tried] == ["p0.5", "p0.7", "p0.3"]
     assert os.path.exists(os.path.join(tmp_path, "r", "r0", "v1.npz"))
+
+
+def test_controller_unit_tests_hook():
+    inner = TinyNet(3)
+    net = _ctrl(inner, "push", thr=0.5)
+    parent = FVersion("v0", None, (), inner)
+    with pytest.MonkeyPatch.context() as mp:
+        import toyrepair.policy as P
+        mp.setattr(P, "CAPTURE_LAYERS", ("L",))
+        res = net.controller_unit_tests(parent, n_states=500)
+    assert res["passed"], res
+    assert res["checks"] == {"legal_detectors": True, "shapes": True, "finite": True, "graft_identity": True}

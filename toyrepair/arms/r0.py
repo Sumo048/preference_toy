@@ -6,9 +6,12 @@ Details (docs/DEV_LOG.md, W1-C):
   primitive acts (``primitive.k``: k_commit or one of the two sampled steps before it; 0 for a
   hop). It is linear: fires where ``w . f + b > threshold``.
 * Training data (label-free, mining pool): ``N_PER_MEMBER`` decodes at each member's c_i, label 1
-  if the action lands in B_i; ``N_REST`` decodes at uniform c, label 1 only if c is within
-  ``C_NEAR`` of a member j and the action lands in B_j, else 0. Logistic regression on
-  standardised features, folded back into (w, b).
+  if the action lands in B_i; ``N_REST`` decodes at uniform c, labelled by the cluster vote (the
+  same noise decoded at the members' conditions lands in their basins for at least half of
+  them). Logistic regression on standardised features, folded back into (w, b).
+* Gate test 6: a controller is code, not a weight edit, so ``ControlledNet.controller_unit_tests``
+  checks it (detector source legal and sized, finite outputs, bit-identical to the wrapped net
+  when the detector is off). ``edits.unit_tests`` should delegate to it (INTERFACE_REQUESTS_W1-C).
 * The controller is code that runs at sampling time: ``ControlledNet`` wraps the current
   network. At step k it evaluates the detector on each row and, where it fires, applies the
   primitive (push: displacement alpha*u/h after each Euler update of steps k..k+h-1; hop:
@@ -32,8 +35,8 @@ from .base import ArmOutput, RepairContext, Services, iterate
 
 LAYER = "blocks.2"
 N_PER_MEMBER = 64
-N_REST = 2048
-C_NEAR = 0.02
+N_REST = 4096
+VOTE_MEMBERS = 32
 THRESHOLDS = (0.5, 0.7, 0.3)
 DT = 1.0 / 20
 
@@ -60,6 +63,41 @@ class ControlledNet(nn.Module):
         ver = self._mk(id="_inner", parent=None, patches=(), net=self.inner)
         v, acts = self._velocity(ver, x, t, c, capture=(self.layer,))
         return v, acts[self.layer]
+
+    @torch.no_grad()
+    def controller_unit_tests(self, current, n_states: int = 10_000, seed: int = 0) -> dict:
+        """Gate test 6 for a sampling-time controller. ``current``: the parent Version (or net).
+        Checks: legal_detectors (source is a capture layer and ``w`` has its width), shapes
+        (wrapped net has the parent's parameter shapes), finite (finite velocities on reference
+        states), graft_identity (detector forced off: bit-identical to the parent on n_states
+        states with mixed t). Returns {"passed", "checks", "detail"}."""
+        from toyrepair.policy import CAPTURE_LAYERS
+        cnet = getattr(current, "net", current)
+        checks, detail = {}, {}
+        g = torch.Generator().manual_seed(seed)
+        x = torch.randn(n_states, 2, generator=g) * 1.5
+        t = 1.0 - torch.randint(0, 20, (n_states,), generator=g).float() / 20
+        c = torch.rand(n_states, generator=g)
+        try:
+            _, f = self._feat(x[:8], t[:8], c[:8])
+            checks["legal_detectors"] = self.layer in CAPTURE_LAYERS and f.shape[1] == self.w.numel()
+        except Exception as e:  # noqa: BLE001
+            checks["legal_detectors"], detail["legal_detectors"] = False, f"error: {e}"[:200]
+        a = dict(cnet.named_parameters())
+        b = dict(self.inner.named_parameters())
+        checks["shapes"] = a.keys() == b.keys() and all(a[k].shape == b[k].shape for k in a)
+        v = self(x, t, c)
+        self._mask = None
+        checks["finite"] = bool(torch.isfinite(v).all())
+        thr, self.thr = self.thr, float("inf")
+        try:
+            checks["graft_identity"] = bool(torch.equal(self(x, t, c), cnet(x, t, c)))
+        finally:
+            self.thr, self._mask = thr, None
+        for k_, ok in checks.items():
+            if not ok and k_ not in detail:
+                detail[k_] = "failed"
+        return {"passed": all(checks.values()), "checks": checks, "detail": detail}
 
     def fires(self, f: torch.Tensor) -> torch.Tensor:
         return (f @ self.w + self.b) > self.thr
@@ -105,33 +143,43 @@ def _rng(cell, salt: int) -> np.random.Generator:
 
 
 def detector_data(ctx: RepairContext, k: int):
-    """(features (P, d) float32, labels (P,) int) at step k under the current version."""
+    """(features (P, d) float32, labels (P,) int, decodes) at step k under the current version.
+
+    Rows: ``N_PER_MEMBER`` noises at each member's c_i (label: action in B_i) and ``N_REST``
+    noises at uniform c. A uniform-c row is labelled by the cluster vote: the noise is decoded at
+    each member's condition c_j (at most ``VOTE_MEMBERS`` members) and is positive if at least
+    half of these decodes land in B_j. Like toypref's bad vote this uses no labels, and it lets
+    the detector cover every condition (the gate scores target mass over all c)."""
     cell, svc = ctx.cell, ctx.svc
     rows = np.asarray(ctx.cluster.members, dtype=np.int64)
     g = _rng(cell, int(ctx.card.cluster))
     cs = cell.neg.c[rows].numpy().astype(np.float32)
-    # member conditions
     c_m = np.repeat(cs, N_PER_MEMBER).astype(np.float32)
     owner = np.repeat(np.arange(len(rows)), N_PER_MEMBER)
-    # rest: uniform conditions
     c_r = g.random(N_REST).astype(np.float32)
     c_all = np.concatenate([c_m, c_r])
     xi = torch.from_numpy(g.standard_normal((len(c_all), 2)).astype(np.float32))
-    c_t = torch.from_numpy(c_all)
+    n_dec = 0.0
     with torch.no_grad():
-        dec = svc.decode(ctx.current, xi, c_t, capture=(LAYER,))
-    f = dec.acts[LAYER][k].detach().numpy()
-    a = dec.action.detach()
-    near = np.abs(c_r[:, None] - cs[None, :])
-    j = near.argmin(1)
-    owner_r = np.where(near.min(1) < C_NEAR, j, -1)
-    owner_all = np.concatenate([owner, owner_r])
-    y = np.zeros(len(c_all), dtype=np.int64)
-    for jj, i in enumerate(rows):
-        sel = np.flatnonzero(owner_all == jj)
-        if len(sel):
+        dec = svc.decode(ctx.current, xi, torch.from_numpy(c_all), capture=(LAYER,))
+        n_dec += float(len(c_all))
+        f = dec.acts[LAYER][k].detach().numpy()
+        a = dec.action.detach()
+        y = np.zeros(len(c_all), dtype=np.int64)
+        for jj, i in enumerate(rows):
+            sel = np.flatnonzero(owner == jj)
             y[sel] = cell.in_bad_basin(int(i), a[torch.from_numpy(sel)]).astype(np.int64)
-    return f.astype(np.float32), y, float(dec.n_decodes or len(c_all))
+        voters = np.arange(len(rows)) if len(rows) <= VOTE_MEMBERS else np.sort(
+            g.choice(len(rows), VOTE_MEMBERS, replace=False))
+        xr = xi[len(c_m):]
+        votes = np.zeros(N_REST)
+        for jj in voters:
+            i = int(rows[jj])
+            aj = svc.decode(ctx.current, xr, torch.full((N_REST,), float(cs[jj])))
+            n_dec += float(N_REST)
+            votes += cell.in_bad_basin(i, aj.action.detach()).astype(np.float64)
+        y[len(c_m):] = (votes / len(voters) >= 0.5).astype(np.int64)
+    return f.astype(np.float32), y, n_dec
 
 
 def fit_detector(f: np.ndarray, y: np.ndarray):
