@@ -56,7 +56,7 @@ def load(stage, names, settings, seeds, npms):
                 flags, recs = {}, {}
                 for b, name in names.items():
                     N = name.rsplit("-N", 1)[1]
-                    fj = os.path.join(d, f"masks_{b}_N{N}.json")
+                    fj = os.path.join(d, f"masks_{name.split('-')[0]}_N{N}.json")
                     if not os.path.exists(fj):
                         continue
                     m = json.load(open(fj))["masks"].get(name)
@@ -149,7 +149,8 @@ def checks_table(df):
             r = spearmanr(xb[ch], xb.prec).statistic if len(xb) > 2 and xb[ch].nunique() > 1 and xb.prec.nunique() > 1 else np.nan
             cells.append(f"{r:+.2f}" if not np.isnan(r) else "—")
         out.append(f"| {ch} | " + " | ".join(cells) + " |")
-    means = d.groupby("arm")[["prec", "stab_ari", "stab_jacc", "balance", "agree"]].mean().round(3)
+    cols = [c for c in ["prec", "rec", "kept_bad", "stab_ari", "stab_jacc", "balance", "agree"] if c in d]
+    means = d.groupby("arm")[cols].mean().round(3)
     return "\n".join(out), means
 
 

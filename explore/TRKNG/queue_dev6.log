@@ -10,3 +10,15 @@ Terminated
 unit train pairs s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 143 3s
 Terminated
 unit train pairs s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 143 3s
+unit train k4 s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 657s
+unit train k4 s2 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 659s
+unit train k4 s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 659s
+unit train pairs s2 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 660s
+unit train contig s0 n4 TBy-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000 exit 0 341s
+unit train pairs s0 n4 TBy-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000 exit 0 342s
+unit train alt s0 n4 TBy-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000 exit 0 347s
+unit train k4 s0 n4 TBy-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000 exit 0 347s
+unit train contig s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 332s
+unit train alt s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 334s
+unit train k4 s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 328s
+unit train pairs s0 n4 TB-f=s19-mcs_frac=0.01-min_samples=10-N8000 exit 0 337s

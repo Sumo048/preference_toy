@@ -16,3 +16,7 @@ unit train alt s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 329s
 unit train alt s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 329s
 Terminated
 QUEUE_DONE
+unit train pairs s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 665s
+unit train contig s2 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 667s
+unit train pairs s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 667s
+unit train contig s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 668s

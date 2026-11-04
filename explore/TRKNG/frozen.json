@@ -1,0 +1,19 @@
+{
+  "N": 8000,
+  "builders": {
+    "TA": {"f": "s19"},
+    "TB": {"f": "s19", "mcs_frac": 0.01, "min_samples": 10, "typ": 0.9},
+    "TC": {"f": "s19", "knn": 10, "tau_mult": 1.75, "typ": 0.9}
+  },
+  "names": {
+    "TA": "TA-f=s19-N8000",
+    "TB": "TB-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000",
+    "TC": "TC-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000"
+  },
+  "best": "TC",
+  "dev_names": {
+    "TA": "TA-f=s19-N8000",
+    "TB": "TBy-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000",
+    "TC": "TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000"
+  }
+}
