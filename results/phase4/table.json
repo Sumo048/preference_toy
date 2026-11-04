@@ -118,7 +118,7 @@
    "collateral": 0.12145936125222852,
    "mass_off": 0.0559,
    "stop": "no_open_cluster",
-   "accepted": 5,
+   "accepted": 4,
    "gate_checks": 6,
    "sessions": 4,
    "cost_usd": 1.821097,
@@ -496,7 +496,7 @@
    "collateral": 0.07462903389647868,
    "mass_off": 0.04955,
    "stop": "no_open_cluster",
-   "accepted": 7,
+   "accepted": 6,
    "gate_checks": 14,
    "sessions": 8,
    "cost_usd": 3.4664590000000004,
@@ -552,6 +552,18 @@
    "sessions": null,
    "cost_usd": null,
    "wall_s": 1555.0
+  },
+  "A3": {
+   "D": 0.09460000000000002,
+   "removed": 0.9122860948867711,
+   "collateral": 0.053271239145115196,
+   "mass_off": 0.0518,
+   "stop": "cost_cap",
+   "accepted": 7,
+   "gate_checks": 27,
+   "sessions": 15,
+   "cost_usd": 8.605094,
+   "wall_s": null
   }
  },
  {

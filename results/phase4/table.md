@@ -9,7 +9,7 @@ D, Removed, Collateral = toypref `compute` (`tv_to_ideal`, 1 - `neg_mass_ratio`,
 | B4 | 10 | 0.464 ± 0.034 | 0.110 | 0.013 | 0.20 | 3.4 | 0/10 |
 | R0 | 10 | 0.516 ± 0.001 | 0.000 | 0.000 | 0.00 | 9.0 | 0/10 |
 | D1 | 10 | 0.428 ± 0.040 | 0.197 | 0.032 | 0.50 | 11.1 | 0/10 |
-| A3 | 9 | 0.173 ± 0.025 | 0.772 | 0.102 | 4.11 | 12.7 | 7/9 |
+| A3 | 10 | 0.165 ± 0.024 | 0.786 | 0.097 | 4.20 | 14.1 | 8/10 |
 
 ## Per cell (D)
 
@@ -23,7 +23,7 @@ D, Removed, Collateral = toypref `compute` (`tv_to_ideal`, 1 - `neg_mass_ratio`,
 | cond_k4_s0_n16 | 0.516 | 0.139 | 0.253 | 0.516 | 0.189 | 0.167 | no_accept_streak | 7 | 3.59 |
 | cond_k4_s1_n16 | 0.514 | 0.219 | 0.514 | 0.514 | 0.514 | 0.206 | no_accept_streak | 6 | 3.16 |
 | cond_k4_s2_n16 | 0.513 | 0.284 | 0.513 | 0.513 | 0.399 | 0.105 | no_open_cluster | 8 | 3.47 |
-| cond_k4_s3_n16 | 0.513 | 0.227 | 0.513 | 0.513 | 0.513 | - | - | - | 0.00 |
+| cond_k4_s3_n16 | 0.513 | 0.227 | 0.513 | 0.513 | 0.513 | 0.095 | cost_cap | 15 | 8.61 |
 | cond_k4_s4_n16 | 0.522 | 0.326 | 0.522 | 0.522 | 0.522 | 0.358 | no_accept_streak | 4 | 2.72 |
 
-A3 cost per run (surgeon + triage subagents): mean $3.46, sd 1.48, total $31.11 over 9 runs.
+A3 cost per run (surgeon + triage subagents): mean $3.97, sd 2.14, total $39.71 over 10 runs.

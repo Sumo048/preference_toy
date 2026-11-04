@@ -134,7 +134,7 @@ LLM arm; B0, B1a, B1b on all 140 cells: already done by W1-C, `results/baselines
 
 Each item covers seeds 5, 6, 7, 8, 9. A cell is `<setting> s<seed> n<npm>`.
 
-### Share 1 (W3-1): 60 LLM runs, projected $208
+### Share 1 (W3-1): 60 LLM runs, projected $238
 
 | order | row | LLM arms (in this order per cell) | code arms | cells (in order) |
 |---|---|---|---|---|
@@ -143,7 +143,7 @@ Each item covers seeds 5, 6, 7, 8, 9. A cell is `<setting> s<seed> n<npm>`.
 
 Replicate order (`A3_rep1`, after the share is done): k4 s5 n4; k4 s5 n16; k4 s6 n4; k4 s6 n16; k4 s7 n4; k4 s7 n16; k4 s8 n4; k4 s8 n16; k4 s9 n4; k4 s9 n16; alt s5 n4; alt s5 n16; alt s6 n4; alt s6 n16; alt s7 n4; alt s7 n16; alt s8 n4; alt s8 n16; alt s9 n4; alt s9 n16.
 
-### Share 2 (W3-2): 50 LLM runs, projected $173
+### Share 2 (W3-2): 50 LLM runs, projected $198
 
 | order | row | LLM arms (in this order per cell) | code arms | cells (in order) |
 |---|---|---|---|---|
@@ -153,7 +153,7 @@ Replicate order (`A3_rep1`, after the share is done): k4 s5 n4; k4 s5 n16; k4 s6
 
 Replicate order (`A3_rep1`, after the share is done): k1 s5 n4; k1 s5 n16; k1 s6 n4; k1 s6 n16; k1 s7 n4; k1 s7 n16; k1 s8 n4; k1 s8 n16; k1 s9 n4; k1 s9 n16; contig s5 n4; contig s5 n16; contig s6 n4; contig s6 n16; contig s7 n4; contig s7 n16; contig s8 n4; contig s8 n16; contig s9 n4; contig s9 n16; pairs s5 n4; pairs s5 n16; pairs s6 n4; pairs s6 n16; pairs s7 n4; pairs s7 n16; pairs s8 n4; pairs s8 n16; pairs s9 n4; pairs s9 n16.
 
-### Share 3 (W3-3): 55 LLM runs, projected $190
+### Share 3 (W3-3): 55 LLM runs, projected $218
 
 | order | row | LLM arms (in this order per cell) | code arms | cells (in order) |
 |---|---|---|---|---|
@@ -164,7 +164,7 @@ Replicate order (`A3_rep1`, after the share is done): k1 s5 n4; k1 s5 n16; k1 s6
 
 Replicate order (`A3_rep1`, after the share is done): b3p1 s5 n4; b3p1 s5 n16; b3p1 s6 n4; b3p1 s6 n16; b3p1 s7 n4; b3p1 s7 n16; b3p1 s8 n4; b3p1 s8 n16; b3p1 s9 n4; b3p1 s9 n16; k4 s5 n1; k4 s5 n64; k4 s6 n1; k4 s6 n64; k4 s7 n1; k4 s7 n64; k4 s8 n1; k4 s8 n64; k4 s9 n1; k4 s9 n64; alt s5 n1; alt s5 n64; alt s6 n1; alt s6 n64; alt s7 n1; alt s7 n64; alt s8 n1; alt s8 n64; alt s9 n1; alt s9 n64; k2 s5 n4; k2 s5 n16; k2 s6 n4; k2 s6 n16; k2 s7 n4; k2 s7 n16; k2 s8 n4; k2 s8 n16; k2 s9 n4; k2 s9 n16.
 
-Totals: 60 / 50 / 55 LLM runs; projected $571 at $3.46 per run (Phase 4 mean A3 run, surgeon + triage subagents; main-agent cost not included).
+Totals: 60 / 50 / 55 LLM runs; projected $655 at $3.97 per run (Phase 4 mean A3 run, surgeon + triage subagents; main-agent cost not included).
 
 Execution order inside a share: the rows of its table in order; inside a row, seeds 5, 6, 7, 8, 9, and npm in
 the order listed. Code arms (B4, R0, D1, B5) run through `scripts/jobs.py` for every listed cell, in the same
@@ -189,27 +189,28 @@ Cells: cond `k4`, npm 4 and 16, seeds 0-4. All arms iterative, calibrated gate.
 
 | arm | cells | D | Removed | Collateral | accepted edits / run | gate checks / run | D < B1a |
 |---|---|---|---|---|---|---|---|
-| B0 | 10 | 0.516 ± 0.001 | 0.000 | 0.000 | nan | nan | 0/10 |
-| B1a | 10 | 0.281 ± 0.022 | 0.563 | 0.133 | nan | nan | 0/0 |
+| B0 | 10 | 0.516 ± 0.001 | 0.000 | 0.000 | - | - | 0/10 |
+| B1a | 10 | 0.281 ± 0.022 | 0.563 | 0.133 | - | - | - |
 | B4 | 10 | 0.464 ± 0.034 | 0.110 | 0.013 | 0.20 | 3.4 | 0/10 |
 | R0 | 10 | 0.516 ± 0.001 | 0.000 | 0.000 | 0.00 | 9.0 | 0/10 |
 | D1 | 10 | 0.428 ± 0.040 | 0.197 | 0.032 | 0.50 | 11.1 | 0/10 |
-| A3 | 9 | 0.173 ± 0.025 | 0.772 | 0.102 | 4.11 | 12.7 | 7/9 |
+| A3 | 10 | 0.165 ± 0.024 | 0.786 | 0.097 | 4.20 | 14.1 | 8/10 |
 
-- A3 cost per run (surgeon + triage subagents): mean $3.46, sd $1.48, 6.6 surgeon
-  sessions per run, $0.53 per session (triage about $0.02 per call). Main-agent cost is extra
+- A3 cost per run (surgeon + triage subagents): mean $3.97, sd $2.14, 7.4 surgeon
+  sessions per run, $0.54 per session (triage about $0.02 per call). Main-agent cost is extra
   (`results/spend.jsonl`).
-- Wall time: the 10 A3 runs took about 3.8 h with up to 8 surgeon sessions at once on a 4-core VM (while the code
-  arms also ran), about 2.6 run completions per hour. A share therefore completes about 30-40 LLM runs in the
-  W3 window (start to 23:00 ET); the order in Section 6 decides which cells are reached.
+- Wall time: the 10 A3 runs took about 4.7 h (08:08-12:50 UTC) with up to 8 surgeon sessions at once on a 4-core
+  VM (the code arms ran beside them), about 2 run completions per hour; a run took 4-15 sessions of 5-25 min.
+  A share therefore completes roughly 25-30 LLM runs between its start and 23:00 ET; the order in Section 6
+  decides which cells are reached. Surgeons stall after backgrounded calls (DEV_LOG): resume them.
 - Every accepted A3 edit (42 of 42) was a `graft_gated_path`, almost all on `out` with an activation-probe detector;
   `targeted_train` was submitted 5 times and never accepted.
 - Minimum detectable differences (Section 1), from the Phase 4 per-seed paired differences (seeds with both npm
   done; B5 was not run in Phase 4, B4 stands in; A1/A2 were not run, the A3-vs-D1 spread stands in):
 
 ```
-T1a A3 vs B1a: Phase 4 paired diff mean -0.099 sd 0.052 (n=4 seeds); grid n=35: MDD 0.029
-T2 A3 vs D1: Phase 4 paired diff mean -0.229 sd 0.106 (n=4 seeds); grid n=35: MDD 0.059
-A3 vs B4 (proxy for B5, not run in Phase 4): Phase 4 paired diff mean -0.275 sd 0.117 (n=4 seeds); grid n=35: MDD 0.065
-T3/T4 proxy: A3 vs D1 sd: Phase 4 paired diff mean -0.229 sd 0.106 (n=4 seeds); grid n=15: MDD 0.105
+T1a A3 vs B1a: Phase 4 paired diff mean -0.116 sd 0.059 (n=5 seeds); grid n=35: MDD 0.033
+T2 A3 vs D1: Phase 4 paired diff mean -0.262 sd 0.118 (n=5 seeds); grid n=35: MDD 0.066
+A3 vs B4 (proxy for B5, not run in Phase 4): Phase 4 paired diff mean -0.299 sd 0.115 (n=5 seeds); grid n=35: MDD 0.064
+T3/T4 proxy: A3 vs D1 sd: Phase 4 paired diff mean -0.262 sd 0.118 (n=5 seeds); grid n=15: MDD 0.117
 ```

@@ -146,7 +146,8 @@ def report(arms=("B4", "R0", "D1", "A3")):
                 o = d["output"]
                 row[arm] = {"D": fin["D"], "removed": fin["removed"], "collateral": fin["collateral"],
                             "mass_off": fin.get("mass_off"), "stop": o.get("stop"),
-                            "accepted": len(o.get("accepted") or o.get("accepted_chain") or []),
+                            "accepted": (sum(1 for g in d.get("gates", []) if (g.get("view") or {}).get("accepted"))
+                                         if "gates" in d else len(o.get("accepted") or [])),
                             "gate_checks": o.get("gate_checks"), "sessions": o.get("sessions"),
                             "cost_usd": o.get("cost_usd"), "wall_s": d.get("wall_s_total")}
         rows.append(row)
