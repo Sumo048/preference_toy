@@ -61,7 +61,11 @@
   "B5": null,
   "A3": null,
   "A3_rep1": null,
-  "A3-nobranch": null,
+  "A3-nobranch": {
+   "D": 0.3946,
+   "removed": 0.24120913016656398,
+   "collateral": 0.09899401207044184
+  },
   "A3-sonnet": {
    "D": 0.46875,
    "removed": 0.1007608472136543,
@@ -170,9 +174,21 @@
   "B5": null,
   "A3": null,
   "A3_rep1": null,
-  "A3-nobranch": null,
-  "A3-sonnet": null,
-  "A3-nogate": null
+  "A3-nobranch": {
+   "D": 0.3042,
+   "removed": 0.43933955491744436,
+   "collateral": 0.09870608944001837
+  },
+  "A3-sonnet": {
+   "D": 0.51645,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "A3-nogate": {
+   "D": 0.17155,
+   "removed": 0.9457491539329299,
+   "collateral": 0.1427091418934814
+  }
  },
  {
   "cell": "b3p1 s5 n4",
@@ -211,7 +227,11 @@
    "removed": 0.5907498969921714,
    "collateral": 0.05187316771230656
   },
-  "A3": null,
+  "A3": {
+   "D": 0.12055,
+   "removed": 0.8815409971157808,
+   "collateral": 0.07624134780576217
+  },
   "A3_rep1": null,
   "A3-nobranch": null,
   "A3-sonnet": null,
@@ -340,7 +360,11 @@
    "removed": 0.6861778599301704,
    "collateral": 0.10295217477272127
   },
-  "A3": null,
+  "A3": {
+   "D": 0.14275,
+   "removed": 0.9383857054836722,
+   "collateral": 0.0836696236462088
+  },
   "A3_rep1": null,
   "A3-nobranch": null,
   "A3-sonnet": null,
@@ -383,7 +407,11 @@
    "removed": 0.0,
    "collateral": 0.0
   },
-  "A3": null,
+  "A3": {
+   "D": 0.19015000000000004,
+   "removed": 0.7393692777212615,
+   "collateral": 0.11907369209342232
+  },
   "A3_rep1": null,
   "A3-nobranch": null,
   "A3-sonnet": null,
@@ -416,8 +444,16 @@
    "removed": 0.0,
    "collateral": 0.0
   },
-  "D1": null,
-  "B5": null,
+  "D1": {
+   "D": 0.18764999999999998,
+   "removed": 0.7485249237029501,
+   "collateral": 0.07351607360661665
+  },
+  "B5": {
+   "D": 0.11144999999999998,
+   "removed": 0.8570701932858596,
+   "collateral": 0.05251291405500466
+  },
   "A3": null,
   "A3_rep1": null,
   "A3-nobranch": null,
@@ -441,10 +477,26 @@
    "removed": 0.5939412484700123,
    "collateral": 0.07301795751291078
   },
-  "B4": null,
-  "R0": null,
-  "D1": null,
-  "B5": null,
+  "B4": {
+   "D": 0.31495,
+   "removed": 0.449408404732762,
+   "collateral": 0.13392343582923733
+  },
+  "R0": {
+   "D": 0.5178499999999999,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": {
+   "D": 0.31300000000000006,
+   "removed": 0.44910240718074246,
+   "collateral": 0.13686731300136867
+  },
+  "B5": {
+   "D": 0.24039999999999997,
+   "removed": 0.5939412484700123,
+   "collateral": 0.07301795751291078
+  },
   "A3": null,
   "A3_rep1": null,
   "A3-nobranch": null,
