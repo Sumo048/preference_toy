@@ -32,3 +32,9 @@ process is gone), `DONE` (eval auto-started), `NOEVAL` (eval missing: run `grid3
 
 ## Next
 - Drive LLM runs; `jobs.py ensure` while polling; commit + spend at milestones; replicates (`init --rep`) after share.
+
+## Patch stacks (user request, 16:50 UTC)
+Each finished LLM run's final patch stack (p*.json + p*.npz of versions[current].patches, plus stack.json with the
+accepted chain; no caches/scratch) goes to `results/grid/<setting>/s<seed>/n<npm>/<arm>/patches/`.
+`grid3.py eval` exports it automatically after the evaluation; `python scripts/grid3.py patches` re-exports every
+finished run (run it before each commit).

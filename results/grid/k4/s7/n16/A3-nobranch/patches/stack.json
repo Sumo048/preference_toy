@@ -1,0 +1,43 @@
+{
+ "run_id": "g3_cond_k4_s7_n16_A3-nobranch",
+ "version": "v5",
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "patches": [
+  "p0001",
+  "p0003",
+  "p0005"
+ ],
+ "chain": [
+  {
+   "version": "v1",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s002",
+   "patches": [
+    "p0001"
+   ]
+  },
+  {
+   "version": "v3",
+   "parent": "v1",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0001",
+    "p0003"
+   ]
+  },
+  {
+   "version": "v5",
+   "parent": "v3",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0001",
+    "p0003",
+    "p0005"
+   ]
+  }
+ ]
+}

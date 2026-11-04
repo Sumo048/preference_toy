@@ -1,0 +1,8 @@
+{
+ "run_id": "g3_cond_k4_s9_n16_A3-sonnet",
+ "version": "v0",
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "patches": [],
+ "chain": []
+}

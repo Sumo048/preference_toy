@@ -1,0 +1,42 @@
+{
+ "args": {
+  "anchor": "dist",
+  "batch": 256,
+  "beta": 10.0,
+  "data": "toypref_hopB_bsup",
+  "lr": 0.001,
+  "n_rows": 106,
+  "neg_uids": [
+   0,
+   6,
+   7,
+   26,
+   69,
+   99,
+   128,
+   11,
+   15,
+   20,
+   28,
+   45,
+   58,
+   78
+  ],
+  "objective": "bc",
+  "params": [
+   "grafts"
+  ],
+  "steps": 1500
+ },
+ "arrays": [
+  "grafts.0.b_in",
+  "grafts.0.w_in",
+  "grafts.0.w_out"
+ ],
+ "call": "targeted_train",
+ "id": "p0003",
+ "npz_sha256": "5f1d0f05abaaef5e9392e6ca4a9d2b8740189c3b17436ca044db9176c67205a5",
+ "parent_version": "v2",
+ "sha256": "06126ea5b7f4be3a26b33810e92c9886f1f704ec8b454cf052b96ec676729f30",
+ "version": "v3"
+}

@@ -1,0 +1,85 @@
+{
+ "run_id": "g3_cond_k4_s9_n16_A3-nogate",
+ "version": "v9",
+ "stop": "no_open_cluster",
+ "invalid": null,
+ "patches": [
+  "p0002",
+  "p0004",
+  "p0005",
+  "p0007",
+  "p0008",
+  "p0009"
+ ],
+ "chain": [
+  {
+   "version": "v2",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s002",
+   "patches": [
+    "p0002"
+   ]
+  },
+  {
+   "version": "v4",
+   "parent": "v2",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0002",
+    "p0004"
+   ]
+  },
+  {
+   "version": "v5",
+   "parent": "v4",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0002",
+    "p0004",
+    "p0005"
+   ]
+  },
+  {
+   "version": "v7",
+   "parent": "v5",
+   "call": "graft_gated_path",
+   "session": "s008",
+   "patches": [
+    "p0002",
+    "p0004",
+    "p0005",
+    "p0007"
+   ]
+  },
+  {
+   "version": "v8",
+   "parent": "v7",
+   "call": "graft_gated_path",
+   "session": "s010",
+   "patches": [
+    "p0002",
+    "p0004",
+    "p0005",
+    "p0007",
+    "p0008"
+   ]
+  },
+  {
+   "version": "v9",
+   "parent": "v8",
+   "call": "graft_gated_path",
+   "session": "s012",
+   "patches": [
+    "p0002",
+    "p0004",
+    "p0005",
+    "p0007",
+    "p0008",
+    "p0009"
+   ]
+  }
+ ]
+}

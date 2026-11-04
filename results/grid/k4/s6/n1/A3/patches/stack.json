@@ -1,0 +1,43 @@
+{
+ "run_id": "g3_cond_k4_s6_n1_A3",
+ "version": "v9",
+ "stop": "no_open_cluster",
+ "invalid": null,
+ "patches": [
+  "p0006",
+  "p0008",
+  "p0009"
+ ],
+ "chain": [
+  {
+   "version": "v6",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0006"
+   ]
+  },
+  {
+   "version": "v8",
+   "parent": "v6",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0006",
+    "p0008"
+   ]
+  },
+  {
+   "version": "v9",
+   "parent": "v8",
+   "call": "graft_gated_path",
+   "session": "s008",
+   "patches": [
+    "p0006",
+    "p0008",
+    "p0009"
+   ]
+  }
+ ]
+}

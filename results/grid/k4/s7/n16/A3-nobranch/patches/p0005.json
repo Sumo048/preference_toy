@@ -1,0 +1,29 @@
+{
+ "args": {
+  "act": "silu",
+  "detector": {
+   "b": -33.0056,
+   "k_range": [
+    0,
+    1
+   ],
+   "source": "blocks.1.act",
+   "threshold": 0.0
+  },
+  "layer": "out",
+  "n_units": 512,
+  "src": "inputs"
+ },
+ "arrays": [
+  "b_in",
+  "det_w",
+  "w_in",
+  "w_out"
+ ],
+ "call": "graft_gated_path",
+ "id": "p0005",
+ "npz_sha256": "4e5ae92cc0852b4d36f556dbb60b9229603fa179247fdc277d0549e19d544466",
+ "parent_version": "v3",
+ "sha256": "5795ad2c1fbe1863f2786c40e9419f8296f89050a2726201800d6caa57c96521",
+ "version": "v5"
+}

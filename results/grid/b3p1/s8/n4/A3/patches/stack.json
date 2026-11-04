@@ -1,0 +1,56 @@
+{
+ "run_id": "g3_cond_b3p1_s8_n4_A3",
+ "version": "v7",
+ "stop": "no_open_cluster",
+ "invalid": null,
+ "patches": [
+  "p0003",
+  "p0005",
+  "p0006",
+  "p0007"
+ ],
+ "chain": [
+  {
+   "version": "v3",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s002",
+   "patches": [
+    "p0003"
+   ]
+  },
+  {
+   "version": "v5",
+   "parent": "v3",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0003",
+    "p0005"
+   ]
+  },
+  {
+   "version": "v6",
+   "parent": "v5",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0003",
+    "p0005",
+    "p0006"
+   ]
+  },
+  {
+   "version": "v7",
+   "parent": "v6",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0003",
+    "p0005",
+    "p0006",
+    "p0007"
+   ]
+  }
+ ]
+}

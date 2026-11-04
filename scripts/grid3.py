@@ -238,6 +238,46 @@ def eval_run(rid):
     armdir = "A3_rep1" if rid.endswith("_A3_rep1") else run.arm
     phase4.out_path = lambda arm, s, sd, n: res_path(s, sd, n, armdir)
     phase4.eval_run(rid)
+    export_patches(rid)
+
+
+def export_patches(rid):
+    """Copy the final version's patch stack (p*.json + p*.npz only; no caches) of a finished run to
+    results/grid/<setting>/s<seed>/n<npm>/<arm>/patches/, with stack.json (version chain, patch order)."""
+    import shutil
+    from toyrepair import orchestrate as orc
+    run = orc.load_run(rid)
+    if not (run.stop or run.invalid):
+        return None
+    armdir = "A3_rep1" if rid.endswith("_A3_rep1") else run.arm
+    dst = res_path(run.setting, run.seed, run.npm, armdir).parent / "patches"
+    dst.mkdir(parents=True, exist_ok=True)
+    vs = orc.versions(run)
+    stack = list(vs[run.current]["patches"]) if run.current in vs else []
+    src = Path(run.dir) / "patches"
+    for pid in stack:
+        for ext in (".json", ".npz"):
+            f = src / f"{pid}{ext}"
+            if f.exists():
+                shutil.copy2(f, dst / f.name)
+    chain, v = [], run.current
+    while v and v != "v0":
+        chain.append({"version": v, "parent": vs[v]["parent"], "call": vs[v].get("call"),
+                      "session": vs[v].get("session"), "patches": vs[v]["patches"]})
+        v = vs[v]["parent"]
+    (dst / "stack.json").write_text(json.dumps({"run_id": rid, "version": run.current, "stop": run.stop,
+                                                "invalid": run.invalid, "patches": stack,
+                                                "chain": list(reversed(chain))}, indent=1))
+    return dst, len(stack)
+
+
+def export_all():
+    root = Path(os.environ["TOYPREF_RUNS"]) / "repair"
+    for rid, *_ in llm_runs(False) + llm_runs(True):
+        if (root / rid / "run.json").exists():
+            r = export_patches(rid)
+            if r:
+                print("PATCHES", rid, r[1], r[0].relative_to(REPO))
 
 
 def report():
@@ -312,6 +352,7 @@ def main(argv=None):
     sub.add_parser("queue").add_argument("--rep", action="store_true")
     sub.add_parser("eval").add_argument("--run", required=True)
     sub.add_parser("report")
+    sub.add_parser("patches")
     au = sub.add_parser("auto")
     au.add_argument("--max", type=int, default=8); au.add_argument("--rep", action="store_true")
     au.add_argument("--nostart", action="store_true")
@@ -330,6 +371,8 @@ def main(argv=None):
         eval_run(a.run)
     elif a.cmd == "report":
         report()
+    elif a.cmd == "patches":
+        export_all()
     elif a.cmd == "auto":
         auto(a.max, a.rep, not a.nostart)
     elif a.cmd == "step":

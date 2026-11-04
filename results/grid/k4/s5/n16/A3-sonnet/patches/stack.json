@@ -1,0 +1,43 @@
+{
+ "run_id": "g3_cond_k4_s5_n16_A3-sonnet",
+ "version": "v20",
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "patches": [
+  "p0004",
+  "p0011",
+  "p0020"
+ ],
+ "chain": [
+  {
+   "version": "v4",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s002",
+   "patches": [
+    "p0004"
+   ]
+  },
+  {
+   "version": "v11",
+   "parent": "v4",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0004",
+    "p0011"
+   ]
+  },
+  {
+   "version": "v20",
+   "parent": "v11",
+   "call": "graft_gated_path",
+   "session": "s012",
+   "patches": [
+    "p0004",
+    "p0011",
+    "p0020"
+   ]
+  }
+ ]
+}
