@@ -1,0 +1,29 @@
+{
+ "args": {
+  "act": "linear",
+  "detector": {
+   "b": 3.2357,
+   "k_range": [
+    0,
+    4
+   ],
+   "source": "blocks.1.act",
+   "threshold": 1.5
+  },
+  "layer": "out",
+  "n_units": 1,
+  "src": "x"
+ },
+ "arrays": [
+  "b_in",
+  "det_w",
+  "w_in",
+  "w_out"
+ ],
+ "call": "graft_gated_path",
+ "id": "p0007",
+ "npz_sha256": "42ae6d1ae29e694935884b177e94c007d4e1d011748caca036baf74ebe67637f",
+ "parent_version": "v5",
+ "sha256": "0cf94eadb1fe865aa1a8be36963dcfd5b02b5733b8dd53e934914270a3771375",
+ "version": "v7"
+}
