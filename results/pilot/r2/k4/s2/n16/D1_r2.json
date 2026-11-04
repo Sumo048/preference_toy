@@ -1,0 +1,119 @@
+{
+ "arm": "D1",
+ "cell": "cond_k4_s2_n16",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 2,
+ "npm": 16,
+ "run_id": "D1_r1_cond_k4_s2_n16",
+ "run_dir": "/home/user/preference_toy/runs/repair/D1_r1_cond_k4_s2_n16",
+ "output": {
+  "arm": "D1",
+  "version": "v0",
+  "accepted": [],
+  "gate_checks": 3,
+  "decodes": 2806.0,
+  "stop": "max_rounds",
+  "meta": {
+   "n_first_clusters": 7,
+   "gate_cap": 27,
+   "rounds": [
+    {
+     "cluster": 1,
+     "r_cur": 0.126953125,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v2",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "push(d0,2r,k8,h3)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.5126000000000001,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0275,
+  "toypref": {
+   "mass_m0": 0.1203,
+   "mass_m1": 0.1248,
+   "mass_m2": 0.1184,
+   "mass_m3": 0.11995,
+   "mass_m4": 0.1245,
+   "mass_m5": 0.12405,
+   "mass_m6": 0.1174,
+   "mass_m7": 0.1231,
+   "mass_off": 0.0275,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.5126000000000001,
+   "tv_to_ideal_ref": 0.5126000000000001,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 7235.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 114.0
+  },
+  "target_removed": 0.0,
+  "target_modes": [
+   4
+  ],
+  "collateral_plan": 0.0,
+  "final_pool": {
+   "D": 0.515106201171875,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.027008056640625,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.1199798583984375,
+    0.1209716796875,
+    0.1237945556640625,
+    0.1207122802734375,
+    0.122711181640625,
+    0.1219940185546875,
+    0.1206207275390625,
+    0.1222076416015625,
+    0.027008056640625
+   ],
+   "mass_ref": [
+    0.1199798583984375,
+    0.1209716796875,
+    0.1237945556640625,
+    0.1207122802734375,
+    0.122711181640625,
+    0.1219940185546875,
+    0.1206207275390625,
+    0.1222076416015625,
+    0.027008056640625
+   ]
+  }
+ },
+ "wall_s_arm": 206.2,
+ "wall_s_total": 248.1,
+ "cpu_s": 243.7,
+ "max_rss_mb": 1026.8,
+ "threads": 1,
+ "note": "code arm reused from round r1 (deterministic; r2 changed LLM prompts only)"
+}

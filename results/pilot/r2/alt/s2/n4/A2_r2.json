@@ -1,0 +1,117 @@
+{
+ "arm": "A2",
+ "cell": "cond_alt_s2_n4",
+ "setting": "alt",
+ "seed": 2,
+ "npm": 4,
+ "run_id": "pilot_r2_cond_alt_s2_n4_A2",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r2_cond_alt_s2_n4_A2",
+ "output": {
+  "version": "v1",
+  "stop": null,
+  "invalid": null,
+  "accepted": [
+   "v1"
+  ],
+  "gate_checks": 1,
+  "decodes": 889998.0,
+  "sessions": 1,
+  "cost_usd": 0.485865
+ },
+ "sessions": [
+  {
+   "summary": "RESULT accepted v1 gated out-layer graft: blocks.2.act logistic detector, steps 8-10, constant velocity push toward 150 deg",
+   "calls": 16,
+   "submissions": 1,
+   "accepted": "v1"
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-ae61e2713ed4a16df.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 38,
+    "cache_creation_input_tokens": 30023,
+    "cache_read_input_tokens": 370388,
+    "output_tokens": 13076
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 18,
+   "cost_usd": 0.485865,
+   "max_context": 32734,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": "The simulation is still running in the background, so I'm waiting for it to finish."
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.41014999999999996,
+  "removed": 0.22748526123195778,
+  "collateral": 0.1411353020727143,
+  "mass_off": 0.03015,
+  "target_removed": 0.9051408361753189,
+  "target_modes": [
+   5
+  ],
+  "collateral_plan": 0.1356953006456692,
+  "toypref": {
+   "mass_m0": 0.1203,
+   "mass_m1": 0.1248,
+   "mass_m2": 0.1184,
+   "mass_m3": 0.1204,
+   "mass_m4": 0.23605,
+   "mass_m5": 0.0117,
+   "mass_m6": 0.1151,
+   "mass_m7": 0.1231,
+   "mass_off": 0.03015,
+   "neg_mass_ratio": 0.7725147387680422,
+   "retain_tv": 0.1411353020727143,
+   "tv_to_ideal": 0.41014999999999996,
+   "tv_to_ideal_ref": 0.5194,
+   "retain_noise_flip": 0.004993757802746567,
+   "neg_noise_to_retain": 0.2197601138442773,
+   "neg_noise_still_forget": 0.7689571051026631,
+   "disp_retain_mean": 0.01550549827516079,
+   "neg_still_forget_near": 0.7689735874289535,
+   "n_eval_neg_near": 2991.0,
+   "neg_still_forget_far": 0.767515923566879,
+   "n_eval_neg_far": 1884.0
+  },
+  "final_pool": {
+   "D": 0.404205322265625,
+   "removed": 0.22509714718983986,
+   "collateral": 0.1336439108949068,
+   "mass_off": 0.029937744140625,
+   "retain_tv": 0.13845467563980984,
+   "n": 65536,
+   "mass": [
+    0.12408447265625,
+    0.1201019287109375,
+    0.120880126953125,
+    0.1222686767578125,
+    0.23077392578125,
+    0.0114593505859375,
+    0.12005615234375,
+    0.1204376220703125,
+    0.029937744140625
+   ],
+   "mass_ref": [
+    0.12408447265625,
+    0.1201019287109375,
+    0.120941162109375,
+    0.12164306640625,
+    0.12158203125,
+    0.1208038330078125,
+    0.1219024658203125,
+    0.1204376220703125,
+    0.02850341796875
+   ]
+  }
+ }
+}

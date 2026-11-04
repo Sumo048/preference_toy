@@ -1,0 +1,115 @@
+{
+ "arm": "A1",
+ "cell": "cond_k4_s2_n4",
+ "setting": "k4",
+ "seed": 2,
+ "npm": 4,
+ "run_id": "pilot_r2_cond_k4_s2_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r2_cond_k4_s2_n4_A1",
+ "output": {
+  "version": "v0",
+  "stop": null,
+  "invalid": null,
+  "accepted": [],
+  "gate_checks": 2,
+  "decodes": 698844.0,
+  "sessions": 1,
+  "cost_usd": 0.205514
+ },
+ "sessions": [
+  {
+   "summary": "RESULT no-accept - bc/npo/kto targeted_train; low-lr kto v6 passed all but target, larger edits failed drift",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-aeb903762002394fd.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 30,
+    "cache_creation_input_tokens": 13020,
+    "cache_read_input_tokens": 153370,
+    "output_tokens": 5481
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 15,
+   "cost_usd": 0.205514,
+   "max_context": 15731,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": "The gate rejected v2. I'll look at the cluster geometry in the sandbox."
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.5126000000000001,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0275,
+  "target_removed": 0.0,
+  "target_modes": [
+   6
+  ],
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.1203,
+   "mass_m1": 0.1248,
+   "mass_m2": 0.1184,
+   "mass_m3": 0.11995,
+   "mass_m4": 0.1245,
+   "mass_m5": 0.12405,
+   "mass_m6": 0.1174,
+   "mass_m7": 0.1231,
+   "mass_off": 0.0275,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.5126000000000001,
+   "tv_to_ideal_ref": 0.5126000000000001,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 2568.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 1810.0
+  },
+  "final_pool": {
+   "D": 0.512969970703125,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.0269317626953125,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.1239013671875,
+    0.1220245361328125,
+    0.120941162109375,
+    0.120941162109375,
+    0.1222686767578125,
+    0.1206817626953125,
+    0.1208038330078125,
+    0.1215057373046875,
+    0.0269317626953125
+   ],
+   "mass_ref": [
+    0.1239013671875,
+    0.1220245361328125,
+    0.120941162109375,
+    0.120941162109375,
+    0.1222686767578125,
+    0.1206817626953125,
+    0.1208038330078125,
+    0.1215057373046875,
+    0.0269317626953125
+   ]
+  }
+ }
+}

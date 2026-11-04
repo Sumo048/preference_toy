@@ -1,0 +1,115 @@
+{
+ "arm": "A1",
+ "cell": "cond_alt_s1_n16",
+ "setting": "alt",
+ "seed": 1,
+ "npm": 16,
+ "run_id": "pilot_r2_cond_alt_s1_n16_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r2_cond_alt_s1_n16_A1",
+ "output": {
+  "version": "v0",
+  "stop": null,
+  "invalid": null,
+  "accepted": [],
+  "gate_checks": 2,
+  "decodes": 1904632.0,
+  "sessions": 1,
+  "cost_usd": 0.367287
+ },
+ "sessions": [
+  {
+   "summary": "RESULT no-accept - bc (hopB, basin targets) and npo on blocks.2,out with dist/map anchors; drift/between failed at every residual cut",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-a06eefc10f5b086bf.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 40,
+    "cache_creation_input_tokens": 20809,
+    "cache_read_input_tokens": 303412,
+    "output_tokens": 10120
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 20,
+   "cost_usd": 0.367287,
+   "max_context": 23520,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": "v6 is back to high drift (0.45), the same as v3, which the gate already rejected. With 2 calls left I'll submit v5, the low-drift candidate."
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.5114000000000001,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0262,
+  "target_removed": 0.0,
+  "target_modes": [
+   1
+  ],
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.125,
+   "mass_m1": 0.117,
+   "mass_m2": 0.1198,
+   "mass_m3": 0.12025,
+   "mass_m4": 0.1243,
+   "mass_m5": 0.12365,
+   "mass_m6": 0.1195,
+   "mass_m7": 0.1243,
+   "mass_off": 0.0262,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.5114000000000001,
+   "tv_to_ideal_ref": 0.5114000000000001,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 7211.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "final_pool": {
+   "D": 0.5143585205078125,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.0265960693359375,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.122406005859375,
+    0.1212921142578125,
+    0.1202392578125,
+    0.123260498046875,
+    0.1226348876953125,
+    0.123443603515625,
+    0.120361328125,
+    0.1197662353515625,
+    0.0265960693359375
+   ],
+   "mass_ref": [
+    0.122406005859375,
+    0.1212921142578125,
+    0.1202392578125,
+    0.123260498046875,
+    0.1226348876953125,
+    0.123443603515625,
+    0.120361328125,
+    0.1197662353515625,
+    0.0265960693359375
+   ]
+  }
+ }
+}

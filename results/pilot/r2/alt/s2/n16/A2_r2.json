@@ -1,0 +1,117 @@
+{
+ "arm": "A2",
+ "cell": "cond_alt_s2_n16",
+ "setting": "alt",
+ "seed": 2,
+ "npm": 16,
+ "run_id": "pilot_r2_cond_alt_s2_n16_A2",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r2_cond_alt_s2_n16_A2",
+ "output": {
+  "version": "v2",
+  "stop": null,
+  "invalid": null,
+  "accepted": [
+   "v2"
+  ],
+  "gate_checks": 1,
+  "decodes": 143927.0,
+  "sessions": 1,
+  "cost_usd": 0.471532
+ },
+ "sessions": [
+  {
+   "summary": "RESULT accepted v2 two gated grafts on out at steps 5-9 push detected mode-7 trajectories tangentially to neighbouring good modes",
+   "calls": 15,
+   "submissions": 1,
+   "accepted": "v2"
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-a84813c05cafd1c54.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 32,
+    "cache_creation_input_tokens": 26447,
+    "cache_read_input_tokens": 297446,
+    "output_tokens": 13984
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 16,
+   "cost_usd": 0.471532,
+   "max_context": 29158,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": ""
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.4157,
+  "removed": 0.20786745273429563,
+  "collateral": 0.089698796978419,
+  "mass_off": 0.02605,
+  "target_removed": 0.8163736686770178,
+  "target_modes": [
+   7
+  ],
+  "collateral_plan": 0.09152989691838612,
+  "toypref": {
+   "mass_m0": 0.17025,
+   "mass_m1": 0.12525,
+   "mass_m2": 0.1184,
+   "mass_m3": 0.11995,
+   "mass_m4": 0.1245,
+   "mass_m5": 0.1248,
+   "mass_m6": 0.17115,
+   "mass_m7": 0.01965,
+   "mass_off": 0.02605,
+   "neg_mass_ratio": 0.7921325472657044,
+   "retain_tv": 0.089698796978419,
+   "tv_to_ideal": 0.4157,
+   "tv_to_ideal_ref": 0.5194,
+   "retain_noise_flip": 0.0046816479400749065,
+   "neg_noise_to_retain": 0.20735921935352714,
+   "neg_noise_still_forget": 0.7883716202480179,
+   "disp_retain_mean": 0.02682916820049286,
+   "neg_still_forget_near": 0.7865077214846925,
+   "n_eval_neg_near": 7382.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "final_pool": {
+   "D": 0.416595458984375,
+   "removed": 0.19743404749207938,
+   "collateral": 0.08528960990851372,
+   "mass_off": 0.0261993408203125,
+   "retain_tv": 0.08343847091843136,
+   "n": 65536,
+   "mass": [
+    0.1711578369140625,
+    0.1199798583984375,
+    0.1222076416015625,
+    0.1234283447265625,
+    0.12042236328125,
+    0.125152587890625,
+    0.16961669921875,
+    0.0218353271484375,
+    0.0261993408203125
+   ],
+   "mass_ref": [
+    0.12347412109375,
+    0.1196441650390625,
+    0.1222076416015625,
+    0.1234283447265625,
+    0.12042236328125,
+    0.12445068359375,
+    0.11981201171875,
+    0.1189117431640625,
+    0.02764892578125
+   ]
+  }
+ }
+}

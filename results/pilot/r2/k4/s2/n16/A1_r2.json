@@ -1,0 +1,115 @@
+{
+ "arm": "A1",
+ "cell": "cond_k4_s2_n16",
+ "setting": "k4",
+ "seed": 2,
+ "npm": 16,
+ "run_id": "pilot_r2_cond_k4_s2_n16_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r2_cond_k4_s2_n16_A1",
+ "output": {
+  "version": "v0",
+  "stop": null,
+  "invalid": null,
+  "accepted": [],
+  "gate_checks": 3,
+  "decodes": 1343645.0,
+  "sessions": 1,
+  "cost_usd": 0.326982
+ },
+ "sessions": [
+  {
+   "summary": "RESULT no-accept - BC on blocks.2,out with hopB and nearest-mode rescue targets, map/local_map anchors; gate failed target, progress, drift, between.",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-aaa6ffc5afb5ea4ac.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 40,
+    "cache_creation_input_tokens": 19217,
+    "cache_read_input_tokens": 295184,
+    "output_tokens": 8585
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 20,
+   "cost_usd": 0.326982,
+   "max_context": 21928,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": "v4 has slightly lower drift (0.30) and a residual of 0.027. Using the last submission on it."
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.5126000000000001,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0275,
+  "target_removed": 0.0,
+  "target_modes": [
+   4
+  ],
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.1203,
+   "mass_m1": 0.1248,
+   "mass_m2": 0.1184,
+   "mass_m3": 0.11995,
+   "mass_m4": 0.1245,
+   "mass_m5": 0.12405,
+   "mass_m6": 0.1174,
+   "mass_m7": 0.1231,
+   "mass_off": 0.0275,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.5126000000000001,
+   "tv_to_ideal_ref": 0.5126000000000001,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 7235.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 114.0
+  },
+  "final_pool": {
+   "D": 0.515106201171875,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.027008056640625,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.1199798583984375,
+    0.1209716796875,
+    0.1237945556640625,
+    0.1207122802734375,
+    0.122711181640625,
+    0.1219940185546875,
+    0.1206207275390625,
+    0.1222076416015625,
+    0.027008056640625
+   ],
+   "mass_ref": [
+    0.1199798583984375,
+    0.1209716796875,
+    0.1237945556640625,
+    0.1207122802734375,
+    0.122711181640625,
+    0.1219940185546875,
+    0.1206207275390625,
+    0.1222076416015625,
+    0.027008056640625
+   ]
+  }
+ }
+}

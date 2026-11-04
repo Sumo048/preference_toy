@@ -1,0 +1,117 @@
+{
+ "arm": "A2",
+ "cell": "cond_alt_s1_n4",
+ "setting": "alt",
+ "seed": 1,
+ "npm": 4,
+ "run_id": "pilot_r2_cond_alt_s1_n4_A2",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r2_cond_alt_s1_n4_A2",
+ "output": {
+  "version": "v1",
+  "stop": null,
+  "invalid": null,
+  "accepted": [
+   "v1"
+  ],
+  "gate_checks": 1,
+  "decodes": 268152.0,
+  "sessions": 1,
+  "cost_usd": 0.394052
+ },
+ "sessions": [
+  {
+   "summary": "RESULT accepted v1 gated graft on out: blocks.2 detector at steps 10-13 pushes the bad mode toward its neighbour mode",
+   "calls": 12,
+   "submissions": 1,
+   "accepted": "v1"
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-afbcb63f8cb1d3ad0.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 26,
+    "cache_creation_input_tokens": 24612,
+    "cache_read_input_tokens": 222940,
+    "output_tokens": 11315
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 13,
+   "cost_usd": 0.394052,
+   "max_context": 27323,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": ""
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.40115000000000006,
+  "removed": 0.23145094806265454,
+  "collateral": 0.15090217089919,
+  "mass_off": 0.02825,
+  "target_removed": 0.9618156530534834,
+  "target_modes": [
+   1
+  ],
+  "collateral_plan": 0.14553735036911564,
+  "toypref": {
+   "mass_m0": 0.11785,
+   "mass_m1": 0.00445,
+   "mass_m2": 0.2372,
+   "mass_m3": 0.1205,
+   "mass_m4": 0.1243,
+   "mass_m5": 0.12365,
+   "mass_m6": 0.1195,
+   "mass_m7": 0.1243,
+   "mass_off": 0.02825,
+   "neg_mass_ratio": 0.7685490519373455,
+   "retain_tv": 0.15090217089919,
+   "tv_to_ideal": 0.40115000000000006,
+   "tv_to_ideal_ref": 0.5114000000000001,
+   "retain_noise_flip": 0.01514531313958248,
+   "neg_noise_to_retain": 0.22341302555647155,
+   "neg_noise_still_forget": 0.7640148392415499,
+   "disp_retain_mean": 0.05606374517083168,
+   "neg_still_forget_near": 0.7529498525073747,
+   "n_eval_neg_near": 2712.0,
+   "neg_still_forget_far": 0.7618069815195072,
+   "n_eval_neg_far": 1948.0
+  },
+  "final_pool": {
+   "D": 0.4010009765625,
+   "removed": 0.23811912225705334,
+   "collateral": 0.14546118854306966,
+   "mass_off": 0.0301513671875,
+   "retain_tv": 0.15157551516284412,
+   "n": 65536,
+   "mass": [
+    0.1154022216796875,
+    0.004608154296875,
+    0.2402191162109375,
+    0.1216583251953125,
+    0.1226348876953125,
+    0.1213836669921875,
+    0.1207427978515625,
+    0.123199462890625,
+    0.0301513671875
+   ],
+   "mass_ref": [
+    0.1215667724609375,
+    0.1206817626953125,
+    0.121307373046875,
+    0.121490478515625,
+    0.1226654052734375,
+    0.1213836669921875,
+    0.1207427978515625,
+    0.123199462890625,
+    0.0269622802734375
+   ]
+  }
+ }
+}
