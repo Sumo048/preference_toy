@@ -1,0 +1,18 @@
+unit masks contig s0 n4 TCy,TBy,TAy:8000 exit 0 377s
+unit masks alt s2 n4 TCy,TBy,TAy:8000 exit 0 377s
+unit masks alt s1 n4 TCy,TBy,TAy:8000 exit 0 378s
+unit masks alt s0 n4 TCy,TBy,TAy:8000 exit 0 380s
+unit masks contig s1 n4 TCy,TBy,TAy:8000 exit 0 294s
+unit masks contig s2 n4 TCy,TBy,TAy:8000 exit 0 294s
+unit masks pairs s1 n4 TCy,TBy,TAy:8000 exit 0 293s
+unit masks pairs s0 n4 TCy,TBy,TAy:8000 exit 0 295s
+unit masks pairs s2 n4 TCy,TBy,TAy:8000 exit 0 185s
+unit masks k4 s1 n4 TCy,TBy,TAy:8000 exit 0 184s
+unit masks k4 s2 n4 TCy,TBy,TAy:8000 exit 0 183s
+unit masks k4 s0 n4 TCy,TBy,TAy:8000 exit 0 185s
+unit train alt s2 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 328s
+unit train contig s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 328s
+unit train alt s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 329s
+unit train alt s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 329s
+Terminated
+QUEUE_DONE

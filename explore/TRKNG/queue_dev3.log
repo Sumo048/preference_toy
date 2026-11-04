@@ -1,0 +1,20 @@
+unit masks k4 s2 n4 TA,TB,TC:2000,8000 exit 0 13s
+unit masks alt s0 n4 TCt:2000,8000 exit 0 219s
+unit masks alt s1 n4 TCt:2000,8000 exit 0 219s
+unit masks alt s2 n4 TCt:2000,8000 exit 0 213s
+unit masks pairs s2 n4 TA,TB,TC:2000,8000 exit 0 299s
+unit masks contig s1 n4 TCt:2000,8000 exit 0 138s
+unit masks contig s0 n4 TCt:2000,8000 exit 0 138s
+unit masks contig s2 n4 TCt:2000,8000 exit 0 138s
+unit masks pairs s0 n4 TCt:2000,8000 exit 0 136s
+unit masks pairs s2 n4 TCt:2000,8000 exit 0 135s
+unit masks pairs s1 n4 TCt:2000,8000 exit 0 136s
+unit masks k4 s0 n4 TCt:2000,8000 exit 0 135s
+unit masks k4 s1 n4 TCt:2000,8000 exit 0 136s
+unit masks k4 s2 n4 TCt:2000,8000 exit 0 140s
+Terminated
+QUEUE_DONE
+unit train alt s0 n4 TC-f=s19-knn=10-tau_mult=2.0-N8000 exit 0 574s
+unit train alt s1 n4 TC-f=s19-knn=10-tau_mult=2.0-N8000 exit 0 590s
+unit train alt s2 n4 TC-f=s19-knn=10-tau_mult=2.0-N8000 exit 0 571s
+unit train contig s0 n4 TC-f=s19-knn=10-tau_mult=2.0-N8000 exit 0 562s

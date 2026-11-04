@@ -173,3 +173,15 @@ def score(m, bad_oracle):
             "rec": float(flag[bad_oracle].mean()) if bad_oracle.any() else float("nan"),
             "keep": int(keep.sum()), "keep_frac_bad": float(bad_oracle[keep].mean()) if keep.any() else float("nan"),
             "unassigned": float((~m["assigned"]).mean()), "flag_frac": float(flag.mean())}
+
+
+def typical(Z_fit, Z_pool, q=0.9, k=5):
+    """Label-free typicality (B6's rule without the c-grid): a pool sample is typical if its distance to
+    its k-th nearest fit decode is at most the q-quantile of the fit decodes' own k-th-neighbour distances.
+    A pool sample that is itself a fit decode (distance 0) skips itself."""
+    nn = NearestNeighbors(n_neighbors=k + 1).fit(Z_fit)
+    df, _ = nn.kneighbors(Z_fit)
+    thr = float(np.quantile(df[:, k], q))
+    dp, _ = nn.kneighbors(Z_pool)
+    dk = np.where(dp[:, 0] == 0, dp[:, k], dp[:, k - 1])
+    return dk <= thr

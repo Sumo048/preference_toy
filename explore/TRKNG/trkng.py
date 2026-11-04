@@ -61,6 +61,12 @@ CONFIGS = {
     # TCt = TC builder, finer tau grid (added after the first dev pass; files masks_TCt_*)
     "TCt": [{"f": "s19", "knn": 10, "tau_mult": 1.75}, {"f": "s19", "knn": 10, "tau_mult": 2.25},
             {"f": "s19", "knn": 10, "tau_mult": 2.5}],
+    # y = + typicality filter (builders.typical, q 0.9, k 5, in the builder's own feature space): atypical
+    # pool samples are unassigned (dropped from the kept set), as B6 drops decodes outside every track
+    "TCy": [{"f": "s19", "knn": 10, "tau_mult": 1.5, "typ": 0.9}, {"f": "s19", "knn": 10, "tau_mult": 1.75, "typ": 0.9},
+            {"f": "s19", "knn": 10, "tau_mult": 2.0, "typ": 0.9}],
+    "TBy": [{"f": "s19", "mcs_frac": 0.01, "min_samples": 10, "typ": 0.9}],
+    "TAy": [{"f": "s19", "typ": 0.9}],
 }
 FEATS = {"s0": (0,), "s048": (0, 4, 8), "s19": (19,)}
 ALL_STEPS = (0, 4, 8, 19)
@@ -137,18 +143,24 @@ def run_masks(setting, seed, npm, configs, Ns):
                 if N >= 60_000 and cfg["f"] in SPEC_FEATS and len(configs[b]) > 1:
                     continue  # dev budget: spec features fail at N 2k/8k (prec ~0.5) and at 60k (smoke k4 s0)
                 name = cfg_name(b, cfg, N)
-                kw = {k: v for k, v in cfg.items() if k != "f"}
+                kw = {k: v for k, v in cfg.items() if k not in ("f", "typ")}
                 st = FEATS[cfg["f"]]
                 ts = time.time()
                 Ff, Fp, Fn = (BL.feat(x, st) for x in (acts_fit, acts_P, acts_N))
-                if b == "TA":
+                if b.startswith("TA"):
                     m = BL.build_TA(Ff, Fp, Fn, seed, **kw)
+                    if "typ" in cfg:
+                        m["assigned"] = m["assigned"] & BL.typical(Ff, Fp, cfg["typ"])
+                        m["flag"] = m["flag"] & m["assigned"]
                 else:
                     if cfg["f"] not in pcas:
                         pca = BL.pca_fit(Ff, seed)
                         pcas[cfg["f"]] = (pca.transform(Ff), pca.transform(Fp), pca.transform(Fn))
                     Zf, Zp, Zn = pcas[cfg["f"]]
-                    m = (BL.build_TB if b == "TB" else BL.build_TC)(Zf, Zp, Zn, seed, **kw)  # TC, TCt
+                    m = (BL.build_TB if b.startswith("TB") else BL.build_TC)(Zf, Zp, Zn, seed, **kw)  # TC, TCt, TCy
+                    if "typ" in cfg:
+                        m["assigned"] = m["assigned"] & BL.typical(Zf, Zp, cfg["typ"])
+                        m["flag"] = m["flag"] & m["assigned"]
                 sc = BL.score(m, bad_or)
                 rec = out.setdefault(name, {"builder": b, "cfg": cfg, "N": N})
                 if dname == "A":

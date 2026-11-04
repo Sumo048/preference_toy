@@ -4,7 +4,7 @@ Per cell: builder mask quality (oracle precision/recall/kept-bad, evaluation onl
 (stability ARI and flag Jaccard between two fit draws, kept-set balance, agreement = mean flag Jaccard
 with the other builders' frozen masks), and D/Removed/Collateral after the frozen B6 training step.
 B6 and B1a per cell: dev from explore/E3/results (k4, alt) or explore/TRKNG/results (contig, pairs);
-confirm from explore/TRKNG/ref_E4 (= explore/E4/results of origin/art/confirm-E4).
+confirm from explore/E4/results (checked out from origin/art/confirm-E4 after the prereg).
 Tests (paired over the cells of a setting; SE = sd/sqrt(n)):
   (a) best builder vs B6: EQUIVALENT if mean(D_b - D_B6) +- 2 SE lies inside [-0.01, +0.01]
   (b) best builder vs B1a: PASS if mean(D_b - D_B1a) < -2 SE
@@ -32,7 +32,7 @@ def frozen():
 def baseline(stage, st, s, n, arm):
     cand = []
     if stage == "confirm":
-        cand.append(os.path.join(HERE, "ref_E4", st, f"s{s}_n{n}", (B6SPEC if arm == "B6" else "B1a") + ".json"))
+        cand.append(os.path.join(ROOT, "explore", "E4", "results", st, f"s{s}_n{n}", (B6SPEC if arm == "B6" else "B1a") + ".json"))
     else:
         cand.append(os.path.join(ROOT, "explore", "E3", "results", st, f"s{s}_n{n}",
                                  (B6SPEC if arm == "B6" else "B1a") + ".json"))

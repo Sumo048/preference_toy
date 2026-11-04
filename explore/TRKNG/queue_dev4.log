@@ -1,0 +1,10 @@
+unit train alt s1 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 596s
+unit train alt s2 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 598s
+unit train contig s0 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 600s
+unit train alt s0 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 600s
+Terminated
+QUEUE_DONE
+unit train contig s1 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 648s
+unit train contig s2 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 652s
+unit train pairs s0 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 651s
+unit train pairs s1 n4 TCt-f=s19-knn=10-tau_mult=1.75-N8000 exit 0 651s

@@ -1,0 +1,12 @@
+unit train alt s2 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 9s
+unit train contig s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 9s
+unit train alt s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 9s
+unit train alt s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 0 9s
+Terminated
+unit train contig s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 143 3s
+Terminated
+unit train contig s2 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 143 3s
+Terminated
+unit train pairs s1 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 143 3s
+Terminated
+unit train pairs s0 n4 TCy-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000 exit 143 3s

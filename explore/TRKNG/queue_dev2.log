@@ -4,3 +4,7 @@ unit masks alt s1 n4 TA,TB,TC:2000,8000 exit 0 464s
 unit masks alt s2 n4 TA,TB,TC:2000,8000 exit 0 465s
 Terminated
 QUEUE_DONE
+unit masks pairs s0 n4 TA,TB,TC:2000,8000 exit 0 337s
+unit masks contig s2 n4 TA,TB,TC:2000,8000 exit 0 345s
+unit masks contig s1 n4 TA,TB,TC:2000,8000 exit 0 346s
+unit masks pairs s1 n4 TA,TB,TC:2000,8000 exit 0 347s

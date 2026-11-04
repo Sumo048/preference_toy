@@ -30,3 +30,4 @@ QUEUE_DONE
 unit masks k4 s2 n4 TC:2000,8000 exit 0 245s
 unit masks k4 s2 n4 TC:60000 exit 0 558s
 unit masks k4 s2 n4 TB:60000 exit 0 894s
+unit masks alt s0 n4 TB:60000 exit 0 880s
