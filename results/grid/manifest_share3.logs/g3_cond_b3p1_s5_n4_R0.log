@@ -1,0 +1,4 @@
+=== start 2026-11-04 12:44:43 cmd=python scripts/run_arm.py --arm R0 --setting b3p1 --seed 5 --npm 4 --out results/grid_raw --tag _g3 && mkdir -p results/grid/b3p1/s5/n4/R0 && cp results/grid_raw/b3p1/s5/n4/R0.json results/grid/b3p1/s5/n4/R0/result.json
+[R0 cond_b3p1_s5_n4] D 0.5141 removed 0.000 collateral 0.000 stop no_accept_streak gate_checks 9 (118.1s)
+cp: cannot stat 'results/grid_raw/b3p1/s5/n4/R0.json': No such file or directory
+=== end rc=1 122.6s exit code 1

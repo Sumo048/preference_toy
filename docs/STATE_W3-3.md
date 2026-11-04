@@ -16,5 +16,11 @@ Deadline: Wed 23:00 ET. TOYPREF_RUNS=$PWD/runs.
 toyrepair-tool prompt --token T") -> `record --token T --summary '<RESULT line>'`; DONE -> `grid3.py eval --run R`.
 Idle surgeon > 10 min with calls left: send "your background command finished; continue in the foreground".
 
+## Driving shortcut
+`python scripts/grid3.py step --run R --summary '<triage JSON | surgeon RESULT line>'` records the run's pending
+token, then prints the next action; on DONE it starts `grid3.py eval` in the background (log results/grid/eval_logs.txt).
+Fresh run: `grid3.py step --run R` (no summary). Pending tokens: `orchestrate status` + runs/repair/R/run.json.
+Notes on resumes / flags: results/grid/notes_share3.md.
+
 ## Next
 - Drive LLM runs; `jobs.py ensure` while polling; commit + spend at milestones; replicates (`init --rep`) after share.

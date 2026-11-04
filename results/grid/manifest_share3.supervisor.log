@@ -1,0 +1,17 @@
+2026-11-04 12:44:43 [28929] start workers=2 retry_failed=False
+2026-11-04 12:44:43 [28929] g3_cond_b3p1_s5_n4_B4 launched
+2026-11-04 12:44:43 [28929] g3_cond_b3p1_s5_n4_R0 launched
+2026-11-04 12:46:46 [28929] g3_cond_b3p1_s5_n4_R0 wrapper exit 0
+2026-11-04 12:46:46 [28929] g3_cond_b3p1_s5_n4_D1 launched
+2026-11-04 12:49:31 [28929] g3_cond_b3p1_s5_n4_B4 wrapper exit 0
+2026-11-04 12:49:31 [28929] g3_cond_b3p1_s5_n4_B5 launched
+2026-11-04 12:57:34 [28929] g3_cond_b3p1_s5_n4_D1 wrapper exit 0
+2026-11-04 12:57:34 [28929] g3_cond_b3p1_s5_n4_B5 wrapper exit 0
+2026-11-04 12:57:34 [28929] g3_cond_b3p1_s5_n16_B4 launched
+2026-11-04 12:57:34 [28929] g3_cond_b3p1_s5_n16_R0 launched
+2026-11-04 12:59:54 [28929] g3_cond_b3p1_s5_n16_R0 wrapper exit 0
+2026-11-04 12:59:54 [28929] g3_cond_b3p1_s5_n16_D1 launched
+2026-11-04 13:08:47 [28929] g3_cond_b3p1_s5_n16_B4 wrapper exit 0
+2026-11-04 13:08:47 [28929] g3_cond_b3p1_s5_n16_B5 launched
+2026-11-04 13:11:32 [28929] g3_cond_b3p1_s5_n16_D1 wrapper exit 0
+2026-11-04 13:11:32 [28929] g3_cond_b3p1_s6_n4_B4 launched

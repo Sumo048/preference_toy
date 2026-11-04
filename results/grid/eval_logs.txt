@@ -1,0 +1,1 @@
+/home/user/preference_toy/results/grid/k4/s7/n16/A3-sonnet/result.json D 0.5134 removed 0.0 collateral 0.0 stop no_accept_streak sessions 3 cost 0.38

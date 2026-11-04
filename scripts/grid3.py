@@ -121,6 +121,28 @@ def queue(rep=False):
         print(rid, st)
 
 
+def step(token, summary, run=None):
+    """record (if token) then next; on DONE start the final evaluation in the background."""
+    from toyrepair import orchestrate as orc
+    if not token and run:
+        token = orc.load_run(run).pending or ""
+    if token:
+        r = orc.record(token, summary)
+        run = r.get("run", run)
+        brief = {k: r.get(k) for k in ("session", "role", "cluster", "fallback", "accepted", "calls",
+                                        "submissions", "audit_hits", "error") if r.get(k) is not None}
+        brief["cost"] = round(float(r.get("cost_usd") or 0), 3)
+        print("REC", json.dumps(brief))
+    with orc.run_lock(orc.run_dir(run)):
+        act = orc.next_action(orc.load_run(run))
+    print(run, act)
+    if act.startswith("DONE"):
+        log = open(OUT / "eval_logs.txt", "a")
+        subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "eval", "--run", run],
+                         stdout=log, stderr=log, stdin=subprocess.DEVNULL, start_new_session=True, cwd=str(REPO),
+                         env={**os.environ, "OMP_NUM_THREADS": "1"})
+
+
 def eval_run(rid):
     import phase4
     from toyrepair import orchestrate as orc
@@ -200,6 +222,8 @@ def main(argv=None):
     sub.add_parser("queue").add_argument("--rep", action="store_true")
     sub.add_parser("eval").add_argument("--run", required=True)
     sub.add_parser("report")
+    st = sub.add_parser("step")
+    st.add_argument("--token", default=""); st.add_argument("--summary", default=""); st.add_argument("--run")
     a = ap.parse_args(argv)
     if a.cmd == "manifest":
         manifest()
@@ -213,8 +237,12 @@ def main(argv=None):
         eval_run(a.run)
     elif a.cmd == "report":
         report()
+    elif a.cmd == "step":
+        step(a.token, a.summary, a.run)
     return 0
 
 
 if __name__ == "__main__":
+    import signal
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     sys.exit(main())
