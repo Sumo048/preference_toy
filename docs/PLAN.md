@@ -2,11 +2,6 @@
 
 Date: 2026-11-03. Parent plan: "Plan: Agentic Policy Repair on Isaac Lab Factory GearMesh" (the GearMesh plan).
 
-> Repo note (2026-11-03): this compact repo is the testbed the plan calls "toypref". Where the plan
-> says "default branch `cond-reroute`", read `main` of this repo (code = `cond-reroute` @ c48b697,
-> unchanged). See `README.md` for what `ckpt/` holds and what is missing. The plan text below is
-> otherwise verbatim.
-
 ## 1. Purpose
 
 This plan applies the GearMesh plan to the toypref flow toy before any Isaac work.
@@ -120,7 +115,7 @@ A negative or inconclusive result is a result. Report it with the same detail as
 
 ### 5.1 Policy and data
 
-The repo is `Sumo048/preference_toy`, default branch `cond-reroute`. Use its flow policy, data generation, settings, and seeds without change.
+The repo is `Sumo048/preference_toy`, branch `main` (the default branch). Its `src/toypref/` is the code of branch `cond-reroute` at commit `c48b697`, unchanged. Use its flow policy, data generation, settings, and seeds without change.
 
 Entry points (verify each):
 
@@ -135,7 +130,9 @@ The velocity network (verify): `inp` Linear(2→128); 3 residual blocks, each La
 
 `task.py` holds both the network and the ring geometry. So the surgeon's sandbox gets a copy of the network class, never `task.py`.
 
-If the user commits the cluster's base checkpoints and per-cell results under `ckpt/` (see `SESSION_PROMPTS.md`), use them. Then π_ref is the same network the method map used, and B0 and B1a reproduce exactly. Otherwise, train π_ref for seeds 0–9 with `scripts/cond_base.py`.
+`ckpt/` holds π_ref for conditional seeds 0–9 and the unconditional seed 0, laid out like `$TOYPREF_RUNS`, with checksums in `ckpt/SHA256SUMS`. They are deterministic retrains, bit-identical to the surviving originals, so they are the networks the method map used. Copy them into `$TOYPREF_RUNS`. Never write into `ckpt/`.
+
+The method map's per-cell results no longer exist. `reference/method_map.json` holds its aggregate values: `values` for seeds 0–4 and `confirm` for seeds 5–9. All reproduction checks compare against it.
 
 Record the CPU time of one π_ref training, one frozen-recipe run (5,000 steps), and one final evaluation on the cloud VM.
 
@@ -385,7 +382,7 @@ Read toypref: data generation, the velocity network, settings, seeds, the method
 
 Write `SURVEY.md` (one page). Include the timing numbers of Section 5.1.
 
-Reproduce B0 and the frozen recipe on conditional `k4`, seed 0, npm 4. Compare D with the method map, or with the cluster's per-cell result if `ckpt/` has it.
+Reproduce B0 and the frozen recipe on conditional `k4`, seed 0, npm 4. Compare D with `reference/method_map.json`.
 
 Write the package skeleton of Section 6.11 with signatures, docstrings, and `NotImplementedError` bodies. Implement `cell.py` and the seed logic of `pools.py` (Section 5.3) fully.
 
@@ -399,7 +396,7 @@ Make the pools (Section 5.3).
 
 Reproduce B0, B1a, and B1b on seeds 0–4 for `k4` and `alt`, all npm values.
 
-Exit: each mean D (seeds 0–4, mean over npm) is within 0.025 of the method-map value for seeds 0–4.
+Exit: each mean D (seeds 0–4, mean over npm) is within 0.025 of its value in `reference/method_map.json`.
 
 ### Phase 2: Minimum harness (Wave 1)
 
@@ -655,3 +652,18 @@ The escalation triggers: reproduction fails, the oracle is reachable, the pilot 
 - Weight-Space Programming (Takehi, Teoh, Zhang, Khattab), https://rikiyat.github.io/blog/weight-space-programming/
 - Claude Code subagents, https://code.claude.com/docs/en/sub-agents
 - Claude API pricing, https://platform.claude.com/docs/en/about-claude/pricing
+
+## Amendment 1 (2026-11-03, before Wave 1): aggressive schedule
+
+Reason: the user wants to spend the $250 cloud credit before it expires on 2026-11-04 at 11:59 PM PT. Cost is no longer a constraint. Wall time is.
+
+1. All sessions start at once. Each session waits for its inputs through git markers (`docs/DONE_<session>.md`), as `SESSION_PROMPTS.md` describes.
+2. Escalation triggers no longer stop work. Each one is recorded in the session's `DONE` file and in `REPORT.md`:
+   - Reproduction miss (Phase 1): continue. Paired comparisons inside the harness stay valid.
+   - Pilot decision rule fails (Phase 3): run one improvement round on seeds 0–4 (prompts and tools only, never the gate or the decision rule), rerun the pilot once, then continue to Phases 4–6 and report the pilot outcome.
+   - Mean session cost above $5: continue.
+   - The hook does not block in the cloud: continue with audit-only isolation. A run whose transcript audit hits is invalid.
+3. Grid size (Section 9.1): no cost cap. A3 runs on priority items 1–7. A1 and A2 run on items 1–3. Code arms run on every cell with an LLM arm. The exploratory arms run in share 3. When a share finishes, its session runs a second A3 replicate on its cells, in priority order, until its deadline. Replicates are recorded with their index and analysed as a robustness check.
+4. A session runs at most 8 surgeon subagents at a time.
+5. W1-A splits into W1-A1 (policy server, flow states, branch tool, inspect, miner, quick_check, pools) and W1-A2 (oracle, gate, ledger, budget, final evaluation, gate checks).
+6. Exploration sessions E1–E3 run on seeds 0–4 only, outside the claims. Their findings may shape the Phase 4 tools. They never change the surgeon's static prompt, the gate, or any threshold.
