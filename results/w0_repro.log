@@ -1,0 +1,7 @@
+[s0_k4_n4] forget=[2, 3, 4, 7] |T_n|=16 arms=2
+[s0_k4_n4] B0_frozen                tv 0.516 forget 1.000 rTV 0.000 off 0.026 far 1.000 tgtF nan tgtOff nan tx nan (2.5s)
+[s0_k4_n4] R_hopB_bsup_neg_AMdist   tv 0.259 forget 0.362 rTV 0.108 off 0.047 far 0.301 tgtF 0.00 tgtOff 0.00 tx nan (87.7s)
+
+real	2m25.605s
+user	1m52.642s
+sys	0m31.580s
