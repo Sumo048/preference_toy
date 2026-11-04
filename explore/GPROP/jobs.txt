@@ -46,8 +46,8 @@ e1eval --setting k4 --seed 0
 e1eval --setting alt --seed 0
 e4 --setting contig --seed 0 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
 e4 --setting contig --seed 1 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
-e4 --setting contig --seed 2 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
 e1eval --setting k4 --seed 1
+e4 --setting contig --seed 2 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
 e1eval --setting k4 --seed 2
 e1eval --setting alt --seed 1
 e1eval --setting alt --seed 2
@@ -59,6 +59,183 @@ gp3 --setting alt --seed 2 --cfg nA
 gp3 --setting contig --seed 0 --cfg nA
 gp3 --setting contig --seed 1 --cfg nA
 gp3 --setting contig --seed 2 --cfg nA
+e4 --setting k4 --seed 5 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4rerun
+e4 --setting pairs --seed 6 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4rerun
+e1eval --setting alt --seed 5
+e1eval --setting alt --seed 6
+e1eval --setting alt --seed 7
+e1eval --setting alt --seed 8
+e1eval --setting alt --seed 9
+e1eval --setting b3p1 --seed 5
+e1eval --setting b3p1 --seed 6
+e1eval --setting b3p1 --seed 7
+e1eval --setting b3p1 --seed 8
+e1eval --setting b3p1 --seed 9
+e1eval --setting contig --seed 5
+e1eval --setting contig --seed 6
+e1eval --setting contig --seed 7
+e1eval --setting contig --seed 8
+e1eval --setting contig --seed 9
+e1eval --setting k1 --seed 5
+e1eval --setting k1 --seed 6
+e1eval --setting k1 --seed 7
+e1eval --setting k1 --seed 8
+e1eval --setting k1 --seed 9
+e1eval --setting k2 --seed 5
+e1eval --setting k2 --seed 6
+e1eval --setting k2 --seed 7
+e1eval --setting k2 --seed 8
+e1eval --setting k2 --seed 9
+e1eval --setting k4 --seed 5
+e1eval --setting k4 --seed 6
+e1eval --setting k4 --seed 7
+e1eval --setting k4 --seed 8
+e1eval --setting k4 --seed 9
+e1eval --setting pairs --seed 5
+e1eval --setting pairs --seed 6
+e1eval --setting pairs --seed 7
+e1eval --setting pairs --seed 8
+e1eval --setting pairs --seed 9
+gp1 --setting k4 --seed 5 --cfg C1
+gp2 --setting k4 --seed 5 --cfg gK12L
+gp3 --setting k4 --seed 5 --cfg nA
+gp1 --setting k4 --seed 6 --cfg C1
+gp2 --setting k4 --seed 6 --cfg gK12L
+gp3 --setting k4 --seed 6 --cfg nA
+gp1 --setting k4 --seed 7 --cfg C1
+gp2 --setting k4 --seed 7 --cfg gK12L
+gp3 --setting k4 --seed 7 --cfg nA
+gp1 --setting k4 --seed 8 --cfg C1
+gp2 --setting k4 --seed 8 --cfg gK12L
+gp3 --setting k4 --seed 8 --cfg nA
+gp1 --setting k4 --seed 9 --cfg C1
+gp2 --setting k4 --seed 9 --cfg gK12L
+gp3 --setting k4 --seed 9 --cfg nA
+gp1 --setting alt --seed 5 --cfg C1
+gp2 --setting alt --seed 5 --cfg gK12L
+gp3 --setting alt --seed 5 --cfg nA
+gp1 --setting alt --seed 6 --cfg C1
+gp2 --setting alt --seed 6 --cfg gK12L
+gp3 --setting alt --seed 6 --cfg nA
+gp1 --setting alt --seed 7 --cfg C1
+gp2 --setting alt --seed 7 --cfg gK12L
+gp3 --setting alt --seed 7 --cfg nA
+gp1 --setting alt --seed 8 --cfg C1
+gp2 --setting alt --seed 8 --cfg gK12L
+gp3 --setting alt --seed 8 --cfg nA
+gp1 --setting alt --seed 9 --cfg C1
+gp2 --setting alt --seed 9 --cfg gK12L
+gp3 --setting alt --seed 9 --cfg nA
+gp1 --setting contig --seed 5 --cfg C1
+gp2 --setting contig --seed 5 --cfg gK12L
+gp3 --setting contig --seed 5 --cfg nA
+gp1 --setting contig --seed 6 --cfg C1
+gp2 --setting contig --seed 6 --cfg gK12L
+gp3 --setting contig --seed 6 --cfg nA
+gp1 --setting contig --seed 7 --cfg C1
+gp2 --setting contig --seed 7 --cfg gK12L
+gp3 --setting contig --seed 7 --cfg nA
+gp1 --setting contig --seed 8 --cfg C1
+gp2 --setting contig --seed 8 --cfg gK12L
+gp3 --setting contig --seed 8 --cfg nA
+gp1 --setting contig --seed 9 --cfg C1
+gp2 --setting contig --seed 9 --cfg gK12L
+gp3 --setting contig --seed 9 --cfg nA
+gp1 --setting k1 --seed 5 --cfg C1
+gp2 --setting k1 --seed 5 --cfg gK12L
+gp3 --setting k1 --seed 5 --cfg nA
+gp1 --setting k1 --seed 6 --cfg C1
+gp2 --setting k1 --seed 6 --cfg gK12L
+gp3 --setting k1 --seed 6 --cfg nA
+gp1 --setting k1 --seed 7 --cfg C1
+gp2 --setting k1 --seed 7 --cfg gK12L
+gp3 --setting k1 --seed 7 --cfg nA
+gp1 --setting k1 --seed 8 --cfg C1
+gp2 --setting k1 --seed 8 --cfg gK12L
+gp3 --setting k1 --seed 8 --cfg nA
+gp1 --setting k1 --seed 9 --cfg C1
+gp2 --setting k1 --seed 9 --cfg gK12L
+gp3 --setting k1 --seed 9 --cfg nA
+gp1 --setting pairs --seed 5 --cfg C1
+gp2 --setting pairs --seed 5 --cfg gK12L
+gp3 --setting pairs --seed 5 --cfg nA
+gp1 --setting pairs --seed 6 --cfg C1
+gp2 --setting pairs --seed 6 --cfg gK12L
+gp3 --setting pairs --seed 6 --cfg nA
+gp1 --setting pairs --seed 7 --cfg C1
+gp2 --setting pairs --seed 7 --cfg gK12L
+gp3 --setting pairs --seed 7 --cfg nA
+gp1 --setting pairs --seed 8 --cfg C1
+gp2 --setting pairs --seed 8 --cfg gK12L
+gp3 --setting pairs --seed 8 --cfg nA
+gp1 --setting pairs --seed 9 --cfg C1
+gp2 --setting pairs --seed 9 --cfg gK12L
+gp3 --setting pairs --seed 9 --cfg nA
+gp1 --setting b3p1 --seed 5 --cfg C1
+gp2 --setting b3p1 --seed 5 --cfg gK12L
+gp3 --setting b3p1 --seed 5 --cfg nA
+gp1 --setting b3p1 --seed 6 --cfg C1
+gp2 --setting b3p1 --seed 6 --cfg gK12L
+gp3 --setting b3p1 --seed 6 --cfg nA
+gp1 --setting b3p1 --seed 7 --cfg C1
+gp2 --setting b3p1 --seed 7 --cfg gK12L
+gp3 --setting b3p1 --seed 7 --cfg nA
+gp1 --setting b3p1 --seed 8 --cfg C1
+gp2 --setting b3p1 --seed 8 --cfg gK12L
+gp3 --setting b3p1 --seed 8 --cfg nA
+gp1 --setting b3p1 --seed 9 --cfg C1
+gp2 --setting b3p1 --seed 9 --cfg gK12L
+gp3 --setting b3p1 --seed 9 --cfg nA
+gp1 --setting k2 --seed 5 --cfg C1
+gp2 --setting k2 --seed 5 --cfg gK12L
+gp3 --setting k2 --seed 5 --cfg nA
+gp1 --setting k2 --seed 6 --cfg C1
+gp2 --setting k2 --seed 6 --cfg gK12L
+gp3 --setting k2 --seed 6 --cfg nA
+gp1 --setting k2 --seed 7 --cfg C1
+gp2 --setting k2 --seed 7 --cfg gK12L
+gp3 --setting k2 --seed 7 --cfg nA
+gp1 --setting k2 --seed 8 --cfg C1
+gp2 --setting k2 --seed 8 --cfg gK12L
+gp3 --setting k2 --seed 8 --cfg nA
+gp1 --setting k2 --seed 9 --cfg C1
+gp2 --setting k2 --seed 9 --cfg gK12L
+gp3 --setting k2 --seed 9 --cfg nA
+gp2 --setting k4 --seed 5 --cfg gC
+gp2 --setting k4 --seed 6 --cfg gC
+gp2 --setting k4 --seed 7 --cfg gC
+gp2 --setting k4 --seed 8 --cfg gC
+gp2 --setting k4 --seed 9 --cfg gC
+gp2 --setting alt --seed 5 --cfg gC
+gp2 --setting alt --seed 6 --cfg gC
+gp2 --setting alt --seed 7 --cfg gC
+gp2 --setting alt --seed 8 --cfg gC
+gp2 --setting alt --seed 9 --cfg gC
+gp2 --setting contig --seed 5 --cfg gC
+gp2 --setting contig --seed 6 --cfg gC
+gp2 --setting contig --seed 7 --cfg gC
+gp2 --setting contig --seed 8 --cfg gC
+gp2 --setting contig --seed 9 --cfg gC
+gp2 --setting k1 --seed 5 --cfg gC
+gp2 --setting k1 --seed 6 --cfg gC
+gp2 --setting k1 --seed 7 --cfg gC
+gp2 --setting k1 --seed 8 --cfg gC
+gp2 --setting k1 --seed 9 --cfg gC
+gp2 --setting pairs --seed 5 --cfg gC
+gp2 --setting pairs --seed 6 --cfg gC
+gp2 --setting pairs --seed 7 --cfg gC
+gp2 --setting pairs --seed 8 --cfg gC
+gp2 --setting pairs --seed 9 --cfg gC
+gp2 --setting b3p1 --seed 5 --cfg gC
+gp2 --setting b3p1 --seed 6 --cfg gC
+gp2 --setting b3p1 --seed 7 --cfg gC
+gp2 --setting b3p1 --seed 8 --cfg gC
+gp2 --setting b3p1 --seed 9 --cfg gC
+gp2 --setting k2 --seed 5 --cfg gC
+gp2 --setting k2 --seed 6 --cfg gC
+gp2 --setting k2 --seed 7 --cfg gC
+gp2 --setting k2 --seed 8 --cfg gC
+gp2 --setting k2 --seed 9 --cfg gC
 e1fit --setting contig --seed 0
 e1fit --setting contig --seed 1
 e1fit --setting contig --seed 2
