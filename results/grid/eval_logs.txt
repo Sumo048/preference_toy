@@ -39,3 +39,5 @@
 /home/user/preference_toy/results/grid/alt/s7/n1/A3/result.json D 0.4448 removed 0.153 collateral 0.1445 stop no_accept_streak sessions 6 cost 3.46
 /home/user/preference_toy/results/grid/k2/s5/n4/A3/result.json D 0.1078 removed 0.948 collateral 0.0831 stop no_open_cluster sessions 1 cost 0.39
 /home/user/preference_toy/results/grid/alt/s7/n64/A3/result.json D 0.127 removed 0.942 collateral 0.0836 stop no_open_cluster sessions 8 cost 3.31
+/home/user/preference_toy/results/grid/k2/s5/n16/A3/result.json D 0.1457 removed 0.93 collateral 0.1133 stop no_open_cluster sessions 2 cost 0.62
+/home/user/preference_toy/results/grid/alt/s9/n1/A3/result.json D 0.2162 removed 0.797 collateral 0.1445 stop no_open_cluster sessions 7 cost 3.44

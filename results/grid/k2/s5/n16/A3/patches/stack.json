@@ -1,0 +1,31 @@
+{
+ "run_id": "g3_cond_k2_s5_n16_A3",
+ "version": "v5",
+ "stop": "no_open_cluster",
+ "invalid": null,
+ "patches": [
+  "p0002",
+  "p0005"
+ ],
+ "chain": [
+  {
+   "version": "v2",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s002",
+   "patches": [
+    "p0002"
+   ]
+  },
+  {
+   "version": "v5",
+   "parent": "v2",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0002",
+    "p0005"
+   ]
+  }
+ ]
+}
