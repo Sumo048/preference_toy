@@ -1,0 +1,116 @@
+{
+ "arm": "B5",
+ "cell": "cond_pairs_s7_n4",
+ "grid": "cond",
+ "setting": "pairs",
+ "seed": 7,
+ "npm": 4,
+ "run_id": "B5_grid_cond_pairs_s7_n4",
+ "run_dir": "/home/user/preference_toy/runs/repair/B5_grid_cond_pairs_s7_n4",
+ "output": {
+  "arm": "B5",
+  "version": "v1",
+  "accepted": [
+   "v1"
+  ],
+  "gate_checks": 3,
+  "decodes": 0.0,
+  "stop": "accepted",
+  "meta": {
+   "configs": [
+    "R_hopB_bsup_mine_neg",
+    "R_hopB_bsup_neg_AMdist",
+    "R_hopB_bsup_mine_neg_AMmap"
+   ],
+   "checks": [
+    {
+     "config": "R_hopB_bsup_mine_neg",
+     "version": "v1",
+     "accepted": true,
+     "rank": 0.140625
+    },
+    {
+     "config": "R_hopB_bsup_neg_AMdist",
+     "version": "v2",
+     "accepted": true,
+     "rank": 0.265625
+    },
+    {
+     "config": "R_hopB_bsup_mine_neg_AMmap",
+     "version": "v3",
+     "accepted": true,
+     "rank": 0.24560546875
+    }
+   ],
+   "toypref_config": "R_hopB_bsup_mine_neg"
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.14655,
+  "removed": 0.7355068772287315,
+  "collateral": 0.052292705382097904,
+  "mass_off": 0.01675,
+  "toypref": {
+   "mass_m0": 0.0534,
+   "mass_m1": 0.038,
+   "mass_m2": 0.24405,
+   "mass_m3": 0.19505,
+   "mass_m4": 0.02225,
+   "mass_m5": 0.01615,
+   "mass_m6": 0.1916,
+   "mass_m7": 0.22275,
+   "mass_off": 0.01675,
+   "neg_mass_ratio": 0.26449312277126846,
+   "retain_tv": 0.052292705382097904,
+   "tv_to_ideal": 0.14655,
+   "tv_to_ideal_ref": 0.51745,
+   "retain_noise_flip": 0.3596518495492695,
+   "neg_noise_to_retain": 0.7329597554763118,
+   "neg_noise_still_forget": 0.24839531329597556,
+   "disp_retain_mean": 0.8696549534797668,
+   "neg_still_forget_near": 0.1945428773919206,
+   "n_eval_neg_near": 2822.0,
+   "neg_still_forget_far": 0.44075471698113206,
+   "n_eval_neg_far": 1325.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.06769988492592846,
+  "final_pool": {
+   "D": 0.1445465087890625,
+   "removed": 0.7371855197942154,
+   "collateral": 0.057931425164428396,
+   "mass_off": 0.0167083740234375,
+   "retain_tv": 0.0412597984324798,
+   "n": 65536,
+   "mass": [
+    0.0528411865234375,
+    0.036895751953125,
+    0.2433929443359375,
+    0.1932373046875,
+    0.0220794677734375,
+    0.016021728515625,
+    0.197998046875,
+    0.2208251953125,
+    0.0167083740234375
+   ],
+   "mass_ref": [
+    0.1209716796875,
+    0.1196441650390625,
+    0.1219940185546875,
+    0.120391845703125,
+    0.123016357421875,
+    0.1227874755859375,
+    0.121856689453125,
+    0.121612548828125,
+    0.0277252197265625
+   ]
+  }
+ },
+ "wall_s_arm": 516.0,
+ "wall_s_total": 597.5,
+ "cpu_s": 363.6,
+ "max_rss_mb": 982.8,
+ "threads": 1
+}

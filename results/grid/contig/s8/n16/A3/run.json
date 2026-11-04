@@ -1,0 +1,29 @@
+{
+ "id": "grid_cond_contig_s8_n16_A3",
+ "dir": "/home/user/preference_toy/runs/repair/grid_cond_contig_s8_n16_A3",
+ "arm": "A3",
+ "grid": "cond",
+ "setting": "contig",
+ "seed": 8,
+ "npm": 16,
+ "current": "v10",
+ "n_first_clusters": 6,
+ "cooldown": {
+  "0": 2
+ },
+ "backend": "real",
+ "phase4_tools": true,
+ "gate_cfg": {},
+ "cost_cap_usd": 8.0,
+ "iteration": 8,
+ "next_session": 17,
+ "next_version": 17,
+ "next_patch": 17,
+ "pending": null,
+ "target": null,
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "created": "2026-11-04T15:25:46+00:00",
+ "pilot_cluster": null,
+ "max_sessions": null
+}

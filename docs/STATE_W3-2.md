@@ -85,3 +85,7 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - (14:30 ET) in flight: a6874 c-s8n16 (bg since 14:20), aeb42 pairs s5n16, a1084 pairs s7n16, a01a3 pairs s5n4, a3138 pairs s6n4, a68d6 pairs s6n16; triage a356d pairs s7n4, a2dea c-s9n16
 - (14:40 ET) resumed a6874 c-s8n16
 - (14:45 ET) in flight: a6874 c-s8n16, adfa0 c-s9n16, ad1b0 pairs s7n4; triage ae9f6 p-s5n16, ab564 p-s6n4, ade62 p-s6n16, affc0 p-s7n16, a2d45 p-s8n4
+- 17:46 UTC: recorded triage pairs s5n16/s6n4/s6n16/s7n16/s8n4; contig_s8_n16 s014 no-accept. Agents: triage contig_s8_n16=a4eba0dd; surgeons pairs s5n16=aec46fe4, s6n4=a364ea1c, s6n16=aa588302, s7n16=a6bb783a, s8n4=a80f0324; still running contig_s9_n16=adfa0daa, pairs_s7_n4=ad1b0852.
+- 17:50: surgeon contig_s8_n16 s015=a590b47a
+- ~18:15: recorded pairs s6n16 v7, s7n4 v7, s8n4 v2, s6n4 v10, s5n16 v9 (accepted); contig s9n16, s8n16 (s016), pairs s7n16 no-accept. DONE: pairs s6n4, s6n16, s5n16 (no_open_cluster), contig s8n16 (no_accept_streak). Triage agents: contig s9n16=a462ae43, pairs s7n4=ae82251f, s8n4=a80cb22b, s7n16=a404b45c, s8n16=a9a7f1a6, s9n4=ae79f862.
+- ~18:20: triage recorded pairs s7n4(c5) s8n4(c2) s7n16(c1) s8n16(c6) s9n4(c0), contig s9n16(c1). Agents: triage pairs s9n16=a9af67fe; surgeons contig s9n16=aa41f765, pairs s7n4=ab8c450f, s7n16=add2ef06, s8n4=a8c9bfc1, s8n16=ad54c047, s9n4=a531b3fd.
