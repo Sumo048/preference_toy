@@ -16,4 +16,4 @@ Prereg: `docs/A3LF_PREREG.md`, pushed at cb7575c before any seed 5-9 cell was lo
 - After the 20 main cells: `tick --extra` (k1, contig, b3p1 at npm 4).
 
 ## Status
-- 20:20 UTC: 10 runs done (k4 s5n4 s5n16 s6n4 s6n16 s7n4 s7n16 s8n4 s8n16, alt s5n4). Running k4 s9 n4,n16; alt s5n16 s6n4 s6n16 s7n4 s7n16 s8n4.
+- 20:55 UTC: 14 main runs done. Main list fully launched (alt s9 n16 last); extras started (k1 s5 n4). Note: alt s7 n16 s010 cost corrected via ledger note (token sent late).
