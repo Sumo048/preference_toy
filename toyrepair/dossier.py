@@ -194,6 +194,27 @@ def _command_reference(arm: str, phase4: bool = False) -> str:
     return "\n".join(f"- `{c}` {USAGE[c]}" for c in USAGE if c in allowed)
 
 
+def edit_reference_for(ref: str, arm: str, phase4: bool = False) -> str:
+    """Keep only the EDIT_REFERENCE paragraphs of edit calls this arm has (W2a pilot round 2:
+    A1 surgeons spent calls building grafts their arm cannot submit). A paragraph belongs to
+    call X when it starts with ``**X**``; a ``- `` list line continues the paragraph above it."""
+    from .cli import EDIT_COMMANDS, allowed_commands
+    allowed = set(allowed_commands(arm, "surgeon", phase4))
+    out, keep = [], True
+    for para in ref.split("\n\n"):
+        head = para.lstrip()
+        if head.startswith("**"):
+            name = head[2:].split("**", 1)[0].strip()
+            if name in EDIT_COMMANDS:
+                keep = name in allowed
+                if not keep:
+                    continue
+            else:
+                keep = True
+        out.append(para)
+    return "\n\n".join(out)
+
+
 def static_part(arm: str, phase4: bool = False) -> str:
     from .cli import SESSION_CALLS, SESSION_SUBMISSIONS
     with open(os.path.join(PROMPT_DIR, "surgeon.md")) as fh:
@@ -203,7 +224,12 @@ def static_part(arm: str, phase4: bool = False) -> str:
             ref = fh.read().strip()
     else:
         ref = EDIT_REFERENCE_PLACEHOLDER
+    ref = edit_reference_for(ref, arm, phase4)
+    from .cli import EDIT_COMMANDS, allowed_commands
+    allowed = allowed_commands(arm, "surgeon", phase4)
+    calls = ", ".join(f"`{c}`" for c in EDIT_COMMANDS if c in allowed) or "none"
     return (tpl.replace("{{COMMANDS}}", _command_reference(arm, phase4))
+               .replace("{{EDIT_CALLS}}", calls)
                .replace("{{EDIT_REFERENCE}}", ref)
                .replace("{{CALLS}}", str(SESSION_CALLS))
                .replace("{{SUBMISSIONS}}", str(SESSION_SUBMISSIONS))).strip()

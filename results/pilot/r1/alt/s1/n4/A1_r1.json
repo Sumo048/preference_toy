@@ -1,0 +1,115 @@
+{
+ "arm": "A1",
+ "cell": "cond_alt_s1_n4",
+ "setting": "alt",
+ "seed": 1,
+ "npm": 4,
+ "run_id": "pilot_r1_cond_alt_s1_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/pilot_r1_cond_alt_s1_n4_A1",
+ "output": {
+  "version": "v0",
+  "stop": null,
+  "invalid": null,
+  "accepted": [],
+  "gate_checks": 1,
+  "decodes": 581808.0,
+  "sessions": 1,
+  "cost_usd": 0.477792
+ },
+ "sessions": [
+  {
+   "summary": "RESULT no-accept - targeted_train BC variants; v1 rejected (target, drift, between failed); graft unavailable this arm.",
+   "calls": 19,
+   "submissions": 1,
+   "accepted": null
+  }
+ ],
+ "usage": [
+  {
+   "transcript": "/root/.claude/projects/-home-user-preference-toy/e254bdb7-9734-5c75-9ff9-5500bf9e8663/subagents/agent-ae06539a39175ea92.jsonl",
+   "agent_type": "surgeon",
+   "model_meta": null,
+   "agent_ok": true,
+   "tokens": {
+    "input_tokens": 44,
+    "cache_creation_input_tokens": 29445,
+    "cache_read_input_tokens": 395957,
+    "output_tokens": 12560
+   },
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "n_requests": 21,
+   "cost_usd": 0.477792,
+   "max_context": 29447,
+   "context_exceeded": false,
+   "audit_hits": [],
+   "final_text": "Both commands are waiting on the tool, so I'll wait for the completion notifications."
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.5114000000000001,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0262,
+  "target_removed": 0.0,
+  "target_modes": [
+   1
+  ],
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.125,
+   "mass_m1": 0.117,
+   "mass_m2": 0.1198,
+   "mass_m3": 0.12025,
+   "mass_m4": 0.1243,
+   "mass_m5": 0.12365,
+   "mass_m6": 0.1195,
+   "mass_m7": 0.1243,
+   "mass_off": 0.0262,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.5114000000000001,
+   "tv_to_ideal_ref": 0.5114000000000001,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 2712.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 1948.0
+  },
+  "final_pool": {
+   "D": 0.5137176513671875,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.0269622802734375,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.1215667724609375,
+    0.1206817626953125,
+    0.121307373046875,
+    0.121490478515625,
+    0.1226654052734375,
+    0.1213836669921875,
+    0.1207427978515625,
+    0.123199462890625,
+    0.0269622802734375
+   ],
+   "mass_ref": [
+    0.1215667724609375,
+    0.1206817626953125,
+    0.121307373046875,
+    0.121490478515625,
+    0.1226654052734375,
+    0.1213836669921875,
+    0.1207427978515625,
+    0.123199462890625,
+    0.0269622802734375
+   ]
+  }
+ }
+}

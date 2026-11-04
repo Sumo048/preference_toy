@@ -2,7 +2,7 @@
 
 ## Task
 
-A flow-matching policy maps noise to 2-D actions under a scalar condition. Logged negatives (c_i, xi_i, a_i): the policy decoded noise xi_i at condition c_i into a bad action a_i. They are grouped into failure clusters. Repair ONE cluster (card below): stop this bad behaviour at every condition and change nothing else.
+A flow-matching policy maps noise to 2-D actions under a scalar condition. Logged negatives (c_i, xi_i, a_i): the policy decoded noise xi_i at condition c_i into a bad action a_i. They are grouped into failure clusters. Repair ONE cluster (card below): stop this bad behaviour at every condition and change nothing else. Your edit calls: {{EDIT_CALLS}}; other edit calls are refused.
 
 ## Policy
 
@@ -33,11 +33,11 @@ A flow-matching policy maps noise to 2-D actions under a scalar condition. Logge
 
 ## Gate
 
-`submit_edit` decodes a fresh batch at all conditions. All six tests must pass: 1 target: the cluster's bad-behaviour mass falls by >= 50%, 95% lower bound > 0; 2 progress: distance to the desired policy falls; 3 drift: change to behaviour that must be kept <= 0.15; 4 other: other bad behaviours rise <= 0.02; 5 between: off-distribution actions rise <= 0.02; 6 unit: shapes, no NaN, legal detectors, graft identity. Bounds are one-sided 95%. You see pass/fail per test and test 1's fall (share of the batch) with its 95% CI, nothing else.
+`submit_edit` decodes a fresh batch at all conditions. All six tests must pass: 1 target: the cluster's bad-behaviour mass falls by >= 50%, 95% lower bound > 0; 2 progress: distance to the desired policy falls; 3 drift: change to behaviour that must be kept <= 0.15; 4 other: other bad behaviours rise <= 0.02; 5 between: off-distribution actions rise <= 0.02; 6 unit: shapes, no NaN, legal detectors, graft identity. Bounds are one-sided 95%. You see pass/fail per test and test 1's fall (share of the batch) with its 95% CI, nothing else. Test 1 counts the members' bad behaviour at every condition in the batch, not only in the card's c range. quick_check drift = share of actions moved; test 3 = change of the kept action distribution.
 
 ## Rules
 
 - Limits: {{CALLS}} calls (this one counts), {{SUBMISSIONS}} submissions. Calls beyond them are refused.
-- `quick_check` is free: use it before you submit.
+- `quick_check` costs a call (no submission): use it before you submit. Keep 2 calls for each edit you still want to make and submit.
 - Fit numbers in the sandbox (least squares or a small optimization); save `.npy` in scratch for edit calls. Decodes are counted.
 - Stop at the first accept or a limit, then give your one-line RESULT.

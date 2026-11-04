@@ -1,0 +1,3 @@
+=== start 2026-11-04 06:09:03 cmd=['python', 'scripts/run_arm.py', '--arm', 'D1', '--setting', 'alt', '--seed', '2', '--npm', '16', '--max_rounds', '1', '--targets', 'results/pilot/targets/cond_alt_s2_n16.json', '--out', 'results/pilot/r1', '--tag', '_r1']
+[D1 cond_alt_s2_n16] D 0.5194 removed 0.000 collateral 0.000 stop max_rounds gate_checks 3 (357.8s)
+=== end rc=0 362.2s 

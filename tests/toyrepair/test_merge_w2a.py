@@ -87,3 +87,12 @@ def test_unit_tests_delegate_to_controller():
     new = types.SimpleNamespace(net=Ctl())
     r = E.unit_tests(new, "cur")
     assert r.passed and r.checks == {"controller": True} and calls == ["cur"]
+
+
+def test_static_prompt_lists_only_the_arms_edit_calls():
+    from toyrepair import dossier
+    a1, a2, a3 = (dossier.static_part(a) for a in ("A1", "A2", "A3"))
+    assert "**targeted_train**" in a1 and "**graft_gated_path**" not in a1 and "**rank1**" not in a1
+    assert "**graft_gated_path**" in a2 and "**targeted_train**" not in a2
+    assert "**graft_gated_path**" in a3 and "**targeted_train**" in a3
+    assert "Your edit calls: `targeted_train`;" in a1

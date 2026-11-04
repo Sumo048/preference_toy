@@ -366,9 +366,11 @@ def test_record_marks_run_invalid_on_audit_hit(runs, tmp_path):
 
 
 def test_static_fits_with_full_edit_reference(tmp_path, monkeypatch):
-    """EDIT_REFERENCE.md may use up to 1,500 tokens (W1-B); the static part must still fit 4,000."""
+    """EDIT_REFERENCE.md budget: 1,500 tokens (W1-B) until pilot round 2, then 1,200 tokens: the
+    round-2 template text grew (W2a); the real reference is filtered per arm and every arm's
+    static part is checked against the cap in test_static_prompt_caps_and_content."""
     ref = tmp_path / "EDIT_REFERENCE.md"
-    ref.write_text("word " * int(1500 * dossier.CHARS_PER_TOKEN / 5))
+    ref.write_text("word " * int(1200 * dossier.CHARS_PER_TOKEN / 5))
     monkeypatch.setattr(dossier, "EDIT_REFERENCE", str(ref))
     for arm in orc.LLM_ARMS:
         st = dossier.static_part(arm, phase4=True)

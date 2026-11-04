@@ -109,3 +109,20 @@ one step: drift 0.10 -> 0.15, other forgotten 0.01 -> 0.02, between 0.01 -> 0.02
 batches (the numbers are deterministic per batch): **1 of 12** would pass (k4 s0 n4). The plan
 allows one loosening step only, so the pilot runs at the loosened values and the calibration
 failure is reported. Numbers: `results/pilot/calibration.md`.
+
+### Pilot improvement round (Amendment 1): changes for round r2 (prompts and tools only)
+
+Round r1 (24 sessions) showed four problems, read from the surgeons' one-line results and reports:
+1. 10 of 12 A1 sessions built a gated graft in the sandbox and spent a call on `graft_gated_path`,
+   which A1 does not have. Fix: the static prompt names the arm's edit calls, and EDIT_REFERENCE
+   keeps only the paragraphs of those calls (`dossier.edit_reference_for`).
+2. Many sessions treated the card's c range as the target and failed test 1 (fall 0.01-0.05),
+   while the gate counts the members' bad behaviour at every condition (PLAN 10.1). Fix: one
+   sentence in the Gate section says so.
+3. Sessions compared quick_check's drift (share of actions moved) with test 3's threshold.
+   Fix: one sentence states the two numbers differ.
+4. The prompt said `quick_check` is free; it costs a call, and sessions ran out of calls. Fix:
+   corrected, plus "keep 2 calls for each edit you still want to make and submit". The sandbox
+   note says `basin(i)` takes the row of `negatives()`, not the uid.
+No limit, threshold, gate test or decision rule changed. Round r1's static prompts are archived
+in `results/pilot/r1/prompts/`. EDIT_REFERENCE's synthetic budget in the cap test is 1,200 tokens.
