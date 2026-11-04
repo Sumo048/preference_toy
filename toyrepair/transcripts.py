@@ -227,6 +227,136 @@ def spend(session: str, dry_run: bool = False, transcript: Optional[str] = None,
     return rec
 
 
+# ----------------------------------------------------------------------------- W1-D: per-session reader
+
+CONTEXT_LIMIT = 150_000      # docs/PLAN.md 7.2: session context cap, checked from the transcript
+#: extra isolation patterns (7.5): the oracle's classes and private fields, toypref setting files
+ISOLATION_PATTERNS = DEFAULT_FORBIDDEN + (r"CondMixture", r"\._oracle\b", r"toypref\.cond\b",
+                                          r"cond/experiment\.py", r"cond/task\.py", r"reference/method_map")
+
+
+def _text_of(content) -> str:
+    if isinstance(content, str):
+        return content
+    out = []
+    for b in content or []:
+        if isinstance(b, dict):
+            if b.get("type") == "text":
+                out.append(b.get("text", ""))
+            elif b.get("type") == "tool_result":
+                out.append(_text_of(b.get("content")))
+    return "\n".join(out)
+
+
+def first_user_text(path) -> str:
+    for ev in _read_jsonl(Path(path)):
+        if ev.get("type") == "user":
+            return _text_of((ev.get("message") or {}).get("content"))
+    return ""
+
+
+def final_assistant_text(path) -> str:
+    """Text of the last assistant message that has text (the subagent's final report)."""
+    last = ""
+    for ev in _read_jsonl(Path(path)):
+        if ev.get("type") == "assistant":
+            t = _text_of((ev.get("message") or {}).get("content"))
+            if t.strip():
+                last = t.strip()
+    return last
+
+
+def find_subagent_for_token(token: str, root: Path = PROJECTS) -> Optional[str]:
+    """Newest subagent transcript whose first user message holds ``token``."""
+    for p in reversed(find_subagent_transcripts(root)):
+        try:
+            if token in first_user_text(p):
+                return str(p)
+        except OSError:
+            continue
+    return None
+
+
+def context_per_request(path) -> List[int]:
+    """Context size of each API request: input + cache write + cache read tokens."""
+    return [int(u.get("input_tokens") or 0) + int(u.get("cache_creation_input_tokens") or 0)
+            + int(u.get("cache_read_input_tokens") or 0)
+            for _, u in _assistant_usages(Path(path)).values()]
+
+
+def isolation_audit(path, run_id: str = "", other_runs: Iterable[str] = ()) -> List[str]:
+    """Section 7.5: oracle paths, toypref setting files, and other runs' ids or directories.
+    The run's own id is allowed."""
+    pats = list(ISOLATION_PATTERNS)
+    for rid in other_runs:
+        if rid and rid != run_id:
+            pats.append(r"repair/" + re.escape(rid) + r"(?![\w.\-])")
+            if len(rid) >= 6:     # bare ids only when distinctive (short ids give false hits)
+                pats.append(r"(?<![\w.\-])" + re.escape(rid) + r"(?![\w.\-])")
+    hits, seen = [], set()
+    for h in audit_transcript(path, pats):      # one hit per transcript line
+        line = h.split(":", 1)[0]
+        if line not in seen:
+            seen.add(line)
+            hits.append(h)
+    return hits
+
+
+def session_report(path, run_id: str = "", other_runs: Iterable[str] = (), expected_agent: str = "") -> Dict:
+    """Usage, cost, context check, audit and final text of one subagent session transcript."""
+    u = usage_from_transcript(path)
+    meta = subagent_meta(path)
+    ctx = context_per_request(path)
+    hits = isolation_audit(path, run_id, other_runs)
+    return {"transcript": str(path), "agent_type": meta.get("agentType"), "model_meta": meta.get("model"),
+            "agent_ok": (not expected_agent) or meta.get("agentType") in (None, expected_agent),
+            "tokens": {f: u.total(f) for f in FIELDS}, "models": sorted(u.models),
+            "n_requests": sum(m.n_messages for m in u.models.values()),
+            "cost_usd": round(cost(u), 6), "max_context": max(ctx) if ctx else 0,
+            "context_exceeded": bool(ctx) and max(ctx) > CONTEXT_LIMIT,
+            "audit_hits": hits, "final_text": final_assistant_text(path)[:2000]}
+
+
+def chars_per_token(path) -> Dict:
+    """Measure characters per token on a real transcript: for each tool result between two API
+    requests, its tokens are (context of request n+1) - (context of request n) - (output tokens
+    of request n). Uses requests whose growth comes from exactly one tool result, and sums
+    chars and tokens over them (results of at least 200 chars, to damp per-message overhead)."""
+    reqs = []        # ordered (msg id, usage)
+    seen = set()
+    events = list(_read_jsonl(Path(path)))
+    order = []       # sequence of ("a", id) and ("r", chars)
+    for ev in events:
+        if ev.get("type") == "assistant":
+            msg = ev.get("message") or {}
+            mid = msg.get("id")
+            if mid and mid not in seen and msg.get("usage"):
+                seen.add(mid)
+                order.append(("a", mid))
+        elif ev.get("type") == "user":
+            content = (ev.get("message") or {}).get("content")
+            if isinstance(content, list) and any(isinstance(b, dict) and b.get("type") == "tool_result"
+                                                 for b in content):
+                order.append(("r", len(_text_of(content))))
+    usages = _assistant_usages(Path(path))
+    chars = toks = n = 0
+    samples = []
+    for i in range(len(order) - 2):
+        if order[i][0] == "a" and order[i + 1][0] == "r" and order[i + 2][0] == "a":
+            u0, u1 = usages[order[i][1]][1], usages[order[i + 2][1]][1]
+            c0 = sum(int(u0.get(f) or 0) for f in FIELDS[:3])
+            c1 = sum(int(u1.get(f) or 0) for f in FIELDS[:3])
+            t = c1 - c0 - int(u0.get("output_tokens") or 0)
+            ch = order[i + 1][1]
+            if ch >= 200 and t > 0:
+                chars += ch
+                toks += t
+                n += 1
+                samples.append((ch, t))
+    return {"chars": chars, "tokens": toks, "n": n, "ratio": round(chars / toks, 3) if toks else None,
+            "samples": samples[:20]}
+
+
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(prog="python -m toyrepair.transcripts")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -240,7 +370,19 @@ def main(argv=None) -> None:
     a.add_argument("path")
     a.add_argument("--pattern", action="append", default=[])
     sub.add_parser("subagents", help="list subagent transcripts with type and cost")
+    r = sub.add_parser("report", help="usage, cost, context check and isolation audit of one session transcript")
+    r.add_argument("path")
+    r.add_argument("--run", default="")
+    r.add_argument("--other", action="append", default=[])
+    c = sub.add_parser("ratio", help="measure characters per token on a transcript")
+    c.add_argument("path")
     args = ap.parse_args(argv)
+    if args.cmd == "report":
+        print(json.dumps(session_report(args.path, args.run, args.other), indent=1))
+        return
+    if args.cmd == "ratio":
+        print(json.dumps(chars_per_token(args.path)))
+        return
     if args.cmd == "spend":
         print(json.dumps(spend(args.session, args.dry_run, args.transcript)))
     elif args.cmd == "usage":
