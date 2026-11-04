@@ -1,0 +1,1 @@
+=== start 2026-11-04 05:36:26 cmd=['python', 'scripts/cond_cell.py', '--seed', '7', '--n_forget', '4', '--n_neg', '64', '--layout', 'b3p1', '--arms', 'R_hopB_bsup_mine_neg', '--out', 'results/baselines/b3p1']
