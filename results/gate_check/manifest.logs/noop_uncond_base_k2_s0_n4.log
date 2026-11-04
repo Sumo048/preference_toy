@@ -1,0 +1,37 @@
+=== start 2026-11-04 02:37:55 cmd=['python', '-m', 'toyrepair.gate', 'noop', '--grid', 'uncond', '--setting', 'base_k2', '--seed', '0', '--npm', '4', '--out', 'results/gate_check/noop_uncond_base_k2_s0_n4_ng16384.json']
+Traceback (most recent call last):
+  File "/home/user/preference_toy/toyrepair/gate.py", line 312, in noop_version
+    r = edits.graft_gated_path(base, "v_noop", "out", det, 8,
+                               np.ones((8, 128), np.float32), np.zeros((2, 8), np.float32))
+  File "/home/user/preference_toy/toyrepair/edits.py", line 125, in graft_gated_path
+    raise NotImplementedError
+NotImplementedError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/preference_toy/toyrepair/gate.py", line 473, in <module>
+    _main()
+    ~~~~~^^
+  File "/home/user/preference_toy/toyrepair/gate.py", line 459, in _main
+    res = noop_check(cell, base, uids, cfg=cfg)
+  File "/home/user/preference_toy/toyrepair/gate.py", line 323, in noop_check
+    new, how = noop_version(cell, base)
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/user/preference_toy/toyrepair/gate.py", line 316, in noop_version
+    net = _ZeroGraftNet(base.net).eval()
+          ~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/user/preference_toy/toyrepair/gate.py", line 295, in __init__
+    self.inner.out.register_forward_pre_hook(self._grab)
+    ^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1972, in __getattr__
+    raise AttributeError(
+        f"'{type(self).__name__}' object has no attribute '{name}'"
+    )
+AttributeError: '_UncondNet' object has no attribute 'out'
+=== end rc=1 16.0s exit code 1
+=== start 2026-11-04 02:53:34 cmd=['python', '-m', 'toyrepair.gate', 'noop', '--grid', 'uncond', '--setting', 'base_k2', '--seed', '0', '--npm', '4', '--out', 'results/gate_check/noop_uncond_base_k2_s0_n4_ng16384.json']
+{"cmd": "noop", "cell": "uncond_base_k2_s0_n4", "n_g": 16384, "noop_impl": "local", "decodes_identical": true, "max_abs_diff": 0.0, "gate_repro": true, "noop_target_fall": 0.0, "noop_passed": {"target": false, "progress": false, "drift": true, "other_forgotten": true, "between": true, "unit": true}, "noop_dD_ub": 0.0}
+=== end rc=0 23.6s 

@@ -1,0 +1,44 @@
+{
+ "cmd": "recipe",
+ "cell": "cond_k4_s0_n4",
+ "n_g": 16384,
+ "arm": "R_hopB_bsup_neg_AMdist",
+ "train_s": 73.02220964431763,
+ "accept_rate": 0.0,
+ "pass_rates": {
+  "target": 1.0,
+  "progress": 1.0,
+  "drift": 0.0,
+  "other_forgotten": 1.0,
+  "between": 0.0,
+  "unit": 1.0
+ },
+ "gate_mean": {
+  "D_new": 0.251806640625,
+  "D_cur": 0.51575927734375,
+  "dD": -0.26395263671875,
+  "dD_ub": -0.254649658203125,
+  "collateral_new": 0.10512117091241602,
+  "collateral_ub": 0.11333200962789866,
+  "retain_tv_new": 0.10747211998258946,
+  "between_rise": 0.02071533203125,
+  "between_rise_ub": 0.02415771484375,
+  "target_fall": 0.3125,
+  "target_fall_frac": 0.6392452444279471
+ },
+ "gate_s": 2.910525321960449,
+ "final": {
+  "D": 0.25880000000000003,
+  "removed": 0.6380631320870365,
+  "collateral": 0.10753804586822535,
+  "collateral_plan": 0.10552809380692887,
+  "mass_off": 0.04735,
+  "final_pool": {
+   "D": 0.2514190673828125,
+   "removed": 0.6448647638040633,
+   "collateral": 0.10561656499557029,
+   "retain_tv": 0.10858679863030586,
+   "mass_off": 0.0470733642578125
+  }
+ }
+}

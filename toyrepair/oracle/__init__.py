@@ -15,7 +15,7 @@ from typing import List, Sequence
 
 import numpy as np
 
-from .labels import OFF, label, masses, target_modes  # noqa: F401
+from .labels import OFF, N_MODES, counts, label, masses, negative_modes, target_modes  # noqa: F401
 
 
 def of(cell):
@@ -25,20 +25,20 @@ def of(cell):
 
 def forget_modes(cell) -> List[int]:
     """Sorted forgotten mode indices of the cell."""
-    return list(cell._oracle.forget)
+    return sorted(int(m) for m in cell._oracle.forget)
 
 
 def retain_modes(cell) -> List[int]:
     """Sorted retained mode indices of the cell."""
-    return list(cell._oracle.retain)
-
-
-def negative_modes(cell, uids: Sequence[int]) -> np.ndarray:
-    """(m,) int oracle mode of each logged negative, by uid (``cell.neg.uid``)."""
-    raise NotImplementedError
+    return sorted(int(m) for m in cell._oracle.retain)
 
 
 def purity(cell, uids: Sequence[int]) -> float:
     """Cluster purity in [0, 1]: share of the members (by negative uid) whose oracle mode equals
-    the cluster's majority mode. For the miner's CSV / ledger only (docs/PLAN.md 6.2)."""
-    raise NotImplementedError
+    the cluster's majority mode. For the miner's CSV / ledger only (docs/PLAN.md 6.2).
+    An empty cluster has purity nan."""
+    m = negative_modes(cell, uids)
+    if m.size == 0:
+        return float("nan")
+    _, cnt = np.unique(m, return_counts=True)
+    return float(cnt.max() / m.size)
