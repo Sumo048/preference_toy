@@ -22,7 +22,8 @@ token, then prints the next action; on DONE it starts `grid3.py eval` in the bac
 Fresh run: `grid3.py step --run R` (no summary). Pending tokens: `orchestrate status` + runs/repair/R/run.json.
 Notes on resumes / flags: results/grid/notes_share3.md.
 
-## Main loop (use this)
+## Main loop (20:21 UTC: share 3 all started; replicates initialised, poll.sh uses auto --rep)
+ (use this)
 `python scripts/grid3.py auto [--rep]`: records every pending run whose subagent handed back (hand-back text
 read from the transcript = the --summary), advances it, starts fresh runs up to 8 active, prints
 `LAUNCH <agent> <run> <token>` (invoke Agent subagent_type=<agent> with "Run R. Your (session) token is T.
