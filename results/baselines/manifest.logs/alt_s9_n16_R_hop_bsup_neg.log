@@ -1,0 +1,2 @@
+=== start 2026-11-04 06:20:12 cmd=['python', 'scripts/cond_cell.py', '--seed', '9', '--n_forget', '4', '--n_neg', '16', '--layout', 'alt', '--arms', 'R_hop_bsup_neg', '--out', 'results/baselines/alt']
+[s9_k4_n16] forget=[0, 2, 4, 6] |T_n|=64 arms=1

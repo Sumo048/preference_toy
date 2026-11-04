@@ -1,1 +1,5 @@
 === start 2026-11-04 05:36:57 cmd=['python', 'scripts/cond_cell.py', '--seed', '8', '--n_forget', '4', '--n_neg', '64', '--layout', 'b3p1', '--arms', 'B0_frozen,R_hopB_bsup_neg_AMdist', '--out', 'results/baselines/b3p1']
+[s8_k4_n64] forget=[0, 1, 2, 5] |T_n|=256 arms=2
+[s8_k4_n64] B0_frozen                tv 0.518 forget 1.000 rTV 0.000 off 0.028 far nan tgtF nan tgtOff nan tx nan (2.1s)
+[s8_k4_n64] R_hopB_bsup_neg_AMdist   tv 0.132 forget 0.199 rTV 0.024 off 0.035 far nan tgtF 0.09 tgtOff 0.00 tx nan (475.1s)
+=== end rc=0 532.6s 
