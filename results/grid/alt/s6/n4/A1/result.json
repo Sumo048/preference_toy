@@ -1,0 +1,283 @@
+{
+ "arm": "A1",
+ "cell": "cond_alt_s6_n4",
+ "setting": "alt",
+ "seed": 6,
+ "npm": 4,
+ "run_id": "grid_cond_alt_s6_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_alt_s6_n4_A1",
+ "output": {
+  "version": "v0",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [],
+  "gate_checks": 6,
+  "gate_cap": 24,
+  "decodes": 1957432.0,
+  "sessions": 3,
+  "cost_usd": 1.061323,
+  "n_first_clusters": 6
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 1,
+   "summary": "RESULT no-accept - BC (hopB and custom rescue targets) plus NPO, several anchors; all edits failed drift and between gates.",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.303694,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 4,
+   "summary": "RESULT no-accept - BC to neighbour-mode targets (v7-v10, various anchors/params); v9 submitted, failed target, progress, drift, between.",
+   "calls": 18,
+   "submissions": 1,
+   "accepted": null,
+   "cost_usd": 0.381201,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 5,
+   "summary": "RESULT no-accept - bc hopB (map/local_map/dist anchors, blocks.2+out or out-only) and npo; gate rejected v14, v16 (target/drift/between).",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.321459,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.017657
+  },
+  {
+   "cluster": 4,
+   "fallback": false,
+   "cost_usd": 0.018205
+  },
+  {
+   "cluster": 5,
+   "fallback": false,
+   "cost_usd": 0.019107
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0634765625,
+    "target_fall_ci": [
+     0.05926513671875,
+     0.06787261962890624
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.052001953125,
+    "target_fall_ci": [
+     0.04644775390625,
+     0.05743560791015624
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0745849609375,
+    "target_fall_ci": [
+     0.06970062255859374,
+     0.079345703125
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.03729248046875,
+    "target_fall_ci": [
+     0.03387451171875,
+     0.041015625
+    ]
+   }
+  },
+  {
+   "version": "v14",
+   "cluster": 5,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.04083251953125,
+    "target_fall_ci": [
+     0.03552093505859375,
+     0.04595947265625
+    ]
+   }
+  },
+  {
+   "version": "v16",
+   "cluster": 5,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.03399658203125,
+    "target_fall_ci": [
+     0.02972259521484375,
+     0.038330078125
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.50995,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0275,
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.1225,
+   "mass_m1": 0.12105,
+   "mass_m2": 0.11925,
+   "mass_m3": 0.1251,
+   "mass_m4": 0.11935,
+   "mass_m5": 0.1207,
+   "mass_m6": 0.12135,
+   "mass_m7": 0.1232,
+   "mass_off": 0.0275,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.50995,
+   "tv_to_ideal_ref": 0.50995,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 2453.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 2240.0
+  },
+  "final_pool": {
+   "D": 0.5126495361328125,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.02703857421875,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.1232452392578125,
+    0.1231689453125,
+    0.1209716796875,
+    0.1198272705078125,
+    0.121124267578125,
+    0.12066650390625,
+    0.120269775390625,
+    0.123687744140625,
+    0.02703857421875
+   ],
+   "mass_ref": [
+    0.1232452392578125,
+    0.1231689453125,
+    0.1209716796875,
+    0.1198272705078125,
+    0.121124267578125,
+    0.12066650390625,
+    0.120269775390625,
+    0.123687744140625,
+    0.02703857421875
+   ]
+  }
+ }
+}
