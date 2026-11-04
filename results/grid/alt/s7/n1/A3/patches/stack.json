@@ -1,0 +1,20 @@
+{
+ "run_id": "g3_cond_alt_s7_n1_A3",
+ "version": "v8",
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "patches": [
+  "p0008"
+ ],
+ "chain": [
+  {
+   "version": "v8",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0008"
+   ]
+  }
+ ]
+}

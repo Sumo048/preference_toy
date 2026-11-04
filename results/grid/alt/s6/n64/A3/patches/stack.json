@@ -1,0 +1,43 @@
+{
+ "run_id": "g3_cond_alt_s6_n64_A3",
+ "version": "v10",
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "patches": [
+  "p0006",
+  "p0007",
+  "p0010"
+ ],
+ "chain": [
+  {
+   "version": "v6",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0006"
+   ]
+  },
+  {
+   "version": "v7",
+   "parent": "v6",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0006",
+    "p0007"
+   ]
+  },
+  {
+   "version": "v10",
+   "parent": "v7",
+   "call": "graft_gated_path",
+   "session": "s008",
+   "patches": [
+    "p0006",
+    "p0007",
+    "p0010"
+   ]
+  }
+ ]
+}
