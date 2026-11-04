@@ -16,12 +16,13 @@ setting (PLAN 9.5). D = toypref `compute` `tv_to_ideal` on the final-evaluation 
 |---|---|---|---|
 | T1a | A3 vs B1a | paired t, one-sided | A3 lower |
 | T1b | A3 vs B5 | paired t, one-sided | A3 lower |
+| T1c | A3 vs B6 | paired t, one-sided | A3 lower (added by PREREG Amendment 1) |
 | T2 | A3 vs D1 | paired t, one-sided | A3 lower |
 | T3 | A2 vs A1 | paired t, two-sided | either |
 | T4 | A2 vs R0 | paired t, two-sided | either |
 
-T1 is supported only if both T1a and T1b are supported. Holm correction over the five tests together, at
-family-wise α = 0.05. Pairs: every (setting, seed) where both arms have a valid final evaluation on every npm
+T1 is supported only if T1a, T1b and T1c are all supported (Amendment 1). Holm correction over the six tests
+together (T1a, T1b, T1c, T2, T3, T4), at family-wise α = 0.05. Pairs: every (setting, seed) where both arms have a valid final evaluation on every npm
 the comparison uses (A1/A2 comparisons: items 1-3 of Section 4; A3 comparisons: every A3 cell).
 
 Labels (PLAN 9.5):
@@ -95,6 +96,7 @@ Minimum detectable differences at 80% power (Holm first step α = 0.01, paired, 
 | B1a | `R_hopB_bsup_neg_AMdist` on all negatives | repo `train_arm`, as `scripts/cond_cell.py` |
 | B1b | lowest-D method-map config on seeds 0-4 per setting | `reference/method_map.json` (optimistic; not a claim comparator) |
 | B5 | gate-selected among 3 configs per setting | k1: `R_hopB_bsup_neg_AMdist`, `NPO_b10_neg_AMdist`, `PSEUDO_vote_dist`; k2: `R_hopB_bsup_mine_neg_AMmap`, `R_hopB_bsup_neg_AMdist`, `NPO_b10_neg_AL`; k4, pairs, b3p1: `R_hopB_bsup_mine_neg`, `R_hopB_bsup_neg_AMdist`, `R_hopB_bsup_mine_neg_AMmap`; contig: `R_hopB_bsup_neg_AMdist`, `NPO_b10_neg_AMdist`, `PSEUDO_vote_dist`; alt: `R_hop_bsup_neg`, `KTO_b10_neg_AMmap`, `NPO_b10_neg_AL`. Global scope; keeps the accepted candidate with the lowest gate D. |
+| B6 | track-masked density BC (E3's best label-free method; Amendment 1) | `toyrepair/arms/b6_track.py`: E3 spec `a=track60k-w=1-st=20000`; one global training run; all 140 cond cells of seeds 5-9, run by W2b (`results/b6/`) |
 | B4 | iterative frozen recipe per cluster | `targeted_train(all, bc, 5000, anchor dist)` on hopB/bsup rows of the cluster; one candidate per cluster |
 | R0 | iterative sampling-time controller | logistic detector on `blocks.2` at the best primitive's step; thresholds 0.5, 0.7, 0.3 |
 | D1 | branch-and-distill | variants in order: `all_5000`, `all_1500`, `late_5000` (`docs/DEV_LOG.md`) |
@@ -122,7 +124,8 @@ Code arms B4, R0, D1 run the full loop (no round cap), with the same gate-check 
 ## 6. Grid (seeds 5-9) and shares
 
 Priority items (PLAN 9.1; Amendment 1: A3 on items 1-7, A1 and A2 on items 1-3; code arms on every cell with an
-LLM arm; B0, B1a, B1b on all 140 cells: already done by W1-C, `results/baselines/`):
+LLM arm; B0, B1a, B1b on all 140 cells: done by W1-C, `results/baselines/`; B6 on all 140 cells: W2b,
+`results/b6/` (Amendment 1)):
 
 1. `k4`, npm 4 and 16
 2. `alt`, npm 4 and 16
@@ -214,3 +217,39 @@ T2 A3 vs D1: Phase 4 paired diff mean -0.262 sd 0.118 (n=5 seeds); grid n=35: MD
 A3 vs B4 (proxy for B5, not run in Phase 4): Phase 4 paired diff mean -0.299 sd 0.115 (n=5 seeds); grid n=35: MDD 0.064
 T3/T4 proxy: A3 vs D1 sd: Phase 4 paired diff mean -0.262 sd 0.118 (n=5 seeds); grid n=15: MDD 0.117
 ```
+
+## Amendment 1 (2026-11-04, W2b, at the user's request): code baseline B6
+
+**Change.** Add arm B6, track-masked density BC: the best label-free method of exploration session E3
+(`docs/DONE_E3.md`, `docs/explore/E3.md`; spec `a=track60k-w=1-st=20000` in `explore/E3` on `art/explore-E3`).
+B6 joins T1 as T1c (A3 vs B6, one-sided, A3 lower). T1 is supported only if T1a, T1b and T1c are all supported,
+and the Holm family grows from five tests to six. The labels are as in Section 1, Collateral condition included.
+
+**Implementation.** `toyrepair/arms/b6_track.py`, registered as code arm `B6` and run with `scripts/run_arm.py
+--arm B6`. It ports E3's tracker and training loop unchanged:
+1. Track pi_ref's decodes across 101 conditions.
+2. Mark as bad the tracks that hold the logged negatives' actions.
+3. Train all weights by flow-matching BC on a fresh 60,000-sample pi_ref pool, keeping only samples in tracks
+   that are not bad, for 20,000 steps.
+
+It reads pi_ref decodes and the negatives' (c, a) only: no oracle and no forget set.
+
+**Reproduction check** (seeds 0-4, before any use on seeds 5-9): `k4 s0 n4` gives D 0.0208 and `alt s1 n16`
+gives D 0.01575. Both are identical to E3 in D, Removed, Collateral, mass between modes and the kept-sample count
+(`results/b6_repro/`).
+
+**Scope.** B6 runs on all 140 conditional cells of seeds 5-9 (7 settings x 5 seeds x npm 1, 4, 16, 64), beside
+B0, B1a and B1b (`results/baselines/`, W1-C). W3 runs nothing new.
+
+**The surgeon arms do not get the tracker.** No B6 data option, edit call or prompt text is added. The surgeon
+tools, prompts and gate stay as frozen. One existing link: since Phase 4, `contrast` and `unit_card` have labelled
+the cluster's behaviour with `toyrepair/tracks.py`, a separate label-free tracker. That is unchanged.
+
+**Timing and reason.** This amendment was written after the Phase 5 commit and after W3 started. W2b had read no
+seed 5-9 LLM result when writing it. B6's method was fixed on seeds 0-4 (E3), and no seed 5-9 result shaped it.
+The reason: E3 found a label-free method at D 0.030 on k4/alt seeds 0-4, against B1a's 0.28/0.45 and far below
+every Phase 4 arm. A claim that A3 beats the best recipes must include it.
+
+**Phase 4 context** (k4, npm 4/16, seeds 0-4; B6 values from E3's runs of the same spec): B6 D 0.031 against A3
+0.165; A3 is lower in 0 of 10 cells. Per-seed paired difference A3 - B6: mean +0.135, sd 0.053. MDD at 80% power
+(grid n = 35, Holm first step α = 0.05/6): 0.030.

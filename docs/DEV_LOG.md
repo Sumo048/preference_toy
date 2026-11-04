@@ -195,3 +195,18 @@ send the same resume message; record it in the run's notes. No limit or prompt c
   6.2 so that Phase 4 and the grid use the same dossier; listed for the report.
 - Failure mode seen most often: a gated constant push sends the whole target mass into one neighbouring mode,
   which fails test 2 (progress) or 3 (drift); surgeons who split the mass between both neighbours passed.
+
+## W2b, after the Phase 5 commit: code baseline B6 (user request; PREREG Amendment 1)
+
+- B6 = E3's best label-free method (`a=track60k-w=1-st=20000`, track-masked density BC), ported to
+  `toyrepair/arms/b6_track.py` with E3's tracker and loop unchanged (registered in `arms.base.CODE_ARMS`).
+- Reproduction against E3's stored results, seeds 0-4: `k4 s0 n4` D 0.0208, `alt s1 n16` D 0.01575: identical
+  in D, Removed, Collateral, mass_off and track_keep (`results/b6_repro/`). About 6 min per cell on one thread.
+- Run: all 140 cond cells of seeds 5-9 (`results/b6/manifest.jsonl`, jobs.py, 4 workers), beside B0/B1a/B1b.
+  The full seed 5-9 baselines were on `art/arms` only (W2a merged it before W1-C finished); W2b copied
+  `results/baselines/` from `art/arms` (621 JSON files) onto `agentic-repair-toy`.
+- T1 gains T1c (A3 vs B6); Holm over six tests. The tracker is not given to the surgeon arms (no data option,
+  edit call or prompt change). Note: `contrast`/`unit_card` already use the separate label-free tracker
+  `toyrepair/tracks.py` to label a cluster's behaviour (since Phase 4); unchanged.
+- An independent session (E4, branch `art/confirm-E4`) is running the same E3 spec on seeds 5-9 with its own
+  code; W4 can cross-check B6 against it.

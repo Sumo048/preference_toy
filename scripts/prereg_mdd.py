@@ -2,7 +2,7 @@
 """Minimum detectable D differences at 80% power from Phase 4 variance (W2b, PREREG Section 8).
 
 Unit: one (setting, seed) pair, D averaged over npm (PLAN 9.5). Phase 4 has k4 seeds 0-4 (npm 4, 16).
-MDD = (t_{1-a, n-1} + t_{0.8, n-1}) * sd_diff / sqrt(n), with a = 0.05/5 (Holm, first step; one-sided for
+MDD = (t_{1-a, n-1} + t_{0.8, n-1}) * sd_diff / sqrt(n), with a = 0.05/5 (Holm first step over 6 tests; one-sided for
 T1/T2, a/2 per side for T3/T4). sd_diff is the sd of the per-seed paired difference in Phase 4.
 """
 import json, sys
@@ -26,7 +26,7 @@ def sd_diff(a, b):
     return d, (d.std(ddof=1) if len(d) > 1 else float("nan"))
 
 def mdd(sd, n, two_sided):
-    a = 0.05 / 5
+    a = 0.05 / 6
     ta = stats.t.ppf(1 - (a / 2 if two_sided else a), n - 1)
     return (ta + stats.t.ppf(0.8, n - 1)) * sd / np.sqrt(n)
 

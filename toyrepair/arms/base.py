@@ -32,7 +32,7 @@ import numpy as np
 
 #: arm name -> module under toyrepair.arms
 CODE_ARMS: Dict[str, str] = {"B0": "b0", "B1a": "b1a", "B1b": "b1b", "B4": "b4", "B5": "b5",
-                             "R0": "r0", "D1": "d1"}
+                             "R0": "r0", "D1": "d1", "B6": "b6_track"}
 #: candidates a code arm may send to the gate for one cluster (same as an LLM session's submissions)
 MAX_CANDIDATES_PER_CLUSTER = 3
 COOLDOWN = 2
