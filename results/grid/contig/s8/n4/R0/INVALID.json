@@ -1,0 +1,6 @@
+{
+ "arm": "R0",
+ "cell": "cond_contig_s8_n4",
+ "invalid": true,
+ "reason": "run_arm R0 raised ValueError('unknown velocity-network layout (no inp/blocks)') in toyrepair/policy.py _core; failed in jobs.py manifest and again on the single rerun (results/grid/_share2/logs/rerun_contig_s8_n4_R0.log). Method unchanged; no result."
+}

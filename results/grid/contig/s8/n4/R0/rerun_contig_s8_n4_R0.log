@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/home/user/preference_toy/scripts/run_arm.py", line 141, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/user/preference_toy/scripts/run_arm.py", line 122, in main
+    out = get(a.arm)(cell, run, **kw)
+  File "/home/user/preference_toy/toyrepair/arms/r0.py", line 227, in run
+    return iterate("R0", cell, run, svc, repair, needs_branch=True, max_rounds=max_rounds,
+                   target_cluster=target_cluster)
+  File "/home/user/preference_toy/toyrepair/arms/base.py", line 374, in iterate
+    cand = next(gen)
+  File "/home/user/preference_toy/toyrepair/arms/r0.py", line 198, in repair
+    f, y, n_dec = detector_data(ctx, k)
+                  ~~~~~~~~~~~~~^^^^^^^^
+  File "/home/user/preference_toy/toyrepair/arms/r0.py", line 164, in detector_data
+    dec = svc.decode(ctx.current, xi, torch.from_numpy(c_all), capture=(LAYER,))
+  File "/usr/local/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/user/preference_toy/toyrepair/policy.py", line 272, in decode
+    v, a = _net_call(net, x, t, cc, capture)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/preference_toy/toyrepair/policy.py", line 207, in _net_call
+    with _Capture(net, capture) as cap:
+         ~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/user/preference_toy/toyrepair/policy.py", line 163, in __enter__
+    core, _ = _core(self.net)
+              ~~~~~^^^^^^^^^^
+  File "/home/user/preference_toy/toyrepair/policy.py", line 140, in _core
+    raise ValueError("unknown velocity-network layout (no inp/blocks)")
+ValueError: unknown velocity-network layout (no inp/blocks)

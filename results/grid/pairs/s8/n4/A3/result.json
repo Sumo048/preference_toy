@@ -1,0 +1,473 @@
+{
+ "arm": "A3",
+ "cell": "cond_pairs_s8_n4",
+ "setting": "pairs",
+ "seed": 8,
+ "npm": 4,
+ "run_id": "grid_cond_pairs_s8_n4_A3",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_pairs_s8_n4_A3",
+ "output": {
+  "version": "v10",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v2",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002"
+    ]
+   },
+   {
+    "version": "v5",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0005"
+    ]
+   },
+   {
+    "version": "v6",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0005",
+     "p0006"
+    ]
+   },
+   {
+    "version": "v7",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0005",
+     "p0006",
+     "p0007"
+    ]
+   },
+   {
+    "version": "v8",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0005",
+     "p0006",
+     "p0007",
+     "p0008"
+    ]
+   },
+   {
+    "version": "v10",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0002",
+     "p0005",
+     "p0006",
+     "p0007",
+     "p0008",
+     "p0010"
+    ]
+   }
+  ],
+  "gate_checks": 9,
+  "gate_cap": 24,
+  "decodes": 905841.0,
+  "sessions": 6,
+  "cost_usd": 2.484857,
+  "n_first_clusters": 6
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT accepted v2 gated graft on out: blocks.1 probe detector, steps 0-11, rotational velocity push (s=-3) off target track",
+   "calls": 14,
+   "submissions": 1,
+   "accepted": "v2",
+   "cost_usd": 0.40483,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 2,
+   "summary": "RESULT accepted v5 gated linear rotation graft on out, blocks.1.act probe detector thr=2 steps 0-10, steers cluster-2 track clockwise",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": "v5",
+   "cost_usd": 0.47016,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 1,
+   "summary": "RESULT accepted v6 gated constant-velocity graft on out, out_act contrast probe detector steps 0-12, pushes bad basin toward neighbour mode",
+   "calls": 11,
+   "submissions": 1,
+   "accepted": "v6",
+   "cost_usd": 0.286512,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s008",
+   "cluster": 3,
+   "summary": "RESULT accepted v7 gated constant-velocity graft on out (out_act probe detector, steps 0-10), delta (1.24,1.24) redirects cluster 3",
+   "calls": 12,
+   "submissions": 1,
+   "accepted": "v7",
+   "cost_usd": 0.262054,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s010",
+   "cluster": 0,
+   "summary": "RESULT accepted v8 gated linear rotation graft on out, out_act contrast detector, steps 0-12, pushes cluster-0 mode toward neighbour",
+   "calls": 12,
+   "submissions": 1,
+   "accepted": "v8",
+   "cost_usd": 0.30131,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s012",
+   "cluster": 5,
+   "summary": "RESULT accepted v10 Probe-gated out-layer graft on blocks.2, steps 12-19, pulls actions toward dense mode (-2.5,1.5)",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": "v10",
+   "cost_usd": 0.630066,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.024327
+  },
+  {
+   "cluster": 2,
+   "fallback": false,
+   "cost_usd": 0.024247
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.019749
+  },
+  {
+   "cluster": 3,
+   "fallback": false,
+   "cost_usd": 0.019247
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.025063
+  },
+  {
+   "cluster": 5,
+   "fallback": false,
+   "cost_usd": 0.017292
+  }
+ ],
+ "gates": [
+  {
+   "version": "v2",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.09112548828125,
+    "target_fall_ci": [
+     0.08612060546875,
+     0.09619293212890624
+    ]
+   }
+  },
+  {
+   "version": "v3",
+   "cluster": 2,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": false,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.109375,
+    "target_fall_ci": [
+     0.1046142578125,
+     0.11431884765625
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 2,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": false,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0921630859375,
+    "target_fall_ci": [
+     0.08740234375,
+     0.0968017578125
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 2,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.06378173828125,
+    "target_fall_ci": [
+     0.059814453125,
+     0.06781005859375
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.09173583984375,
+    "target_fall_ci": [
+     0.08734130859375,
+     0.09613189697265624
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 3,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.06982421875,
+    "target_fall_ci": [
+     0.0653076171875,
+     0.07440185546875
+    ]
+   }
+  },
+  {
+   "version": "v8",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01812744140625,
+    "target_fall_ci": [
+     0.0159912109375,
+     0.02020263671875
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 5,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.04791259765625,
+    "target_fall_ci": [
+     0.044677734375,
+     0.0511474609375
+    ]
+   }
+  },
+  {
+   "version": "v10",
+   "cluster": 5,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.04864501953125,
+    "target_fall_ci": [
+     0.04547119140625,
+     0.05188140869140624
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.0899,
+  "removed": 0.9440386791482358,
+  "collateral": 0.054326681739427465,
+  "mass_off": 0.0452,
+  "collateral_plan": 0.05549343245330286,
+  "toypref": {
+   "mass_m0": 0.02305,
+   "mass_m1": 5e-05,
+   "mass_m2": 0.2675,
+   "mass_m3": 0.21045,
+   "mass_m4": 0.00105,
+   "mass_m5": 0.00305,
+   "mass_m6": 0.24965,
+   "mass_m7": 0.2,
+   "mass_off": 0.0452,
+   "neg_mass_ratio": 0.05596132085176423,
+   "retain_tv": 0.054326681739427465,
+   "tv_to_ideal": 0.0899,
+   "tv_to_ideal_ref": 0.5137,
+   "retain_noise_flip": 0.023442319555829736,
+   "neg_noise_to_retain": 0.8851969961938072,
+   "neg_noise_still_forget": 0.05431539965024174,
+   "disp_retain_mean": 0.10206759721040726,
+   "neg_still_forget_near": 0.0549738219895288,
+   "n_eval_neg_near": 2674.0,
+   "neg_still_forget_far": 0.0744047619047619,
+   "n_eval_neg_far": 2016.0
+  },
+  "final_pool": {
+   "D": 0.0951080322265625,
+   "removed": 0.9439355653821857,
+   "collateral": 0.056208336632688316,
+   "mass_off": 0.048126220703125,
+   "retain_tv": 0.05572551750389243,
+   "n": 65536,
+   "mass": [
+    0.0229034423828125,
+    6.103515625e-05,
+    0.2698974609375,
+    0.2090301513671875,
+    0.00103759765625,
+    0.003082275390625,
+    0.2486724853515625,
+    0.1971893310546875,
+    0.048126220703125
+   ],
+   "mass_ref": [
+    0.1212615966796875,
+    0.1222381591796875,
+    0.123321533203125,
+    0.12030029296875,
+    0.118988037109375,
+    0.12060546875,
+    0.123138427734375,
+    0.1212615966796875,
+    0.0288848876953125
+   ]
+  }
+ }
+}

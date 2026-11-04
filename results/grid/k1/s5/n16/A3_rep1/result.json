@@ -1,0 +1,161 @@
+{
+ "arm": "A3",
+ "cell": "cond_k1_s5_n16",
+ "setting": "k1",
+ "seed": 5,
+ "npm": 16,
+ "run_id": "grid_cond_k1_s5_n16_A3_rep1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s5_n16_A3_rep1",
+ "output": {
+  "version": "v3",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v3",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0003"
+    ]
+   }
+  ],
+  "gate_checks": 2,
+  "gate_cap": 12,
+  "decodes": 440184.0,
+  "sessions": 1,
+  "cost_usd": 0.776071,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT accepted v3 Step-0 relu graft on out moves noise from the c-dependent bad wedge into neighbouring modes",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": "v3",
+   "cost_usd": 0.759467,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.016604
+  }
+ ],
+ "gates": [
+  {
+   "version": "v2",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.049560546875,
+    "target_fall_ci": [
+     0.04534912109375,
+     0.05389404296875
+    ]
+   }
+  },
+  {
+   "version": "v3",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.11712646484375,
+    "target_fall_ci": [
+     0.11212005615234374,
+     0.12237548828125
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.09543571428571429,
+  "removed": 0.9711733658140479,
+  "collateral": 0.08222597213556976,
+  "mass_off": 0.026,
+  "collateral_plan": 0.08193969987079042,
+  "toypref": {
+   "mass_m0": 0.12535,
+   "mass_m1": 0.18385,
+   "mass_m2": 0.00355,
+   "mass_m3": 0.16775,
+   "mass_m4": 0.1227,
+   "mass_m5": 0.122,
+   "mass_m6": 0.1222,
+   "mass_m7": 0.1266,
+   "mass_off": 0.026,
+   "neg_mass_ratio": 0.028826634185952094,
+   "retain_tv": 0.08222597213556976,
+   "tv_to_ideal": 0.09543571428571429,
+   "tv_to_ideal_ref": 0.15184999999999996,
+   "retain_noise_flip": 0.024759771266874963,
+   "neg_noise_to_retain": 0.9399106780349168,
+   "neg_noise_still_forget": 0.024360535931790498,
+   "disp_retain_mean": 0.05507273226976395,
+   "neg_still_forget_near": 0.023192360163710776,
+   "n_eval_neg_near": 733.0,
+   "neg_still_forget_far": 0.023008849557522124,
+   "n_eval_neg_far": 565.0
+  },
+  "final_pool": {
+   "D": 0.10387311662946427,
+   "removed": 0.9690875232774674,
+   "collateral": 0.08164773523142593,
+   "mass_off": 0.0273284912109375,
+   "retain_tv": 0.08250505129056304,
+   "n": 65536,
+   "mass": [
+    0.1230316162109375,
+    0.1888427734375,
+    0.0037994384765625,
+    0.16961669921875,
+    0.1203765869140625,
+    0.1233367919921875,
+    0.1211090087890625,
+    0.12255859375,
+    0.0273284912109375
+   ],
+   "mass_ref": [
+    0.1215667724609375,
+    0.1215362548828125,
+    0.1229095458984375,
+    0.1224517822265625,
+    0.1179656982421875,
+    0.1219482421875,
+    0.1211700439453125,
+    0.122100830078125,
+    0.028350830078125
+   ]
+  }
+ }
+}

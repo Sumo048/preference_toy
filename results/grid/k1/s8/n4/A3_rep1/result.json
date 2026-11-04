@@ -1,0 +1,140 @@
+{
+ "arm": "A3",
+ "cell": "cond_k1_s8_n4",
+ "setting": "k1",
+ "seed": 8,
+ "npm": 4,
+ "run_id": "grid_cond_k1_s8_n4_A3_rep1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s8_n4_A3_rep1",
+ "output": {
+  "version": "v1",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v1",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0001"
+    ]
+   }
+  ],
+  "gate_checks": 1,
+  "gate_cap": 9,
+  "decodes": 89592.0,
+  "sessions": 1,
+  "cost_usd": 0.346483,
+  "n_first_clusters": 1
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT accepted v1 gated 4-unit graft on out, blocks.1.act detector steps 6-13, pushes x away from track centre",
+   "calls": 12,
+   "submissions": 1,
+   "accepted": "v1",
+   "cost_usd": 0.330042,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.016441
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 0,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.114990234375,
+    "target_fall_ci": [
+     0.10992431640625,
+     0.11962890625
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.07697857142857141,
+  "removed": 0.9291925465838509,
+  "collateral": 0.06214277043770032,
+  "mass_off": 0.0295,
+  "collateral_plan": 0.06101126531187688,
+  "toypref": {
+   "mass_m0": 0.12775,
+   "mass_m1": 0.11945,
+   "mass_m2": 0.1212,
+   "mass_m3": 0.12605,
+   "mass_m4": 0.16645,
+   "mass_m5": 0.00855,
+   "mass_m6": 0.14425,
+   "mass_m7": 0.1568,
+   "mass_off": 0.0295,
+   "neg_mass_ratio": 0.07080745341614908,
+   "retain_tv": 0.06214277043770032,
+   "tv_to_ideal": 0.07697857142857141,
+   "tv_to_ideal_ref": 0.14839999999999998,
+   "retain_noise_flip": 0.03651949271958666,
+   "neg_noise_to_retain": 0.8973084886128364,
+   "neg_noise_still_forget": 0.07039337474120083,
+   "disp_retain_mean": 0.08744259178638458,
+   "neg_still_forget_near": 0.0196078431372549,
+   "n_eval_neg_near": 153.0,
+   "neg_still_forget_far": 0.0864,
+   "n_eval_neg_far": 1875.0
+  },
+  "final_pool": {
+   "D": 0.08250645228794642,
+   "removed": 0.9333662388943731,
+   "collateral": 0.061676456119052175,
+   "mass_off": 0.0313720703125,
+   "retain_tv": 0.06311219572366822,
+   "n": 65536,
+   "mass": [
+    0.124114990234375,
+    0.118988037109375,
+    0.119781494140625,
+    0.12603759765625,
+    0.1716766357421875,
+    0.00823974609375,
+    0.143768310546875,
+    0.1560211181640625,
+    0.0313720703125
+   ],
+   "mass_ref": [
+    0.1221771240234375,
+    0.1211700439453125,
+    0.120361328125,
+    0.1212158203125,
+    0.1206512451171875,
+    0.1236572265625,
+    0.1214599609375,
+    0.1204376220703125,
+    0.02886962890625
+   ]
+  }
+ }
+}
