@@ -162,12 +162,12 @@ def make_services(gate_fn, atlas_fn=None, branch_fn=None, log=None):
         log.append(("gate", new.id, check_index, scope))
         return gate_fn(new, check_index, scope)
 
-    def targeted_train(cell, parent, new_id, spec, data):
+    def targeted_train(cell, parent, new_id, spec, data, patch_id=None):
         log.append(("train", new_id, spec.params, spec.steps, spec.anchor))
         net = TinyNet(seed=int(new_id[1:]))
         ver = FVersion(id=new_id, parent=parent.id, patches=tuple(parent.patches) + (f"p_{new_id}",), net=net)
         rec = SimpleNamespace(error="", ok=True, frac_weights_changed=1.0)
-        return SimpleNamespace(version=ver, patch=FPatch(f"p_{new_id}", "targeted_train", {}, {}, parent.id, new_id),
+        return SimpleNamespace(version=ver, patch=FPatch(patch_id or f"p_{new_id}", "targeted_train", {}, {}, parent.id, new_id),
                                record=rec)
 
     def toypref_rows(cell, uids, rule="hopB", support="bsup"):
@@ -344,7 +344,7 @@ def test_version_from_net_stores_only_changed_tensors(tmp_path):
     net = TinyNet(0)
     with torch.no_grad():
         net.lin.bias.add_(1.0)
-    ver = version_from_net(io, base, net, "toypref_train", {"toypref_config": "X"})
+    ver = version_from_net(io, base, net, "targeted_train", {"toypref_config": "X"})
     assert ver.id == "v1" and ver.patches == ("p0001",)
     assert os.path.exists(os.path.join(io.dir, "patches", "p0001.json"))
     assert ver.meta["frac_weights_changed"] == pytest.approx(2 / 10)

@@ -52,12 +52,10 @@ def repair(ctx: RepairContext):
         data = svc.rescue_rows(ctx.cell, uids, targets, support=var.support)
         spec = svc.train_spec(params=var.params, objective="bc", steps=var.steps, anchor=var.anchor)
         vid = io.new_version_id()
-        res = svc.targeted_train(ctx.cell, ctx.current, vid, spec, data)
+        res = svc.targeted_train(ctx.cell, ctx.current, vid, spec, data, patch_id=io.new_patch_id())
         if res.version is None:
             io.log("edit", {"call": "targeted_train", "variant": var.name, "ok": False, "error": res.record.error})
             continue
-        if res.patch is not None and not getattr(res.patch, "id", None):
-            res.patch.id = io.new_patch_id()
         io.save_patch(res.patch)
         res.version.meta = {**(res.version.meta or {}), "variant": var.name}
         io.log("edit", {"cluster": int(ctx.card.cluster), "variant": var.name, "record": res.record},
