@@ -28,3 +28,4 @@
 - 16:24 UTC: resume message to the k4 s7 n64 A3 surgeon s002 (idle 10 min).
 - 16:44 UTC g3_cond_k4_s8_n64_A3 surgeon flagged 'Create RCE Surface'; reviewed: only toyrepair-tool prompt/targeted_train/dossier calls. Benign.
 - 17:19 UTC g3_cond_alt_s5_n64_A3 surgeon flagged 'Security Weaken'; reviewed: only toyrepair-tool prompt/targeted_train/dossier calls. Benign.
+- 20:45 UTC g3_cond_b3p1_s5_n16_A3_rep1 s002: surgeon RESULT line claimed 'accepted v4', but the gate ledger records v4 (and v1, v3) as rejected; run stays at v0. Ledger is authoritative; recorded as-is.

@@ -1,0 +1,70 @@
+{
+ "run_id": "g3_cond_k2_s6_n4_A3",
+ "version": "v15",
+ "stop": "no_open_cluster",
+ "invalid": null,
+ "patches": [
+  "p0004",
+  "p0005",
+  "p0009",
+  "p0013",
+  "p0015"
+ ],
+ "chain": [
+  {
+   "version": "v4",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s002",
+   "patches": [
+    "p0004"
+   ]
+  },
+  {
+   "version": "v5",
+   "parent": "v4",
+   "call": "targeted_train",
+   "session": "s002",
+   "patches": [
+    "p0004",
+    "p0005"
+   ]
+  },
+  {
+   "version": "v9",
+   "parent": "v5",
+   "call": "graft_gated_path",
+   "session": "s006",
+   "patches": [
+    "p0004",
+    "p0005",
+    "p0009"
+   ]
+  },
+  {
+   "version": "v13",
+   "parent": "v9",
+   "call": "graft_gated_path",
+   "session": "s010",
+   "patches": [
+    "p0004",
+    "p0005",
+    "p0009",
+    "p0013"
+   ]
+  },
+  {
+   "version": "v15",
+   "parent": "v13",
+   "call": "graft_gated_path",
+   "session": "s012",
+   "patches": [
+    "p0004",
+    "p0005",
+    "p0009",
+    "p0013",
+    "p0015"
+   ]
+  }
+ ]
+}
