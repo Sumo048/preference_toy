@@ -1,0 +1,3 @@
+=== start 2026-11-04 21:57:20 cmd=python scripts/run_arm.py --arm R0 --setting alt --seed 6 --npm 1 --out results/grid_raw --tag _g3 && mkdir -p results/grid/alt/s6/n1/R0 && cp results/grid_raw/alt/s6/n1/R0_g3.json results/grid/alt/s6/n1/R0/result.json
+[R0 cond_alt_s6_n1] D 0.5100 removed 0.000 collateral 0.000 stop no_accept_streak gate_checks 9 (123.1s)
+=== end rc=0 126.4s 

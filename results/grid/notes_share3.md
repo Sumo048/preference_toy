@@ -33,3 +33,4 @@
 - 21:24 UTC rep1 DONE: b3p1 s7n4 (no_open_cluster); 21:26 b3p1 s5n4 (no_open_cluster).
 - 21:31 UTC code arm g3_cond_k4_s8_n64_R0 failed (rc 1, 255 s): `ValueError: unknown velocity-network layout (no inp/blocks)` in policy._core while R0's detector_data captured a layer on its round-2 current version. Marked invalid (failed record kept, log saved as .attempt1.log); rerun once per protocol at 21:31. Looks deterministic, not a method/threshold change; no code edited.
 - 21:45 UTC rerun of g3_cond_k4_s8_n64_R0 failed again with the same ValueError (379 s). Final: INVALID (two attempts, protocol max). Report as missing R0 cell k4 s8 n64 in DONE.
+- 22:30 UTC rep1 DONE so far: b3p1 s5n4, s5n16, s6n16, s7n4, s7n16 (no_open_cluster); s6n4, s8n16, s9n4 (no_accept_streak).

@@ -175,3 +175,17 @@
 2026-11-04 21:40:13 [28929] g3_cond_alt_s5_n64_B5 launched
 2026-11-04 21:55:46 [28929] g3_cond_alt_s5_n64_B5 wrapper exit 0
 2026-11-04 21:55:46 [28929] g3_cond_alt_s6_n1_B4 launched
+2026-11-04 21:57:20 [28929] g3_cond_alt_s5_n64_D1 wrapper exit 0
+2026-11-04 21:57:20 [28929] g3_cond_alt_s6_n1_R0 launched
+2026-11-04 21:59:27 [28929] g3_cond_alt_s6_n1_R0 wrapper exit 0
+2026-11-04 21:59:27 [28929] g3_cond_alt_s6_n1_D1 launched
+2026-11-04 22:01:27 [28929] g3_cond_alt_s6_n1_B4 wrapper exit 0
+2026-11-04 22:01:27 [28929] g3_cond_alt_s6_n1_B5 launched
+2026-11-04 22:10:30 [28929] g3_cond_alt_s6_n1_D1 wrapper exit 0
+2026-11-04 22:10:30 [28929] g3_cond_alt_s6_n64_B4 launched
+2026-11-04 22:11:12 [28929] g3_cond_alt_s6_n1_B5 wrapper exit 0
+2026-11-04 22:11:12 [28929] g3_cond_alt_s6_n64_R0 launched
+2026-11-04 22:16:32 [28929] g3_cond_alt_s6_n64_R0 wrapper exit 0
+2026-11-04 22:16:32 [28929] g3_cond_alt_s6_n64_D1 launched
+2026-11-04 22:26:23 [28929] g3_cond_alt_s6_n64_B4 wrapper exit 0
+2026-11-04 22:26:23 [28929] g3_cond_alt_s6_n64_B5 launched
