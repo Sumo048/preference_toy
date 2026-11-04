@@ -27,3 +27,4 @@
 - 16:15 UTC: resume message to the k4 s6 n64 A3 surgeon s004 (idle 10 min).
 - 16:24 UTC: resume message to the k4 s7 n64 A3 surgeon s002 (idle 10 min).
 - 16:44 UTC g3_cond_k4_s8_n64_A3 surgeon flagged 'Create RCE Surface'; reviewed: only toyrepair-tool prompt/targeted_train/dossier calls. Benign.
+- 17:19 UTC g3_cond_alt_s5_n64_A3 surgeon flagged 'Security Weaken'; reviewed: only toyrepair-tool prompt/targeted_train/dossier calls. Benign.
