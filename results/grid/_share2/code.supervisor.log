@@ -184,3 +184,13 @@
 2026-11-04 17:19:25 [4586] cond_pairs_s6_n16_D1 launched
 2026-11-04 17:24:55 [4586] cond_pairs_s6_n4_B5 wrapper exit 0
 2026-11-04 17:24:55 [4586] cond_pairs_s6_n16_B4 launched
+2026-11-04 17:27:34 [4586] cond_pairs_s6_n4_D1 wrapper exit 0
+2026-11-04 17:27:34 [4586] cond_pairs_s6_n16_B5 launched
+2026-11-04 17:32:21 [4586] cond_pairs_s6_n16_B4 wrapper exit 0
+2026-11-04 17:32:21 [4586] cond_pairs_s6_n16_R0 launched
+2026-11-04 17:35:48 [4586] cond_pairs_s6_n16_R0 wrapper exit 0
+2026-11-04 17:35:48 [4586] cond_pairs_s7_n4_D1 launched
+2026-11-04 17:38:32 [4586] cond_pairs_s6_n16_D1 wrapper exit 0
+2026-11-04 17:38:32 [4586] cond_pairs_s7_n4_B4 launched
+2026-11-04 17:42:39 [4586] cond_pairs_s6_n16_B5 wrapper exit 0
+2026-11-04 17:42:39 [4586] cond_pairs_s7_n4_B5 launched

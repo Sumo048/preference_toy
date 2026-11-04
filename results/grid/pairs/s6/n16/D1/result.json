@@ -1,0 +1,224 @@
+{
+ "arm": "D1",
+ "cell": "cond_pairs_s6_n16",
+ "grid": "cond",
+ "setting": "pairs",
+ "seed": 6,
+ "npm": 16,
+ "run_id": "D1_grid_cond_pairs_s6_n16",
+ "run_dir": "/home/user/preference_toy/runs/repair/D1_grid_cond_pairs_s6_n16",
+ "output": {
+  "arm": "D1",
+  "version": "v6",
+  "accepted": [
+   "v5",
+   "v6"
+  ],
+  "gate_checks": 15,
+  "decodes": 47625.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 6,
+   "gate_cap": 24,
+   "rounds": [
+    {
+     "cluster": 2,
+     "r_cur": 0.1296875,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v2",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "push(d2,2r,k8,h3)"
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.11104910714285714,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v5",
+       "variant": "all_1500",
+       "accepted": true
+      }
+     ],
+     "accepted": "v5",
+     "k_commit": 12,
+     "primitive": "hop(0.85,n52)"
+    },
+    {
+     "cluster": 4,
+     "r_cur": 0.024502840909090908,
+     "tried": [
+      {
+       "version": "v6",
+       "variant": "all_5000",
+       "accepted": true
+      }
+     ],
+     "accepted": "v6",
+     "k_commit": 16,
+     "primitive": "hop(0.55,n35)"
+    },
+    {
+     "cluster": 2,
+     "r_cur": 0.171875,
+     "tried": [
+      {
+       "version": "v7",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v8",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v9",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.60,n10)"
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.041294642857142856,
+     "tried": [
+      {
+       "version": "v10",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v11",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v12",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.60,n106)"
+    },
+    {
+     "cluster": 2,
+     "r_cur": 0.171875,
+     "tried": [
+      {
+       "version": "v13",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v14",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v15",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.60,n10)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.2152,
+  "removed": 0.7132337901411332,
+  "collateral": 0.08863807832299958,
+  "mass_off": 0.0471,
+  "toypref": {
+   "mass_m0": 0.2779,
+   "mass_m1": 0.18475,
+   "mass_m2": 0.02115,
+   "mass_m3": 0.02495,
+   "mass_m4": 0.18205,
+   "mass_m5": 0.168,
+   "mass_m6": 0.0052,
+   "mass_m7": 0.0889,
+   "mass_off": 0.0471,
+   "neg_mass_ratio": 0.2867662098588668,
+   "retain_tv": 0.08863807832299958,
+   "tv_to_ideal": 0.2152,
+   "tv_to_ideal_ref": 0.5164000000000001,
+   "retain_noise_flip": 0.31255169561621177,
+   "neg_noise_to_retain": 0.6716097361423604,
+   "neg_noise_still_forget": 0.27275516465534877,
+   "disp_retain_mean": 0.8261825442314148,
+   "neg_still_forget_near": 0.25281060824445084,
+   "n_eval_neg_near": 6938.0,
+   "neg_still_forget_far": 0.32608695652173914,
+   "n_eval_neg_far": 92.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.08451024156036525,
+  "final_pool": {
+   "D": 0.212982177734375,
+   "removed": 0.7113639228539015,
+   "collateral": 0.08573168283913794,
+   "mass_off": 0.047088623046875,
+   "retain_tv": 0.09064473543585805,
+   "n": 65536,
+   "mass": [
+    0.2761383056640625,
+    0.186798095703125,
+    0.0214996337890625,
+    0.0236358642578125,
+    0.1846923828125,
+    0.16552734375,
+    0.00555419921875,
+    0.0890655517578125,
+    0.047088623046875
+   ],
+   "mass_ref": [
+    0.1213531494140625,
+    0.12408447265625,
+    0.1197357177734375,
+    0.121490478515625,
+    0.123382568359375,
+    0.11865234375,
+    0.122283935546875,
+    0.1206817626953125,
+    0.0283355712890625
+   ]
+  }
+ },
+ "wall_s_arm": 1092.8,
+ "wall_s_total": 1142.6,
+ "cpu_s": 785.7,
+ "max_rss_mb": 870.1,
+ "threads": 1
+}

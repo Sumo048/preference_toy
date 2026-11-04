@@ -80,3 +80,8 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - (13:30 ET) +af1b7 pairs s5n16, triage a399a pairs s5n4
 - (13:40 ET) in flight: a5fe9 c-s8n4, aa142 c-s9n16, af86d pairs s6n4, a11a7 pairs s6n16, af1b7 pairs s5n16, a45b1 pairs s5n4; triage a18fc c-s8n16, acf25 pairs s7n4
 - (13:55 ET) in flight: a45b1 pairs s5n4, a6874 c-s8n16, a3623 pairs s7n4; triage a9f90 c-s9n16, a95f5 pairs s6n4, a29ba pairs s6n16, a3990 pairs s5n16, ac831 pairs s7n16
+- (14:05 ET) in flight: a6874 c-s8n16, a3623 pairs s7n4, a4ec7 c-s9n16, aeb42 pairs s5n16, a16e3 pairs s6n4, a7a74 pairs s6n16, a1084 pairs s7n16; triage a2593 pairs s5n4
+- (14:15 ET) +a01a3 pairs s5n4; triage a536d pairs s6n4, abab0 pairs s6n16
+- (14:30 ET) in flight: a6874 c-s8n16 (bg since 14:20), aeb42 pairs s5n16, a1084 pairs s7n16, a01a3 pairs s5n4, a3138 pairs s6n4, a68d6 pairs s6n16; triage a356d pairs s7n4, a2dea c-s9n16
+- (14:40 ET) resumed a6874 c-s8n16
+- (14:45 ET) in flight: a6874 c-s8n16, adfa0 c-s9n16, ad1b0 pairs s7n4; triage ae9f6 p-s5n16, ab564 p-s6n4, ade62 p-s6n16, affc0 p-s7n16, a2d45 p-s8n4
