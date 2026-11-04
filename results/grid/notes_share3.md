@@ -22,3 +22,5 @@
 - 15:31 UTC: resume message to the b3p1 s9 n4 A3 surgeon (idle 11 min).
 - 15:44 UTC: second resume message to the b3p1 s9 n4 A3 surgeon s006.
 - 15:47 UTC: resume message to the k4 s6 n64 A3 surgeon (idle 11 min).
+- 16:04 UTC: resume message to the k4 s5 n64 A3 surgeon (idle 10 min).
+- 16:05 UTC: resume message to the b3p1 s9 n4 A3 surgeon s008 (idle 10 min).
