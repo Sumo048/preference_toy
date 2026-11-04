@@ -1,0 +1,3 @@
+=== start 2026-11-04 05:29:28 cmd=['python', 'scripts/run_arm.py', '--arm', 'D1', '--setting', 'k4', '--seed', '0', '--npm', '16', '--max_rounds', '1', '--targets', 'results/pilot/targets/cond_k4_s0_n16.json', '--out', 'results/pilot/r1', '--tag', '_r1']
+[D1 cond_k4_s0_n16] D 0.5160 removed 0.000 collateral 0.000 stop max_rounds gate_checks 3 (261.8s)
+=== end rc=0 264.8s 

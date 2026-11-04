@@ -33,7 +33,7 @@ A flow-matching policy maps noise to 2-D actions under a scalar condition. Logge
 
 ## Gate
 
-`submit_edit` decodes a fresh batch at all conditions. All six tests must pass: 1 target: the cluster's bad-behaviour mass falls by >= 50%, 95% lower bound > 0; 2 progress: distance to the desired policy falls; 3 drift: change to behaviour that must be kept <= 0.10; 4 other: other bad behaviours rise <= 0.01; 5 between: off-distribution actions rise <= 0.01; 6 unit: shapes, no NaN, legal detectors, graft identity. Bounds are one-sided 95%. You see pass/fail per test and test 1's fall (share of the batch) with its 95% CI, nothing else.
+`submit_edit` decodes a fresh batch at all conditions. All six tests must pass: 1 target: the cluster's bad-behaviour mass falls by >= 50%, 95% lower bound > 0; 2 progress: distance to the desired policy falls; 3 drift: change to behaviour that must be kept <= 0.15; 4 other: other bad behaviours rise <= 0.02; 5 between: off-distribution actions rise <= 0.02; 6 unit: shapes, no NaN, legal detectors, graft identity. Bounds are one-sided 95%. You see pass/fail per test and test 1's fall (share of the batch) with its 95% CI, nothing else.
 
 ## Rules
 

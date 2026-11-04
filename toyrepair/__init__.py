@@ -18,3 +18,9 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS = os.environ.setdefault("TOYPREF_RUNS", os.path.join(REPO, "runs"))
 
 __all__ = ["REPO", "RUNS"]
+
+# One thread per process (W2a): the pilot runs up to 8 surgeon CLIs, the orchestrator and the
+# jobs.py workers side by side on 4 cores, and default BLAS/torch threading oversubscribed them
+# (load ~50). Set before numpy/torch initialise; an explicit environment value wins.
+for _v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")

@@ -54,9 +54,9 @@ from .oracle.metrics import collateral, d_ideal, retain_tv
 N_G = 16_384
 N_BOOT = 2_000
 TARGET_FALL = 0.5
-DRIFT_MAX = 0.10
-OTHER_RISE_MAX = 0.01
-BETWEEN_RISE_MAX = 0.01
+DRIFT_MAX = 0.15          # W2a Phase 3 calibration: loosened one step from 0.10 (docs/DEV_LOG.md)
+OTHER_RISE_MAX = 0.02     # W2a calibration: from 0.01
+BETWEEN_RISE_MAX = 0.02   # W2a calibration: from 0.01
 ALPHA = 0.05
 SCOPES = ("cluster", "global")
 TEST_NAMES = ("target", "progress", "drift", "other_forgotten", "between", "unit")

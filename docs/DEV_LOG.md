@@ -97,3 +97,15 @@ Every pilot arm repairs the same cluster per cell, fixed by `scripts/pilot.py ta
 cluster with the largest residual mass in the v0 atlas whose branch class is R (else the next class-R
 cluster). Code arms get it through `scripts/run_arm.py --cluster`; A1/A2 through
 `orchestrate init --pilot_cluster <id> --max_sessions 1` (no triage, one session).
+
+### Gate calibration (PLAN Phase 3, pre-pilot check 2)
+
+B4's first repair (the pilot target cluster, frozen recipe on its negatives, locality penalty) on
+the 12 pilot cells through the gate at the development thresholds: **0 of 12 accepted**. Test 5
+(between modes) failed in all 12 (rise UB 0.011-0.067), drift in 8, target in 7 (B4 on `alt`
+moves mass broadly: Collateral UB 0.16-0.38). Fewer than half passed, so tests 3-5 were loosened
+one step: drift 0.10 -> 0.15, other forgotten 0.01 -> 0.02, between 0.01 -> 0.02
+(`gate.DRIFT_MAX`, `OTHER_RISE_MAX`, `BETWEEN_RISE_MAX`). Checked again once on the same gate
+batches (the numbers are deterministic per batch): **1 of 12** would pass (k4 s0 n4). The plan
+allows one loosening step only, so the pilot runs at the loosened values and the calibration
+failure is reported. Numbers: `results/pilot/calibration.md`.

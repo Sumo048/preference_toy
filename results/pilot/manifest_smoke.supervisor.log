@@ -1,0 +1,8 @@
+2026-11-04 04:38:27 [6719] start workers=3 retry_failed=False
+2026-11-04 04:38:28 [6719] smoke_cond_k4_s0_n4_B4 launched
+2026-11-04 04:38:28 [6719] smoke_cond_k4_s0_n4_R0 launched
+2026-11-04 04:38:28 [6719] smoke_cond_k4_s0_n4_D1 launched
+2026-11-04 04:40:14 [6719] smoke_cond_k4_s0_n4_R0 wrapper exit 0
+2026-11-04 04:42:04 [6719] smoke_cond_k4_s0_n4_B4 wrapper exit 0
+2026-11-04 04:43:21 [6719] smoke_cond_k4_s0_n4_D1 wrapper exit 0
+2026-11-04 04:43:21 [6719] exit
