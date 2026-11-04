@@ -112,3 +112,6 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 19:41Z: wrote draft docs/DONE_W3-2.md + share2_table (regenerate with scratchpad/done.py at the end).
 - 19:52Z: reps accepted k1 s9n16 v12, contig s7n16 v4, s5n16 v11, s8n4 v1, s6n16 v10, s7n4 v8, s6n4 v9. 7 triages launched; contig s5n4 surgeon a7e8e96f still running.
 - 19:58Z: 7 rep triages recorded + contig s5n4 rep no-accept. Surgeons: k1 s9n16=af0b84dc, contig s5n16=a71e5a64, s6n4=ae81a717, s6n16=abfb23d9, s7n4=a9eba9af, s7n16=a821c77c, s8n4=ad54e208; triage contig s5n4=a7815556.
+- 19:58Z: rep contig s5n4 triage c4 U; surgeon=a091c7d0.
+- 20:09Z: reps accepted contig s6n16 v11 (DONE), k1 s9n16 v14 (DONE), contig s6n4 v12, s7n16 v6, s5n4 v15, s7n4 v10; no-accept contig s5n16, s8n4. 8 triages launched (contig s5n16,s6n4,s7n16,s5n4,s7n4,s8n16,s9n4,s8n4).
+- 20:14Z: 8 rep triages recorded; 8 surgeons: contig s5n4=ab34bb06, s5n16=af3b23eb, s6n4=a03b893d, s7n4=a57a57bb, s7n16=a2f83d74, s8n4=ac54a2ee, s8n16=a4cdc5ad, s9n4=aba94e7f.
