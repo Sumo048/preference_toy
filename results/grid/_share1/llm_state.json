@@ -12,10 +12,6 @@
    "agent": "surgeon",
    "token": "HobnUtF45EXnkex9"
   },
-  "grid_cond_alt_s8_n16_A3": {
-   "agent": "surgeon",
-   "token": "T7DyBgKVkTjxSJcD"
-  },
   "grid_cond_alt_s8_n4_A3": {
    "agent": "surgeon",
    "token": "tX2pxfY4rVcdmTmH"
@@ -31,6 +27,10 @@
   "grid_cond_alt_s8_n4_A2": {
    "agent": "surgeon",
    "token": "AwMeCY6xmh8yYCWg"
+  },
+  "grid_cond_alt_s8_n16_A3": {
+   "agent": "triage",
+   "token": "qtBpFzEEcqmmGu9a"
   }
  },
  "done": [
