@@ -1,0 +1,13 @@
+
+=== 2026-11-04 19:09:54 /home/user/preference_toy/explore/E5/e5.py fit --setting k1 --seed 9 --npm 4
+  balanced target fill {0: 0.124, 1: 0.138, 2: 0.131, 4: 0.133, 5: 0.134, 7: 0.129, 8: 0.142}
+  it 0 loss 2.2408
+  it 300 loss 1.4672
+  it 600 loss 1.2127
+  it 900 loss 0.9647
+  it 1200 loss 0.7919
+  it 1499 loss 1.0100
+  detector {'det_tpr0': 0.7768331562167906, 'det_fpr0': 0.02068680182043856}
+  round 1: D 0.060 Rem 0.934 Col 0.011 off 0.053
+  it 0 loss 0.0280
+  it 300 loss 0.1407

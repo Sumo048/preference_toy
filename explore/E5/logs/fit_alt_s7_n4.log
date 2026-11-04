@@ -14,3 +14,10 @@
 
 === 2026-11-04 18:39:04 /home/user/preference_toy/explore/E5/e5.py fit --setting alt --seed 7 --npm 4
   it 300 loss 0.2583
+  it 600 loss 0.2101
+  it 900 loss 0.2625
+  it 1200 loss 0.1941
+  it 1499 loss 0.1935
+  detector {'det_tpr0': 0.08732876712328767, 'det_fpr0': 0.004994742376445847}
+  round 2: D 0.117 Rem 0.822 Col 0.018 off 0.029
+[K10c] alt_s7_n4 D 0.117 Rem 0.822 Col 0.018 off 0.029 DONE

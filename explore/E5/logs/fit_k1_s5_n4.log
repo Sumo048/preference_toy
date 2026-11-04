@@ -1,0 +1,23 @@
+
+=== 2026-11-04 18:44:10 /home/user/preference_toy/explore/E5/e5.py fit --setting k1 --seed 5 --npm 4
+  balanced target fill {0: 0.135, 2: 0.133, 3: 0.132, 4: 0.133, 5: 0.135, 6: 0.132, 7: 0.133}
+  it 0 loss 1.5300
+  it 300 loss 1.3862
+  it 600 loss 1.0200
+  it 900 loss 0.5354
+  it 1200 loss 0.6462
+  it 1499 loss 0.6664
+  detector {'det_tpr0': 0.8451143451143451, 'det_fpr0': 0.026556016597510373}
+  round 1: D 0.062 Rem 0.915 Col 0.027 off 0.047
+  it 0 loss 0.0105
+  it 300 loss 0.0047
+  it 600 loss 0.0459
+[K10c] k1_s5_n4 round 2 checkpoint at it 750 (793s)
+
+=== 2026-11-04 18:57:27 /home/user/preference_toy/explore/E5/e5.py fit --setting k1 --seed 5 --npm 4
+  it 900 loss 0.0471
+  it 1200 loss 0.0201
+  it 1499 loss 0.0189
+  detector {'det_tpr0': 0.18181818181818182, 'det_fpr0': 0.00012272950417280314}
+  round 2: D 0.062 Rem 0.933 Col 0.028 off 0.048
+[K10c] k1_s5_n4 D 0.062 Rem 0.933 Col 0.028 off 0.048 DONE

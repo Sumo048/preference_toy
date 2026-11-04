@@ -1,2 +1,23 @@
 
 === 2026-11-04 18:40:19 /home/user/preference_toy/explore/E5/e5.py fit --setting alt --seed 9 --npm 4
+  balanced target fill {0: 0.243, 2: 0.243, 3: 0.222, 8: 0.223}
+  it 0 loss 1.8269
+  it 300 loss 1.0277
+  it 600 loss 0.7690
+  it 900 loss 0.6842
+  it 1200 loss 0.5942
+  it 1499 loss 0.5807
+  detector {'det_tpr0': 0.8, 'det_fpr0': 0.18106617647058823}
+  round 1: D 0.125 Rem 0.803 Col 0.025 off 0.029
+  it 0 loss 0.2376
+[K10c] alt_s9_n4 round 2 checkpoint at it 250 (787s)
+
+=== 2026-11-04 18:53:32 /home/user/preference_toy/explore/E5/e5.py fit --setting alt --seed 9 --npm 4
+  it 300 loss 0.2882
+  it 600 loss 0.2658
+  it 900 loss 0.2195
+  it 1200 loss 0.2187
+  it 1499 loss 0.2072
+  detector {'det_tpr0': 0.08094435075885328, 'det_fpr0': 0.008816949598631399}
+  round 2: D 0.118 Rem 0.827 Col 0.025 off 0.034
+[K10c] alt_s9_n4 D 0.118 Rem 0.827 Col 0.025 off 0.034 DONE
