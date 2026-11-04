@@ -37,6 +37,7 @@ class GCfg:
     hop_step: float = 0.1
     per_track: bool = False      # one gated path per bad track (cluster) instead of one for all
     balance: bool = False        # choose exits toward under-filled good tracks
+    rounds: int = 1              # recursive rounds: round r fits a new gated path on the round r-1 policy
 
 
 def feats(acts, x, c_feat, layer):
@@ -74,14 +75,21 @@ class Graft(torch.nn.Module):
 
 
 def make_hooks(net, graft):
-    cache = {}
+    return combine_hooks(net, [graft])
 
-    def hook(acts, x, t, c):
-        key = id(c)
-        if cache.get("k") != key:
-            cache["k"], cache["cf"] = key, net.c_feat(c)
-        return graft(acts, x, t, c, cache["cf"])
-    return {graft.cfg.out_layer: hook}
+
+def combine_hooks(net, grafts):
+    """One hook per layer that sums the outputs of all gated paths beside that layer."""
+    by = {}
+    for gr in grafts:
+        by.setdefault(gr.cfg.out_layer, []).append(gr)
+    hooks = {}
+    for layer, gs in by.items():
+        def hook(acts, x, t, c, gs=gs):
+            cf = net.c_feat(c)
+            return sum(gr(acts, x, t, c, cf) for gr in gs)
+        hooks[layer] = hook
+    return hooks
 
 
 def decode_grad(net, xi, c, hooks):
@@ -160,17 +168,21 @@ def hop_targets(ref, T: Tracker, c, xi, cfg: GCfg, g, fill=None):
 FILL_N = [1]
 
 
-def fit_graft(cell: Cell, T: Tracker, cfg: GCfg, log=print):
+def fit_graft(cell: Cell, T: Tracker, cfg: GCfg, log=print, prev=()):
     ref, net, seed = cell.ref, cell.ref.net, cell.seed
     t0 = time.time()
     g = egen(seed, 10)
     n = cfg.n_train
     c = torch.rand(n, generator=g); xi = torch.randn(n, 2, generator=g)
     layers = tuple(sorted({cfg.det_layer, cfg.feat_layer}))
-    a, tr = decode(net, xi, c, layers=layers)
+    prev_hooks = combine_hooks(net, list(prev)) if prev else None
+    a, tr = decode(net, xi, c, layers=layers, hooks=prev_hooks)      # current policy
     lab = T.label(a, c, loose=2.0)
     bad = np.isin(lab, T.bad)
     cf = net.c_feat(c)
+    if prev:
+        a_ref = decode_batched(net, xi, c)
+        lab_ref = T.label(a_ref, c, loose=2.0)
     # ---- detector: logistic probe on pooled early-step activations (label = bad final action)
     Fd = torch.cat([feats({cfg.det_layer: tr[cfg.det_layer][k]}, tr["x"][k], cf, cfg.det_layer)
                     for k in range(cfg.det_steps)])
@@ -191,25 +203,37 @@ def fit_graft(cell: Cell, T: Tracker, cfg: GCfg, log=print):
     Ff = feats({cfg.feat_layer: tr[cfg.feat_layer][0]}, tr["x"][0], cf, cfg.feat_layer)
     mu_f, sd_f = Ff.mean(0), Ff.std(0) + 1e-6
     out_dim = 2 if cfg.out_layer == "out" else 128
+    torch.manual_seed(seed + 1000 * len(prev))           # graft init (reproducible)
     gr = Graft(cfg, Fd.shape[1], Ff.shape[1], det_w, det_b, mu_d, sd_d, mu_f, sd_f, out_dim)
     # ---- rescue targets for bad samples
-    tgt = a.clone()
-    ib = np.flatnonzero(bad)
-    fill = None
-    if cfg.balance:
-        good_tr = [k for k in range(T.n_tracks) if k not in T.bad and (lab == k).sum() > 0.02 * n]
-        fill = {k: float((lab == k).sum()) / n for k in good_tr}
-        FILL_N[0] = n
-    ht, ok, htrk = hop_targets(ref, T, c[ib], xi[ib], cfg, egen(seed, 11), fill=fill)
-    if cfg.balance:
-        log("  balanced target fill " + str({k: round(fill[k] + float((htrk == k).sum()) / n, 3) for k in fill}))
-    tgt[ib] = ht
+    tgt = a.clone() if not prev else a_ref.clone()
+    ib = np.flatnonzero(bad if not prev else np.isin(lab_ref, T.bad))
+    key = f"cache/tg_{cell.name}_n{n}_d{cfg.hop_dirs}_m{cfg.hop_max}_s{cfg.hop_step}_b{int(cfg.balance)}.pt"
+    if os.path.exists(key):
+        tgt, ok = torch.load(key, weights_only=False)
+    else:
+        fill = None
+        if cfg.balance:
+            assert not prev, "targets are computed (and cached) in round 1"
+            good_tr = [k for k in range(T.n_tracks) if k not in T.bad and (lab == k).sum() > 0.02 * n]
+            fill = {k: float((lab == k).sum()) / n for k in good_tr}
+            FILL_N[0] = n
+        ht, ok, htrk = hop_targets(ref, T, c[ib], xi[ib], cfg, egen(seed, 11), fill=fill)
+        if cfg.balance:
+            log("  balanced target fill " + str({k: round(fill[k] + float((htrk == k).sum()) / n, 3) for k in fill}))
+        tgt[ib] = ht
+        os.makedirs("cache", exist_ok=True)
+        torch.save((tgt, ok), key)
     use = np.ones(n, bool); use[ib[~ok]] = False
+    if prev:
+        # round r: still-bad samples go to their round-1 (pi_ref hop) targets; others stay where they are now
+        tgt = torch.where(torch.from_numpy(bad).unsqueeze(-1), tgt, a)
+        use &= ~(bad & ~np.isin(lab_ref, T.bad))      # newly bad under the graft: no target, skip
     t_tg = time.time() - t0
     # ---- which samples does the gate ever touch on the ref trajectory (approx.; recomputed live)
     w = torch.where(torch.from_numpy(bad), 1.0, cfg.w_good)
     opt = torch.optim.Adam(gr.parameters(), lr=cfg.lr)
-    hooks = make_hooks(net, gr)
+    hooks = combine_hooks(net, list(prev) + [gr])
     for p in net.parameters():
         p.requires_grad_(False)
     idx_all = np.flatnonzero(use)
@@ -241,7 +265,11 @@ def fit_graft(cell: Cell, T: Tracker, cfg: GCfg, log=print):
         good_tr = [k for k in range(T.n_tracks) if k not in T.bad and (l0 == k).sum() > 0.02 * m]
         fill = {int(k): round(float((l1 == k).mean()), 4) for k in good_tr}
         qc["good_fill"] = fill
-    info = {"fit_s": round(time.time() - t0, 1), "target_s": round(t_tg, 1), "n_bad": int(bad.sum()),
+    with torch.no_grad():
+        on0 = gr.gate({cfg.det_layer: tr[cfg.det_layer][0]}, tr["x"][0], torch.ones(n), cf).numpy()
+    info_det = {"det_tpr0": float(on0[bad].mean()), "det_fpr0": float(on0[~bad].mean())}
+    log("  detector " + str(info_det))
+    info = {**info_det, "fit_s": round(time.time() - t0, 1), "target_s": round(t_tg, 1), "n_bad": int(bad.sum()),
             "hop_ok": float(ok.mean()), "quick": qc,
             "units": cfg.n_units, "params_added": int(sum(p.numel() for p in gr.parameters()))}
     return gr, hooks, info
@@ -250,8 +278,19 @@ def fit_graft(cell: Cell, T: Tracker, cfg: GCfg, log=print):
 def run(seed, layout, npm, cfg: GCfg, tag, outdir="results"):
     cell = load_cell(seed, layout, npm)
     T = build_tracker(cell.ref, seed, cell.ed)
-    gr, hooks, info = fit_graft(cell, T, cfg)
-    ev = oracle_eval(cell, Policy(cell.ref.net, hooks))
+    grafts, rounds = [], []
+    for r in range(cfg.rounds):
+        gr, hooks, info = fit_graft(cell, T, cfg, prev=grafts)
+        grafts.append(gr)
+        if cfg.rounds > 1:
+            ev_r = oracle_eval(cell, Policy(cell.ref.net, hooks))
+            rounds.append({"round": r + 1, **ev_r, "quick": info["quick"], "det_tpr0": info["det_tpr0"], "det_fpr0": info["det_fpr0"]})
+            print(f"  round {r + 1}: D {ev_r['D']:.3f} Rem {ev_r['Removed']:.3f} Col {ev_r['Collateral']:.3f} off {ev_r['off']:.3f}", flush=True)
+    info["rounds"] = rounds
+    info["params_added"] = int(sum(p.numel() for g_ in grafts for p in g_.parameters()))
+    ev = rounds[-1] if rounds else oracle_eval(cell, Policy(cell.ref.net, hooks))
+    ev = {k: ev[k] for k in ("D", "Removed", "Collateral", "off", "D_ref")}
+    torch.save([g_.state_dict() for g_ in grafts], os.path.join("cache", f"grafts_{tag}_{cell.name}.pt"))
     rec = {"cell": cell.name, "seed": seed, "layout": layout, "npm": npm, "tag": tag, "cfg": asdict(cfg),
            "tracker": tracker_diag(T, cell), **info, **ev}
     os.makedirs(outdir, exist_ok=True)

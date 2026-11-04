@@ -1,0 +1,13 @@
+{
+ "ref_forget_mass": 0.48945,
+ "still_forget": 0.06045,
+ "still_forget_gate_never_fired": 0.001,
+ "still_forget_gate_fired": 0.05945,
+ "new_forget_from_retained": 0.00155,
+ "off_ref": 0.0265,
+ "off_new": 0.03925,
+ "off_new_from_forget": 0.02615,
+ "off_new_from_retained_fired": 0.00225,
+ "retained_fired": 0.6187377337051957,
+ "retained_flipped": 0.0047
+}
