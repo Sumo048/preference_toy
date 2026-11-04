@@ -204,3 +204,21 @@
 2026-11-04 17:52:40 [4586] cond_pairs_s7_n16_B5 launched
 2026-11-04 17:57:17 [4586] cond_pairs_s7_n16_B4 wrapper exit 0
 2026-11-04 17:57:17 [4586] cond_pairs_s7_n16_R0 launched
+2026-11-04 18:01:24 [4586] cond_pairs_s7_n16_R0 wrapper exit 0
+2026-11-04 18:01:24 [4586] cond_pairs_s8_n4_D1 launched
+2026-11-04 18:08:09 [4586] cond_pairs_s7_n16_B5 wrapper exit 0
+2026-11-04 18:08:09 [4586] cond_pairs_s8_n4_B4 launched
+2026-11-04 18:10:37 [4586] cond_pairs_s7_n16_D1 wrapper exit 0
+2026-11-04 18:10:37 [4586] cond_pairs_s8_n4_B5 launched
+2026-11-04 18:11:12 [4586] cond_pairs_s8_n4_D1 wrapper exit 0
+2026-11-04 18:11:12 [4586] cond_pairs_s8_n4_R0 launched
+2026-11-04 18:12:29 [4586] cond_pairs_s8_n4_B4 wrapper exit 0
+2026-11-04 18:12:29 [4586] cond_pairs_s8_n16_D1 launched
+2026-11-04 18:12:43 [4586] cond_pairs_s8_n4_R0 wrapper exit 0
+2026-11-04 18:12:43 [4586] cond_pairs_s8_n16_B4 launched
+2026-11-04 18:19:06 [4586] cond_pairs_s8_n4_B5 wrapper exit 0
+2026-11-04 18:19:06 [4586] cond_pairs_s8_n16_B5 launched
+2026-11-04 18:20:19 [4586] cond_pairs_s8_n16_B4 wrapper exit 0
+2026-11-04 18:20:19 [4586] cond_pairs_s8_n16_R0 launched
+2026-11-04 18:21:58 [4586] cond_pairs_s8_n16_R0 wrapper exit 0
+2026-11-04 18:21:58 [4586] cond_pairs_s9_n4_D1 launched
