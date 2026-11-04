@@ -29,20 +29,25 @@ After the credit ends, running sessions count against your Max plan limits. Arch
 1. `main` is the default branch on GitHub.
 2. The files of `agentic_repair_files.zip` are committed on `main`: `docs/PLAN.md`, `docs/SESSION_PROMPTS.md`, `.claude/agents/surgeon.md`, `surgeon-sonnet.md`, `triage.md`, and `tools/surgeon_hook.py`.
 3. The Claude GitHub App is installed on `Sumo048/preference_toy`, so sessions can push branches.
-4. Sessions are plain cloud sessions: claude.ai/code (repo `Sumo048/preference_toy`, branch `main`, Default environment) or `claude --cloud "<prompt>"`. Not inside a Project, a Routine, or Remote Control.
+4. W0's role hook is on `main`: `.claude/settings.json` and `tools/role_hook_dispatch.py`. The `hooks:` field in agent definitions does not run in cloud sessions, and a session reads hooks only when it starts.
+5. Sessions are plain cloud sessions: claude.ai/code (repo `Sumo048/preference_toy`, branch `main`, Default environment) or `claude --cloud "<prompt>"`. Not inside a Project, a Routine, or Remote Control.
 
 ## Rules for every session
 
 1. Read `docs/PLAN.md` in full, including Amendment 1, before any work.
 2. **Wait first.** If your section has a "Waits for" line, run the wait loop (rule 4) before anything else. Read the first line of each input `DONE` file. If one says `STATUS: FAIL`, read its reason. Work around it if you can within your time box and say so; otherwise write your own `DONE` file with `STATUS: FAIL` and stop.
 3. Then check out your branch as your section says, and run `bash scripts/cloud_setup.sh` (W0 writes it; E sessions, see their section).
-4. **Wait loop.** Run this as one Bash call with a 600,000 ms timeout. List every `<branch>:<path>` you wait for. Exit 0 means ready. Exit 124 means not yet: run it again. Each call adds only one short result to your context.
+4. **Wait loop.** Run this as one Bash call with a 600,000 ms timeout. List the `DONE` file names you wait for. It searches every branch, because some sessions can push only to their own `claude/...` branch. Exit 0 means ready: it prints each file with the branch that holds it, newest first. Those printed branches are your inputs. Exit 124 means not yet: run it again. Each call adds only one short result to your context.
 
    ```bash
-   timeout 580 bash -c 'while true; do git fetch -q origin 2>/dev/null; ok=1; for x in "$@"; do git cat-file -e "origin/$x" 2>/dev/null || ok=0; done; [ $ok = 1 ] && exit 0; sleep 60; done' _ BRANCH:PATH
+   timeout 580 bash -c 'while true; do git fetch -q origin "+refs/heads/*:refs/remotes/origin/*" 2>/dev/null; ok=1; out=; for f in "$@"; do hit=; for b in $(git for-each-ref --sort=-committerdate --format="%(refname:short)" refs/remotes/origin); do git cat-file -e "$b:docs/$f" 2>/dev/null && { hit=$b; break; }; done; if [ -n "$hit" ]; then out="$out$f $hit\n"; else ok=0; fi; done; [ $ok = 1 ] && { printf "$out"; exit 0; }; sleep 60; done' _ DONE_X.md DONE_Y.md
    ```
 
-5. **DONE file.** When you finish, or at your deadline, commit `docs/DONE_<your session>.md` and push. Its first line is `STATUS: PASS`, `STATUS: PASS-WITH-ISSUES — <issues>`, or `STATUS: FAIL — <reason>`. The rest is your summary (rule 14). Later sessions start from this file.
+5. **DONE file.** When you finish, or at your deadline, commit `docs/DONE_<your session>.md` and push.
+
+   **Pushing.** Push to the branch your section names: `git push origin HEAD:refs/heads/<name>`. If your session lets you push only to its own `claude/...` branch, push there instead and say so in your `DONE` file. Wait loops find `DONE` files on any branch.
+
+   The `DONE` file's first line is `STATUS: PASS`, `STATUS: PASS-WITH-ISSUES — <issues>`, or `STATUS: FAIL — <reason>`. The rest is your summary (rule 14). Later sessions start from this file.
 6. Keep `docs/STATE_<your session>.md` current: what is done, what runs, what is next. After a context compaction, read it again before you act.
 7. Work only on your branch. Edit only the files your section gives you. Read other files freely.
 8. If you need a change to another session's interface, write it in `docs/INTERFACE_REQUESTS_<your session>.md` and use a local adapter until the merge.
@@ -50,7 +55,7 @@ After the credit ends, running sessions count against your Max plan limits. Arch
 10. While jobs or subagents run, do not end your turn. Poll with `sleep 90` followed by `python scripts/jobs.py ensure <manifest>`, which restarts dead workers. An idle session pauses its VM and stops its jobs. Background commands stop after about 30 minutes, which is why job units are short.
 11. Run at most 8 surgeon subagents at a time.
 12. At each commit, run `python -m toyrepair.transcripts spend --session <your session>`. It appends your main-agent cost to `results/spend.jsonl`. Commit at each milestone. Push your branch at least once an hour.
-13. Use Sonnet subagents for code search, log summaries, and plots. Do not open pull requests. Do not push to `main`. Do not edit `.claude/agents/` or `tools/surgeon_hook.py`.
+13. Use Sonnet subagents for code search, log summaries, and plots. Do not open pull requests. Do not push to `main`. Do not edit `.claude/`, `tools/surgeon_hook.py`, or `tools/role_hook_dispatch.py`.
 14. End with a summary of 15 lines or fewer: what works, key numbers, what failed, open interface requests, measured cost, and anything the next session must know. Put the same summary in your `DONE` file.
 
 ## W0
@@ -74,9 +79,9 @@ Branch: `git checkout -b agentic-repair-toy origin/main`
 
 ## W1-A1: simulation-side harness
 
-Waits for: `agentic-repair-toy:docs/DONE_W0.md`
+Waits for: `DONE_W0.md`
 
-Branch: `git checkout -b art/harness-sim origin/agentic-repair-toy`
+Branch: `git checkout -b art/harness-sim <branch printed for DONE_W0.md>`
 
 You own: `toyrepair/policy.py`, `flowstate.py`, `miner.py`, `quick_check.py`, `pools.py` (beyond W0's seeds), and their tests. W0's signatures are the contract.
 
@@ -89,9 +94,9 @@ Smoke-test each component on unconditional `base_k2` first. Report: cluster coun
 
 ## W1-A2: gate and evaluation
 
-Waits for: `agentic-repair-toy:docs/DONE_W0.md`
+Waits for: `DONE_W0.md`
 
-Branch: `git checkout -b art/harness-gate origin/agentic-repair-toy`
+Branch: `git checkout -b art/harness-gate <branch printed for DONE_W0.md>`
 
 You own: `toyrepair/oracle/`, `gate.py`, `ledger.py`, `budget.py`, `eval_final.py`, and their tests. W0's signatures are the contract.
 
@@ -102,9 +107,9 @@ You own: `toyrepair/oracle/`, `gate.py`, `ledger.py`, `budget.py`, `eval_final.p
 
 ## W1-B: edit API and training
 
-Waits for: `agentic-repair-toy:docs/DONE_W0.md`
+Waits for: `DONE_W0.md`
 
-Branch: `git checkout -b art/edits origin/agentic-repair-toy`
+Branch: `git checkout -b art/edits <branch printed for DONE_W0.md>`
 
 You own: `toyrepair/edits.py`, `patches.py`, `train.py`, `sandbox.py`, the gate's unit-test hook (a function in `edits.py`), `docs/EDIT_REFERENCE.md`, and their tests. W0's signatures are the contract.
 
@@ -117,9 +122,9 @@ You own: `toyrepair/edits.py`, `patches.py`, `train.py`, `sandbox.py`, the gate'
 
 ## W1-C: reproduction and code arms
 
-Waits for: `agentic-repair-toy:docs/DONE_W0.md`
+Waits for: `DONE_W0.md`
 
-Branch: `git checkout -b art/arms origin/agentic-repair-toy`
+Branch: `git checkout -b art/arms <branch printed for DONE_W0.md>`
 
 You own: `toyrepair/arms/`, `scripts/run_arm.py`, `scripts/phase1_repro.py`, `results/phase1/`, `results/baselines/`, `docs/DEV_LOG.md`, and their tests.
 
@@ -138,9 +143,9 @@ Report the reproduction table and the CPU time per arm run.
 
 ## W1-D: LLM roles, CLI, and orchestrator
 
-Waits for: `agentic-repair-toy:docs/DONE_W0.md`
+Waits for: `DONE_W0.md`
 
-Branch: `git checkout -b art/llm origin/agentic-repair-toy`
+Branch: `git checkout -b art/llm <branch printed for DONE_W0.md>`
 
 You own: `toyrepair/cli.py`, `dossier.py`, `orchestrate.py`, `transcripts.py` (beyond W0's `spend`), `toyrepair/prompts/` (the static prompt texts), and their tests.
 
@@ -179,9 +184,9 @@ Time box 6 hours. Write `docs/DONE_EN.md` and push.
 
 ## W2a: merge and pilot
 
-Waits for: `art/harness-sim:docs/DONE_W1-A1.md`, `art/harness-gate:docs/DONE_W1-A2.md`, `art/edits:docs/DONE_W1-B.md`, `art/arms:docs/DONE_W1-C.md`, `art/llm:docs/DONE_W1-D.md`
+Waits for: `DONE_W0.md`, `DONE_W1-A1.md`, `DONE_W1-A2.md`, `DONE_W1-B.md`, `DONE_W1-C.md`, `DONE_W1-D.md`
 
-Branch: `git checkout agentic-repair-toy && git pull`, then merge `origin/art/harness-sim`, `origin/art/harness-gate`, `origin/art/edits`, `origin/art/arms`, and `origin/art/llm` one at a time.
+Branch: `git checkout -B agentic-repair-toy <branch printed for DONE_W0.md>`, then merge the five branches printed for the `DONE_W1-*` files, one at a time. Push the result as `agentic-repair-toy` (rule 5).
 
 1. Resolve conflicts and every `INTERFACE_REQUESTS_*.md`. Put `EDIT_REFERENCE.md` into the surgeon's static prompt. Run all tests. Fix what fails. Push.
 2. Phase 2 exit: write a graft by hand for unconditional `base_k2` and send it through the full path (orchestrator, CLI, gate, ledger). Do it yourself; do not use a subagent.
@@ -192,22 +197,22 @@ Branch: `git checkout agentic-repair-toy && git pull`, then merge `origin/art/ha
 
 ## W2b: recursion and freeze
 
-Waits for: `agentic-repair-toy:docs/DONE_W2a.md`
+Waits for: `DONE_W2a.md`
 
-Branch: `git checkout agentic-repair-toy && git pull`
+Branch: `git checkout -B agentic-repair-toy <branch printed for DONE_W2a.md>`. Push the result as `agentic-repair-toy` (rule 5).
 
-1. Read `docs/explore/E1.md`, `E2.md`, and `E3.md` from the `art/explore-*` branches if they exist (`git show origin/art/explore-E1:docs/explore/E1.md`).
+1. Read `docs/explore/E1.md`, `E2.md`, and `E3.md` if they exist on any branch (find them as the wait loop does).
 2. Phase 4: build `contrast` and `unit_card` from the pilot's sandbox code (read it in the ledgers) and from the exploration findings, for A1, A2, and A3 alike. Do not put exploration findings into the surgeon's static prompt. Make R0, D1, and B4 iterative. Run full recursive A3 and the iterative code arms on `k4`, npm 4 and 16, seeds 0–4.
 3. Phase 5: write `PREREG.md` (Section 10.5) with the grid of Amendment 1. Split it into 3 shares of roughly equal projected cost (Section 9.1). List every cell for every arm in each share, and the replicate order for each share.
 4. Commit `PREREG.md` to `agentic-repair-toy`, write `docs/DONE_W2b.md`, and push.
 
 ## W3-1, W3-2, W3-3: confirmatory grid
 
-Waits for: `agentic-repair-toy:docs/DONE_W2b.md`
+Waits for: `DONE_W2b.md`
 
 Use the same section for all three; N is 1, 2, or 3 from your prompt. The surgeon subagents run on Opus through their definitions, whatever your own model is.
 
-Branch: `git checkout -b art/grid-N origin/agentic-repair-toy`
+Branch: `git checkout -b art/grid-N <branch printed for DONE_W2b.md>`
 
 1. Run share N from `PREREG.md` (Phase 6, seeds 5–9): every listed arm on every listed cell, then the final evaluation. Run code arms through `scripts/jobs.py`. Run up to 8 surgeon sessions at a time. Write results under `results/grid/<setting>/s<seed>/n<npm>/<arm>/`. Do not change any method, threshold, or prompt. If a run fails, mark it invalid with the reason and rerun it once.
 2. When the share is done, run A3 replicates in the order `PREREG.md` gives, under `results/grid/.../A3_rep1/`, until Wednesday 23:00 ET.
@@ -215,9 +220,9 @@ Branch: `git checkout -b art/grid-N origin/agentic-repair-toy`
 
 ## W4: report
 
-Waits for: `art/grid-1:docs/DONE_W3-1.md`, `art/grid-2:docs/DONE_W3-2.md`, `art/grid-3:docs/DONE_W3-3.md`
+Waits for: `DONE_W2b.md`, `DONE_W3-1.md`, `DONE_W3-2.md`, `DONE_W3-3.md`
 
-Branch: `git checkout agentic-repair-toy && git pull`, then merge `origin/art/grid-1`, `origin/art/grid-2`, and `origin/art/grid-3` one at a time.
+Branch: `git checkout -B agentic-repair-toy <branch printed for DONE_W2b.md>`, then merge the three branches printed for the `DONE_W3-*` files, one at a time.
 
 Do Phase 7: run any exploratory arm that W3 did not finish, compute the statistics of Section 9.5 (replicates as a robustness check), and write `REPORT.md` with the contents of Section 9.6, including `results/method_map_rows.json`. Add a section with the exploration results (E1–E3) and the oracle floor of D. Label T1–T4. Use a Sonnet subagent for the plots, then check each plot yourself.
 
