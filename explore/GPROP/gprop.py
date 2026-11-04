@@ -97,6 +97,7 @@ class PCfg:
     cand_mult: int = 3      # noises drawn per flagged sample per attempt
     cost: str = "noise"     # "noise": |xi_i - z_j|^2 ; "action": |a_ref(xi_i) - a_ref(z_j)|^2
     redecode: bool = True   # target = pi_ref(z_j, c_i) at the flagged sample's own c
+    strict: bool = False    # redecode not on a good track: drop the sample (True) or use pi_ref(z_j, c_j) (False)
 
 
 @torch.no_grad()
@@ -142,6 +143,8 @@ def prop_targets(ref, T, c, xi, a_cur, pc: PCfg, seed, log=print):
             la = T.label(A[col], Cc[col], loose=2.0)
             t_[~good] = A[col][~good]
             lt[~good] = la[~good]
+            if pc.strict:
+                rows = rows[good]; t_ = t_[torch.from_numpy(good)]; lt = lt[good]
         else:
             t_ = A[col]; lt = T.label(t_, c[rows], loose=2.0)
         tgt[rows] = t_; ok[rows] = True; trk[rows] = lt
@@ -268,6 +271,8 @@ GP1_CFGS = {
     "C": (K10C, PCfg(bins=8), "prop"),                             # proportional OT, wide c-bins (smoother map)
     "A1": (replace(K10C, rounds=1), PCfg(), "prop"),               # = round 1 of A (same seeds, same targets)
     "C1": (replace(K10C, rounds=1), PCfg(bins=8), "prop"),         # = round 1 of C
+    "W1": (replace(K10C, rounds=1), PCfg(bins=2, strict=True), "prop"),
+    "W": (K10C, PCfg(bins=2, strict=True), "prop"),
     "Ak12": (replace(K10C, k_gate=12, det_steps=10), PCfg(), "prop"),
     "Aw1": (replace(K10C, w_good=1.0), PCfg(), "prop"),
 }
@@ -289,7 +294,8 @@ def unit_graft(arm, cfgname, setting, seed, npm=4):
     T = build_tracker(cell.ref, seed, cell.ed)
     net = cell.ref.net
     grafts = load_grafts(st["done"], cfg)
-    cache_tag = f"{targets}" + ("" if pc is None else f"_b{pc.bins}_m{pc.cand_mult}_{pc.cost}_r{int(pc.redecode)}")
+    cache_tag = f"{targets}" + ("" if pc is None else f"_b{pc.bins}_m{pc.cand_mult}_{pc.cost}_r{int(pc.redecode)}"
+                                + ("_strict" if pc.strict else ""))
     while st["r"] < cfg.rounds:
         r = st["r"]
         t_setup = time.time()
