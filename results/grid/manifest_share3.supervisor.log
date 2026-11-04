@@ -109,3 +109,9 @@
 2026-11-04 17:31:21 [28929] g3_cond_k4_s6_n64_D1 launched
 2026-11-04 17:31:27 [28929] g3_cond_k4_s6_n64_R0 wrapper exit 0
 2026-11-04 17:31:27 [28929] g3_cond_k4_s6_n64_B5 launched
+2026-11-04 17:51:08 [28929] g3_cond_k4_s6_n64_D1 wrapper exit 0
+2026-11-04 17:51:08 [28929] g3_cond_k4_s7_n1_B4 launched
+2026-11-04 17:56:34 [28929] g3_cond_k4_s7_n1_B4 wrapper exit 0
+2026-11-04 17:56:34 [28929] g3_cond_k4_s7_n1_R0 launched
+2026-11-04 17:58:09 [28929] g3_cond_k4_s7_n1_R0 wrapper exit 0
+2026-11-04 17:58:09 [28929] g3_cond_k4_s7_n1_D1 launched
