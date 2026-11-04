@@ -24,13 +24,13 @@
    "agent": "surgeon",
    "token": "Nqzi2hNQKuJPoWzB"
   },
-  "grid_cond_alt_s5_n4_A2": {
-   "agent": "triage",
-   "token": "XksS5pLLoAaX2fFX"
-  },
   "grid_cond_alt_s5_n16_A1": {
    "agent": "surgeon",
    "token": "5ciN7h6Dom2LkEfC"
+  },
+  "grid_cond_alt_s5_n4_A2": {
+   "agent": "surgeon",
+   "token": "AvUjqyeqB3M8KNw9"
   }
  },
  "done": [

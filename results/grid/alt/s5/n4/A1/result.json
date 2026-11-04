@@ -1,0 +1,346 @@
+{
+ "arm": "A1",
+ "cell": "cond_alt_s5_n4",
+ "setting": "alt",
+ "seed": 5,
+ "npm": 4,
+ "run_id": "grid_cond_alt_s5_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_alt_s5_n4_A1",
+ "output": {
+  "version": "v0",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [],
+  "gate_checks": 9,
+  "gate_cap": 27,
+  "decodes": 2215074.0,
+  "sessions": 3,
+  "cost_usd": 1.410576,
+  "n_first_clusters": 7
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 2,
+   "summary": "RESULT no-accept - BC hopB targeted_train (blocks.1-2,out; nhood, dist anchor) passed all tests except target; fall stuck ~0.05.",
+   "calls": 18,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.382797,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 4,
+   "summary": "RESULT no-accept - bc targeted_train on inp, all, blocks.1-2+out, blocks.2+out (hopB/hop) plus npo; gate target fall never exceeded 0.027.",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.460666,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 0,
+   "summary": "RESULT no-accept - BC hopB (v13) and NPO on blocks.2,out (v15, v16) all failed target; best fall 0.035",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.512323,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 2,
+   "fallback": false,
+   "cost_usd": 0.0171
+  },
+  {
+   "cluster": 4,
+   "fallback": false,
+   "cost_usd": 0.019305
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.018385
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 2,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": false,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.05157470703125,
+    "target_fall_ci": [
+     0.04760589599609375,
+     0.05529937744140624
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 2,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.05291748046875,
+    "target_fall_ci": [
+     0.04852294921875,
+     0.05743408203125
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 2,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.05108642578125,
+    "target_fall_ci": [
+     0.0460205078125,
+     0.0560302734375
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0244140625,
+    "target_fall_ci": [
+     0.01971435546875,
+     0.02911376953125
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": false,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.018798828125,
+    "target_fall_ci": [
+     0.01397705078125,
+     0.02374267578125
+    ]
+   }
+  },
+  {
+   "version": "v10",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.026611328125,
+    "target_fall_ci": [
+     0.023193359375,
+     0.02996978759765624
+    ]
+   }
+  },
+  {
+   "version": "v13",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0350341796875,
+    "target_fall_ci": [
+     0.0303955078125,
+     0.0400390625
+    ]
+   }
+  },
+  {
+   "version": "v15",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.01995849609375,
+    "target_fall_ci": [
+     0.01678314208984375,
+     0.02319488525390624
+    ]
+   }
+  },
+  {
+   "version": "v16",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.034423828125,
+    "target_fall_ci": [
+     0.0306396484375,
+     0.03796539306640624
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.51625,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0287,
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.1231,
+   "mass_m1": 0.11885,
+   "mass_m2": 0.12315,
+   "mass_m3": 0.1187,
+   "mass_m4": 0.11945,
+   "mass_m5": 0.1203,
+   "mass_m6": 0.12185,
+   "mass_m7": 0.1259,
+   "mass_off": 0.0287,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.51625,
+   "tv_to_ideal_ref": 0.51625,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 2403.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 2906.0
+  },
+  "final_pool": {
+   "D": 0.512115478515625,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.028594970703125,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.118988037109375,
+    0.121185302734375,
+    0.1225128173828125,
+    0.1240081787109375,
+    0.1206207275390625,
+    0.1214447021484375,
+    0.12139892578125,
+    0.121246337890625,
+    0.028594970703125
+   ],
+   "mass_ref": [
+    0.118988037109375,
+    0.121185302734375,
+    0.1225128173828125,
+    0.1240081787109375,
+    0.1206207275390625,
+    0.1214447021484375,
+    0.12139892578125,
+    0.121246337890625,
+    0.028594970703125
+   ]
+  }
+ }
+}
