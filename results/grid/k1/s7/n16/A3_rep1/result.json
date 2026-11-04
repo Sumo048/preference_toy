@@ -1,0 +1,234 @@
+{
+ "arm": "A3",
+ "cell": "cond_k1_s7_n16",
+ "setting": "k1",
+ "seed": 7,
+ "npm": 16,
+ "run_id": "grid_cond_k1_s7_n16_A3_rep1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s7_n16_A3_rep1",
+ "output": {
+  "version": "v5",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v3",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0003"
+    ]
+   },
+   {
+    "version": "v5",
+    "call": "graft_gated_path",
+    "patches": [
+     "p0003",
+     "p0005"
+    ]
+   }
+  ],
+  "gate_checks": 4,
+  "gate_cap": 9,
+  "decodes": 539287.0,
+  "sessions": 2,
+  "cost_usd": 1.090287,
+  "n_first_clusters": 1
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 1,
+   "summary": "RESULT accepted v3 step-0 gated graft on out moves bad-wedge noise to the other modes, spread in proportion",
+   "calls": 18,
+   "submissions": 2,
+   "accepted": "v3",
+   "cost_usd": 0.506591,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT accepted v5 gated out-layer graft on v3: out_act detector, relu side probe splits bad mass tangentially to both neighbour modes",
+   "calls": 18,
+   "submissions": 2,
+   "accepted": "v5",
+   "cost_usd": 0.550936,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.016119
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.016641
+  }
+ ],
+ "gates": [
+  {
+   "version": "v2",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0955810546875,
+    "target_fall_ci": [
+     0.0904541015625,
+     0.1004638671875
+    ]
+   }
+  },
+  {
+   "version": "v3",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.08026123046875,
+    "target_fall_ci": [
+     0.07574310302734374,
+     0.0848388671875
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.03509521484375,
+    "target_fall_ci": [
+     0.03204345703125,
+     0.0380859375
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 1,
+   "call": "graft_gated_path",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0372314453125,
+    "target_fall_ci": [
+     0.03436279296875,
+     0.04010009765625
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.03828571428571428,
+  "removed": 0.9650291423813488,
+  "collateral": 0.013250632736512738,
+  "mass_off": 0.0307,
+  "collateral_plan": 0.013051252355015494,
+  "toypref": {
+   "mass_m0": 0.1382,
+   "mass_m1": 0.1406,
+   "mass_m2": 0.1366,
+   "mass_m3": 0.12845,
+   "mass_m4": 0.1429,
+   "mass_m5": 0.0042,
+   "mass_m6": 0.1462,
+   "mass_m7": 0.13215,
+   "mass_off": 0.0307,
+   "neg_mass_ratio": 0.034970857618651124,
+   "retain_tv": 0.013250632736512738,
+   "tv_to_ideal": 0.03828571428571428,
+   "tv_to_ideal_ref": 0.14679999999999999,
+   "retain_noise_flip": 0.01646741678387248,
+   "neg_noise_to_retain": 0.9134054954204829,
+   "neg_noise_still_forget": 0.026228143213988343,
+   "disp_retain_mean": 0.06924253702163696,
+   "neg_still_forget_near": 0.01394700139470014,
+   "n_eval_neg_near": 717.0,
+   "neg_still_forget_far": 0.04566929133858268,
+   "n_eval_neg_far": 635.0
+  },
+  "final_pool": {
+   "D": 0.03605215890066962,
+   "removed": 0.9673494723774053,
+   "collateral": 0.013504701086134116,
+   "mass_off": 0.0311737060546875,
+   "retain_tv": 0.013477620536761242,
+   "n": 65536,
+   "mass": [
+    0.1372833251953125,
+    0.1396636962890625,
+    0.1329498291015625,
+    0.1309051513671875,
+    0.1437225341796875,
+    0.0040130615234375,
+    0.141998291015625,
+    0.1382904052734375,
+    0.0311737060546875
+   ],
+   "mass_ref": [
+    0.122833251953125,
+    0.121368408203125,
+    0.1197967529296875,
+    0.122467041015625,
+    0.1229705810546875,
+    0.1229095458984375,
+    0.1198272705078125,
+    0.1212921142578125,
+    0.0265350341796875
+   ]
+  }
+ }
+}

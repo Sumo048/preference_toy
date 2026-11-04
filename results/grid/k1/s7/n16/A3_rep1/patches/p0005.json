@@ -1,0 +1,29 @@
+{
+ "args": {
+  "act": "relu",
+  "detector": {
+   "b": -7.500149,
+   "k_range": [
+    6,
+    16
+   ],
+   "source": "out_act",
+   "threshold": 2.0
+  },
+  "layer": "out",
+  "n_units": 4,
+  "src": "out_act"
+ },
+ "arrays": [
+  "b_in",
+  "det_w",
+  "w_in",
+  "w_out"
+ ],
+ "call": "graft_gated_path",
+ "id": "p0005",
+ "npz_sha256": "018ebe887d38381c0690dd47ed19469f0ade25831fde9d9443dd22b83b7e2eaa",
+ "parent_version": "v3",
+ "sha256": "6bab1daeed0b5ab91bd88afa49a3f7e3b1969ec30f1703dce285c4746c8fdbdb",
+ "version": "v5"
+}
