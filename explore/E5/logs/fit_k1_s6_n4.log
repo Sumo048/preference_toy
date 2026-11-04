@@ -17,3 +17,7 @@
   it 600 loss 0.0577
   it 900 loss 0.0476
   it 1200 loss 0.0540
+  it 1499 loss 0.0849
+  detector {'det_tpr0': 0.20454545454545456, 'det_fpr0': 0.0003681885125184094}
+  round 2: D 0.071 Rem 0.906 Col 0.027 off 0.052
+[K10c] k1_s6_n4 D 0.071 Rem 0.906 Col 0.027 off 0.052 DONE

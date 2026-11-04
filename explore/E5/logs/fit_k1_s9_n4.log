@@ -11,3 +11,8 @@
   round 1: D 0.060 Rem 0.934 Col 0.011 off 0.053
   it 0 loss 0.0280
   it 300 loss 0.1407
+[K10c] k1_s9_n4 round 2 checkpoint at it 500 (730s)
+
+=== 2026-11-04 19:22:12 /home/user/preference_toy/explore/E5/e5.py fit --setting k1 --seed 9 --npm 4
+  it 600 loss 0.0383
+  it 900 loss 0.1202
