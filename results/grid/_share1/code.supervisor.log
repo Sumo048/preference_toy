@@ -74,3 +74,21 @@
 2026-11-04 16:24:54 [1891] cond_k4_s9_n16_B4 launched
 2026-11-04 16:27:50 [1891] cond_k4_s9_n4_B5 wrapper exit 0
 2026-11-04 16:27:51 [1891] cond_k4_s9_n16_B5 launched
+2026-11-04 16:52:25 [1891] cond_k4_s9_n16_D1 wrapper exit 0
+2026-11-04 16:52:25 [1891] cond_k4_s9_n16_R0 launched
+2026-11-04 16:54:26 [1891] cond_k4_s9_n16_B4 wrapper exit 0
+2026-11-04 16:54:26 [1891] cond_alt_s5_n4_D1 launched
+2026-11-04 16:56:06 [1891] cond_k4_s9_n16_R0 wrapper exit 0
+2026-11-04 16:56:06 [1891] cond_alt_s5_n4_B4 launched
+2026-11-04 17:00:25 [1891] cond_k4_s9_n16_B5 wrapper exit 0
+2026-11-04 17:00:25 [1891] cond_alt_s5_n4_B5 launched
+2026-11-04 17:10:27 [1891] cond_alt_s5_n4_B4 wrapper exit 0
+2026-11-04 17:10:27 [1891] cond_alt_s5_n4_R0 launched
+2026-11-04 17:14:05 [1891] cond_alt_s5_n4_R0 wrapper exit 0
+2026-11-04 17:14:05 [1891] cond_alt_s5_n16_D1 launched
+2026-11-04 17:15:16 [1891] cond_alt_s5_n4_B5 wrapper exit 0
+2026-11-04 17:15:16 [1891] cond_alt_s5_n16_B4 launched
+2026-11-04 17:18:22 [1891] cond_alt_s5_n4_D1 wrapper exit 0
+2026-11-04 17:18:22 [1891] cond_alt_s5_n16_B5 launched
+2026-11-04 17:28:17 [1891] cond_alt_s5_n16_B4 wrapper exit 0
+2026-11-04 17:28:17 [1891] cond_alt_s5_n16_R0 launched

@@ -1,0 +1,164 @@
+{
+ "arm": "R0",
+ "cell": "cond_k4_s9_n16",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 9,
+ "npm": 16,
+ "run_id": "R0_grid_cond_k4_s9_n16",
+ "run_dir": "/home/user/preference_toy/runs/repair/R0_grid_cond_k4_s9_n16",
+ "output": {
+  "arm": "R0",
+  "version": "v0",
+  "accepted": [],
+  "gate_checks": 9,
+  "decodes": 50080.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 7,
+   "gate_cap": 27,
+   "rounds": [
+    {
+     "cluster": 0,
+     "r_cur": 0.1385216346153846,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "p0.5",
+       "accepted": false
+      },
+      {
+       "version": "v2",
+       "variant": "p0.7",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "p0.3",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "push(d3,2r,k8,h3)"
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.12760416666666666,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "p0.5",
+       "accepted": false
+      },
+      {
+       "version": "v5",
+       "variant": "p0.7",
+       "accepted": false
+      },
+      {
+       "version": "v6",
+       "variant": "p0.3",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "hop(0.70,n36)"
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.1140625,
+     "tried": [
+      {
+       "version": "v7",
+       "variant": "p0.5",
+       "accepted": false
+      },
+      {
+       "version": "v8",
+       "variant": "p0.7",
+       "accepted": false
+      },
+      {
+       "version": "v9",
+       "variant": "p0.3",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "push(d3,2r,k8,h3)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.51645,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0289,
+  "toypref": {
+   "mass_m0": 0.11835,
+   "mass_m1": 0.11785,
+   "mass_m2": 0.12175,
+   "mass_m3": 0.1189,
+   "mass_m4": 0.1231,
+   "mass_m5": 0.1196,
+   "mass_m6": 0.1256,
+   "mass_m7": 0.12595,
+   "mass_off": 0.0289,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.51645,
+   "tv_to_ideal_ref": 0.51645,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 7108.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.0,
+  "final_pool": {
+   "D": 0.5158538818359375,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.0284881591796875,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.123291015625,
+    0.12176513671875,
+    0.120941162109375,
+    0.1202850341796875,
+    0.12353515625,
+    0.122528076171875,
+    0.1181488037109375,
+    0.1210174560546875,
+    0.0284881591796875
+   ],
+   "mass_ref": [
+    0.123291015625,
+    0.12176513671875,
+    0.120941162109375,
+    0.1202850341796875,
+    0.12353515625,
+    0.122528076171875,
+    0.1181488037109375,
+    0.1210174560546875,
+    0.0284881591796875
+   ]
+  }
+ },
+ "wall_s_arm": 158.6,
+ "wall_s_total": 216.3,
+ "cpu_s": 157.3,
+ "max_rss_mb": 842.6,
+ "threads": 1
+}
