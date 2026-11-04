@@ -45,3 +45,11 @@
 2026-11-04 14:13:51 [28929] g3_cond_b3p1_s7_n16_D1 launched
 2026-11-04 14:18:46 [28929] g3_cond_b3p1_s7_n16_B4 wrapper exit 0
 2026-11-04 14:18:46 [28929] g3_cond_b3p1_s7_n16_B5 launched
+2026-11-04 14:31:45 [28929] g3_cond_b3p1_s7_n16_D1 wrapper exit 0
+2026-11-04 14:31:45 [28929] g3_cond_b3p1_s8_n4_B4 launched
+2026-11-04 14:35:53 [28929] g3_cond_b3p1_s7_n16_B5 wrapper exit 0
+2026-11-04 14:35:53 [28929] g3_cond_b3p1_s8_n4_R0 launched
+2026-11-04 14:38:43 [28929] g3_cond_b3p1_s8_n4_R0 wrapper exit 0
+2026-11-04 14:38:43 [28929] g3_cond_b3p1_s8_n4_D1 launched
+2026-11-04 14:44:50 [28929] g3_cond_b3p1_s8_n4_B4 wrapper exit 0
+2026-11-04 14:44:50 [28929] g3_cond_b3p1_s8_n4_B5 launched
