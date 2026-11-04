@@ -15,3 +15,4 @@
 === 2026-11-04 19:58:13 /home/user/preference_toy/explore/E5/e5.py fit --setting contig --seed 9 --npm 4
   it 300 loss 0.2130
   it 600 loss 0.2272
+  it 900 loss 0.1456
