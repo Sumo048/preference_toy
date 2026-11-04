@@ -93,7 +93,11 @@ ARM_COMMANDS = {
     "A3-nobranch": tuple(c for c in DIAG if c != "branch") + WEIGHT_CALLS + TRAIN_CALLS,
     "A3-sonnet": DIAG + WEIGHT_CALLS + TRAIN_CALLS,
     "A3-nogate": DIAG + WEIGHT_CALLS + TRAIN_CALLS,
+    # A3LF session: A3 with the label-free gate (toyrepair.gate_lf); same commands and prompt as A3
+    "A3-LF": DIAG + WEIGHT_CALLS + TRAIN_CALLS,
 }
+#: arms whose loop is label-free: gate_lf replaces the gate, and no oracle purity is logged in the loop
+LABEL_FREE_ARMS = ("A3-LF",)
 EDIT_COMMANDS = WEIGHT_CALLS + TRAIN_CALLS
 FILE_OPTIONS = ("file", "w_in", "w_out", "b_in", "det_w", "u", "v", "b")
 
@@ -311,6 +315,8 @@ class RealBackend:
         from .miner import mine, log_purity
         cell = self.cell(run)
         atlas = mine(cell, self.version(run, vid))
+        if run.arm in LABEL_FREE_ARMS:     # no oracle in a label-free loop (purity: scripts/a3lf.py shadow)
+            return atlas
         try:
             log_purity(cell, atlas, os.path.join(run.dir, "purity.csv"))
         except NotImplementedError:
@@ -427,6 +433,12 @@ class RealBackend:
         save_patch(run.dir, res.patch)
 
     def gate(self, run, vid, cid, check_index):
+        if run.arm in LABEL_FREE_ARMS:
+            from . import gate_lf
+            cl = self.cluster(run, cid)
+            return gate_lf.gate_check(self.cell(run), self.version(run, "v0"), self.version(run, run.current),
+                                      self.version(run, vid), list(int(u) for u in cl.uids), check_index,
+                                      cfg=gate_lf.GateConfig(**run.gate_cfg))
         from . import gate
         cfg = gate.GateConfig(**{**run.gate_cfg, **({"accept_all": True} if run.arm == "A3-nogate" else {})})
         cl = self.cluster(run, cid)

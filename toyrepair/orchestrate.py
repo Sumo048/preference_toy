@@ -50,8 +50,8 @@ from typing import Dict, List, Optional
 from . import RUNS
 
 ARMS = ("B0", "B1a", "B1b", "B4", "B5", "R0", "D1", "A1", "A2", "A3",
-        "A3-nobranch", "A3-sonnet", "A3-nogate")
-LLM_ARMS = ("A1", "A2", "A3", "A3-nobranch", "A3-sonnet", "A3-nogate")
+        "A3-nobranch", "A3-sonnet", "A3-nogate", "A3-LF")
+LLM_ARMS = ("A1", "A2", "A3", "A3-nobranch", "A3-sonnet", "A3-nogate", "A3-LF")
 STOP_RULES = ("no_open_cluster", "no_accept_streak", "gate_cap", "cost_cap")
 MAX_CONCURRENT_SESSIONS = 8
 # Mirrors toyrepair.budget (W1-A2); repeated here so this module stays import-light.

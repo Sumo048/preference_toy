@@ -240,12 +240,16 @@ def triage_static() -> str:
         return fh.read().strip()
 
 
+#: the arm name the surgeon sees: A3-LF gets A3's prompt text unchanged (docs/A3LF_PREREG.md)
+PROMPT_ARM = {"A3-LF": "A3"}
+
+
 def variable_part(run, session) -> str:
     """Failure card, branch table, ledger summary, remaining gate checks and cost (in that order)."""
     from .orchestrate import branch_path, get_atlas, load_budget, load_pickle
     atlas = get_atlas(run, session.version_at_start)
     card = next((c for c in atlas.cards if c.cluster == session.cluster), None)
-    head = (f"# Dossier: run {run.id}, session {session.session}, arm {run.arm}\n"
+    head = (f"# Dossier: run {run.id}, session {session.session}, arm {PROMPT_ARM.get(run.arm, run.arm)}\n"
             f"Current version: {run.current}. Target cluster: {session.cluster}. Scratch directory: {run.scratch}")
     card_txt = "## Failure card\n" + (render_card(card) if card else f"cluster {session.cluster}: no card (closed)")
     bp = branch_path(run, session.session)

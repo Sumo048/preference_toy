@@ -7,6 +7,11 @@ to ~/.claude/role_hook_log.jsonl (keys only) so the dispatch can be audited."""
 import json, os, subprocess, sys, time
 
 ROLES = {"surgeon", "surgeon-sonnet", "triage"}
+# A3LF session: its Claude Code session started on a branch without .claude/agents, so the role
+# subagents are not registered. It runs surgeon and triage as the built-in `claude` agent type
+# (model opus / sonnet, the role definition's text in the task message) and uses that type for
+# nothing else, so the same filter applies (docs/A3LF_PREREG.md, deviations).
+ROLES |= {"claude"}
 raw = sys.stdin.read()
 try:
     data = json.loads(raw)
