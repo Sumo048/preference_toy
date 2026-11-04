@@ -1,0 +1,219 @@
+{
+ "arm": "D1",
+ "cell": "cond_k4_s8_n64",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 8,
+ "npm": 64,
+ "run_id": "D1_g3_cond_k4_s8_n64",
+ "run_dir": "/home/user/preference_toy/runs/repair/D1_g3_cond_k4_s8_n64",
+ "output": {
+  "arm": "D1",
+  "version": "v5",
+  "accepted": [
+   "v1",
+   "v5"
+  ],
+  "gate_checks": 14,
+  "decodes": 249035.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 6,
+   "gate_cap": 24,
+   "rounds": [
+    {
+     "cluster": 2,
+     "r_cur": 0.12796336206896552,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "all_5000",
+       "accepted": true
+      }
+     ],
+     "accepted": "v1",
+     "k_commit": 12,
+     "primitive": "hop(1.15,n307)"
+    },
+    {
+     "cluster": 0,
+     "r_cur": 0.109765625,
+     "tried": [
+      {
+       "version": "v2",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v4",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.25,n139)"
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.06515625,
+     "tried": [
+      {
+       "version": "v5",
+       "variant": "all_5000",
+       "accepted": true
+      }
+     ],
+     "accepted": "v5",
+     "k_commit": 16,
+     "primitive": "hop(0.80,n117)"
+    },
+    {
+     "cluster": 4,
+     "r_cur": 0.06725543478260869,
+     "tried": [
+      {
+       "version": "v6",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v7",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v8",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.50,n22)"
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.05578125,
+     "tried": [
+      {
+       "version": "v9",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v10",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v11",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d2,0.5r,k12,h3)"
+    },
+    {
+     "cluster": 4,
+     "r_cur": 0.06725543478260869,
+     "tried": [
+      {
+       "version": "v12",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v13",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v14",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.50,n22)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.151,
+  "removed": 0.8098447712418301,
+  "collateral": 0.08928719787401708,
+  "mass_off": 0.0497,
+  "toypref": {
+   "mass_m0": 0.04025,
+   "mass_m1": 0.17845,
+   "mass_m2": 0.25675,
+   "mass_m3": 0.25145,
+   "mass_m4": 0.17055,
+   "mass_m5": 0.04615,
+   "mass_m6": 0.0033,
+   "mass_m7": 0.0034,
+   "mass_off": 0.0497,
+   "neg_mass_ratio": 0.19015522875816993,
+   "retain_tv": 0.08928719787401708,
+   "tv_to_ideal": 0.151,
+   "tv_to_ideal_ref": 0.51725,
+   "retain_noise_flip": 0.39544277576385295,
+   "neg_noise_to_retain": 0.7446895424836601,
+   "neg_noise_still_forget": 0.18555964052287582,
+   "disp_retain_mean": 0.9070602655410767,
+   "neg_still_forget_near": 0.18462332301341589,
+   "n_eval_neg_near": 9690.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.08470626494334103,
+  "final_pool": {
+   "D": 0.1531829833984375,
+   "removed": 0.8067605633802817,
+   "collateral": 0.0878722648785599,
+   "mass_off": 0.0493011474609375,
+   "retain_tv": 0.09266210971433858,
+   "n": 65536,
+   "mass": [
+    0.042236328125,
+    0.1773223876953125,
+    0.252349853515625,
+    0.25732421875,
+    0.16949462890625,
+    0.0447998046875,
+    0.0032806396484375,
+    0.0038909912109375,
+    0.0493011474609375
+   ],
+   "mass_ref": [
+    0.1220855712890625,
+    0.12078857421875,
+    0.121368408203125,
+    0.1219635009765625,
+    0.120208740234375,
+    0.1208953857421875,
+    0.12176513671875,
+    0.122772216796875,
+    0.0281524658203125
+   ]
+  }
+ },
+ "wall_s_arm": 1409.1,
+ "wall_s_total": 1484.9,
+ "cpu_s": 1001.1,
+ "max_rss_mb": 990.7,
+ "threads": 1
+}
