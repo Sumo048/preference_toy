@@ -72,3 +72,7 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - (12:20 ET) in flight: a8cdf c-s9n16, a4b07 c-s8n4, aa772 pairs s5n16, ac0cb pairs s5n4, a570a pairs s6n4; triage a6dbf c-s6n16, a37b2 c-s8n16, a8793 pairs s6n16
 - (12:25 ET) +a35ff c-s6n16, a0e1b c-s8n16, a1af5 pairs s6n16
 - (12:45 ET) user request: commit each finished run's patch stack to results/grid/.../<arm>/patches/ (stack.json + p*.json/npz of final version chain; no caches). Implemented copy_patches in grid_share2.py (code + eval paths) and backfilled 115 results
+- (12:50 ET) in flight: a35ff c-s6n16 (bg), a1af5 pairs s6n16 (bg), a9c73 c-s8n4, a1546 c-s8n16, a2f7f c-s9n16, a78cf pairs s5n4, ac00d pairs s5n16, addad pairs s6n4
+- (12:57 ET) resumed a1af5 pairs s6n16, a35ff c-s6n16
+- (13:00 ET) triage a2992 c-s8n16, a36d6 pairs s5n16
+- (13:10 ET) in flight: surgeons ad5fb c-s8n16, a1cb5 pairs s5n16; triage a9bc7 c-s8n4, a5e86 c-s9n16, a65d8 pairs s5n4, a3371 pairs s6n4, abe98 pairs s6n16, a5276 pairs s7n4
