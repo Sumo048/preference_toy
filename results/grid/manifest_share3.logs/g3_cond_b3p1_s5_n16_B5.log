@@ -1,1 +1,3 @@
 === start 2026-11-04 13:08:47 cmd=python scripts/run_arm.py --arm B5 --setting b3p1 --seed 5 --npm 16 --out results/grid_raw --tag _g3 && mkdir -p results/grid/b3p1/s5/n16/B5 && cp results/grid_raw/b3p1/s5/n16/B5_g3.json results/grid/b3p1/s5/n16/B5/result.json
+[B5 cond_b3p1_s5_n16] D 0.1268 removed 0.846 collateral 0.073 stop accepted gate_checks 3 (695.0s)
+=== end rc=0 697.7s 

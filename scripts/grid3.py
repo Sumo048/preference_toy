@@ -143,6 +143,94 @@ def step(token, summary, run=None):
                          env={**os.environ, "OMP_NUM_THREADS": "1"})
 
 
+def _handback(path):
+    """Last SubagentHandback message in a subagent transcript, or None."""
+    last = None
+    try:
+        for line in open(path):
+            if "SubagentHandback" not in line:
+                continue
+            try:
+                d = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            m = d.get("message") or {}
+            for c in (m.get("content") if isinstance(m.get("content"), list) else []):
+                if c.get("type") == "tool_use" and c.get("name") == "SubagentHandback":
+                    last = (c.get("input") or {}).get("message")
+    except OSError:
+        return None
+    return last
+
+
+def auto(max_active=8, rep=False, start=True):
+    """Advance every run whose pending subagent has handed back; start runs up to max_active.
+    Prints LAUNCH lines (subagent to invoke), WAIT lines (pending, with idle minutes) and DONE lines."""
+    import time
+    from toyrepair import orchestrate as orc
+    from toyrepair import transcripts as tr
+    root = Path(os.environ["TOYPREF_RUNS"]) / "repair"
+    order = llm_runs(False) + (llm_runs(True) if rep else [])
+    active = 0
+    fresh = []
+    for rid, arm, armdir, s, sd, n in order:
+        rp = root / rid / "run.json"
+        if not rp.exists():
+            continue
+        r = orc.load_run(rid)
+        if r.stop or r.invalid:
+            if not res_path(s, sd, n, armdir).exists():
+                print("NOEVAL", rid, r.stop or "invalid")
+            continue
+        b = orc.load_budget(r)
+        if not r.pending and b.get("sessions", 0) == 0 and r.iteration == 0 and r.n_first_clusters is None:
+            fresh.append(rid)
+            continue
+        active += 1
+        act = None
+        if r.pending:
+            path = tr.find_subagent_for_token(r.pending)
+            if path is None:
+                with orc.run_lock(orc.run_dir(rid)):
+                    act = orc.next_action(orc.load_run(rid))     # PENDING agent token
+            else:
+                hb = _handback(path)
+                if hb is None:
+                    idle = (time.time() - os.path.getmtime(path)) / 60
+                    print(f"WAIT {rid} agent={Path(path).stem.replace('agent-', '')} idle={idle:.0f}m")
+                    continue
+                rec = orc.record(r.pending, hb)
+                print("REC", rid, json.dumps({k: rec.get(k) for k in ("session", "role", "cluster", "accepted",
+                                                                          "audit_hits") if rec.get(k) is not None}))
+        if act is None:
+            with orc.run_lock(orc.run_dir(rid)):
+                act = orc.next_action(orc.load_run(rid))
+        _emit(rid, act)
+        if act.startswith("DONE"):
+            active -= 1
+    while start and active < max_active and fresh:
+        rid = fresh.pop(0)
+        with orc.run_lock(orc.run_dir(rid)):
+            act = orc.next_action(orc.load_run(rid))
+        _emit(rid, act)
+        active += 1
+    print("ACTIVE", active)
+
+
+def _emit(rid, act):
+    w = act.split()
+    if w[0] in ("TRIAGE", "SESSION", "PENDING"):
+        print("LAUNCH", w[1], rid, w[2])
+    elif w[0] == "DONE":
+        print("DONE", rid, act)
+        log = open(OUT / "eval_logs.txt", "a")
+        subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "eval", "--run", rid],
+                         stdout=log, stderr=log, stdin=subprocess.DEVNULL, start_new_session=True, cwd=str(REPO),
+                         env={**os.environ, "OMP_NUM_THREADS": "1"})
+    else:
+        print("??", rid, act)
+
+
 def eval_run(rid):
     import phase4
     from toyrepair import orchestrate as orc
@@ -222,6 +310,9 @@ def main(argv=None):
     sub.add_parser("queue").add_argument("--rep", action="store_true")
     sub.add_parser("eval").add_argument("--run", required=True)
     sub.add_parser("report")
+    au = sub.add_parser("auto")
+    au.add_argument("--max", type=int, default=8); au.add_argument("--rep", action="store_true")
+    au.add_argument("--nostart", action="store_true")
     st = sub.add_parser("step")
     st.add_argument("--token", default=""); st.add_argument("--summary", default=""); st.add_argument("--run")
     a = ap.parse_args(argv)
@@ -237,6 +328,8 @@ def main(argv=None):
         eval_run(a.run)
     elif a.cmd == "report":
         report()
+    elif a.cmd == "auto":
+        auto(a.max, a.rep, not a.nostart)
     elif a.cmd == "step":
         step(a.token, a.summary, a.run)
     return 0

@@ -22,5 +22,13 @@ token, then prints the next action; on DONE it starts `grid3.py eval` in the bac
 Fresh run: `grid3.py step --run R` (no summary). Pending tokens: `orchestrate status` + runs/repair/R/run.json.
 Notes on resumes / flags: results/grid/notes_share3.md.
 
+## Main loop (use this)
+`python scripts/grid3.py auto [--rep]`: records every pending run whose subagent handed back (hand-back text
+read from the transcript = the --summary), advances it, starts fresh runs up to 8 active, prints
+`LAUNCH <agent> <run> <token>` (invoke Agent subagent_type=<agent> with "Run R. Your (session) token is T.
+Start with `toyrepair-tool prompt --token T`" / triage: "Run `toyrepair-tool triage-input --token T`, then reply
+with the one-line JSON."), `WAIT <run> agent=<id> idle=Nm` (SendMessage resume if idle >10 m and its tool
+process is gone), `DONE` (eval auto-started), `NOEVAL` (eval missing: run `grid3.py eval --run R`).
+
 ## Next
 - Drive LLM runs; `jobs.py ensure` while polling; commit + spend at milestones; replicates (`init --rep`) after share.
