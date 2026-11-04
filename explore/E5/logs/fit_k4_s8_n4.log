@@ -14,3 +14,10 @@
 
 === 2026-11-04 18:15:55 /home/user/preference_toy/explore/E5/e5.py fit --setting k4 --seed 8 --npm 4
   it 300 loss 0.2216
+  it 600 loss 0.2961
+  it 900 loss 0.2350
+  it 1200 loss 0.2304
+  it 1499 loss 0.1656
+  detector {'det_tpr0': 0.24375, 'det_fpr0': 0.0011205179282868527}
+  round 2: D 0.069 Rem 0.958 Col 0.045 off 0.039
+[K10c] k4_s8_n4 D 0.069 Rem 0.958 Col 0.045 off 0.039 DONE
