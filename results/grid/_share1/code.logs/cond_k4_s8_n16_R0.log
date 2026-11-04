@@ -31,3 +31,5 @@ Traceback (most recent call last):
 ValueError: unknown velocity-network layout (no inp/blocks)
 === end rc=1 244.4s exit code 1
 === start 2026-11-04 20:04:56 cmd=['python', 'scripts/grid_share1.py', 'code', '--arm', 'R0', '--setting', 'k4', '--seed', '8', '--npm', '16']
+[R0 cond_k4_s8_n16] D 0.3425 removed 0.365 collateral 0.069 stop no_accept_streak gate_checks 18 (611.1s)
+=== end rc=0 618.3s 
