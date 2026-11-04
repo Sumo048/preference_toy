@@ -119,7 +119,8 @@ def summarize(rows, setting, label):
 
 
 def reference(setting, cfg, key="values"):
-    ref = json.load(open(REPO / "reference" / "method_map.json"))["conditional"][key]
+    ref = json.load(open(REPO / "reference" / "method_map.json"))["conditional"]
+    ref = ref["values"] if key == "values" else ref["confirm"]["values"]   # confirm = seeds 5-9
     v = ref.get(setting, {}).get(cfg)
     return None if v is None else v["tv"]
 

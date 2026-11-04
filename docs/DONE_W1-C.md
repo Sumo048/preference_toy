@@ -1,4 +1,4 @@
-STATUS: PASS-WITH-ISSUES — (1) the seed 5-9 baselines (step 5) were still running when this file was first written; they land on `art/arms` under `results/baselines/` (see the update at the end); (2) R0 needs a 4-line delegation in `edits.unit_tests` (INTERFACE_REQUESTS_W1-C item 8) to pass gate test 6, and it removed almost nothing on the one cell tried
+STATUS: PASS-WITH-ISSUES — R0 needs a 4-line delegation in `edits.unit_tests` (INTERFACE_REQUESTS_W1-C item 8) to pass gate test 6, and it removed almost nothing on the one cell tried
 
 # W1-C summary (branch art/arms, also mirrored to claude/session-w1-c-rwpo6t)
 
@@ -18,5 +18,10 @@ STATUS: PASS-WITH-ISSUES — (1) the seed 5-9 baselines (step 5) were still runn
    - A push in a fixed direction does not transfer across c, because the ring rotates. That is R0 as specified. W2a may want to check the fire rate.
 8. **Open interface requests** (`docs/INTERFACE_REQUESTS_W1-C.md`): item 8, the `unit_tests` delegation for R0 (must do), and item 7 (`orchestrate` should call `toyrepair.arms.get(arm)` or use `run_arm.py`). Items 1-2 are resolved, and items 3-6 are already satisfied by the W1 branches.
 9. **Setup note:** torch 2.14.0 PyPI wheel plus CUDA libs. The first pip run stalled at ~0.5 MB/s, and a retry ran at ~6 MB/s. Phase 1 cells at npm 64 take ~19.5 min as whole-cell units, so `phase1_repro.py` makes one unit per (cell, arm group).
-10. **Baselines (step 5):** `results/baselines/manifest.jsonl` has 240 units = 140 cells × {B0+B1a, B1b}; B1b = B1a for k1 and contig, so those cells have one unit. Run with `python scripts/jobs.py ensure results/baselines/manifest.jsonl`, then `python scripts/phase1_repro.py report baselines` → `results/baselines/summary.md`. At first DONE: 15/240 done, ~4.5 h left on 4 workers. **W2b/W3: merge `origin/art/arms` again to get them.**
-11. **Measured cost:** main agent $7.89 (cumulative, `results/spend.jsonl`); no subagents.
+10. **Baselines (step 5): complete and exact.**
+    - Units: 240 = 140 cells × {B0+B1a, B1b}. B1b = B1a for k1 and contig, so those cells have one unit. 0 failed.
+    - Table: `results/baselines/summary.md` (+ `.json` with every row); cells: `results/baselines/<setting>/s<seed>_k<k>_n<npm>/`.
+    - All 21 (setting × arm) means for seeds 5-9 match `reference/method_map.json` `confirm` (every |miss| < 0.0005).
+    - D for B0 / B1a / B1b: k1 0.149 / 0.107 / 0.107; k2 0.270 / 0.166 / 0.162; k4 0.515 / 0.265 / 0.294; contig 0.513 / 0.228 / 0.228; alt 0.516 / 0.449 / 0.262; pairs 0.513 / 0.251 / 0.188; b3p1 0.514 / 0.256 / 0.232.
+    - These results landed after DONE was first pushed. **W2b/W3: merge `origin/art/arms` again (or `git checkout origin/art/arms -- results/baselines`).**
+11. **Measured cost:** main agent $10.02 (cumulative, `results/spend.jsonl`); no subagents.

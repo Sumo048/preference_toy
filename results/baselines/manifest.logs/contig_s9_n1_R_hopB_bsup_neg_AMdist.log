@@ -1,0 +1,5 @@
+=== start 2026-11-04 07:29:51 cmd=['python', 'scripts/cond_cell.py', '--seed', '9', '--n_forget', '4', '--n_neg', '1', '--layout', 'contig', '--arms', 'B0_frozen,R_hopB_bsup_neg_AMdist', '--out', 'results/baselines/contig']
+[s9_k4_n1] forget=[0, 1, 2, 3] |T_n|=4 arms=2
+[s9_k4_n1] B0_frozen                tv 0.506 forget 1.000 rTV 0.000 off 0.029 far 1.000 tgtF nan tgtOff nan tx nan (2.2s)
+[s9_k4_n1] R_hopB_bsup_neg_AMdist   tv 0.275 forget 0.498 rTV 0.041 off 0.037 far 0.498 tgtF 0.61 tgtOff 0.00 tx nan (68.7s)
+=== end rc=0 125.2s 
