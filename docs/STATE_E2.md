@@ -13,8 +13,11 @@ Baselines: `explore/E2/run_baselines.sh` -> `runs/cond/cells*/` (not committed; 
 - 12 cells (q5): best edit matches B1a (k4 0.258 vs 0.261, alt 0.426 vs 0.421); r1pc (probe-fixed) worse.
 - B1a SVD k4 s0 n16: truncating B1a's change to rank 4/layer gives D 0.124 < 0.139 (less collateral).
 
+- Seeds 3-4, AL full-weight control, full_w1-0.5 control, t-gated B1a (19/20 cells better): all done.
+- docs/explore/E2.md and docs/DONE_E2.md written.
+
 ## Running
-- q6: window/rank sweep on 12 cells; q7: best edit on seeds 3-4; run_trunc.sh 0 1 2 (B1a low-rank projection).
+- nothing.
 
 ## Next
-- trunc on seeds 3-4 if it wins; write docs/explore/E2.md, DONE_E2; push (also try art/explore-E2).
+- nothing; session complete.
