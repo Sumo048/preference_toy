@@ -133,3 +133,5 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 21:46Z: pairs reps accepted s6n16 v7, s6n4 v6; no-accept s7n16, s5n4 (DONE no_accept_streak), s7n4, s8n4, s8n16. 7 triages launched (s6n4,s6n16,s7n4,s7n16,s8n4,s8n16,s9n4); pairs s5n16 surgeon a8b4d163 running.
 - 21:48Z: 7 pairs rep triages recorded; pairs s5n16 v9 accepted. Surgeons s6n4=a908e5f0, s6n16=a30c0c38, s7n4=a1cd93e7, s7n16=a127e12f, s8n4=a4bdec9c, s8n16=a660c488, s9n4=a408d10a; triage s5n16=a04201b1.
 - 21:59Z: pairs reps accepted s7n16 v6, s8n16 v7, s9n4 v2, s6n4 v8, s8n4 v7, s6n16 v9; no-accept s7n4. Surgeon s5n16=a99bc5ce; 7 triages (s6n4..s9n4).
+- 22:00Z: 7 pairs rep triages recorded; surgeons s6n4=a8f20bf7, s6n16=a93c6340, s7n4=a87afb79, s7n16=a111b7ba, s8n4=a946f7b1, s8n16=a45e99c5, s9n4=a4dc40f1; s5n16=a99bc5ce running.
+- 22:11Z: pairs reps all accepted this round (s5n16 v10, s6n16 v10, s7n4 v6, s7n16 v7, s8n4 v8 DONE, s8n16 v8, s9n4 v5, s6n4 v9). 8 triages launched incl. s9n16 (last rep cell).
