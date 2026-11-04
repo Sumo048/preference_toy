@@ -11,6 +11,7 @@ Branch: local `art/grid-1` from origin/agentic-repair-toy 4fca1dd (DONE_W2b). Pu
   `toyrepair-tool triage-input --token <tok>` and answer with the one-line JSON.").
 - When an agent reports: `python scripts/grid_share1.py record --token <tok> --summary '<JSON or RESULT line>'`, then tick.
 - `DONE` runs get final eval automatically (background, log results/grid/_share1/logs/eval_<run>.log).
+- Each finished run also gets its patch stack copied to `<arm>/patches/` (stack.json + patch json/npz; R0: r0_<v>.npz); `backfill` redoes it for all results (user request 16:47 UTC).
 - Agent id <-> token map: scratchpad agents.tsv. Surgeon "waiting on background work" > 10 min: SendMessage
   "Your background command finished; continue in the foreground." Log in scratchpad resume_notes.txt
   (copied to results/grid/_share1/resume_notes.txt at commits).

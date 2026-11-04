@@ -96,6 +96,64 @@ def code(arm, setting, seed, npm):
     os.replace(tmp, dst / "result.json")
 
 
+def copy_patch_stack(run_dir, final_version, dst):
+    """Copy the patch stack of ``final_version`` (patch .json + .npz only, no caches) to ``dst/patches``.
+    LLM runs: versions.json[final]["patches"]; code arms: follow each patch's parent_version back to v0."""
+    run_dir, dst = Path(run_dir), Path(dst) / "patches"
+    pdir = run_dir / "patches"
+    if (run_dir / "r0").is_dir():
+        # R0 keeps each accepted controller as r0/<version>.npz; the chain is in the ledger's edit records
+        parent = {}
+        for line in open(run_dir / "ledger.jsonl"):
+            r = json.loads(line)
+            if r.get("kind") == "edit" and r.get("version"):
+                parent[r["version"]] = (r.get("data") or {}).get("parent_version")
+        chain, v = [], final_version
+        while v and v != "v0":
+            chain.append(v)
+            v = parent.get(v)
+        chain.reverse()
+        dst.mkdir(parents=True, exist_ok=True)
+        for v in chain:
+            if (run_dir / "r0" / f"{v}.npz").exists():
+                shutil.copy(run_dir / "r0" / f"{v}.npz", dst / f"r0_{v}.npz")
+        (dst / "stack.json").write_text(json.dumps({"version": final_version, "r0_controllers": chain}, indent=1))
+        return chain
+    if not pdir.is_dir():
+        return []
+    vfile = run_dir / "versions.json"
+    if vfile.exists() and final_version in json.loads(vfile.read_text()):
+        ids = list(json.loads(vfile.read_text())[final_version].get("patches") or [])
+    else:
+        by_ver = {}
+        for f in pdir.glob("p*.json"):
+            d = json.loads(f.read_text())
+            by_ver[d.get("version")] = d
+        ids, v = [], final_version
+        while v and v != "v0" and v in by_ver:
+            ids.append(by_ver[v]["id"])
+            v = by_ver[v].get("parent_version")
+        ids.reverse()
+    dst.mkdir(parents=True, exist_ok=True)
+    for pid in ids:
+        for ext in (".json", ".npz"):
+            if (pdir / (pid + ext)).exists():
+                shutil.copy(pdir / (pid + ext), dst / (pid + ext))
+    (dst / "stack.json").write_text(json.dumps({"version": final_version, "patches": ids}, indent=1))
+    return ids
+
+
+def backfill():
+    """Copy patch stacks for every finished run that already has a result.json."""
+    for res in sorted(OUT.glob("*/s*/n*/*/result.json")):
+        d = json.loads(res.read_text())
+        out = d.get("output") or {}
+        rd = d.get("run_dir") or out.get("run_dir")
+        ver = out.get("version")
+        if rd and ver:
+            print(res.parent, ver, len(copy_patch_stack(rd, ver, res.parent)), "patches")
+
+
 # ----------------------------------------------------------------------------- LLM runs
 
 def _llm_order(rep):
@@ -210,6 +268,7 @@ def eval_run(rid):
     tmp = dst / "result.json.tmp"
     shutil.copy(src, tmp)
     os.replace(tmp, dst / "result.json")
+    copy_patch_stack(run_dir, run["current"], dst)
     src.unlink()
     print("wrote", dst / "result.json")
 
@@ -283,6 +342,7 @@ def main(argv=None):
     p.add_argument("--summary", default="")
     sub.add_parser("eval").add_argument("--run", required=True)
     sub.add_parser("table")
+    sub.add_parser("backfill")
     a = ap.parse_args(argv)
     if a.cmd == "caches":
         caches()
@@ -300,6 +360,8 @@ def main(argv=None):
         eval_run(a.run)
     elif a.cmd == "table":
         table()
+    elif a.cmd == "backfill":
+        backfill()
     return 0
 
 
