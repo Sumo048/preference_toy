@@ -1,0 +1,60 @@
+{
+ "arm": "GP2",
+ "cfgname": "gK12L",
+ "cell": "contig_s2_n4",
+ "setting": "contig",
+ "seed": 2,
+ "npm": 4,
+ "lcfg": {
+  "rank": 4,
+  "gate": true,
+  "tau": 0.5,
+  "temp": 0.05,
+  "k_commit": 12,
+  "steps": 20000,
+  "lr": 0.001,
+  "batch": 256,
+  "pool": 60000,
+  "gate_src": "ref",
+  "latch": true
+ },
+ "track_n": 14,
+ "track_bad": 4,
+ "track_neg_miss": 0.0,
+ "track_keep": 24484,
+ "bad_tracks_E1": [
+  0,
+  2,
+  4,
+  5
+ ],
+ "tracker": {
+  "n_tracks": 639,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.863757974891953,
+  "flag_frac": 0.4197
+ },
+ "params_added": 8720,
+ "train_s": 273.1,
+ "D": 0.10105,
+ "Removed": 0.9417575632846265,
+ "Collateral": 0.08117212987801965,
+ "off": 0.0275,
+ "D_ref": 0.5134000000000001,
+ "flips": 0.056206329634196465,
+ "neg_to_retain": 0.9116073266104137,
+ "disp_retain": 0.16277849674224854,
+ "masses": [
+  0.1955,
+  0.20345,
+  0.275,
+  0.016,
+  0.0011,
+  0.0006,
+  0.0106,
+  0.27025
+ ],
+ "gate_retained": 0.6372790793259351,
+ "gate_forget": 0.9997941963366948
+}

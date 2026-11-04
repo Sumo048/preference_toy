@@ -1,0 +1,60 @@
+{
+ "arm": "GP2",
+ "cfgname": "gC",
+ "cell": "alt_s0_n4",
+ "setting": "alt",
+ "seed": 0,
+ "npm": 4,
+ "lcfg": {
+  "rank": 4,
+  "gate": true,
+  "tau": 0.2,
+  "temp": 0.1,
+  "k_commit": 12,
+  "steps": 20000,
+  "lr": 0.001,
+  "batch": 256,
+  "pool": 60000,
+  "gate_src": "cur",
+  "latch": false
+ },
+ "track_n": 13,
+ "track_bad": 4,
+ "track_neg_miss": 0.0,
+ "track_keep": 25439,
+ "bad_tracks_E1": [
+  2,
+  4,
+  8,
+  9
+ ],
+ "tracker": {
+  "n_tracks": 467,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.8442832328599162,
+  "flag_frac": 0.41315
+ },
+ "params_added": 8720,
+ "train_s": 280.7,
+ "D": 0.22455,
+ "Removed": 0.5991621538775926,
+ "Collateral": 0.012508679369024084,
+ "off": 0.0284,
+ "D_ref": 0.5158499999999999,
+ "flips": 0.0008261902303005267,
+ "neg_to_retain": 0.5509349136609788,
+ "disp_retain": 0.0969911441206932,
+ "masses": [
+  0.04675,
+  0.1885,
+  0.0457,
+  0.20025,
+  0.05135,
+  0.1846,
+  0.05235,
+  0.2021
+ ],
+ "gate_retained": 0.9806878033667252,
+ "gate_forget": 0.9997956472872177
+}

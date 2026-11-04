@@ -1,0 +1,60 @@
+{
+ "arm": "GP2",
+ "cfgname": "gC",
+ "cell": "contig_s0_n4",
+ "setting": "contig",
+ "seed": 0,
+ "npm": 4,
+ "lcfg": {
+  "rank": 4,
+  "gate": true,
+  "tau": 0.2,
+  "temp": 0.1,
+  "k_commit": 12,
+  "steps": 20000,
+  "lr": 0.001,
+  "batch": 256,
+  "pool": 60000,
+  "gate_src": "cur",
+  "latch": false
+ },
+ "track_n": 13,
+ "track_bad": 4,
+ "track_neg_miss": 0.0,
+ "track_keep": 25669,
+ "bad_tracks_E1": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "tracker": {
+  "n_tracks": 467,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.8425954354723161,
+  "flag_frac": 0.41165
+ },
+ "params_added": 8720,
+ "train_s": 282.4,
+ "D": 0.08169999999999998,
+ "Removed": 0.9406406713744755,
+ "Collateral": 0.05322466874351067,
+ "off": 0.0248,
+ "D_ref": 0.51505,
+ "flips": 0.33096195484070523,
+ "neg_to_retain": 0.9139289734929894,
+ "disp_retain": 0.8007040023803711,
+ "masses": [
+  0.0003,
+  0.0168,
+  0.20565,
+  0.2565,
+  0.2714,
+  0.21265,
+  0.01155,
+  0.00035
+ ],
+ "gate_retained": 0.9437055366532632,
+ "gate_forget": 0.99948828164978
+}

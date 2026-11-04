@@ -1,0 +1,60 @@
+{
+ "arm": "GP2",
+ "cfgname": "gK12L",
+ "cell": "alt_s2_n4",
+ "setting": "alt",
+ "seed": 2,
+ "npm": 4,
+ "lcfg": {
+  "rank": 4,
+  "gate": true,
+  "tau": 0.5,
+  "temp": 0.05,
+  "k_commit": 12,
+  "steps": 20000,
+  "lr": 0.001,
+  "batch": 256,
+  "pool": 60000,
+  "gate_src": "ref",
+  "latch": true
+ },
+ "track_n": 14,
+ "track_bad": 4,
+ "track_neg_miss": 0.0,
+ "track_keep": 25007,
+ "bad_tracks_E1": [
+  0,
+  3,
+  4,
+  11
+ ],
+ "tracker": {
+  "n_tracks": 639,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.8586094734702175,
+  "flag_frac": 0.42235
+ },
+ "params_added": 8720,
+ "train_s": 278.5,
+ "D": 0.18265,
+ "Removed": 0.6809310835535678,
+ "Collateral": 0.020955636982492726,
+ "off": 0.0257,
+ "D_ref": 0.5194,
+ "flips": 0.00010403662089055348,
+ "neg_to_retain": 0.6375279528359422,
+ "disp_retain": 0.08777309209108353,
+ "masses": [
+  0.1927,
+  0.03725,
+  0.20585,
+  0.0399,
+  0.2065,
+  0.03985,
+  0.2123,
+  0.03995
+ ],
+ "gate_retained": 0.827819392426134,
+ "gate_forget": 0.9955275462492377
+}

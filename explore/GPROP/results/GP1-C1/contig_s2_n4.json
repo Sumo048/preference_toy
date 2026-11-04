@@ -1,0 +1,96 @@
+{
+ "arm": "GP1",
+ "cfgname": "C1",
+ "cell": "contig_s2_n4",
+ "setting": "contig",
+ "seed": 2,
+ "npm": 4,
+ "cfg": {
+  "det_layer": "b2.z",
+  "feat_layer": "b2.z",
+  "out_layer": "out",
+  "k_gate": 10,
+  "det_steps": 8,
+  "det_q": 0.5,
+  "n_units": 128,
+  "n_train": 8192,
+  "iters": 1500,
+  "lr": 0.001,
+  "w_good": 4.0,
+  "hop_dirs": 16,
+  "hop_max": 2.5,
+  "hop_step": 0.1,
+  "per_track": true,
+  "balance": true,
+  "clip": 1.0,
+  "rounds": 1
+ },
+ "pcfg": {
+  "bins": 8,
+  "cand_mult": 3,
+  "cost": "noise",
+  "redecode": true,
+  "strict": false
+ },
+ "targets": "prop",
+ "tracker": {
+  "n_tracks": 639,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.863757974891953,
+  "flag_frac": 0.4197
+ },
+ "bad_tracks": [
+  0,
+  2,
+  4,
+  5
+ ],
+ "params_added": 19072,
+ "buffers_added": 1172,
+ "rounds": [],
+ "infos": [
+  {
+   "det_tpr0": 0.8735279057859703,
+   "det_fpr0": 0.05809612692487168,
+   "fit_s": 576.9,
+   "target_s": 19.2,
+   "n_bad": 3906,
+   "target_ok": 1.0,
+   "fill": {
+    "ref_fill": {
+     "1": 0.1176,
+     "3": 0.1201,
+     "6": 0.1121,
+     "11": 0.1172
+    },
+    "target_fill": {
+     "1": 0.2343,
+     "3": 0.2449,
+     "6": 0.2305,
+     "11": 0.2341
+    }
+   }
+  }
+ ],
+ "D": 0.08170000000000002,
+ "Removed": 0.9738629347602388,
+ "Collateral": 0.06587204873743824,
+ "off": 0.0319,
+ "D_ref": 0.5134000000000001,
+ "flips": 0.013255240443896425,
+ "neg_to_retain": 0.9400082321465322,
+ "disp_retain": 0.05807836353778839,
+ "masses": [
+  0.2002,
+  0.2181,
+  0.2564,
+  0.00645,
+  0.00155,
+  0.00045,
+  0.00425,
+  0.2807
+ ],
+ "gate_retained": 0.22338676531031648,
+ "gate_forget": 0.9965013377238114
+}
