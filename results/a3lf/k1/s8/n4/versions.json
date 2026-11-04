@@ -1,0 +1,32 @@
+{
+ "v0": {
+  "parent": null,
+  "patches": [],
+  "session": null,
+  "call": null
+ },
+ "v1": {
+  "parent": "v0",
+  "patches": [
+   "p0001"
+  ],
+  "session": "s002",
+  "call": "graft_gated_path"
+ },
+ "v2": {
+  "parent": "v0",
+  "patches": [
+   "p0002"
+  ],
+  "session": "s002",
+  "call": "graft_gated_path"
+ },
+ "v3": {
+  "parent": "v0",
+  "patches": [
+   "p0003"
+  ],
+  "session": "s002",
+  "call": "graft_gated_path"
+ }
+}
