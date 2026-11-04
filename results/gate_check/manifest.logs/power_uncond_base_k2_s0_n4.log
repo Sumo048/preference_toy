@@ -1,0 +1,5 @@
+=== start 2026-11-04 02:38:12 cmd=['python', '-m', 'toyrepair.gate', 'power', '--grid', 'uncond', '--setting', 'base_k2', '--seed', '0', '--npm', '4', '--out', 'results/gate_check/power_uncond_base_k2_s0_n4_ng16384.json']
+[power] uncond_base_k2_s0_n4: sigma=0.033054 dD=0.0100 (target 0.01) n_g=16384
+[power] {"cell": "uncond_base_k2_s0_n4", "n_g": 16384, "sigma": 0.03305419921875, "dD_sep": 0.010009765625, "n_sep": 65536, "n_batches": 20, "literal_reject_rate": 1.0, "detect_improvement_rate": 1.0, "gate_s_mean": 2.409868597984314, "gate_s_max": 2.635984420776367, "dD_gate_mean": -0.0099151611328125, "dD_gate_sd": 0.0020633561748693444}
+{"cmd": "power", "cell": "uncond_base_k2_s0_n4", "n_g": 16384, "sigma": 0.03305419921875, "dD_sep": 0.010009765625, "n_sep": 65536, "n_batches": 20, "literal_reject_rate": 1.0, "detect_improvement_rate": 1.0, "gate_s_mean": 2.409868597984314, "gate_s_max": 2.635984420776367, "dD_gate_mean": -0.0099151611328125, "dD_gate_sd": 0.0020633561748693444}
+=== end rc=0 314.5s 

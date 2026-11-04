@@ -1,0 +1,19 @@
+{
+ "cmd": "noop",
+ "cell": "uncond_base_k2_s0_n4",
+ "n_g": 16384,
+ "noop_impl": "local",
+ "decodes_identical": true,
+ "max_abs_diff": 0.0,
+ "gate_repro": true,
+ "noop_target_fall": 0.0,
+ "noop_passed": {
+  "target": false,
+  "progress": false,
+  "drift": true,
+  "other_forgotten": true,
+  "between": true,
+  "unit": true
+ },
+ "noop_dD_ub": 0.0
+}

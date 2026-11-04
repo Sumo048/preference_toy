@@ -287,12 +287,13 @@ class _ZeroGraftNet(torch.nn.Module):
     def __init__(self, net, n_units: int = 8):
         super().__init__()
         self.inner = copy.deepcopy(net)
-        d = 128
+        out = _out_layer(self.inner)
+        d = out.in_features
         g = torch.Generator().manual_seed(0)
         self.w_in = torch.nn.Parameter(torch.randn(n_units, d, generator=g), requires_grad=False)
         self.w_out = torch.nn.Parameter(torch.zeros(2, n_units), requires_grad=False)
         self._feat = None
-        self.inner.out.register_forward_pre_hook(self._grab)
+        out.register_forward_pre_hook(self._grab)
 
     def _grab(self, mod, inp):
         self._feat = inp[0]

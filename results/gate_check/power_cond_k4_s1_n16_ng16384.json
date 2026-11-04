@@ -1,0 +1,15 @@
+{
+ "cmd": "power",
+ "cell": "cond_k4_s1_n16",
+ "n_g": 16384,
+ "sigma": 0.09165527343749999,
+ "dD_sep": 0.010009765625,
+ "n_sep": 65536,
+ "n_batches": 20,
+ "literal_reject_rate": 1.0,
+ "detect_improvement_rate": 1.0,
+ "gate_s_mean": 2.817726081609726,
+ "gate_s_max": 3.1185691356658936,
+ "dD_gate_mean": -0.0109283447265625,
+ "dD_gate_sd": 0.0028874515821476453
+}

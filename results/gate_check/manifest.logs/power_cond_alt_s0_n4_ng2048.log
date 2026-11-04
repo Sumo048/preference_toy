@@ -1,0 +1,5 @@
+=== start 2026-11-04 02:44:22 cmd=['python', '-m', 'toyrepair.gate', 'power', '--grid', 'cond', '--setting', 'alt', '--seed', '0', '--npm', '4', '--n_g', '2048', '--out', 'results/gate_check/power_cond_alt_s0_n4_ng2048.json']
+[power] cond_alt_s0_n4: sigma=0.04666 dD=0.0100 (target 0.01) n_g=2048
+[power] {"cell": "cond_alt_s0_n4", "n_g": 2048, "sigma": 0.04666015625, "dD_sep": 0.010009765625, "n_sep": 65536, "n_batches": 20, "literal_reject_rate": 1.0, "detect_improvement_rate": 0.25, "gate_s_mean": 0.3686638057231903, "gate_s_max": 0.42972731590270996, "dD_gate_mean": -0.007177734375, "dD_gate_sd": 0.0048879367642971384}
+{"cmd": "power", "cell": "cond_alt_s0_n4", "n_g": 2048, "sigma": 0.04666015625, "dD_sep": 0.010009765625, "n_sep": 65536, "n_batches": 20, "literal_reject_rate": 1.0, "detect_improvement_rate": 0.25, "gate_s_mean": 0.3686638057231903, "gate_s_max": 0.42972731590270996, "dD_gate_mean": -0.007177734375, "dD_gate_sd": 0.0048879367642971384}
+=== end rc=0 306.5s 

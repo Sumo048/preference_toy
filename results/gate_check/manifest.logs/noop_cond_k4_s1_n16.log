@@ -1,0 +1,3 @@
+=== start 2026-11-04 02:37:02 cmd=['python', '-m', 'toyrepair.gate', 'noop', '--grid', 'cond', '--setting', 'k4', '--seed', '1', '--npm', '16', '--out', 'results/gate_check/noop_cond_k4_s1_n16_ng16384.json']
+{"cmd": "noop", "cell": "cond_k4_s1_n16", "n_g": 16384, "noop_impl": "local", "decodes_identical": true, "max_abs_diff": 0.0, "gate_repro": true, "noop_target_fall": 0.0, "noop_passed": {"target": false, "progress": false, "drift": true, "other_forgotten": true, "between": true, "unit": true}, "noop_dD_ub": 0.0}
+=== end rc=0 52.3s 
