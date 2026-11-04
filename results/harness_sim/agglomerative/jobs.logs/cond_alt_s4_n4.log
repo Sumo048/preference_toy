@@ -1,0 +1,3 @@
+=== start 2026-11-04 03:01:51 cmd=['env', 'W1A1_CLUSTER_RULE=agglomerative', 'python', 'scripts/harness_sim_report.py', 'cell', '--grid', 'cond', '--setting', 'alt', '--seed', '4', '--npm', '4']
+{"cell": "cond_alt_s4_n4", "n_clusters": 7, "n_open": 7, "largest": 3, "k_commit": 16, "class": "R", "cpu": {"load": 42.454069464, "mine": 1.7579009780000021, "branch": 0.6634581259999948}}
+=== end rc=0 47.5s 
