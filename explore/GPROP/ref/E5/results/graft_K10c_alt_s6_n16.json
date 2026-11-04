@@ -1,0 +1,116 @@
+{
+ "cell": "alt_s6_n16",
+ "setting": "alt",
+ "seed": 6,
+ "layout": "alt",
+ "npm": 16,
+ "tag": "K10c",
+ "cfg": {
+  "det_layer": "b2.z",
+  "feat_layer": "b2.z",
+  "out_layer": "out",
+  "k_gate": 10,
+  "det_steps": 8,
+  "det_q": 0.5,
+  "n_units": 128,
+  "n_train": 8192,
+  "iters": 1500,
+  "lr": 0.001,
+  "w_good": 4.0,
+  "hop_dirs": 16,
+  "hop_max": 2.5,
+  "hop_step": 0.1,
+  "per_track": true,
+  "balance": true,
+  "clip": 1.0,
+  "rounds": 2
+ },
+ "tracker": {
+  "n_tracks": 474,
+  "n_bad_tracks": 4,
+  "precision": 0.999875327265927,
+  "recall": 0.8311742149445538,
+  "flag_frac": 0.40105
+ },
+ "bad_tracks": [
+  0,
+  5,
+  7,
+  8
+ ],
+ "det_tpr0": 0.05555555555555555,
+ "det_fpr0": 0.005447781025777305,
+ "fit_s": 510.2,
+ "target_s": 5.6,
+ "n_bad": 666,
+ "hop_ok": 1.0,
+ "quick": {
+  "bad_frac_ref": 0.4696044921875,
+  "bad_frac_new": 0.077392578125,
+  "good_moved": 0.1661680092059839,
+  "off_new": 0.0858154296875,
+  "off_ref": 0.0657958984375,
+  "good_fill": {
+   "1": 0.2063,
+   "2": 0.194,
+   "3": 0.2153,
+   "4": 0.2212
+  }
+ },
+ "units": 128,
+ "params_added": 38144,
+ "rounds": [
+  {
+   "round": 1,
+   "D": 0.14404999999999998,
+   "Removed": 0.7705461705876256,
+   "Collateral": 0.016751361319774602,
+   "off": 0.03335,
+   "D_ref": 0.50995,
+   "quick": {
+    "bad_frac_ref": 0.4696044921875,
+    "bad_frac_new": 0.0916748046875,
+    "good_moved": 0.15811277330264673,
+    "off_new": 0.0814208984375,
+    "off_ref": 0.0657958984375,
+    "good_fill": {
+     "1": 0.2053,
+     "2": 0.191,
+     "3": 0.2151,
+     "4": 0.2155
+    }
+   },
+   "det_tpr0": 0.809548521017125,
+   "det_fpr0": 0.16804979253112035
+  },
+  {
+   "round": 2,
+   "D": 0.13119999999999998,
+   "Removed": 0.7974919680795938,
+   "Collateral": 0.016768940169032256,
+   "off": 0.0335,
+   "D_ref": 0.50995,
+   "quick": {
+    "bad_frac_ref": 0.4696044921875,
+    "bad_frac_new": 0.077392578125,
+    "good_moved": 0.1661680092059839,
+    "off_new": 0.0858154296875,
+    "off_ref": 0.0657958984375,
+    "good_fill": {
+     "1": 0.2063,
+     "2": 0.194,
+     "3": 0.2153,
+     "4": 0.2212
+    }
+   },
+   "det_tpr0": 0.05555555555555555,
+   "det_fpr0": 0.005447781025777305
+  }
+ ],
+ "D": 0.13119999999999998,
+ "Removed": 0.7974919680795938,
+ "Collateral": 0.016768940169032256,
+ "off": 0.0335,
+ "D_ref": 0.50995,
+ "note": "graft fitted on alt_s6_n4; same bad tracks [0, 5, 7, 8], so the npm-16 fit is identical"
+}

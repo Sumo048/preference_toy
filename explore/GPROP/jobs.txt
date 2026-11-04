@@ -1,0 +1,20 @@
+gp1 --setting k4 --seed 0 --cfg A
+gp2 --setting k4 --seed 0 --cfg gA
+gp3 --setting k4 --seed 0 --cfg nA
+gp2 --setting k4 --seed 0 --cfg gB
+e1eval --setting k4 --seed 0
+e1eval --setting alt --seed 0
+e4 --setting contig --seed 0 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
+e4 --setting contig --seed 1 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
+e4 --setting contig --seed 2 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
+e1fit --setting contig --seed 0
+gp1 --setting alt --seed 0 --cfg A
+gp2 --setting alt --seed 0 --cfg gA
+gp1 --setting contig --seed 0 --cfg A
+gp2 --setting contig --seed 0 --cfg gA
+e1fit --setting contig --seed 1
+e1fit --setting contig --seed 2
+e1eval --setting k4 --seed 1
+e1eval --setting k4 --seed 2
+e1eval --setting alt --seed 1
+e1eval --setting alt --seed 2
