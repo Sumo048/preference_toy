@@ -38,6 +38,10 @@ def collect():
         for p in glob.glob(os.path.join(d, "*_n4.json")):
             r = _load(p)
             rows[(tag, r["setting"], r["seed"])] = norm(r, tag)
+            if tag.startswith("GP1-") and len(r.get("rounds", [])) == 2:
+                # round 1 of a 2-round fit is bit-identical to the 1-round config (same seeds, same targets)
+                r1 = {**r, **r["rounds"][0], "params_added": r["params_added"] // 2}
+                rows.setdefault((tag + "1", r["setting"], r["seed"]), norm(r1, tag + "1"))
     for setting in SETTINGS:
         for seed in range(10):
             for src in (os.path.join(ROOT, "explore", "E3", "results", setting, f"s{seed}_n4"),

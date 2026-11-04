@@ -266,7 +266,8 @@ GP1_CFGS = {
     "A": (K10C, PCfg(), "prop"),                                   # proportional OT, noise-space cost
     "B": (K10C, PCfg(cost="action"), "prop"),                      # proportional OT, action-space cost
     "C": (K10C, PCfg(bins=8), "prop"),                             # proportional OT, wide c-bins (smoother map)
-    "A1": (replace(K10C, rounds=1), PCfg(), "prop"),
+    "A1": (replace(K10C, rounds=1), PCfg(), "prop"),               # = round 1 of A (same seeds, same targets)
+    "C1": (replace(K10C, rounds=1), PCfg(bins=8), "prop"),         # = round 1 of C
     "Ak12": (replace(K10C, k_gate=12, det_steps=10), PCfg(), "prop"),
     "Aw1": (replace(K10C, w_good=1.0), PCfg(), "prop"),
 }

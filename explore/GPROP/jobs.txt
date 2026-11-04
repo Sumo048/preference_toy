@@ -2,10 +2,24 @@ gp2 --setting k4 --seed 0 --cfg gK12
 gp2 --setting k4 --seed 0 --cfg gK14
 gp2 --setting k4 --seed 0 --cfg gK12L
 gp2 --setting k4 --seed 0 --cfg gK14L
-gp1 --setting k4 --seed 0 --cfg C
-gp1 --setting alt --seed 0 --cfg C
-gp1 --setting k4 --seed 0 --cfg B
-gp1 --setting alt --seed 0 --cfg B
+gp1 --setting k4 --seed 0 --cfg C1
+gp1 --setting alt --seed 0 --cfg C1
+gp2 --setting k4 --seed 1 --cfg gC
+gp2 --setting k4 --seed 1 --cfg gK12L
+gp2 --setting k4 --seed 2 --cfg gC
+gp2 --setting k4 --seed 2 --cfg gK12L
+gp2 --setting alt --seed 0 --cfg gC
+gp2 --setting alt --seed 0 --cfg gK12L
+gp2 --setting alt --seed 1 --cfg gC
+gp2 --setting alt --seed 1 --cfg gK12L
+gp2 --setting alt --seed 2 --cfg gC
+gp2 --setting alt --seed 2 --cfg gK12L
+gp2 --setting contig --seed 0 --cfg gC
+gp2 --setting contig --seed 0 --cfg gK12L
+gp2 --setting contig --seed 1 --cfg gC
+gp2 --setting contig --seed 1 --cfg gK12L
+gp2 --setting contig --seed 2 --cfg gC
+gp2 --setting contig --seed 2 --cfg gK12L
 gp2 --setting k4 --seed 0 --cfg gR
 gp2 --setting k4 --seed 0 --cfg gL
 gp2 --setting k4 --seed 0 --cfg gRB
@@ -16,11 +30,11 @@ gp1 --setting k4 --seed 0 --cfg A
 gp1 --setting k4 --seed 1 --cfg A
 gp1 --setting k4 --seed 2 --cfg A
 gp1 --setting alt --seed 0 --cfg A
-gp1 --setting alt --seed 1 --cfg A
-gp1 --setting alt --seed 2 --cfg A
-gp1 --setting contig --seed 0 --cfg A
-gp1 --setting contig --seed 1 --cfg A
-gp1 --setting contig --seed 2 --cfg A
+gp1 --setting alt --seed 1 --cfg A1
+gp1 --setting alt --seed 2 --cfg A1
+gp1 --setting contig --seed 0 --cfg A1
+gp1 --setting contig --seed 1 --cfg A1
+gp1 --setting contig --seed 2 --cfg A1
 e1fit --setting contig --seed 0
 e1fit --setting contig --seed 1
 e1fit --setting contig --seed 2
@@ -30,9 +44,15 @@ e1eval --setting alt --seed 0
 e4 --setting contig --seed 0 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
 e4 --setting contig --seed 1 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
 e4 --setting contig --seed 2 --npm 4 --methods B1a,a=track60k-w=1-st=20000 --out explore/GPROP/results/E4code
-gp2 --setting alt --seed 0 --cfg gA
-gp2 --setting contig --seed 0 --cfg gA
 e1eval --setting k4 --seed 1
 e1eval --setting k4 --seed 2
 e1eval --setting alt --seed 1
 e1eval --setting alt --seed 2
+gp3 --setting k4 --seed 1 --cfg nA
+gp3 --setting k4 --seed 2 --cfg nA
+gp3 --setting alt --seed 0 --cfg nA
+gp3 --setting alt --seed 1 --cfg nA
+gp3 --setting alt --seed 2 --cfg nA
+gp3 --setting contig --seed 0 --cfg nA
+gp3 --setting contig --seed 1 --cfg nA
+gp3 --setting contig --seed 2 --cfg nA
