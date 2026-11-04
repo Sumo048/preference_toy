@@ -1,0 +1,492 @@
+{
+ "arm": "A1",
+ "cell": "cond_k4_s9_n4",
+ "setting": "k4",
+ "seed": 9,
+ "npm": 4,
+ "run_id": "grid_cond_k4_s9_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k4_s9_n4_A1",
+ "output": {
+  "version": "v7",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v6",
+    "call": "targeted_train",
+    "patches": [
+     "p0006"
+    ]
+   },
+   {
+    "version": "v7",
+    "call": "targeted_train",
+    "patches": [
+     "p0006",
+     "p0007"
+    ]
+   }
+  ],
+  "gate_checks": 13,
+  "gate_cap": 21,
+  "decodes": 2690441.0,
+  "sessions": 5,
+  "cost_usd": 1.9898429999999998,
+  "n_first_clusters": 5
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc hopB (blocks.2+out; all/map anchor) and npo all-params; best v4 npo fall 0.032, target and between tests failed.",
+   "calls": 17,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.400973,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 3,
+   "summary": "RESULT accepted v7 NPO on out/fc2 layers with dist anchor, then BC refinement to hopB targets with dist anchor",
+   "calls": 17,
+   "submissions": 2,
+   "accepted": "v7",
+   "cost_usd": 0.359593,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 3,
+   "summary": "RESULT no-accept - bc (hopB, several anchors and supports) and npo from v7 cut local residual; gate rejected v12 and v13; call limit reached",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.285812,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s008",
+   "cluster": 2,
+   "summary": "RESULT no-accept - Tried bc hopB:nhood (v16) and npo from v7 (v17, v18); target fall about 0 every time.",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.480362,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s010",
+   "cluster": 4,
+   "summary": "RESULT no-accept - BC on blocks.2/out with custom and hopB rescue targets cut the residual but failed drift and progress.",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.363499,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.01717
+  },
+  {
+   "cluster": 3,
+   "fallback": false,
+   "cost_usd": 0.024524
+  },
+  {
+   "cluster": 3,
+   "fallback": false,
+   "cost_usd": 0.01991
+  },
+  {
+   "cluster": 2,
+   "fallback": false,
+   "cost_usd": 0.019475
+  },
+  {
+   "cluster": 4,
+   "fallback": false,
+   "cost_usd": 0.018525
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.02545166015625,
+    "target_fall_ci": [
+     0.02172698974609375,
+     0.02911376953125
+    ]
+   }
+  },
+  {
+   "version": "v3",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.01629638671875,
+    "target_fall_ci": [
+     0.01287841796875,
+     0.01995849609375
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.031982421875,
+    "target_fall_ci": [
+     0.0277099609375,
+     0.0361328125
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 3,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0660400390625,
+    "target_fall_ci": [
+     0.06146240234375,
+     0.07049560546875
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 3,
+   "call": "targeted_train",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.06182861328125,
+    "target_fall_ci": [
+     0.05645751953125,
+     0.06665191650390624
+    ]
+   }
+  },
+  {
+   "version": "v12",
+   "cluster": 3,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": false,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.007568359375,
+    "target_fall_ci": [
+     0.00531005859375,
+     0.009950256347656242
+    ]
+   }
+  },
+  {
+   "version": "v13",
+   "cluster": 3,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0035400390625,
+    "target_fall_ci": [
+     0.0013427734375,
+     0.005859375
+    ]
+   }
+  },
+  {
+   "version": "v16",
+   "cluster": 2,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.002197265625,
+    "target_fall_ci": [
+     -6.103515625e-05,
+     0.0045166015625
+    ]
+   }
+  },
+  {
+   "version": "v17",
+   "cluster": 2,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": -0.0008544921875,
+    "target_fall_ci": [
+     -0.00311279296875,
+     0.00128173828125
+    ]
+   }
+  },
+  {
+   "version": "v18",
+   "cluster": 2,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.00146484375,
+    "target_fall_ci": [
+     -0.00110015869140625,
+     0.003907775878906242
+    ]
+   }
+  },
+  {
+   "version": "v20",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": false,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.04254150390625,
+    "target_fall_ci": [
+     0.0384521484375,
+     0.046875
+    ]
+   }
+  },
+  {
+   "version": "v21",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.02801513671875,
+    "target_fall_ci": [
+     0.02337646484375,
+     0.03259429931640624
+    ]
+   }
+  },
+  {
+   "version": "v22",
+   "cluster": 4,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": false,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0262451171875,
+    "target_fall_ci": [
+     0.02178955078125,
+     0.03058013916015624
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.31134999999999996,
+  "removed": 0.4500051276792124,
+  "collateral": 0.0847504100322073,
+  "mass_off": 0.0432,
+  "collateral_plan": 0.08173881700444748,
+  "toypref": {
+   "mass_m0": 0.1585,
+   "mass_m1": 0.2262,
+   "mass_m2": 0.1429,
+   "mass_m3": 0.0543,
+   "mass_m4": 0.0308,
+   "mass_m5": 0.0788,
+   "mass_m6": 0.16105,
+   "mass_m7": 0.10425,
+   "mass_off": 0.0432,
+   "neg_mass_ratio": 0.5499948723207876,
+   "retain_tv": 0.0847504100322073,
+   "tv_to_ideal": 0.31134999999999996,
+   "tv_to_ideal_ref": 0.51645,
+   "retain_noise_flip": 0.2693620101333885,
+   "neg_noise_to_retain": 0.4467234129832838,
+   "neg_noise_still_forget": 0.4956414726694698,
+   "disp_retain_mean": 0.670656681060791,
+   "neg_still_forget_near": 0.4444444444444444,
+   "n_eval_neg_near": 2799.0,
+   "neg_still_forget_far": 0.6430062630480167,
+   "n_eval_neg_far": 1437.0
+  },
+  "final_pool": {
+   "D": 0.30975341796875,
+   "removed": 0.45723766591535187,
+   "collateral": 0.08214731710063852,
+   "mass_off": 0.045196533203125,
+   "retain_tv": 0.08226886920567575,
+   "n": 65536,
+   "mass": [
+    0.157318115234375,
+    0.230255126953125,
+    0.1473236083984375,
+    0.0562896728515625,
+    0.03082275390625,
+    0.078460693359375,
+    0.1553497314453125,
+    0.0989837646484375,
+    0.045196533203125
+   ],
+   "mass_ref": [
+    0.1208343505859375,
+    0.1217498779296875,
+    0.12200927734375,
+    0.123260498046875,
+    0.1228485107421875,
+    0.1215057373046875,
+    0.1198577880859375,
+    0.11981201171875,
+    0.0281219482421875
+   ]
+  }
+ }
+}

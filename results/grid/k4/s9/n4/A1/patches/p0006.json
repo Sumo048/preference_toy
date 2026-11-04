@@ -1,0 +1,38 @@
+{
+ "args": {
+  "anchor": "dist",
+  "batch": 256,
+  "beta": 10.0,
+  "data": "cluster:3",
+  "lr": 0.0001,
+  "n_rows": 0,
+  "neg_uids": [
+   11,
+   14,
+   15
+  ],
+  "objective": "npo",
+  "params": [
+   "out",
+   "blocks.2.fc2.weight",
+   "blocks.2.fc2.bias",
+   "blocks.1.fc2.weight",
+   "blocks.1.fc2.bias"
+  ],
+  "steps": 3000
+ },
+ "arrays": [
+  "blocks.1.fc2.bias",
+  "blocks.1.fc2.weight",
+  "blocks.2.fc2.bias",
+  "blocks.2.fc2.weight",
+  "out.bias",
+  "out.weight"
+ ],
+ "call": "targeted_train",
+ "id": "p0006",
+ "npz_sha256": "2dc41ac91f055114a3c07560e58063dee4ddc90824986252d7d0070556f80b6c",
+ "parent_version": "v0",
+ "sha256": "4e92f9765603e35944dc0960e39f38d7716786f874639d60d271d74c2bffd90f",
+ "version": "v6"
+}
