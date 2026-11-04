@@ -3,3 +3,7 @@ __pycache__/
 runs/
 logs/
 *.egg-info/
+
+# jobs.py live state (W2a)
+results/**/*.locks/
+results/**/*.pid
