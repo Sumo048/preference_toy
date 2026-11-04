@@ -1,2 +1,5 @@
 /home/user/preference_toy/results/grid/k4/s7/n16/A3-sonnet/result.json D 0.5134 removed 0.0 collateral 0.0 stop no_accept_streak sessions 3 cost 0.38
 /home/user/preference_toy/results/grid/k4/s6/n16/A3-sonnet/result.json D 0.4688 removed 0.101 collateral 0.0426 stop no_accept_streak sessions 4 cost 0.43
+/home/user/preference_toy/results/grid/k4/s5/n16/A3-nogate/result.json D 0.1642 removed 0.972 collateral 0.1497 stop no_open_cluster sessions 5 cost 1.78
+/home/user/preference_toy/results/grid/k4/s7/n16/A3-nogate/result.json D 0.1596 removed 0.905 collateral 0.1119 stop no_open_cluster sessions 4 cost 1.49
+/home/user/preference_toy/results/grid/k4/s5/n16/A3-nobranch/result.json D 0.1507 removed 0.943 collateral 0.1342 stop no_open_cluster sessions 6 cost 2.87
