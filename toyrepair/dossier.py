@@ -8,9 +8,9 @@ Variable part (<= 6000 tokens): the target cluster's failure card, its branch ta
 summary, and the remaining gate checks and cost. Pieces are cut in reverse priority (ledger
 summary first, then branch table rows); every cut states how many rows it removed.
 
-Token counts are estimates: characters / CHARS_PER_TOKEN, a ratio measured once on a real
-surgeon transcript (``python -m toyrepair.transcripts ratio <transcript>``; see
-docs/DEV_LOG_W1-D.md).
+Token counts are estimates: characters / CHARS_PER_TOKEN, a ratio measured on real
+surgeon transcripts (``python -m toyrepair.transcripts ratio <transcript>``; see
+docs/DONE_W1-D.md).
 
 Owner: W1-D.
 """
@@ -28,9 +28,10 @@ CARD_TOKEN_CAP = 150
 ATLAS_TOKEN_CAP = 1500
 LEDGER_SUMMARY_TOKEN_CAP = 2000
 BRANCH_ROW_CAP = 40
-#: characters per token, measured on a real surgeon transcript (W1-D, 2026-11-04):
-#: tool-result characters / (context growth - previous output tokens), see DEV_LOG_W1-D.md.
-CHARS_PER_TOKEN = 3.5
+#: characters per token, measured on two real surgeon transcripts (W1-D, 2026-11-04): tool-result
+#: characters / (context growth - previous output tokens) gave 1.95 and 1.84 (the 6.7k-char prompt
+#: alone 1.81); 1.8 is used so the caps hold. See docs/DONE_W1-D.md.
+CHARS_PER_TOKEN = 1.8
 
 PROMPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts")
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

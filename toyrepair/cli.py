@@ -65,18 +65,18 @@ COMMANDS = {
 #: command -> option syntax (shown in the surgeon's static prompt)
 USAGE = {
     "prompt": ": this text and your dossier.",
-    "dossier": ": the variable part again (card, branch table, ledger summary, budget).",
-    "atlas": ": failure cards of all open clusters of the current version.",
-    "branch": "`[--cluster ID] [--steps 0,2,4] [--M 32]`: branch table (p(k), Wilson CI, best primitives) of a cluster (default: yours).",
-    "inspect": "`--neg UID [--version V] [--units LAYER:i,j]`: one decode of one negative, <= 21 rows: step, t, x, x_hat, |v|, x_hat in B_i, unit activations.",
-    "sandbox": "`--stdin` (heredoc) or `--file F.py`, `[--version V]`: Python with numpy and torch in scratch. `export/` holds `weights.pt`, `model.py` (network class and `decode(xi, c)`), `negatives.npz`, `basins.npz`. Output <= 2000 tokens.",
-    "quick_check": "`--version V`: no gate check spent. still_bad (share of the cluster's logged noises still decoded into their basins), residual (cluster residual mass), drift (share of 4096 pairs whose action moves more than the median basin radius).",
+    "dossier": ": the dossier part again.",
+    "atlas": ": cards of all open clusters.",
+    "branch": "`[--cluster ID] [--steps 0,2,4] [--M 32]`: branch table of a cluster (default yours).",
+    "inspect": "`--neg UID [--version V] [--units LAYER:i,j]`: one decode of a negative: step, t, x, x_hat, |v|, x_hat in B_i, units.",
+    "sandbox": "`--stdin` or `--file F.py`, `[--version V]`: Python (numpy, torch) in scratch; `export/` has weights.pt, model.py (net, decode(xi, c)), negatives.npz, basins.npz.",
+    "quick_check": "`--version V`: still_bad (share of logged noises still in their basins), residual, drift (share of 4096 actions moved > median basin radius).",
     "graft_gated_path": "`--layer L --n_units N --w_in F --w_out F [--b_in F] [--src S] [--act silu|relu|linear] --det_source S --det_w F [--det_b B] [--det_thr T] [--det_k LO:HI] [--parent V]`",
     "rank1": "`--layer L --u F --v F --s S [--parent V]`",
     "ablate_direction": "`--layer L --v F --side pre|post [--parent V]`",
     "set_units": "`--layer L --idx 3,17 --w_in F --b F --w_out F [--parent V]`",
-    "targeted_train": "`--params blocks.2,out --objective bc|npo|kto --steps N [--anchor dist|map|local|local+map|none] [--beta B] [--lr LR] [--data toypref:hopB:bsup | rescue:F.npy:bsup] [--parent V]`. bc needs --data; rescue targets F.npy has one (x, y) row per cluster member in card order.",
-    "submit_edit": "`--version V`: run the gate on a candidate. Max 3 per session.",
+    "targeted_train": "`--params blocks.2,out --objective bc|npo|kto --steps N [--anchor dist|map|local|local_map|none] [--beta B] [--lr LR] [--data toypref:hopB:bsup | rescue:F.npy:bsup] [--parent V]`; bc needs --data; F.npy: one target row per member.",
+    "submit_edit": "`--version V`: run the gate on a candidate.",
     "contrast": "`--layer L --k K [--cluster ID]`: top units, probe direction and AUC, velocity difference.",
     "unit_card": "`--layer L --idx I`: correlates of one unit.",
 }
@@ -177,7 +177,8 @@ def build_parser() -> argparse.ArgumentParser:
     t.add_argument("--params", required=True)
     t.add_argument("--objective", required=True, choices=("bc", "npo", "kto"))
     t.add_argument("--steps", type=int, required=True)
-    t.add_argument("--anchor", default="dist", choices=("dist", "map", "local", "local+map", "none"))
+    # the surgeon hook allows no '+', so "local+map" is spelled local_map on the command line
+    t.add_argument("--anchor", default="dist", choices=("dist", "map", "local", "local_map", "local+map", "none"))
     t.add_argument("--beta", type=float, default=10.0)
     t.add_argument("--lr", type=float, default=1e-4)
     t.add_argument("--data", default="")
@@ -371,7 +372,8 @@ class RealBackend:
             else:
                 data = train.TrainData(neg_uids=uids, source=f"cluster:{cl.id}")
             spec = train.TrainSpec(params=tuple(p for p in args.params.split(",") if p), objective=args.objective,
-                                   steps=int(args.steps), anchor=args.anchor, beta=args.beta, lr=args.lr)
+                                   steps=int(args.steps), anchor=args.anchor.replace("local_map", "local+map"),
+                                   beta=args.beta, lr=args.lr)
             return train.targeted_train(cell, parent, new_vid, spec, data)
         raise ToolError(f"unknown edit call {call}")
 
@@ -540,6 +542,10 @@ def decode(xi, c, steps=20):
 '''
 
 _MOCK_AUDIT = '''import sys as _s
+try:
+    import numpy, torch          # torch calls ldconfig through subprocess at import: import before the hook
+except Exception:
+    pass
 def _hook(ev, a):
     if ev == "import" and a and str(a[0]).split(".")[0] in ("toypref", "toyrepair"):
         raise RuntimeError("blocked import")

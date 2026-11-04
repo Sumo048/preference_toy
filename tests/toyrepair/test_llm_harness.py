@@ -358,3 +358,24 @@ def test_record_marks_run_invalid_on_audit_hit(runs, tmp_path):
     res = orc.record(tok, transcript=str(t))
     assert res["audit_hits"] == 1
     assert _next("v1run") == "DONE invalid_audit"
+
+
+def test_static_fits_with_full_edit_reference(tmp_path, monkeypatch):
+    """EDIT_REFERENCE.md may use up to 1,500 tokens (W1-B); the static part must still fit 4,000."""
+    ref = tmp_path / "EDIT_REFERENCE.md"
+    ref.write_text("word " * int(1500 * dossier.CHARS_PER_TOKEN / 5))
+    monkeypatch.setattr(dossier, "EDIT_REFERENCE", str(ref))
+    for arm in orc.LLM_ARMS:
+        st = dossier.static_part(arm, phase4=True)
+        assert "word word" in st
+        assert dossier.estimate_tokens(st) <= dossier.STATIC_TOKEN_CAP, (arm, dossier.estimate_tokens(st))
+
+
+def test_every_documented_option_passes_the_hook():
+    """Every option value in the command reference must pass tools/surgeon_hook.py's charset."""
+    hook = re.compile(r"^toyrepair-tool(?: [A-Za-z0-9_\-\.=:/,\[\]]+)*$")
+    for cmd, usage in cli.USAGE.items():
+        for m in re.finditer(r"`([^`]*)`", usage):
+            for alt in m.group(1).replace("[", " ").replace("]", " ").split():
+                for v in alt.split("|"):
+                    assert not v or hook.match(f"toyrepair-tool {cmd} {v}"), (cmd, v)

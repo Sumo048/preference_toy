@@ -533,6 +533,9 @@ def record(token: str, summary: str = "", transcript: Optional[str] = None,
                                                                          "audit_hits": [],
                                                                          "final_text": ""}
         final = summary or info.get("final_text", "")
+        if s.role == "surgeon":     # keep the RESULT line when the subagent wrote more than one line
+            res_line = next((ln.strip() for ln in final.splitlines() if ln.strip().startswith("RESULT")), None)
+            final = res_line or final
         b = load_budget(run)
         b["cost_usd"] += float(info.get("cost_usd", 0.0))
         out = {"run": run.id, "session": s.session, "role": s.role, "cost_usd": info.get("cost_usd", 0.0),
