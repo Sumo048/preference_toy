@@ -8,10 +8,6 @@
    "agent": "surgeon",
    "token": "u4bm5cLrKutZ3J4r"
   },
-  "a3lf_cond_alt_s6_n16": {
-   "agent": "surgeon",
-   "token": "yEgnGMrSimsPVefm"
-  },
   "a3lf_cond_k4_s5_n4": {
    "agent": "surgeon",
    "token": "srQjxeYtV6TybAyf"
@@ -31,6 +27,10 @@
   "a3lf_cond_alt_s5_n16": {
    "agent": "surgeon",
    "token": "cZUqmF67BxRGjGaz"
+  },
+  "a3lf_cond_alt_s6_n16": {
+   "agent": "triage",
+   "token": "u7yHmVUjqS7PBPSK"
   }
  },
  "done": [
