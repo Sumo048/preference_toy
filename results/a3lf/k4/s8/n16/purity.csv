@@ -1,0 +1,8 @@
+cell,version,cluster,n,purity,open
+cond_k4_s8_n16,v0,0,14,0.5000,1
+cond_k4_s8_n16,v0,1,10,1.0000,1
+cond_k4_s8_n16,v0,2,19,0.5789,1
+cond_k4_s8_n16,v0,3,8,0.5000,1
+cond_k4_s8_n16,v0,4,10,0.9000,1
+cond_k4_s8_n16,v0,5,1,1.0000,0
+cond_k4_s8_n16,v0,6,2,1.0000,1

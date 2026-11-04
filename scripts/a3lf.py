@@ -12,7 +12,7 @@ Adapted from W3-1's ``scripts/grid_share1.py``; protocol in ``docs/A3LF_PREREG.m
 The loop process (``toyrepair.orchestrate`` / ``toyrepair-tool``) never imports the oracle for an A3-LF run.
 ``eval`` runs only after the run has stopped. It (1) evaluates the final version with ``eval_final``;
 (2) re-runs every gate_lf check with the oracle gate ``toyrepair.gate.gate_check`` on the same batch (same
-check index, same current/new versions) and appends one ``gate_shadow`` record per check to the ledger;
+check index, same current/new versions) and appends one ``note`` record with event ``gate_shadow`` per check to the ledger;
 (3) logs oracle purity of every atlas. None of this reaches a surgeon: the run is finished.
 
 Results: results/a3lf/<setting>/s<seed>/n<npm>/ (result.json, ledger.jsonl, versions.json, run.json,
@@ -168,10 +168,16 @@ def record(token, summary):
 
 # ----------------------------------------------------------------------------- outside the loop
 
+def _shadow_records(run):
+    """Ledger kinds are fixed (toyrepair.ledger.KINDS): shadow checks are ``note`` records with event gate_shadow."""
+    from toyrepair import orchestrate as orc
+    return [r for r in orc.ledger_records(run, "note") if (r.get("data") or {}).get("event") == "gate_shadow"]
+
+
 def shadow_gates(run, be):
     """Oracle gate on the batch of every gate_lf check of a finished run -> ledger ``gate_shadow``."""
     from toyrepair import gate, orchestrate as orc
-    done = {(r.get("data") or {}).get("check_index") for r in orc.ledger_records(run, "gate_shadow")}
+    done = {(r.get("data") or {}).get("check_index") for r in _shadow_records(run)}
     cell = be.cell(run)
     v0 = be.version(run, "v0")
     out = []
@@ -191,7 +197,7 @@ def shadow_gates(run, be):
                "lf_passed": res.get("passed"), "oracle_accepted": bool(og.accepted),
                "oracle_passed": og.passed, "agree": bool(og.accepted) == bool(res.get("accepted")),
                "oracle": og.ledger_data()}
-        orc.ledger_append(run, "gate_shadow", rec, session=r.get("session"), version=new)
+        orc.ledger_append(run, "note", {"event": "gate_shadow", **rec}, session=r.get("session"), version=new)
         out.append(rec)
     return out
 
@@ -226,7 +232,7 @@ def eval_run(rid):
     phase4.eval_run(rid)
     src = phase4.out_path(run.arm, run.setting, run.seed, run.npm)
     rec = json.loads(src.read_text())
-    allsh = [(r.get("data") or {}) for r in orc.ledger_records(run, "gate_shadow")]
+    allsh = [(r.get("data") or {}) for r in _shadow_records(run)]
     rec["shadow"] = {"n": len(allsh), "agree": sum(x["agree"] for x in allsh),
                      "lf_accept": sum(x["lf_accepted"] for x in allsh),
                      "oracle_accept": sum(x["oracle_accepted"] for x in allsh),

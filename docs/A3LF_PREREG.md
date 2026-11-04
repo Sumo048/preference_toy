@@ -70,7 +70,7 @@ clustered per condition and linked across conditions. They use no oracle, no lab
 - **Final evaluation.** `toyrepair.eval_final`, outside the loop, after the run stops (`scripts/a3lf.py eval`).
 - **Shadow oracle gate.** After a run stops, every gate_lf check is re-run with the oracle gate
   (`gate.gate_check`). The re-run uses the same check index, so the same batch, and the same current and candidate
-  versions. The result goes to the ledger as a `gate_shadow` record. Oracle purity of each atlas goes to
+  versions. The result goes to the ledger as a `note` record with `event: gate_shadow` (the ledger's record kinds are fixed). Oracle purity of each atlas goes to
   `purity.csv`. The surgeon never sees either. They are written after the run ends, and the dossier's ledger summary
   reads only `gate` records.
 - **Cells (seeds 5-9), in this order:**

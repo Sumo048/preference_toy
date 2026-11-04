@@ -185,7 +185,7 @@ def main():
     for p in sorted(OUT.glob("*/s*/n*/ledger.jsonl")):
         for line in open(p):
             rec = json.loads(line)
-            if rec.get("kind") != "gate_shadow":
+            if rec.get("kind") != "note" or (rec.get("data") or {}).get("event") != "gate_shadow":
                 continue
             d = rec["data"]
             agree["n"] += 1
