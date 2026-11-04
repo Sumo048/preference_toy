@@ -14,3 +14,10 @@
 
 === 2026-11-04 20:01:08 /home/user/preference_toy/explore/E5/e5.py fit --setting pairs --seed 5 --npm 4
   it 300 loss 0.1376
+  it 600 loss 0.2242
+  it 900 loss 0.0911
+  it 1200 loss 0.1341
+  it 1499 loss 0.1094
+  detector {'det_tpr0': 0.060810810810810814, 'det_fpr0': 0.0006332320162107396}
+  round 2: D 0.082 Rem 0.895 Col 0.005 off 0.031
+[K10c] pairs_s5_n4 D 0.082 Rem 0.895 Col 0.005 off 0.031 DONE
