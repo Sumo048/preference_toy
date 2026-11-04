@@ -46,3 +46,11 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 17:25 UTC +triage ae876 k1s9n4A1, surgeons afc06 contig s5n4, a8acf contig s6n4
 - 17:40 UTC in flight: a7301 k1s9n16A3, aa56c contig s6n16, afc06 contig s5n4, a8acf contig s6n4, ab31d k1s9n4A1; triage a3bf2 k1s9n16A1, ac204 contig s5n16, a90e6 contig s7n4
 - 17:55 UTC in flight: aa56c contig s6n16, ab31d k1s9n4A1, a236b k1s9n16A1, a8010 contig s5n16, a5c3c contig s7n4; triage afa6d contig s5n4, af001 contig s6n4, a9cdc contig s7n16
+- 18:05 UTC in flight: ab31d k1s9n4A1, a236b k1s9n16A1, a8010 contig s5n16, a5c3c contig s7n4, ab690 contig s5n4, abb5c contig s6n4, a99a9 contig s7n16; triage a4dea contig s6n16
+- 18:10 UTC +ae432 contig s6n16
+- 18:30 UTC in flight: ae432 contig s6n16 surgeon; triage acb38 c-s5n16, a13e5 c-s6n4, ad91b c-s7n16, af742 k1s9n16A1, a160a c-s8n4, a0a71 c-s8n16, a5d3f c-s9n4
+- 18:40 UTC in flight: ac942 k1s9n16A1, a8acf c-s5n16, a530e c-s6n4, acfe5 c-s7n16, a4a25 c-s8n4, a1447 c-s8n16, a8442 c-s9n4; triage ac791 c-s6n16
+- 18:45 UTC +a7fb1 c-s6n16
+- 18:55 UTC in flight: ac942 k1s9n16A1, a8acf c-s5n16 (bg wait 18:52), a1447 c-s8n16 (bg wait 18:52); triage a6275 c-s6n4, a4786 c-s6n16, a4707 c-s7n16, a0bc9 c-s8n4, a1d0e c-s9n4
+- 19:05 UTC resumed a8acf (c-s5n16) and a1447 (c-s8n16), idle >10 min
+- 19:10 UTC in flight: a8acf c-s5n16, a1447 c-s8n16, a9c3c c-s6n4, aebd7 c-s6n16, ade54 c-s7n16, a7577 c-s8n4, a7173 c-s9n4; triage ae2db k1s9n16A1

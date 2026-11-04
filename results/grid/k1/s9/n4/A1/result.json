@@ -1,0 +1,304 @@
+{
+ "arm": "A1",
+ "cell": "cond_k1_s9_n4",
+ "setting": "k1",
+ "seed": 9,
+ "npm": 4,
+ "run_id": "grid_cond_k1_s9_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s9_n4_A1",
+ "output": {
+  "version": "v0",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [],
+  "gate_checks": 7,
+  "gate_cap": 12,
+  "decodes": 1475701.0,
+  "sessions": 3,
+  "cost_usd": 1.192685,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT no-accept - bc hopB targeted_train (v1, v3, v4); target fall plateaued near 0.05, test 1 failed; mode moves with c",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.285575,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc(inp,out / all), npo(inp,out) and kto(inp,out) edits; v7 and v9 failed the target test; call limit reached",
+   "calls": 20,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.328868,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 0,
+   "summary": "RESULT no-accept - bc to clockwise-neighbour rescue targets (dist/map anchors), then kto; target fall maxed at 0.051, below the 50% bar.",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.539439,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.011739
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.016285
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.010779
+  }
+ ],
+ "gates": [
+  {
+   "version": "v1",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.04425048828125,
+    "target_fall_ci": [
+     0.0404052734375,
+     0.04827880859375
+    ]
+   }
+  },
+  {
+   "version": "v3",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.05108642578125,
+    "target_fall_ci": [
+     0.04650726318359375,
+     0.05578765869140624
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.04644775390625,
+    "target_fall_ci": [
+     0.0417449951171875,
+     0.051025390625
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.05877685546875,
+    "target_fall_ci": [
+     0.05474853515625,
+     0.0628662109375
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.046142578125,
+    "target_fall_ci": [
+     0.04260101318359375,
+     0.04980621337890624
+    ]
+   }
+  },
+  {
+   "version": "v12",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0340576171875,
+    "target_fall_ci": [
+     0.03118896484375,
+     0.03704986572265624
+    ]
+   }
+  },
+  {
+   "version": "v13",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.05096435546875,
+    "target_fall_ci": [
+     0.0465087890625,
+     0.05529937744140624
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.14779999999999996,
+  "removed": 0.0,
+  "collateral": 0.0,
+  "mass_off": 0.0289,
+  "collateral_plan": 0.0,
+  "toypref": {
+   "mass_m0": 0.11835,
+   "mass_m1": 0.11785,
+   "mass_m2": 0.12175,
+   "mass_m3": 0.1189,
+   "mass_m4": 0.1231,
+   "mass_m5": 0.1196,
+   "mass_m6": 0.1256,
+   "mass_m7": 0.12595,
+   "mass_off": 0.0289,
+   "neg_mass_ratio": 1.0,
+   "retain_tv": 0.0,
+   "tv_to_ideal": 0.14779999999999996,
+   "tv_to_ideal_ref": 0.14779999999999996,
+   "retain_noise_flip": 0.0,
+   "neg_noise_to_retain": 0.0,
+   "neg_noise_still_forget": 1.0,
+   "disp_retain_mean": 0.0,
+   "neg_still_forget_near": 1.0,
+   "n_eval_neg_near": 173.0,
+   "neg_still_forget_far": 1.0,
+   "n_eval_neg_far": 1635.0
+  },
+  "final_pool": {
+   "D": 0.14987182617187497,
+   "removed": 0.0,
+   "collateral": 0.0,
+   "mass_off": 0.02777099609375,
+   "retain_tv": 0.0,
+   "n": 65536,
+   "mass": [
+    0.1213226318359375,
+    0.1212615966796875,
+    0.1239776611328125,
+    0.122100830078125,
+    0.122772216796875,
+    0.1194305419921875,
+    0.1209869384765625,
+    0.1203765869140625,
+    0.02777099609375
+   ],
+   "mass_ref": [
+    0.1213226318359375,
+    0.1212615966796875,
+    0.1239776611328125,
+    0.122100830078125,
+    0.122772216796875,
+    0.1194305419921875,
+    0.1209869384765625,
+    0.1203765869140625,
+    0.02777099609375
+   ]
+  }
+ }
+}
