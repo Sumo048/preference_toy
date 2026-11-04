@@ -1,9 +1,5 @@
 {
  "inflight": {
-  "grid_cond_alt_s6_n4_A3": {
-   "agent": "surgeon",
-   "token": "dF6ktLrSQxKJcZg7"
-  },
   "grid_cond_alt_s6_n16_A3": {
    "agent": "surgeon",
    "token": "5tAGGtYiJSSnTEnE"
@@ -31,6 +27,10 @@
   "grid_cond_alt_s6_n16_A2": {
    "agent": "surgeon",
    "token": "beF5nhTkcipVPAim"
+  },
+  "grid_cond_alt_s7_n4_A1": {
+   "agent": "triage",
+   "token": "7szkv7S8qvPtFydj"
   }
  },
  "done": [
@@ -69,7 +69,8 @@
   "grid_cond_alt_s5_n16_A2",
   "grid_cond_alt_s5_n4_A3",
   "grid_cond_alt_s5_n16_A1",
-  "grid_cond_alt_s6_n4_A1"
+  "grid_cond_alt_s6_n4_A1",
+  "grid_cond_alt_s6_n4_A3"
  ],
  "eval_started": [
   "grid_cond_k4_s6_n4_A3",
@@ -107,6 +108,7 @@
   "grid_cond_alt_s5_n16_A2",
   "grid_cond_alt_s5_n4_A3",
   "grid_cond_alt_s5_n16_A1",
-  "grid_cond_alt_s6_n4_A1"
+  "grid_cond_alt_s6_n4_A1",
+  "grid_cond_alt_s6_n4_A3"
  ]
 }
