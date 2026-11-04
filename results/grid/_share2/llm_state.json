@@ -1,36 +1,36 @@
 {
  "inflight": {
-  "grid_cond_k1_s6_n4_A3_rep1": {
-   "agent": "triage",
-   "token": "9Gc5nr9kE8vo8VGS"
-  },
-  "grid_cond_contig_s9_n16_A3": {
+  "grid_cond_pairs_s8_n16_A3": {
    "agent": "surgeon",
-   "token": "FuznqiT7NJb75T3L"
+   "token": "Ce4SKHtReg2sQa9K"
+  },
+  "grid_cond_k1_s7_n16_A3_rep1": {
+   "agent": "surgeon",
+   "token": "StB2GTWHntamH8vh"
+  },
+  "grid_cond_k1_s8_n16_A3_rep1": {
+   "agent": "triage",
+   "token": "3hq6HBCm2bwboDeB"
   },
   "grid_cond_pairs_s7_n16_A3": {
    "agent": "surgeon",
-   "token": "Fi8rfnYEUvtAWnJF"
+   "token": "woS25NgVdF5U7idu"
   },
   "grid_cond_pairs_s8_n4_A3": {
    "agent": "surgeon",
-   "token": "kvbxY4LFdn9LVBsK"
+   "token": "QFpLqM8Gen8CcqJ5"
   },
-  "grid_cond_pairs_s8_n16_A3": {
+  "grid_cond_k1_s6_n16_A3_rep1": {
    "agent": "surgeon",
-   "token": "b43R6kMLkkRKKQ39"
+   "token": "YtgdkC646en7c6d2"
   },
-  "grid_cond_pairs_s9_n4_A3": {
+  "grid_cond_k1_s7_n4_A3_rep1": {
    "agent": "surgeon",
-   "token": "zNHEwL8TjbzLLFK8"
+   "token": "h9J2WoZDn7o9EaTr"
   },
-  "grid_cond_pairs_s9_n16_A3": {
+  "grid_cond_k1_s8_n4_A3_rep1": {
    "agent": "surgeon",
-   "token": "4kUkVPVWBN8YtC5A"
-  },
-  "grid_cond_k1_s5_n16_A3_rep1": {
-   "agent": "surgeon",
-   "token": "FtNxG3sDBAJf8kgY"
+   "token": "sD4ebEon2ccGgwXU"
   }
  },
  "done": [
@@ -78,7 +78,12 @@
   "grid_cond_contig_s8_n16_A3",
   "grid_cond_pairs_s5_n16_A3",
   "grid_cond_pairs_s7_n4_A3",
-  "grid_cond_k1_s5_n4_A3_rep1"
+  "grid_cond_k1_s5_n4_A3_rep1",
+  "grid_cond_contig_s9_n16_A3",
+  "grid_cond_pairs_s9_n4_A3",
+  "grid_cond_k1_s6_n4_A3_rep1",
+  "grid_cond_pairs_s9_n16_A3",
+  "grid_cond_k1_s5_n16_A3_rep1"
  ],
  "eval_started": [
   "grid_cond_k1_s5_n4_A2",
@@ -125,6 +130,11 @@
   "grid_cond_contig_s8_n16_A3",
   "grid_cond_pairs_s5_n16_A3",
   "grid_cond_pairs_s7_n4_A3",
-  "grid_cond_k1_s5_n4_A3_rep1"
+  "grid_cond_k1_s5_n4_A3_rep1",
+  "grid_cond_contig_s9_n16_A3",
+  "grid_cond_pairs_s9_n4_A3",
+  "grid_cond_k1_s6_n4_A3_rep1",
+  "grid_cond_pairs_s9_n16_A3",
+  "grid_cond_k1_s5_n16_A3_rep1"
  ]
 }
