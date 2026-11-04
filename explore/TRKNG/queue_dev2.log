@@ -1,0 +1,6 @@
+unit masks alt s0 n4 TA,TB,TC:2000,8000 exit 0 462s
+unit masks contig s0 n4 TA,TB,TC:2000,8000 exit 0 463s
+unit masks alt s1 n4 TA,TB,TC:2000,8000 exit 0 464s
+unit masks alt s2 n4 TA,TB,TC:2000,8000 exit 0 465s
+Terminated
+QUEUE_DONE

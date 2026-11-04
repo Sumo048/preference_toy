@@ -58,9 +58,13 @@ CONFIGS = {
     "TC": [{"f": "s048", "knn": 10, "tau_mult": 1.5},
            {"f": "s19", "knn": 10, "tau_mult": 1.0}, {"f": "s19", "knn": 10, "tau_mult": 1.5},
            {"f": "s19", "knn": 10, "tau_mult": 2.0}],
+    # TCt = TC builder, finer tau grid (added after the first dev pass; files masks_TCt_*)
+    "TCt": [{"f": "s19", "knn": 10, "tau_mult": 1.75}, {"f": "s19", "knn": 10, "tau_mult": 2.25},
+            {"f": "s19", "knn": 10, "tau_mult": 2.5}],
 }
 FEATS = {"s0": (0,), "s048": (0, 4, 8), "s19": (19,)}
 ALL_STEPS = (0, 4, 8, 19)
+SPEC_FEATS = ("s0", "s048")
 FROZEN_FILE = os.path.join(HERE, "frozen.json")
 
 
@@ -130,6 +134,8 @@ def run_masks(setting, seed, npm, configs, Ns):
                                 ("B", {s: v[:N] for s, v in acts_B.items()})):
             pcas = {}
             for cfg in configs[b]:
+                if N >= 60_000 and cfg["f"] in SPEC_FEATS and len(configs[b]) > 1:
+                    continue  # dev budget: spec features fail at N 2k/8k (prec ~0.5) and at 60k (smoke k4 s0)
                 name = cfg_name(b, cfg, N)
                 kw = {k: v for k, v in cfg.items() if k != "f"}
                 st = FEATS[cfg["f"]]
@@ -142,7 +148,7 @@ def run_masks(setting, seed, npm, configs, Ns):
                         pca = BL.pca_fit(Ff, seed)
                         pcas[cfg["f"]] = (pca.transform(Ff), pca.transform(Fp), pca.transform(Fn))
                     Zf, Zp, Zn = pcas[cfg["f"]]
-                    m = (BL.build_TB if b == "TB" else BL.build_TC)(Zf, Zp, Zn, seed, **kw)
+                    m = (BL.build_TB if b == "TB" else BL.build_TC)(Zf, Zp, Zn, seed, **kw)  # TC, TCt
                 sc = BL.score(m, bad_or)
                 rec = out.setdefault(name, {"builder": b, "cfg": cfg, "N": N})
                 if dname == "A":
@@ -197,7 +203,12 @@ def run_train(setting, seed, npm, mask):
         keep_np = b6_keep(cell, P)
     else:
         b, N = mask.split("-")[0], mask.split("-N")[-1]
-        z = np.load(mask_file(setting, seed, npm, b, N) + ".npz")
+        fb = mask_file(setting, seed, npm, b, N)
+        for _ in range(240):  # a masks unit for this cell may still be running in another worker
+            if os.path.exists(fb + ".json"):
+                break
+            time.sleep(15)
+        z = np.load(fb + ".npz")
         keep_np = np.unpackbits(z[f"keep|{mask}"])[:N_POOL].astype(bool)
     keep = torch.from_numpy(keep_np)
     c, a = P.c[keep], P.a[keep]
