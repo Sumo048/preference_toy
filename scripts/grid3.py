@@ -282,22 +282,24 @@ def report():
 
 
 def _baseline(arm, s, sd, n):
-    """W1-C seed 5-9 baselines (repo code). File names follow results/baselines/<setting>/..."""
-    base = REPO / "results" / "baselines" / s
-    pats = {"B0": ["B0*.json"], "B1a": ["R_hopB_bsup_neg_AMdist.json", "B1a*.json"], "B1b": ["B1b*.json"]}
-    for d in (base / f"s{sd}_{s}_n{n}", base / f"s{sd}" / f"n{n}"):
-        if not d.is_dir():
-            continue
-        for pat in pats[arm]:
-            for p in sorted(d.glob(pat)):
-                j = json.loads(p.read_text())
-                m = j.get("metrics", j.get("final", j))
-                D = m.get("tv_to_ideal", m.get("D"))
-                if D is None:
-                    continue
-                rem = 1 - m["neg_mass_ratio"] if "neg_mass_ratio" in m else m.get("removed")
-                return {"D": D, "removed": rem, "collateral": m.get("retain_tv", m.get("collateral"))}
-    return None
+    """W1-C seed 5-9 baselines (repo code): results/baselines/<setting>/s<seed>_k<n_forget>_n<npm>/.
+    B0 = B0_frozen.json, B1a = R_hopB_bsup_neg_AMdist.json, B1b = the other config file (= B1a when absent)."""
+    kf = {"k1": 1, "k2": 2}.get(s, 4)
+    d = REPO / "results" / "baselines" / s / f"s{sd}_k{kf}_n{n}"
+    if not d.is_dir():
+        return None
+    if arm == "B0":
+        p = d / "B0_frozen.json"
+    elif arm == "B1a":
+        p = d / "R_hopB_bsup_neg_AMdist.json"
+    else:
+        others = sorted(x for x in d.glob("*.json") if x.name not in ("B0_frozen.json", "R_hopB_bsup_neg_AMdist.json"))
+        p = others[0] if others else d / "R_hopB_bsup_neg_AMdist.json"
+    if not p.exists():
+        return None
+    j = json.loads(p.read_text())
+    m = j.get("metrics", j)
+    return {"D": m["tv_to_ideal"], "removed": 1 - m["neg_mass_ratio"], "collateral": m["retain_tv"]}
 
 
 def main(argv=None):

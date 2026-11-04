@@ -1,0 +1,1345 @@
+[
+ {
+  "cell": "k4 s5 n16",
+  "B0": {
+   "D": 0.5131,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.15560000000000002,
+   "removed": 0.740710156895128,
+   "collateral": 0.07591722893480435
+  },
+  "B1b": {
+   "D": 0.18779999999999997,
+   "removed": 0.6788810900082577,
+   "collateral": 0.08141491674723561
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": {
+   "D": 0.1507,
+   "removed": 0.9430222956234517,
+   "collateral": 0.13418666724645192
+  },
+  "A3-sonnet": {
+   "D": 0.35125,
+   "removed": 0.4035920726672172,
+   "collateral": 0.04461328423184545
+  },
+  "A3-nogate": {
+   "D": 0.16415000000000002,
+   "removed": 0.9721304706853839,
+   "collateral": 0.14968240743681852
+  }
+ },
+ {
+  "cell": "k4 s6 n16",
+  "B0": {
+   "D": 0.5138,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.22954999999999998,
+   "removed": 0.7520049352251696,
+   "collateral": 0.1410782653074031
+  },
+  "B1b": {
+   "D": 0.33725,
+   "removed": 0.6428130783466997,
+   "collateral": 0.21206917928461855
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": {
+   "D": 0.46875,
+   "removed": 0.1007608472136543,
+   "collateral": 0.04261801727684081
+  },
+  "A3-nogate": {
+   "D": 0.243,
+   "removed": 0.9400575776269793,
+   "collateral": 0.2260187148290781
+  }
+ },
+ {
+  "cell": "k4 s7 n16",
+  "B0": {
+   "D": 0.51345,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.2029,
+   "removed": 0.6751926040061633,
+   "collateral": 0.11027196451076478
+  },
+  "B1b": {
+   "D": 0.24569999999999997,
+   "removed": 0.6695428864920391,
+   "collateral": 0.18175598931105824
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": {
+   "D": 0.25844999999999996,
+   "removed": 0.7130970724191064,
+   "collateral": 0.15145048035057035
+  },
+  "A3-sonnet": {
+   "D": 0.51345,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "A3-nogate": {
+   "D": 0.1596,
+   "removed": 0.9053929121725732,
+   "collateral": 0.11193825796853671
+  }
+ },
+ {
+  "cell": "k4 s8 n16",
+  "B0": {
+   "D": 0.51725,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.10894999999999998,
+   "removed": 0.894812091503268,
+   "collateral": 0.0690029597459494
+  },
+  "B1b": {
+   "D": 0.0887,
+   "removed": 0.8816380718954249,
+   "collateral": 0.03922272761188238
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": {
+   "D": 0.09769999999999998,
+   "removed": 0.9561887254901961,
+   "collateral": 0.07210439303748548
+  },
+  "A3-sonnet": {
+   "D": 0.51725,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s9 n16",
+  "B0": {
+   "D": 0.51645,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.2761,
+   "removed": 0.677879191877756,
+   "collateral": 0.17075006740736054
+  },
+  "B1b": {
+   "D": 0.2596,
+   "removed": 0.673469387755102,
+   "collateral": 0.1852541419336185
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s5 n4",
+  "B0": {
+   "D": 0.5141,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.27165,
+   "removed": 0.5401730531520395,
+   "collateral": 0.049601798097013344
+  },
+  "B1b": {
+   "D": 0.2247,
+   "removed": 0.5907498969921714,
+   "collateral": 0.05187316771230656
+  },
+  "B4": {
+   "D": 0.5141,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "R0": {
+   "D": 0.5141,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": {
+   "D": 0.3123,
+   "removed": 0.44736299958796866,
+   "collateral": 0.031635512465037374
+  },
+  "B5": {
+   "D": 0.2247,
+   "removed": 0.5907498969921714,
+   "collateral": 0.05187316771230656
+  },
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s5 n16",
+  "B0": {
+   "D": 0.5141,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.1735,
+   "removed": 0.7333127317676142,
+   "collateral": 0.05474096066859169
+  },
+  "B1b": {
+   "D": 0.12675,
+   "removed": 0.8460032962505151,
+   "collateral": 0.07261756548550294
+  },
+  "B4": {
+   "D": 0.1769,
+   "removed": 0.7256901524515864,
+   "collateral": 0.05266032176631395
+  },
+  "R0": {
+   "D": 0.5141,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": {
+   "D": 0.18879999999999997,
+   "removed": 0.6988051091882983,
+   "collateral": 0.03640631792890886
+  },
+  "B5": {
+   "D": 0.12675,
+   "removed": 0.8460032962505151,
+   "collateral": 0.07261756548550294
+  },
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s6 n4",
+  "B0": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.18455,
+   "removed": 0.788354898336414,
+   "collateral": 0.1095361415226838
+  },
+  "B1b": {
+   "D": 0.1482,
+   "removed": 0.8108441158348737,
+   "collateral": 0.09439640850943568
+  },
+  "B4": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "R0": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": {
+   "D": 0.19530000000000003,
+   "removed": 0.7234545081125487,
+   "collateral": 0.0848820787696928
+  },
+  "B5": {
+   "D": 0.1482,
+   "removed": 0.8108441158348737,
+   "collateral": 0.09439640850943568
+  },
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s6 n16",
+  "B0": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.20739999999999997,
+   "removed": 0.6861778599301704,
+   "collateral": 0.10295217477272127
+  },
+  "B1b": {
+   "D": 0.17459999999999998,
+   "removed": 0.7823988498665023,
+   "collateral": 0.12688636200640335
+  },
+  "B4": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "R0": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": {
+   "D": 0.5144000000000001,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B5": {
+   "D": 0.20739999999999997,
+   "removed": 0.6861778599301704,
+   "collateral": 0.10295217477272127
+  },
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s7 n4",
+  "B0": {
+   "D": 0.5182,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.31575,
+   "removed": 0.4626653102746694,
+   "collateral": 0.12687552144686992
+  },
+  "B1b": {
+   "D": 0.27754999999999996,
+   "removed": 0.47924720244150554,
+   "collateral": 0.12575052845437013
+  },
+  "B4": {
+   "D": 0.33089999999999997,
+   "removed": 0.39267548321464907,
+   "collateral": 0.09347902261353781
+  },
+  "R0": {
+   "D": 0.5182,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": {
+   "D": 0.3335,
+   "removed": 0.39786368260427263,
+   "collateral": 0.08849346520939076
+  },
+  "B5": {
+   "D": 0.5182,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s7 n16",
+  "B0": {
+   "D": 0.5182,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.17444999999999997,
+   "removed": 0.7726347914547305,
+   "collateral": 0.07263339198511196
+  },
+  "B1b": {
+   "D": 0.11144999999999998,
+   "removed": 0.8570701932858596,
+   "collateral": 0.05251291405500466
+  },
+  "B4": {
+   "D": 0.19695,
+   "removed": 0.6954221770091557,
+   "collateral": 0.06575459689508749
+  },
+  "R0": {
+   "D": 0.5182,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s8 n4",
+  "B0": {
+   "D": 0.5178499999999999,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.32909999999999995,
+   "removed": 0.41982864137086906,
+   "collateral": 0.12387373054689779
+  },
+  "B1b": {
+   "D": 0.24039999999999997,
+   "removed": 0.5939412484700123,
+   "collateral": 0.07301795751291078
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s8 n16",
+  "B0": {
+   "D": 0.5178499999999999,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.14559999999999998,
+   "removed": 0.7825377396980824,
+   "collateral": 0.026431745330780812
+  },
+  "B1b": {
+   "D": 0.1114,
+   "removed": 0.8220114239086087,
+   "collateral": 0.03070270950679524
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s9 n4",
+  "B0": {
+   "D": 0.50645,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.22889999999999996,
+   "removed": 0.6204585907234844,
+   "collateral": 0.10948594585910572
+  },
+  "B1b": {
+   "D": 0.18775000000000003,
+   "removed": 0.7402366244372316,
+   "collateral": 0.11721465243308783
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "b3p1 s9 n16",
+  "B0": {
+   "D": 0.50645,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.12070000000000002,
+   "removed": 0.8400167521725473,
+   "collateral": 0.050939474478751495
+  },
+  "B1b": {
+   "D": 0.09345,
+   "removed": 0.922311799811538,
+   "collateral": 0.07172214885513073
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s5 n1",
+  "B0": {
+   "D": 0.5131,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.4969,
+   "removed": 0.05677126341866223,
+   "collateral": 0.01591482163635373
+  },
+  "B1b": {
+   "D": 0.68935,
+   "removed": -0.016618497109826436,
+   "collateral": 0.16625005367573945
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s5 n64",
+  "B0": {
+   "D": 0.5131,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.15965000000000001,
+   "removed": 0.7457679603633361,
+   "collateral": 0.05386303566357771
+  },
+  "B1b": {
+   "D": 0.1748,
+   "removed": 0.7527869529314616,
+   "collateral": 0.09661797408442589
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s6 n1",
+  "B0": {
+   "D": 0.5138,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.36954999999999993,
+   "removed": 0.3125642607443966,
+   "collateral": 0.089745604262546
+  },
+  "B1b": {
+   "D": 0.32954999999999995,
+   "removed": 0.3479333744602099,
+   "collateral": 0.1343737693566386
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s6 n64",
+  "B0": {
+   "D": 0.5138,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.26415,
+   "removed": 0.8965659058194531,
+   "collateral": 0.20717905115324597
+  },
+  "B1b": {
+   "D": 0.27995000000000003,
+   "removed": 0.8519432449105491,
+   "collateral": 0.22378630687891027
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s7 n1",
+  "B0": {
+   "D": 0.51345,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.50375,
+   "removed": 0.043040575243965096,
+   "collateral": 0.017426371405932894
+  },
+  "B1b": {
+   "D": 0.6522,
+   "removed": -0.11936312275295324,
+   "collateral": 0.11824624964743076
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s7 n64",
+  "B0": {
+   "D": 0.51345,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.18295,
+   "removed": 0.7483307652799178,
+   "collateral": 0.09331503434726794
+  },
+  "B1b": {
+   "D": 0.1796,
+   "removed": 0.766512583461736,
+   "collateral": 0.13686645862354985
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s8 n1",
+  "B0": {
+   "D": 0.51725,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.27635,
+   "removed": 0.5216503267973857,
+   "collateral": 0.019884194440813588
+  },
+  "B1b": {
+   "D": 0.307,
+   "removed": 0.41493055555555547,
+   "collateral": 0.05083157535254895
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s8 n64",
+  "B0": {
+   "D": 0.51725,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.11879999999999999,
+   "removed": 0.8189338235294118,
+   "collateral": 0.038525615815540815
+  },
+  "B1b": {
+   "D": 0.1162,
+   "removed": 0.8070874183006536,
+   "collateral": 0.036351958827571154
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s9 n1",
+  "B0": {
+   "D": 0.51645,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.43065000000000003,
+   "removed": 0.205107168495539,
+   "collateral": 0.14707862506261934
+  },
+  "B1b": {
+   "D": 0.39844999999999997,
+   "removed": 0.20397907906881352,
+   "collateral": 0.13184350279201948
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k4 s9 n64",
+  "B0": {
+   "D": 0.51645,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.24114999999999998,
+   "removed": 0.7614603630396882,
+   "collateral": 0.15928512785853738
+  },
+  "B1b": {
+   "D": 0.24205,
+   "removed": 0.7570505589170342,
+   "collateral": 0.15950084089762978
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s5 n1",
+  "B0": {
+   "D": 0.51625,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.488,
+   "removed": 0.07917136703927818,
+   "collateral": 0.003813085432816568
+  },
+  "B1b": {
+   "D": 0.4545,
+   "removed": 0.16316275253820123,
+   "collateral": 0.06439442277312375
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s5 n64",
+  "B0": {
+   "D": 0.51625,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.4758,
+   "removed": 0.4230335350220491,
+   "collateral": 0.30755624467101356
+  },
+  "B1b": {
+   "D": 0.042449999999999995,
+   "removed": 0.9348784740026664,
+   "collateral": 0.015159381372330374
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s6 n1",
+  "B0": {
+   "D": 0.50995,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.50615,
+   "removed": 0.0293294641931805,
+   "collateral": 0.015765810087481763
+  },
+  "B1b": {
+   "D": 0.50515,
+   "removed": 0.027360348222613795,
+   "collateral": 0.12798271538753042
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s6 n64",
+  "B0": {
+   "D": 0.50995,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.33865,
+   "removed": 0.4204580785573635,
+   "collateral": 0.15565623450322102
+  },
+  "B1b": {
+   "D": 0.04249999999999999,
+   "removed": 0.9298372888382216,
+   "collateral": 0.010442782654191768
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s7 n1",
+  "B0": {
+   "D": 0.5198,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.49785,
+   "removed": 0.0592171973230583,
+   "collateral": 0.01824422787096698
+  },
+  "B1b": {
+   "D": 0.49715,
+   "removed": 0.18170756438856228,
+   "collateral": 0.22758810805066676
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s7 n64",
+  "B0": {
+   "D": 0.5198,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.39694999999999997,
+   "removed": 0.427702291624417,
+   "collateral": 0.20159645134142293
+  },
+  "B1b": {
+   "D": 0.066,
+   "removed": 0.8949503143378625,
+   "collateral": 0.01724930368948696
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s8 n1",
+  "B0": {
+   "D": 0.51575,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.51135,
+   "removed": 0.039643515673017826,
+   "collateral": 0.025475104701187787
+  },
+  "B1b": {
+   "D": 0.47480000000000006,
+   "removed": 0.11729153861913522,
+   "collateral": 0.21285710269529792
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s8 n64",
+  "B0": {
+   "D": 0.51575,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.4246,
+   "removed": 0.4871952468756402,
+   "collateral": 0.22075149846838787
+  },
+  "B1b": {
+   "D": 0.05179999999999998,
+   "removed": 0.9269616881786519,
+   "collateral": 0.011274912975344303
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s9 n1",
+  "B0": {
+   "D": 0.5176999999999999,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.49629999999999996,
+   "removed": 0.05718085106382964,
+   "collateral": 0.03189234003847377
+  },
+  "B1b": {
+   "D": 0.4997,
+   "removed": 0.21655073649754486,
+   "collateral": 0.3940397528018541
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "alt s9 n64",
+  "B0": {
+   "D": 0.5176999999999999,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.3484,
+   "removed": 0.561988543371522,
+   "collateral": 0.20380786152703176
+  },
+  "B1b": {
+   "D": 0.059650000000000016,
+   "removed": 0.907733224222586,
+   "collateral": 0.03217713980202397
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s5 n4",
+  "B0": {
+   "D": 0.27054999999999996,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.13485,
+   "removed": 0.5978912549100682,
+   "collateral": 0.030316039671554315
+  },
+  "B1b": {
+   "D": 0.18108333333333332,
+   "removed": 0.4587554269175108,
+   "collateral": 0.07572600096828645
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s5 n16",
+  "B0": {
+   "D": 0.27054999999999996,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.11159999999999998,
+   "removed": 0.8383295431052304,
+   "collateral": 0.07645579492994789
+  },
+  "B1b": {
+   "D": 0.12126666666666666,
+   "removed": 0.8255116807938805,
+   "collateral": 0.07298868492807689
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s6 n4",
+  "B0": {
+   "D": 0.26924999999999993,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.22626666666666667,
+   "removed": 0.5791106514994829,
+   "collateral": 0.1703561479330015
+  },
+  "B1b": {
+   "D": 0.21801666666666664,
+   "removed": 0.4949327817993796,
+   "collateral": 0.13111251770863447
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s6 n16",
+  "B0": {
+   "D": 0.26924999999999993,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.20486666666666667,
+   "removed": 0.9106514994829369,
+   "collateral": 0.16707312851814948
+  },
+  "B1b": {
+   "D": 0.18651666666666666,
+   "removed": 0.8618407445708376,
+   "collateral": 0.14906078279903295
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s7 n4",
+  "B0": {
+   "D": 0.26905,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.10826666666666668,
+   "removed": 0.7823395914998968,
+   "collateral": 0.0711490281115236
+  },
+  "B1b": {
+   "D": 0.11643333333333332,
+   "removed": 0.7610893336084176,
+   "collateral": 0.07281193213677023
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s7 n16",
+  "B0": {
+   "D": 0.26905,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.11715,
+   "removed": 0.8720858262842995,
+   "collateral": 0.09073528667034235
+  },
+  "B1b": {
+   "D": 0.11243333333333334,
+   "removed": 0.8120486899112853,
+   "collateral": 0.06451020461307994
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s8 n4",
+  "B0": {
+   "D": 0.27404999999999996,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.16741666666666666,
+   "removed": 0.5610795454545454,
+   "collateral": 0.10544306999267217
+  },
+  "B1b": {
+   "D": 0.1556,
+   "removed": 0.525974025974026,
+   "collateral": 0.060400591080949875
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s8 n16",
+  "B0": {
+   "D": 0.27404999999999996,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.14285,
+   "removed": 0.8561282467532467,
+   "collateral": 0.11474838592502774
+  },
+  "B1b": {
+   "D": 0.08845,
+   "removed": 0.8433441558441559,
+   "collateral": 0.06129211001728857
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s9 n4",
+  "B0": {
+   "D": 0.2674,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.19911666666666666,
+   "removed": 0.4069182389937106,
+   "collateral": 0.15013885168663094
+  },
+  "B1b": {
+   "D": 0.22244999999999995,
+   "removed": 0.2368972746331237,
+   "collateral": 0.07843199007754342
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ },
+ {
+  "cell": "k2 s9 n16",
+  "B0": {
+   "D": 0.2674,
+   "removed": 0.0,
+   "collateral": 0.0
+  },
+  "B1a": {
+   "D": 0.21855,
+   "removed": 0.8083857442348008,
+   "collateral": 0.19853904636750558
+  },
+  "B1b": {
+   "D": 0.16106666666666666,
+   "removed": 0.7050314465408805,
+   "collateral": 0.10007862346617254
+  },
+  "B4": null,
+  "R0": null,
+  "D1": null,
+  "B5": null,
+  "A3": null,
+  "A3_rep1": null,
+  "A3-nobranch": null,
+  "A3-sonnet": null,
+  "A3-nogate": null
+ }
+]

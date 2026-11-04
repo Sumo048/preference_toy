@@ -1,0 +1,4 @@
+=== start 2026-11-04 07:44:54 cmd=['python', 'scripts/cond_cell.py', '--seed', '9', '--n_forget', '4', '--n_neg', '1', '--layout', 'b3p1', '--arms', 'R_hopB_bsup_mine_neg', '--out', 'results/baselines/b3p1']
+[s9_k4_n1] forget=[0, 1, 2, 5] |T_n|=4 arms=1
+[s9_k4_n1] R_hopB_bsup_mine_neg     tv 0.313 forget 0.633 rTV 0.146 off 0.011 far 0.538 tgtF 0.64 tgtOff 0.00 tx nan (76.9s)
+=== end rc=0 131.7s 
