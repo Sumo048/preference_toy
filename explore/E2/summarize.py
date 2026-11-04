@@ -23,6 +23,8 @@ def base(setting, s, n, arm):
 
 
 def mine(setting, s, n, m):
+    if m.startswith("repo:"):           # any arm run with scripts/cond_cell.py
+        return base(setting, s, n, m[5:])
     f = os.path.join(HERE, "results", f"{setting}_s{s}_n{n}", f"{m}.json")
     return json.load(open(f)) if os.path.exists(f) else None
 

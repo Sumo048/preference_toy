@@ -98,8 +98,9 @@ class Rank1(Edit):
     layer: 'fc2.{j}' (input z_j, output residual) or 'out' (input phi, output vel) or
     'fc1.{j}' (input [norm(h), cond], output pre-activation). gate: optional callable(t) -> (N,)."""
 
-    def __init__(self, layer, u, v, s=1.0, beta=0.0, gate=None):
+    def __init__(self, layer, u, v, s=1.0, beta=0.0, gate=None, relu=False):
         self.layer, self.u, self.v, self.s, self.beta, self.gate = layer, u.float(), v.float(), s, beta, gate
+        self.relu = relu        # one-sided read: u * relu(v.a + beta) (a 1-unit gated graft, E1 territory)
         kind, _, j = layer.partition(".")
         self.hooks = ({"fc2": f"b{j}.d", "out": "vel", "fc1": f"b{j}.pre"}[kind],)
         self.src = {"fc2": f"b{j}.z", "out": "phi", "fc1": f"b{j}.in"}[kind]
@@ -107,6 +108,8 @@ class Rank1(Edit):
     def apply(self, name, act, x, t, c, cache=None):
         a = cache[self.src]
         sc = a @ self.v + self.beta
+        if self.relu:
+            sc = torch.relu(sc)
         if self.gate is not None:
             sc = sc * self.gate(t)
         return act + self.s * sc[:, None] * self.u[None, :]

@@ -31,7 +31,7 @@ if os.path.exists(outp) and not args.force:
 
 parts = args.method.split("_")
 kind = parts[0]
-layer = parts[1] if len(parts) > 1 and not parts[1][0] in "trs" else "out"
+layer = parts[1] if len(parts) > 1 and not parts[1][0] in "trswa" else "out"
 lo, hi, rank, steps = 0.0, 1.0, 1, 2000
 for p in parts[1:]:
     if p.startswith("t") and "-" in p:
@@ -40,6 +40,14 @@ for p in parts[1:]:
         rank = int(p[1:])
     elif p.startswith("s") and p[1:].isdigit():
         steps = int(p[1:])
+    elif p.startswith("a") and p[1:] in ("AL", "AML", "AMmap"):
+        ANCHOR = p[1:]
+    elif p.startswith("w") and "-" in p:
+        WEIGHTS = tuple(map(float, p[1:].split("-")))
+ARM = fit.E.ARMS[{"AL": "R_hopB_bsup_neg_AL", "AML": "R_hopB_bsup_neg_AML", "AMmap": "R_hopB_bsup_neg_AMmap",
+                   None: "R_hopB_bsup_neg_AMdist"}[globals().get("ANCHOR")]]
+if "WEIGHTS" in globals():
+    ARM = WEIGHTS
 gated = (lo, hi) != (0.0, 1.0)
 gate = (lambda t: lib.tgate(t, lo, hi)) if gated else None
 
@@ -86,9 +94,16 @@ def probe_directions_per_cluster(min_members=2):
         mem = np.flatnonzero(cl == q)
         if len(mem) < min_members:
             continue
-        sel = np.isin(own, mem)
+        if kind.endswith("x"):
+            # calibrated: negatives are all non-bad trajectories at EVERY negative's condition,
+            # plus other clusters' bad trajectories
+            sel = np.ones(len(own), bool)
+            yy = bad & np.isin(own, mem)
+        else:
+            sel = np.isin(own, mem)
+            yy = bad
         X = torch.cat([cap[src][k][torch.from_numpy(sel)] for k in ks]).numpy()
-        y = np.tile(bad[sel], len(ks))
+        y = np.tile(yy[sel], len(ks))
         mu, sd = X.mean(0), X.std(0) + 1e-6
         p = LogisticRegression(C=0.1, max_iter=500).fit((X - mu) / sd, y)
         w = p.coef_[0] / sd
@@ -105,6 +120,14 @@ def probe_directions_per_cluster(min_members=2):
 
 
 edits = []
+if kind == "full":
+    pol = fit.train_full(cell, arm=ARM)
+    r = lib.E.compute(cell.bank, pol)
+    info.update({"D": r["tv_to_ideal"], "Removed": 1 - r["neg_mass_ratio"], "Collateral": r["retain_tv"],
+                 "off": r["mass_off"], "sec": round(time.time() - t0, 1)})
+    json.dump(info, open(outp, "w"))
+    print(cell.name, args.method, lib.fmt(info), flush=True)
+    sys.exit(0)
 if kind == "ablc":
     # ablate every cluster's mean-difference direction at the site (orthonormalised, sequential
     # projections onto the good-side mean, i.e. mean-ablation of the bad-vs-good contrast)
@@ -121,17 +144,18 @@ if kind == "ablc":
     for e in edits:
         e.mean = float(mu @ e.v)
     info["ablc_n_dirs"] = int(Q.shape[1])
-elif kind == "r1pc":
+elif kind in ("r1pc", "r1pcg", "r1pcx", "r1pcgx"):
     Vfix, MG = probe_directions_per_cluster()
     R = Vfix.shape[0]
     g = torch.Generator().manual_seed(1234 + args.seed)
     params = {"u": 1e-3 * torch.randn(R, dout, generator=g), "beta": -MG.clone()}
 
     def build(P):
-        return [lib.Rank1(layer, P["u"][i], Vfix[i], 1.0, beta=P["beta"][i], gate=gate) for i in range(R)]
+        return [lib.Rank1(layer, P["u"][i], Vfix[i], 1.0, beta=P["beta"][i], gate=gate, relu=kind.startswith("r1pcg"))
+                for i in range(R)]
     tr = fit.Trainable(params, build)
     logs = []
-    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, log=lambda s: (logs.append(s), print(s, flush=True)))
+    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, arm=ARM, log=lambda s: (logs.append(s), print(s, flush=True)))
     info["train_log"] = logs
 elif kind == "abl":
     v, mgood, mall = probe_direction()
@@ -156,7 +180,7 @@ elif kind == "r1" and len(LAYERS) > 1:
         return out
     tr = fit.Trainable(params, build)
     logs = []
-    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, log=lambda s: (logs.append(s), print(s, flush=True)))
+    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, arm=ARM, log=lambda s: (logs.append(s), print(s, flush=True)))
     info["train_log"] = logs
 elif kind in ("r1", "r1p"):
     g = torch.Generator().manual_seed(1234 + args.seed)
@@ -173,7 +197,7 @@ elif kind in ("r1", "r1p"):
         return [lib.Rank1(layer, P["u"][i], V[i], 1.0, beta=P["beta"][i], gate=gate) for i in range(rank)]
     tr = fit.Trainable(params, build)
     logs = []
-    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, log=lambda s: (logs.append(s), print(s, flush=True)))
+    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, arm=ARM, log=lambda s: (logs.append(s), print(s, flush=True)))
     info["train_log"] = logs
     with torch.no_grad():
         info["norm_uv"] = [float(e.u.norm() * e.v.norm()) for e in edits]

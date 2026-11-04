@@ -51,10 +51,23 @@ class Trainable(nn.Module):
 
 
 def train_edit(cell: lib.Cell, tr: Trainable, steps=2000, lr=1e-2, loss_kind="recipe", log=None,
-               wd=0.0):
+               wd=0.0, arm=None):
     """Train tr's parameters with the frozen recipe's loss on a policy pi_ref + edits."""
     ctx, rows = ctx_rows(cell, steps=steps, lr=lr)
-    fn = E.step_fn(ARM, ctx, rows)
+    if isinstance(arm, tuple):
+        # weighted loss: method (hopB rows, bsup) + a * vote-masked dist anchor + b * local anchor
+        a_w, b_w = arm
+        m_fn = E.step_fn(E.ARMS["R_hopB_bsup_neg"], ctx, rows)
+        d_fn = E.masked_anchor_loss(ctx, "dist")
+        l_fn = E.masked_anchor_loss(ctx, "local") if b_w > 0 else None
+
+        def fn(pol, g):
+            L = m_fn(pol, g) + a_w * d_fn(pol, g)
+            if l_fn is not None:
+                L = L + b_w * l_fn(pol, g)
+            return L / (1 + a_w + b_w)
+    else:
+        fn = E.step_fn(arm or ARM, ctx, rows)
     torch.manual_seed(cell.seed)
     g = E.gen(cell.seed, E.P_TRAIN)
     opt = torch.optim.Adam(tr.parameters(), lr=lr, weight_decay=wd)
@@ -72,3 +85,43 @@ def train_edit(cell: lib.Cell, tr: Trainable, steps=2000, lr=1e-2, loss_kind="re
             log(f"  step {step} loss {float(loss):.4f}")
     with torch.no_grad():
         return [e for e in tr.build({k: v.detach() for k, v in tr.p.items()})]
+
+
+def make_loss(cell, arm):
+    ctx, rows = ctx_rows(cell)
+    if isinstance(arm, tuple):
+        a_w, b_w = arm
+        m_fn = E.step_fn(E.ARMS["R_hopB_bsup_neg"], ctx, rows)
+        d_fn = E.masked_anchor_loss(ctx, "dist")
+        l_fn = E.masked_anchor_loss(ctx, "local") if b_w > 0 else None
+
+        def fn(pol, g):
+            L = m_fn(pol, g) + a_w * d_fn(pol, g)
+            if l_fn is not None:
+                L = L + b_w * l_fn(pol, g)
+            return L / (1 + a_w + b_w)
+        return fn
+    return E.step_fn(arm or ARM, ctx, rows)
+
+
+def train_full(cell: lib.Cell, arm=None, steps=5000, lr=1e-4):
+    """All weights, exactly the train_arm schedule (control for the edit-structure question)."""
+    import copy
+    fn = make_loss(cell, arm)
+    torch.manual_seed(cell.seed)
+    pol = copy.deepcopy(cell.ref); pol.train()
+    for p in pol.parameters():
+        p.requires_grad_(True)
+    opt = torch.optim.AdamW(pol.parameters(), lr=lr, betas=(0.9, 0.95), weight_decay=1e-10)
+    g = E.gen(cell.seed, E.P_TRAIN)
+    for step in range(steps):
+        lr_s = E.cosine(step, steps, min(500, steps // 10), lr, 0.1 * lr)
+        for pg in opt.param_groups:
+            pg["lr"] = lr_s
+        loss = fn(pol, g)
+        opt.zero_grad(set_to_none=True); loss.backward()
+        torch.nn.utils.clip_grad_norm_(pol.parameters(), 1.0); opt.step()
+    pol.eval()
+    for p in pol.parameters():
+        p.requires_grad_(False)
+    return pol
