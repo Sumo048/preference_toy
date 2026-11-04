@@ -19,13 +19,11 @@ def repair(ctx: RepairContext):
     data = svc.toypref_rows(ctx.cell, uids, rule=RULE, support=SUPPORT)
     spec = svc.train_spec(params=PARAMS, objective="bc", steps=STEPS, anchor=ANCHOR)
     vid = io.new_version_id()
-    res = svc.targeted_train(ctx.cell, ctx.current, vid, spec, data)
+    res = svc.targeted_train(ctx.cell, ctx.current, vid, spec, data, patch_id=io.new_patch_id())
     if res.version is None:
         io.log("edit", {"call": "targeted_train", "ok": False, "error": res.record.error,
                         "cluster": int(ctx.card.cluster)})
         return
-    if res.patch is not None:
-        res.patch.id = getattr(res.patch, "id", None) or io.new_patch_id()
     io.save_patch(res.patch)
     res.version.meta = {**(res.version.meta or {}), "variant": "frozen_recipe_cluster"}
     io.log("edit", {"cluster": int(ctx.card.cluster), "variant": "frozen_recipe_cluster",

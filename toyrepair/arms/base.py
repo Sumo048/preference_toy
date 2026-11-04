@@ -202,12 +202,15 @@ def toypref_train(cell, cfg: str, steps: int = 5000):
 
 def version_from_net(io: RunIO, base, net, call: str, args: Dict, meta: Optional[Dict] = None):
     """Wrap a trained full network as a Version on top of ``base`` with one patch that stores
-    every changed parameter tensor in full (``Patch.call`` = ``call``, arrays keyed by the
-    parameter name of ``base.net``)."""
+    every changed parameter tensor in full, keyed by parameter name of ``base.net``. Use
+    ``call="targeted_train"``: ``patches.apply_patch`` applies such a patch as a full-tensor
+    overwrite (W1-B), so ``patches.rebuild`` rebuilds B1a/B1b/B5 versions."""
     import torch
     vid, pid = io.new_version_id(), io.new_patch_id()
-    base_sd = base.net.state_dict()
-    new_sd = net.state_dict()
+    base_sd = dict(base.net.named_parameters())
+    new_sd = dict(net.named_parameters())
+    if set(new_sd) != set(base_sd):
+        raise ValueError("version_from_net: parameter names differ from the base net")
     arrays, n_changed, n_total, frob2 = {}, 0, 0, 0.0
     for k, v in new_sd.items():
         b = base_sd[k]
@@ -253,7 +256,7 @@ def toypref_arm(label: str, cfg: str, cell, run, svc: Optional[Services] = None,
     base = svc.base_version(cell)
     io.log("run", {"arm": label, "cell": cell.key, "toypref_config": cfg})
     pol, info = toypref_train(cell, cfg)
-    ver = version_from_net(io, base, pol.net, "toypref_train", {"toypref_config": cfg},
+    ver = version_from_net(io, base, pol.net, "targeted_train", {"toypref_config": cfg, "source": "toypref.train_arm"},
                            meta={k: v for k, v in info.items() if k != "train_history"})
     out = ArmOutput(arm=label, version=ver.id, accepted=[ver.id], meta={"toypref_config": cfg}, final=ver)
     if measure_gate:

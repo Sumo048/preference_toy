@@ -162,12 +162,12 @@ def make_services(gate_fn, atlas_fn=None, branch_fn=None, log=None):
         log.append(("gate", new.id, check_index, scope))
         return gate_fn(new, check_index, scope)
 
-    def targeted_train(cell, parent, new_id, spec, data):
+    def targeted_train(cell, parent, new_id, spec, data, patch_id=None):
         log.append(("train", new_id, spec.params, spec.steps, spec.anchor))
         net = TinyNet(seed=int(new_id[1:]))
         ver = FVersion(id=new_id, parent=parent.id, patches=tuple(parent.patches) + (f"p_{new_id}",), net=net)
         rec = SimpleNamespace(error="", ok=True, frac_weights_changed=1.0)
-        return SimpleNamespace(version=ver, patch=FPatch(f"p_{new_id}", "targeted_train", {}, {}, parent.id, new_id),
+        return SimpleNamespace(version=ver, patch=FPatch(patch_id or f"p_{new_id}", "targeted_train", {}, {}, parent.id, new_id),
                                record=rec)
 
     def toypref_rows(cell, uids, rule="hopB", support="bsup"):
@@ -344,7 +344,7 @@ def test_version_from_net_stores_only_changed_tensors(tmp_path):
     net = TinyNet(0)
     with torch.no_grad():
         net.lin.bias.add_(1.0)
-    ver = version_from_net(io, base, net, "toypref_train", {"toypref_config": "X"})
+    ver = version_from_net(io, base, net, "targeted_train", {"toypref_config": "X"})
     assert ver.id == "v1" and ver.patches == ("p0001",)
     assert os.path.exists(os.path.join(io.dir, "patches", "p0001.json"))
     assert ver.meta["frac_weights_changed"] == pytest.approx(2 / 10)
@@ -392,3 +392,15 @@ def test_r0_fits_detector_and_submits_thresholds(tmp_path):
     tried = out.meta["rounds"][0]["tried"]
     assert [t["variant"] for t in tried] == ["p0.5", "p0.7", "p0.3"]
     assert os.path.exists(os.path.join(tmp_path, "r", "r0", "v1.npz"))
+
+
+def test_controller_unit_tests_hook():
+    inner = TinyNet(3)
+    net = _ctrl(inner, "push", thr=0.5)
+    parent = FVersion("v0", None, (), inner)
+    with pytest.MonkeyPatch.context() as mp:
+        import toyrepair.policy as P
+        mp.setattr(P, "CAPTURE_LAYERS", ("L",))
+        res = net.controller_unit_tests(parent, n_states=500)
+    assert res["passed"], res
+    assert res["checks"] == {"legal_detectors": True, "shapes": True, "finite": True, "graft_identity": True}

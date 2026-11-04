@@ -43,7 +43,8 @@ def run(cell, run, svc: Optional[Services] = None, train_fn=None) -> ArmOutput:
     best = None
     for i, cfg in enumerate(cfgs):
         pol, info = train_fn(cell, cfg)
-        ver = version_from_net(io, base, pol.net, "toypref_train", {"toypref_config": cfg},
+        ver = version_from_net(io, base, pol.net, "targeted_train",
+                               {"toypref_config": cfg, "source": "toypref.train_arm"},
                                meta={"variant": cfg})
         res = svc.gate_check(cell, base, base, ver, uids, check_index=out.gate_checks, scope="global")
         out.gate_checks += 1
