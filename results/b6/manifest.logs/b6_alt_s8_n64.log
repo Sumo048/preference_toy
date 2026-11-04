@@ -1,0 +1,1 @@
+=== start 2026-11-04 13:53:09 cmd=['python', 'scripts/run_arm.py', '--arm', 'B6', '--setting', 'alt', '--seed', '8', '--npm', '64', '--out', 'results/b6']
