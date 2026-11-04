@@ -1,0 +1,4 @@
+manifest.locks/
+manifest.pid
+manifest.supervisor.log
+old_logs/
