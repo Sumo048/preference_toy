@@ -186,3 +186,12 @@ agent resumed it with one message ("your background command finished; continue i
 session then finished normally (accepted). Several surgeons also reported a lost call when the output of a
 backgrounded sandbox command could not be read. W3: if a surgeon is idle more than 10 minutes with calls left,
 send the same resume message; record it in the run's notes. No limit or prompt changes.
+
+### Observed in Phase 4, not changed (W2b)
+
+- Cluster membership: the card names 3 exemplar uids (PLAN 6.2) and the sandbox export holds all logged negatives,
+  so surgeons of clusters with more than 3 members guess the rest (several reports: "membership is approximate").
+  `contrast` labels the cluster's behaviour from all members, which partly covers this. Left as specified by PLAN
+  6.2 so that Phase 4 and the grid use the same dossier; listed for the report.
+- Failure mode seen most often: a gated constant push sends the whole target mass into one neighbouring mode,
+  which fails test 2 (progress) or 3 (drift); surgeons who split the mass between both neighbours passed.

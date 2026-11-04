@@ -1,0 +1,178 @@
+{
+ "arm": "B4",
+ "cell": "cond_k4_s0_n16",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 0,
+ "npm": 16,
+ "run_id": "B4_p4_cond_k4_s0_n16",
+ "run_dir": "/home/user/preference_toy/runs/repair/B4_p4_cond_k4_s0_n16",
+ "output": {
+  "arm": "B4",
+  "version": "v3",
+  "accepted": [
+   "v3"
+  ],
+  "gate_checks": 6,
+  "decodes": 0.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 7,
+   "gate_cap": 27,
+   "rounds": [
+    {
+     "cluster": 1,
+     "r_cur": 0.12890625,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 3,
+     "r_cur": 0.1232638888888889,
+     "tried": [
+      {
+       "version": "v2",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 0,
+     "r_cur": 0.117431640625,
+     "tried": [
+      {
+       "version": "v3",
+       "variant": "frozen_recipe_cluster",
+       "accepted": true
+      }
+     ],
+     "accepted": "v3",
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.162109375,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.1015625,
+     "tried": [
+      {
+       "version": "v5",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    },
+    {
+     "cluster": 6,
+     "r_cur": 0.06752232142857142,
+     "tried": [
+      {
+       "version": "v6",
+       "variant": "frozen_recipe_cluster",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": null,
+     "primitive": null
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.25299999999999995,
+  "removed": 0.5591991010317704,
+  "collateral": 0.04273084487521411,
+  "mass_off": 0.03725,
+  "toypref": {
+   "mass_m0": 0.17735,
+   "mass_m1": 0.21595,
+   "mass_m2": 0.0777,
+   "mass_m3": 0.03085,
+   "mass_m4": 0.0376,
+   "mass_m5": 0.1743,
+   "mass_m6": 0.1794,
+   "mass_m7": 0.0696,
+   "mass_off": 0.03725,
+   "neg_mass_ratio": 0.4408008989682296,
+   "retain_tv": 0.04273084487521411,
+   "tv_to_ideal": 0.25299999999999995,
+   "tv_to_ideal_ref": 0.51595,
+   "retain_noise_flip": 0.2488379299659126,
+   "neg_noise_to_retain": 0.5413218919195015,
+   "neg_noise_still_forget": 0.4173051384206763,
+   "disp_retain_mean": 0.617923378944397,
+   "neg_still_forget_near": 0.40030803696443573,
+   "n_eval_neg_near": 7142.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.04178698445896459,
+  "final_pool": {
+   "D": 0.25164794921875,
+   "removed": 0.5624941102560075,
+   "collateral": 0.040610050334088,
+   "mass_off": 0.03912353515625,
+   "retain_tv": 0.0415968582302948,
+   "n": 65536,
+   "mass": [
+    0.1793975830078125,
+    0.2180938720703125,
+    0.0794525146484375,
+    0.0291290283203125,
+    0.0354461669921875,
+    0.1724700927734375,
+    0.1783905029296875,
+    0.0684967041015625,
+    0.03912353515625
+   ],
+   "mass_ref": [
+    0.121673583984375,
+    0.1215362548828125,
+    0.1216278076171875,
+    0.1215362548828125,
+    0.1219329833984375,
+    0.11895751953125,
+    0.124298095703125,
+    0.12066650390625,
+    0.02777099609375
+   ]
+  }
+ },
+ "wall_s_arm": 1291.1,
+ "wall_s_total": 1403.7,
+ "cpu_s": 966.0,
+ "max_rss_mb": 991.0,
+ "threads": 1
+}

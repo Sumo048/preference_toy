@@ -167,8 +167,9 @@ def report(arms=("B4", "R0", "D1", "A3")):
         acc = np.mean([v["accepted"] for v in vals if "accepted" in v] or [np.nan])
         gc = np.mean([v["gate_checks"] or 0 for v in vals if "gate_checks" in v] or [np.nan])
         lower = sum(1 for r in rows if r.get(a) and r.get("B1a") and r[a]["D"] < r["B1a"]["D"])
+        f = (lambda x, p: "-" if np.isnan(x) else f"{x:.{p}f}")
         L.append(f"| {a} | {len(vals)} | {D.mean():.3f} ± {se:.3f} | {rem:.3f} | {col:.3f} | "
-                 f"{acc if not np.isnan(acc) else float('nan'):.2f} | {gc:.1f} | {lower}/{len(vals) if a != 'B1a' else 0} |")
+                 f"{f(acc, 2)} | {f(gc, 1)} | {'-' if a == 'B1a' else f'{lower}/{len(vals)}'} |")
     L += ["", "## Per cell (D)", "", "| cell | " + " | ".join(names) + " | A3 stop | A3 sessions | A3 $ |",
           "|" + "---|" * (len(names) + 4)]
     for r in rows:

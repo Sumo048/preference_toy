@@ -30,3 +30,33 @@
 2026-11-04 10:02:13 [18603] p4_cond_k4_s0_n16_B4 launched
 2026-11-04 10:05:43 [18603] p4_cond_k4_s3_n4_B4 wrapper exit 0
 2026-11-04 10:05:43 [18603] p4_cond_k4_s1_n16_B4 launched
+2026-11-04 10:06:38 [18603] p4_cond_k4_s4_n4_B4 wrapper exit 0
+2026-11-04 10:06:38 [18603] p4_cond_k4_s2_n16_B4 launched
+2026-11-04 10:19:13 [18603] p4_cond_k4_s1_n16_B4 wrapper exit 0
+2026-11-04 10:19:13 [18603] p4_cond_k4_s3_n16_B4 launched
+2026-11-04 10:19:40 [18603] p4_cond_k4_s2_n16_B4 wrapper exit 0
+2026-11-04 10:19:40 [18603] p4_cond_k4_s4_n16_B4 launched
+2026-11-04 10:25:45 [18603] p4_cond_k4_s0_n16_B4 wrapper exit 0
+2026-11-04 10:25:45 [18603] p4_cond_k4_s0_n4_R0 launched
+2026-11-04 10:29:40 [18603] p4_cond_k4_s0_n4_R0 wrapper exit 0
+2026-11-04 10:29:40 [18603] p4_cond_k4_s1_n4_R0 launched
+2026-11-04 10:32:42 [18603] p4_cond_k4_s1_n4_R0 wrapper exit 0
+2026-11-04 10:32:42 [18603] p4_cond_k4_s2_n4_R0 launched
+2026-11-04 10:33:02 [18603] p4_cond_k4_s3_n16_B4 wrapper exit 0
+2026-11-04 10:33:02 [18603] p4_cond_k4_s3_n4_R0 launched
+2026-11-04 10:33:35 [18603] p4_cond_k4_s4_n16_B4 wrapper exit 0
+2026-11-04 10:33:35 [18603] p4_cond_k4_s4_n4_R0 launched
+2026-11-04 10:35:44 [18603] p4_cond_k4_s2_n4_R0 wrapper exit 0
+2026-11-04 10:35:44 [18603] p4_cond_k4_s0_n16_R0 launched
+2026-11-04 10:36:11 [18603] p4_cond_k4_s3_n4_R0 wrapper exit 0
+2026-11-04 10:36:11 [18603] p4_cond_k4_s1_n16_R0 launched
+2026-11-04 10:36:59 [18603] p4_cond_k4_s4_n4_R0 wrapper exit 0
+2026-11-04 10:36:59 [18603] p4_cond_k4_s2_n16_R0 launched
+2026-11-04 10:40:44 [18603] p4_cond_k4_s0_n16_R0 wrapper exit 0
+2026-11-04 10:40:45 [18603] p4_cond_k4_s3_n16_R0 launched
+2026-11-04 10:41:10 [18603] p4_cond_k4_s1_n16_R0 wrapper exit 0
+2026-11-04 10:41:10 [18603] p4_cond_k4_s4_n16_R0 launched
+2026-11-04 10:41:58 [18603] p4_cond_k4_s2_n16_R0 wrapper exit 0
+2026-11-04 10:43:46 [18603] p4_cond_k4_s3_n16_R0 wrapper exit 0
+2026-11-04 10:44:18 [18603] p4_cond_k4_s4_n16_R0 wrapper exit 0
+2026-11-04 10:44:18 [18603] exit
