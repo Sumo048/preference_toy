@@ -28,6 +28,10 @@ ATLAS_TOKEN_CAP = 1500
 N_EXEMPLARS = 3
 HDBSCAN_MIN_CLUSTER_SIZE = 2     # smallest legal value: npm 1-4 cells have only 1-16 negatives
 HDBSCAN_MIN_SAMPLES = 1
+#: "hdbscan" = PLAN 6.2 (HDBSCAN, agglomerative fallback); "agglomerative" = the fallback rule only.
+#: W1-A1 found HDBSCAN merges forgotten modes on k4 npm 16 (largest-cluster purity 0.33-0.52) while
+#: average linkage at 0.7 keeps them apart (see docs/DONE_W1-A1.md). Change only before Phase 5.
+CLUSTER_RULE = "hdbscan"
 CHARS_PER_TOKEN = 3.5            # conservative estimate for the caps (W1-D measures the real ratio)
 
 
@@ -179,7 +183,7 @@ def _cluster_labels(A: np.ndarray):
         return np.zeros(1, dtype=int), "single"
     D = np.clip(1.0 - A, 0.0, 1.0)
     np.fill_diagonal(D, 0.0)
-    if n >= 3:
+    if n >= 3 and CLUSTER_RULE == "hdbscan":
         from sklearn.cluster import HDBSCAN
         lab = HDBSCAN(metric="precomputed", min_cluster_size=HDBSCAN_MIN_CLUSTER_SIZE,
                       min_samples=HDBSCAN_MIN_SAMPLES, copy=True).fit_predict(D)

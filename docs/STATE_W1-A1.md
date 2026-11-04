@@ -6,6 +6,6 @@ Done:
 - W0 DONE read (PASS-WITH-ISSUES; nothing blocks W1-A1).
 - Implemented: `policy.py` (decode/velocity/capture/layers/load_version, decode counter), `flowstate.py` (renoise, push/hop, Wilson, k_commit, branch tool, inspect), `miner.py` (affinity, HDBSCAN/agglo, residual mass, cards, atlas, purity CSV via adapter), `quick_check.py`, `pools.py` sub-streams.
 
-Running: `scripts/cloud_setup.sh` (torch install).
+Running: nothing.
 
-Next: tests; smoke on uncond base_k2; report grid (k4/alt x seeds 0-4 x npm 4/16) via scripts/jobs.py; DONE file.
+Next: none (DONE written). Open decision for W2a/W2b: miner.CLUSTER_RULE.

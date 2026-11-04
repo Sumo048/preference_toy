@@ -1,0 +1,75 @@
+{
+ "cell": "cond_k4_s2_n16",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 2,
+ "npm": 16,
+ "n_neg": 64,
+ "n_clusters": 7,
+ "n_open": 7,
+ "cluster_method": "agglomerative",
+ "cluster_sizes": [
+  15,
+  14,
+  11,
+  9,
+  7,
+  6,
+  2
+ ],
+ "r_ref_mean": 0.101318359375,
+ "largest": {
+  "id": 2,
+  "n": 15,
+  "r_ref": 0.12083333333333333,
+  "k_commit": 12,
+  "class": "R",
+  "best_rate": 1.0,
+  "best": "hop(1.10,n20)",
+  "p": [
+   0.7333333333333333,
+   0.6958333333333333,
+   0.71875,
+   0.5895833333333333,
+   0.5166666666666667,
+   0.33541666666666664,
+   0.1875,
+   0.10208333333333333,
+   0.1
+  ],
+  "steps": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14,
+   16
+  ],
+  "n_branch": [
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   96,
+   32,
+   32
+  ],
+  "branch_decodes": 21240
+ },
+ "purity_largest": 0.8666666666666667,
+ "purity_mean_weighted": 0.921875,
+ "atlas_tokens": 248,
+ "table": "branch table, cluster 2: 15 members, M=32 renoise branches/member/step (+64 where the 95% CI holds 0.2); k_commit=12; class R; best primitive hop(1.10,n20)\nstep  t_k   p(k)   95% CI         n   best primitives (rescue rate)\n   0  1.00  0.733  [0.692,0.771]   32   hop(1.10,n20) 1.00, hop(0.90,n22) 0.87, hop(0.85,n119) 0.73, hop(0.45,n9) 0.67, hop(0.90,n72) 0.67\n   2  0.90  0.696  [0.653,0.735]   32   -\n   4  0.80  0.719  [0.677,0.757]   32   -\n   6  0.70  0.590  [0.545,0.633]   32   -\n   8  0.60  0.517  [0.472,0.561]   32   push(d5,2r,k8,h3) 0.67, push(d6,2r,k8,h3) 0.67, push(d4,2r,k8,h3) 0.53, push(d5,1r,k8,h3) 0.53, push(d4,1r,k8,h3) 0.40\n  10  0.50  0.335  [0.295,0.379]   32   push(d5,2r,k10,h3) 0.73, push(d6,2r,k10,h3) 0.67, push(d4,2r,k10,h3) 0.53, push(d5,1r,k10,h3) 0.47, push(d0,2r,k10,h3) 0.27\n  12  0.40  0.188  [0.168,0.208]   96   push(d5,2r,k12,h3) 0.60, push(d6,2r,k12,h3) 0.33, push(d0,2r,k12,h3) 0.27, push(d2,2r,k12,h3) 0.27, push(d1,2r,k12,h3) 0.20\n  14  0.30  0.102  [0.078,0.132]   32   -\n  16  0.20  0.100  [0.076,0.130]   32   -",
+ "atlas": "atlas of version v0: 7 clusters of 64 logged negatives; 7 open (residual basin mass >= 0.02), 0 closed\ncluster 1: n=2 r_ref=0.127 r_cur=0.127 c=[0.099,0.162] cohesion=1.00 k_commit=? class=? exemplars=[8,68]\ncluster 2: n=15 r_ref=0.121 r_cur=0.121 c=[0.179,0.957] cohesion=0.72 k_commit=? class=? exemplars=[22,66,159]\ncluster 6: n=9 r_ref=0.114 r_cur=0.114 c=[0.226,0.739] cohesion=0.57 k_commit=? class=? exemplars=[42,105,52]\ncluster 4: n=14 r_ref=0.109 r_cur=0.109 c=[0.414,0.905] cohesion=0.63 k_commit=? class=? exemplars=[49,127,94]\ncluster 3: n=7 r_ref=0.097 r_cur=0.097 c=[0.698,0.949] cohesion=0.81 k_commit=? class=? exemplars=[95,62,13]\ncluster 5: n=11 r_ref=0.072 r_cur=0.072 c=[0.062,0.782] cohesion=0.54 k_commit=? class=? exemplars=[47,44,16]\ncluster 0: n=6 r_ref=0.064 r_cur=0.064 c=[0.076,0.245] cohesion=0.93 k_commit=? class=? exemplars=[6,76,89]",
+ "cpu_s": {
+  "load": 42.628694882000005,
+  "mine": 4.447716251999999,
+  "branch": 2.2917430669999987
+ },
+ "decodes_total": 41720.0
+}

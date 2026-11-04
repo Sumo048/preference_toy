@@ -37,6 +37,12 @@ def test_cluster_blocks_hdbscan():
     assert mins == sorted(mins)
 
 
+def test_cluster_rule_switch(monkeypatch):
+    A = _block([4, 5, 3])
+    monkeypatch.setattr(miner, "CLUSTER_RULE", "agglomerative")
+    assert miner.cluster_method(A) == "agglomerative" and len(miner.cluster(A, np.arange(12))) == 3
+
+
 def test_cluster_fallback_and_tiny():
     A = _block([6])
     assert miner.cluster_method(A) == "agglomerative" and len(miner.cluster(A, np.arange(6))) == 1

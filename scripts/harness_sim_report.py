@@ -5,6 +5,7 @@
         -> results/harness_sim/<cell key>.json  (+ results/harness_sim/purity.csv rows)
     python scripts/harness_sim_report.py manifest   -> results/harness_sim/jobs.jsonl (k4, alt x s0-4 x npm 4, 16)
     python scripts/harness_sim_report.py summarize  -> results/harness_sim/SUMMARY.md
+    W1A1_CLUSTER_RULE=agglomerative ...             -> the same under the fallback rule only, in results/harness_sim/agglomerative/
 
 Per cell: the pi_ref atlas (clusters, open clusters, method), then the branch tool on the
 largest cluster (most members; ties: larger r_ref): k_commit, failure class, best primitive,
@@ -21,6 +22,9 @@ import time
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(REPO, "results", "harness_sim")
+RULE = os.environ.get("W1A1_CLUSTER_RULE", "hdbscan")
+if RULE != "hdbscan":
+    OUT = os.path.join(OUT, RULE)
 
 
 def run_cell(grid, setting, seed, npm):
@@ -30,6 +34,7 @@ def run_cell(grid, setting, seed, npm):
     import toyrepair  # noqa: F401
     from toyrepair import flowstate, miner, policy
     from toyrepair.cell import load_cell
+    miner.CLUSTER_RULE = RULE
     assert seed <= 4, "development seeds only"
     t0 = time.process_time()
     cell = load_cell(grid, setting, seed, npm)
@@ -75,9 +80,11 @@ def manifest(cells):
     with open(path, "w") as fh:
         for grid, setting, seed, npm in cells:
             key = f"{grid}_{setting}_s{seed}_n{npm}"
-            fh.write(json.dumps({"id": key, "cmd": ["python", "scripts/harness_sim_report.py", "cell", "--grid", grid,
-                                                    "--setting", setting, "--seed", str(seed), "--npm", str(npm)],
-                                 "out": f"results/harness_sim/{key}.json"}) + "\n")
+            cmd = ["python", "scripts/harness_sim_report.py", "cell", "--grid", grid,
+                   "--setting", setting, "--seed", str(seed), "--npm", str(npm)]
+            if RULE != "hdbscan":
+                cmd = ["env", f"W1A1_CLUSTER_RULE={RULE}"] + cmd
+            fh.write(json.dumps({"id": key, "cmd": cmd, "out": os.path.relpath(os.path.join(OUT, f"{key}.json"), REPO)}) + "\n")
     print(path)
 
 
