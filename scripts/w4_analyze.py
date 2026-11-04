@@ -407,6 +407,29 @@ def main():
         L.append(f"| {arm} | {sum(r['valid'] for r in rr)}/{len(rr)} | {fmt(m('sessions'),1)} | {fmt(m('cost'),2)} | {tot:.2f} | "
                  f"{fmt(m('accepted'),2)} | {fmt(tot/acc if acc else None,2)} | {fmt(m('gate_checks'),1)} | "
                  f"{fmt(m('decodes'),0)} | {fmt((m('wall_s') or 0)/3600 if m('wall_s') else None,2)} |")
+    # Table 4: accepted A3 edits (from result.json gates; per-edit gate D and final gain need the run ledgers,
+    # which the W3 sessions did not commit)
+    L.append("\n## Table 4: accepted A3 edits (grid, seeds 5-9)\n")
+    L.append("| cell | version | cluster | edit call | gate target fall | 95% CI | run final D (B0 D) |")
+    L.append("|---|---|---|---|---|---|---|")
+    calls = defaultdict(int)
+    tried = defaultdict(int)
+    n_edits = 0
+    for p in sorted(glob.glob(os.path.join(root, "results/grid/*/s*/n*/A3/result.json"))):
+        d = json.load(open(p))
+        b0 = ix.get(("B0", d["setting"], d["seed"], d["npm"]))
+        for g in d.get("gates") or []:
+            tried[g.get("call")] += 1
+            v = g.get("view") or {}
+            if not v.get("accepted"):
+                continue
+            n_edits += 1
+            calls[g.get("call")] += 1
+            ci = v.get("target_fall_ci") or [None, None]
+            L.append(f"| {d['setting']} s{d['seed']} n{d['npm']} | {g.get('version')} | {g.get('cluster')} | {g.get('call')} | "
+                     f"{fmt(v.get('target_fall'))} | [{fmt(ci[0])}, {fmt(ci[1])}] | {fmt((d.get('final') or {}).get('D'))} "
+                     f"({fmt(b0['D'] if b0 else None)}) |")
+    L.append(f"\nAccepted A3 edits: {n_edits}; by call: {dict(calls)}; gate submissions by call: {dict(tried)}.")
     inval = [r for r in rows if not r["valid"]]
     L.append(f"\nInvalid or unevaluated runs: {len(inval)}.")
     for r in inval:
