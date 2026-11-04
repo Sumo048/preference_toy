@@ -1,0 +1,226 @@
+{
+ "arm": "A1",
+ "cell": "cond_k1_s5_n4",
+ "setting": "k1",
+ "seed": 5,
+ "npm": 4,
+ "run_id": "grid_cond_k1_s5_n4_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s5_n4_A1",
+ "output": {
+  "version": "v7",
+  "stop": "no_open_cluster",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v7",
+    "call": "targeted_train",
+    "patches": [
+     "p0007"
+    ]
+   }
+  ],
+  "gate_checks": 4,
+  "gate_cap": 12,
+  "decodes": 610238.0,
+  "sessions": 2,
+  "cost_usd": 0.5803940000000001,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT no-accept - BC targeted_train (hopB, hop, custom clockwise-mode targets); about 50% fall at c_i, but target, progress and between failed",
+   "calls": 19,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.257075,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT accepted v7 bc on all params, 2000 steps, dist anchor, nhood support, rescue target is the adjacent good mode (-3.25,-0.45)",
+   "calls": 13,
+   "submissions": 1,
+   "accepted": "v7",
+   "cost_usd": 0.297457,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.015583
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010279
+  }
+ ],
+ "gates": [
+  {
+   "version": "v4",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0318603515625,
+    "target_fall_ci": [
+     0.0274658203125,
+     0.03643798828125
+    ]
+   }
+  },
+  {
+   "version": "v5",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.0299072265625,
+    "target_fall_ci": [
+     0.026611328125,
+     0.03314208984375
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.039306640625,
+    "target_fall_ci": [
+     0.03594970703125,
+     0.0428466796875
+    ]
+   }
+  },
+  {
+   "version": "v7",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.104736328125,
+    "target_fall_ci": [
+     0.10009765625,
+     0.10962066650390624
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.1090714285714286,
+  "removed": 0.8270401948842875,
+  "collateral": 0.09129055526748446,
+  "mass_off": 0.0385,
+  "collateral_plan": 0.08954989436018149,
+  "toypref": {
+   "mass_m0": 0.15215,
+   "mass_m1": 0.0961,
+   "mass_m2": 0.0213,
+   "mass_m3": 0.0814,
+   "mass_m4": 0.142,
+   "mass_m5": 0.15725,
+   "mass_m6": 0.1526,
+   "mass_m7": 0.1587,
+   "mass_off": 0.0385,
+   "neg_mass_ratio": 0.17295980511571254,
+   "retain_tv": 0.09129055526748446,
+   "tv_to_ideal": 0.1090714285714286,
+   "tv_to_ideal_ref": 0.15184999999999996,
+   "retain_noise_flip": 0.29352119318516773,
+   "neg_noise_to_retain": 0.781161185546082,
+   "neg_noise_still_forget": 0.1307348761672757,
+   "disp_retain_mean": 0.6884424686431885,
+   "neg_still_forget_near": 0.0625,
+   "n_eval_neg_near": 176.0,
+   "neg_still_forget_far": 0.15374507227332457,
+   "n_eval_neg_far": 1522.0
+  },
+  "final_pool": {
+   "D": 0.10662187848772323,
+   "removed": 0.8302316748955564,
+   "collateral": 0.09169496065428617,
+   "mass_off": 0.0390625,
+   "retain_tv": 0.09295088816730032,
+   "n": 65536,
+   "mass": [
+    0.153045654296875,
+    0.097320556640625,
+    0.0204620361328125,
+    0.0817718505859375,
+    0.146697998046875,
+    0.1580657958984375,
+    0.152008056640625,
+    0.1515655517578125,
+    0.0390625
+   ],
+   "mass_ref": [
+    0.122772216796875,
+    0.1186065673828125,
+    0.1205291748046875,
+    0.122833251953125,
+    0.1234283447265625,
+    0.1236572265625,
+    0.1212310791015625,
+    0.119476318359375,
+    0.0274658203125
+   ]
+  }
+ }
+}

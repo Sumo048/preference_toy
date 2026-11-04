@@ -1,0 +1,3 @@
+=== start 2026-11-04 13:00:53 cmd=['python', 'scripts/grid_share2.py', 'cache', '--setting', 'contig', '--seed', '5', '--npm', '16']
+cached cond_contig_s5_n16
+=== end rc=0 69.1s 

@@ -1,0 +1,3 @@
+=== start 2026-11-04 13:20:31 cmd=['python', 'scripts/grid_share2.py', 'code', '--arm', 'B5', '--setting', 'k1', '--seed', '5', '--npm', '16']
+[B5 cond_k1_s5_n16] D 0.0861 removed 0.858 collateral 0.059 stop accepted gate_checks 3 (418.4s)
+=== end rc=0 423.7s 
