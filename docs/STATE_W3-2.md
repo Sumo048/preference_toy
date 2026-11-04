@@ -139,3 +139,6 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 22:22Z: pairs reps accepted s5n16 v11 (DONE), s8n16 v9, s6n16 v11, s7n16 v9, s7n4 v7, s9n16 v3; no-accept s6n4. All 30 rep runs started. 6 triages launched; s9n4 surgeon aba7d3b4 running.
 - 22:23Z: 6 pairs rep triages recorded; surgeons s6n4=a5650e34, s6n16=afcb8896, s7n4=ae8849b8, s7n16=a7902e85, s8n16=a4580585, s9n16=a1fbbe28; s9n4=aba7d3b4 (running since ~22:13Z).
 - 22:34Z: pairs reps accepted s9n16 v4, s6n4 v13 (DONE), s7n4 v10 (DONE); no-accept s6n16, s7n16, s8n16, s9n4. 5 triages launched (only 5 rep runs open).
+- 22:35Z: 5 rep triages recorded; surgeons s6n16=a1687358, s7n16=ae382289, s8n16=a4a73434, s9n4=a0ab018e, s9n16=a9313adb.
+- 22:45Z: pairs reps accepted s9n4 v8, s9n16 v6, s6n16 v14 (DONE), s8n16 v13 (DONE); no-accept s7n16. 3 rep runs left (s7n16, s9n4, s9n16); triages launched.
+- 22:48Z: 3 triages recorded; surgeons pairs s7n16=a369a5a8, s9n4=a6525cf1, s9n16=a0281308.
