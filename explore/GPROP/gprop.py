@@ -265,6 +265,7 @@ GP1_CFGS = {
     "e1": (K10C, None, "hop"),                                     # E1 K10c itself (for cells E1/E5 lack)
     "A": (K10C, PCfg(), "prop"),                                   # proportional OT, noise-space cost
     "B": (K10C, PCfg(cost="action"), "prop"),                      # proportional OT, action-space cost
+    "C": (K10C, PCfg(bins=8), "prop"),                             # proportional OT, wide c-bins (smoother map)
     "A1": (replace(K10C, rounds=1), PCfg(), "prop"),
     "Ak12": (replace(K10C, k_gate=12, det_steps=10), PCfg(), "prop"),
     "Aw1": (replace(K10C, w_good=1.0), PCfg(), "prop"),
@@ -378,12 +379,22 @@ class LCfg:
     lr: float = 1e-3
     batch: int = 256
     pool: int = 60_000
+    gate_src: str = "cur"        # decode-time detector input: "cur" = pi_ref activations at the edited state;
+                                 # "ref" = pi_ref activations along pi_ref's own (unedited) trajectory from the same noise
+    latch: bool = False          # decode-time: gate = running max over steps (until k_commit)
 
 
 LORA_CFGS = {
     "gA": LCfg(),                               # tau 0.5, T 0.05
     "gB": LCfg(tau=0.3, temp=0.1),              # wider soft gate
     "gC": LCfg(tau=0.2, temp=0.1, k_commit=12),
+    "gR": LCfg(gate_src="ref"),
+    "gRB": LCfg(gate_src="ref", tau=0.3, temp=0.1),
+    "gL": LCfg(latch=True),
+    "gK12": LCfg(tau=0.3, temp=0.1, k_commit=12),
+    "gK14": LCfg(tau=0.3, temp=0.1, k_commit=14),
+    "gK12L": LCfg(k_commit=12, gate_src="ref", latch=True),
+    "gK14L": LCfg(k_commit=14, gate_src="ref", latch=True),
     "nA": LCfg(gate=False),                     # GP3 control
 }
 
@@ -468,12 +479,19 @@ class LoRAPolicy:
         outs, gm = [], []
         for i in range(0, xi.shape[0], batch):
             x = xi[i:i + batch].clone().float(); cc = c[i:i + batch].float()
-            m = torch.zeros(x.shape[0])
+            m = torch.zeros(x.shape[0]) if self.det is not None else torch.ones(x.shape[0])   # no gate: always on
+            xr = x.clone()
+            run = torch.zeros(x.shape[0])
             for k in range(K_STEPS):
                 t = torch.full((x.shape[0],), 1.0 - k * DT)
-                g = self.gate(x, t, cc)
+                g = self.gate(xr if self.lc.gate_src == "ref" else x, t, cc)
                 if g is not None:
+                    if self.lc.latch:
+                        run = torch.maximum(run, g)
+                        g = run * (t > self.t_min).float()
                     m = torch.maximum(m, g)
+                if self.det is not None and self.lc.gate_src == "ref":
+                    xr = xr - DT * self.ref.net(xr, t, cc)
                 self.holder.g = g
                 v = self.lnet(x, t, cc)
                 self.holder.g = None
@@ -502,11 +520,13 @@ def build_lora(ref, rank, holder):
 
 
 def b6_data(cell: Cell, n_pool):
-    """B6's training set: pi_ref samples whose E3 track is assigned and not bad (toyrepair b6_track logic)."""
-    from toyrepair.arms.b6_track import E3Tracks, bad_tracks, POOL_PURPOSE
+    """B6's training set: pi_ref samples whose E3 track is assigned and not bad (explore/E3 tracks.py and
+    e3.anchor_fn 'track60k', = toyrepair/arms/b6_track.py; that module's toyrepair.arms.base is not on this branch)."""
+    import tracks as TR
+    POOL_PURPOSE = 90_001
     with torch.no_grad():
-        tr = E3Tracks(cell.ref, cell.seed)
-    bad, miss = bad_tracks(tr, cell.ed.c, cell.ed.a)
+        tr = TR.Tracks(cell.ref, cell.seed)
+    bad, miss = TR.bad_tracks(tr, cell.ed.c, cell.ed.a)
     P = E.make_pool(cell.ref, cell.seed, n_pool, purpose=POOL_PURPOSE)
     t = tr.assign(P.a, P.c)
     keep = torch.from_numpy((t >= 0) & ~np.isin(t, bad))

@@ -1,0 +1,32 @@
+{
+ "arm": "E1",
+ "cfgname": "stored",
+ "cell": "k4_s0_n4",
+ "setting": "k4",
+ "seed": 0,
+ "npm": 4,
+ "source": "explore/E1/grafts/grafts_K10c_k4_s0_n4.pt",
+ "stored_D": 0.0875,
+ "params_added": 38144,
+ "buffers_added": 2344,
+ "D": 0.0875,
+ "Removed": 0.9130656859740525,
+ "Collateral": 0.034906888652111986,
+ "off": 0.04495,
+ "D_ref": 0.51595,
+ "flips": 0.012705299039355439,
+ "neg_to_retain": 0.8479926448053938,
+ "disp_retain": 0.08739190548658371,
+ "masses": [
+  0.2149,
+  0.2458,
+  0.00745,
+  0.00265,
+  0.0068,
+  0.2366,
+  0.2152,
+  0.02565
+ ],
+ "gate_retained": 0.5397169713872534,
+ "gate_forget": 0.9940749821227909
+}
