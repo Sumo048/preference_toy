@@ -37,6 +37,7 @@ class GCfg:
     hop_step: float = 0.1
     per_track: bool = False      # one gated path per bad track (cluster) instead of one for all
     balance: bool = False        # choose exits toward under-filled good tracks
+    clip: float = 0.0            # gradient-norm clip for the unit fit (0 = off)
     rounds: int = 1              # recursive rounds: round r fits a new gated path on the round r-1 policy
 
 
@@ -245,7 +246,10 @@ def fit_graft(cell: Cell, T: Tracker, cfg: GCfg, log=print, prev=()):
             pg["lr"] = lr
         out = decode_grad(net, xi[j], c[j], hooks)
         loss = (w[j] * ((out - tgt[j]) ** 2).sum(-1)).mean()
-        opt.zero_grad(); loss.backward(); opt.step()
+        opt.zero_grad(); loss.backward()
+        if cfg.clip > 0:
+            torch.nn.utils.clip_grad_norm_(gr.parameters(), cfg.clip)
+        opt.step()
         if it % 300 == 0 or it == cfg.iters - 1:
             log(f"  it {it} loss {loss.item():.4f}")
     gr.eval()
