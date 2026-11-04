@@ -1,0 +1,13 @@
+STATUS: PASS-WITH-ISSUES — (1) pilot decision rule FAILED in both rounds (r1: A1 0/12, A2 2/12; r2 after the improvement round: A1 0/12, A2 4/12); per Amendment 1 work continues to Phases 4-6; (2) gate calibration: B4 passed 0/12 at the development thresholds and 1/12 after the one allowed loosening (0.15 / 0.02 / 0.02, kept); (3) pushed from session branch claude/session-w2a-nbkrjw and to agentic-repair-toy
+
+# W2a summary (branch agentic-repair-toy; also claude/session-w2a-nbkrjw)
+
+1. **Merge:** all five W1 branches merged; every INTERFACE_REQUESTS item resolved (DEV_LOG / STATE_W2a). Fixes: graft capture in `policy` via `edits.run_forward`; patch ids are fixed before an edit (graft rebuild broke); per-cell cache `runs/cells/<key>/cell_cache.pt` (CLI calls were reloading a cell for ~40 s); one thread per process (load was ~50). Tests: 168 passed, 1 skipped. The sandbox tests error only under xdist (shared scratch dir) and pass serially.
+2. **Phase 2 exit:** a hand-written graft on uncond base_k2 went through orchestrator → CLI → gate → ledger: ACCEPT (target 0.126 → 0.042, D 0.273 → 0.229). See `results/phase2_exit/`.
+3. **Decisions (before Phase 5):** miner `CLUSTER_RULE = "agglomerative"` (HDBSCAN merged modes); every pilot arm repairs the same fixed target per cell (all 12 class R, purity 1.0); EDIT_REFERENCE is filtered per arm.
+4. **Pilot Table 2** (`results/pilot.md`), mean D (π_ref 0.515), r2: B4 0.494, R0 0.515, D1 0.478, A1 0.515, A2 0.453. Gate accepts: B4 1, R0 0, D1 2, A1 0, A2 7 (r1: 4).
+5. **Accepted A2 edits** are gated grafts on `out`: an activation detector plus a push toward neighbouring good behaviour. They remove 0.82–0.99 of the target modes, but final Collateral is 0.08–0.15, so 3 of 7 miss the rule's ≤ 0.10. A1 (`targeted_train` only) never passed: drift and between versus target.
+6. **R0 removes nothing:** a fixed action-space push doesn't transfer across c. B4 and D1 mostly fail test 5 (between).
+7. **Cost:** $/session r1 A1 0.54, A2 0.64; r2 A1 0.25, A2 0.64 (no session over $1; one run = one session). The 48 pilot sessions cost $24.81, the smoke sessions $1.77, and this session's main agent about $15.9. All isolation audits were clean.
+8. **For W2b:** the surgeon's Bash calls time out at 120 s (long sandbox fits get cut off); `--params` takes groups only; quick_check drift ≠ gate drift. Make Phase 4 tools that show the target behaviour at all c (the main A2 failure) and a Collateral estimate. Code-arm results are deterministic, so r2 reuses r1's.
+9. **Open interface requests:** none. Another W2a session exists (claude/session-w2a-5zzqkv) but only wrote a state file; the user said this one should continue.

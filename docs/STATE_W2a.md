@@ -22,7 +22,10 @@ Note: a second W2a session exists (claude/session-w2a-5zzqkv). The user said to 
 - Pilot r1 done: Table 2 in results/pilot/r1/table2.md. Rule FAIL (A1 0/12, A2 2/12; A2 4 accepts).
 - Improvement round r2 prompt changes (DEV_LOG); r2 running (code arms reused from r1, deterministic).
 
-## Running
+## Done (final)
+- DONE_W2a.md written; pushed agentic-repair-toy and session branch.
+
+## Running (none)
 - r2 surgeon sessions (pilot_runs_r2.txt in scratchpad; 16 issued of 24).
 
 ## Next

@@ -46,7 +46,7 @@ def test_summary_hides_oracle_numbers_and_caps(tmp_path):
             session="s2", version="v2")
     L.write("gate", "r", _gate_data(True, 0.05), session="s2", version="v2")
     s = L.summary()
-    assert "ACCEPT" in s and "rank1" in s and "graft_gated_path" in s and "failed: target" in s
+    assert "ACCEPT" in s and "rank1" in s and "graft_gated_path" in s and "failed: 1_target" in s
     assert "0.123456" not in s and "mass_new" not in s and "D_new" not in s
     assert s.index("rank1") < s.index("Recent rejected")
     # invalidate the accepted gate record
