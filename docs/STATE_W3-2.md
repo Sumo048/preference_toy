@@ -70,3 +70,5 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - (12:05 ET) in flight: a8cdf c-s9n16 (bg), a1f16 c-s6n16, a4b07 c-s8n4 (bg), a4332 c-s8n16, a3df3 c-s9n4, aa772 pairs s5n16; triage a857a pairs s6n4, a2687 pairs s5n4
 - (12:15 ET) resumed a8cdf c-s9n16 and a4b07 c-s8n4
 - (12:20 ET) in flight: a8cdf c-s9n16, a4b07 c-s8n4, aa772 pairs s5n16, ac0cb pairs s5n4, a570a pairs s6n4; triage a6dbf c-s6n16, a37b2 c-s8n16, a8793 pairs s6n16
+- (12:25 ET) +a35ff c-s6n16, a0e1b c-s8n16, a1af5 pairs s6n16
+- (12:45 ET) user request: commit each finished run's patch stack to results/grid/.../<arm>/patches/ (stack.json + p*.json/npz of final version chain; no caches). Implemented copy_patches in grid_share2.py (code + eval paths) and backfilled 115 results

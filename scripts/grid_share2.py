@@ -95,6 +95,57 @@ def code(arm, setting, seed, npm):
     tmp = dst / "result.json.tmp"
     shutil.copy(src, tmp)
     os.replace(tmp, dst / "result.json")
+    run_id = json.loads((dst / "result.json").read_text()).get("run_id") or f"{arm}_grid_{key_of(setting, seed, npm)}"
+    copy_patches(RUNS / "repair" / run_id, dst)
+
+
+def copy_patches(run_dir, dst, version=None):
+    """Copy the final version's patch stack (p*.json + p*.npz, no caches) to <dst>/patches/.
+    The stack is the chain of patches from `version` (default: the result's output.version, or
+    run.json current) back to v0, following each patch's version -> parent_version."""
+    run_dir, dst = Path(run_dir), Path(dst)
+    pdir = run_dir / "patches"
+    if version is None:
+        res = dst / "result.json"
+        if res.exists():
+            version = (json.loads(res.read_text()).get("output") or {}).get("version")
+        if version is None and (run_dir / "run.json").exists():
+            version = json.loads((run_dir / "run.json").read_text()).get("current")
+    by_version = {}
+    if pdir.is_dir():
+        for pj in pdir.glob("p*.json"):
+            d = json.loads(pj.read_text())
+            by_version.setdefault(d.get("version"), []).append(d)
+    stack, v, seen = [], version, set()
+    while v and v != "v0" and v not in seen:
+        seen.add(v)
+        ps = by_version.get(v, [])
+        if not ps:
+            break
+        stack.extend(sorted(p["id"] for p in ps))
+        v = ps[0].get("parent_version")
+    out = dst / "patches"
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    for pid in stack:
+        for ext in (".json", ".npz"):
+            f = pdir / f"{pid}{ext}"
+            if f.exists():
+                shutil.copy(f, out / f.name)
+    (out / "stack.json").write_text(json.dumps({"version": version, "patches": list(reversed(stack))}, indent=1))
+    return stack
+
+
+def backfill_patches():
+    n = 0
+    for res in OUT.glob("*/s*/n*/*/result.json"):
+        d = json.loads(res.read_text())
+        rid = d.get("run_id")
+        if rid and (RUNS / "repair" / rid).is_dir():
+            copy_patches(RUNS / "repair" / rid, res.parent)
+            n += 1
+    print("patches copied for", n, "results")
 
 
 # ----------------------------------------------------------------------------- LLM runs
@@ -211,6 +262,7 @@ def eval_run(rid):
     tmp = dst / "result.json.tmp"
     shutil.copy(src, tmp)
     os.replace(tmp, dst / "result.json")
+    copy_patches(run_dir, dst)
     src.unlink()
     print("wrote", dst / "result.json")
 
@@ -284,6 +336,7 @@ def main(argv=None):
     p.add_argument("--summary", default="")
     sub.add_parser("eval").add_argument("--run", required=True)
     sub.add_parser("table")
+    sub.add_parser("patches")
     a = ap.parse_args(argv)
     if a.cmd == "caches":
         caches()
@@ -299,6 +352,8 @@ def main(argv=None):
         record(a.token, a.summary)
     elif a.cmd == "eval":
         eval_run(a.run)
+    elif a.cmd == "patches":
+        backfill_patches()
     elif a.cmd == "table":
         table()
     return 0

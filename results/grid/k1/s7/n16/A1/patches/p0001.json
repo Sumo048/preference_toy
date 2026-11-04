@@ -1,0 +1,49 @@
+{
+ "args": {
+  "anchor": "dist",
+  "batch": 256,
+  "beta": 10.0,
+  "data": "toypref_hopB_bsup",
+  "lr": 0.0001,
+  "n_rows": 110,
+  "neg_uids": [
+   6,
+   11,
+   33,
+   44,
+   53,
+   57,
+   74,
+   90,
+   93,
+   95,
+   117,
+   130,
+   131,
+   134,
+   137
+  ],
+  "objective": "bc",
+  "params": [
+   "blocks.2",
+   "out"
+  ],
+  "steps": 1500
+ },
+ "arrays": [
+  "blocks.2.fc1.bias",
+  "blocks.2.fc1.weight",
+  "blocks.2.fc2.bias",
+  "blocks.2.fc2.weight",
+  "blocks.2.norm.bias",
+  "blocks.2.norm.weight",
+  "out.bias",
+  "out.weight"
+ ],
+ "call": "targeted_train",
+ "id": "p0001",
+ "npz_sha256": "34b4a9803591759aa2b891967a7410869bfa8063b18f7955a66684fb326dd30c",
+ "parent_version": "v0",
+ "sha256": "057a094e61c35843d8f386db303c4d4adf3fbd17bcc5a6837a20b3aa29b5904d",
+ "version": "v1"
+}

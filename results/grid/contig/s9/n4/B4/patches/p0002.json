@@ -1,0 +1,61 @@
+{
+ "args": {
+  "anchor": "dist",
+  "batch": 256,
+  "beta": 10.0,
+  "data": "toypref_hopB_bsup",
+  "lr": 0.0001,
+  "n_rows": 21,
+  "neg_uids": [
+   25,
+   8,
+   27,
+   42
+  ],
+  "objective": "bc",
+  "params": [
+   "all"
+  ],
+  "steps": 5000
+ },
+ "arrays": [
+  "blocks.0.fc1.bias",
+  "blocks.0.fc1.weight",
+  "blocks.0.fc2.bias",
+  "blocks.0.fc2.weight",
+  "blocks.0.norm.bias",
+  "blocks.0.norm.weight",
+  "blocks.1.fc1.bias",
+  "blocks.1.fc1.weight",
+  "blocks.1.fc2.bias",
+  "blocks.1.fc2.weight",
+  "blocks.1.norm.bias",
+  "blocks.1.norm.weight",
+  "blocks.2.fc1.bias",
+  "blocks.2.fc1.weight",
+  "blocks.2.fc2.bias",
+  "blocks.2.fc2.weight",
+  "blocks.2.norm.bias",
+  "blocks.2.norm.weight",
+  "c_mlp.0.bias",
+  "c_mlp.0.weight",
+  "c_mlp.2.bias",
+  "c_mlp.2.weight",
+  "inp.bias",
+  "inp.weight",
+  "out.bias",
+  "out.weight",
+  "out_norm.bias",
+  "out_norm.weight",
+  "time_mlp.0.bias",
+  "time_mlp.0.weight",
+  "time_mlp.2.bias",
+  "time_mlp.2.weight"
+ ],
+ "call": "targeted_train",
+ "id": "p0002",
+ "npz_sha256": "b9cf8107d15e0c747db65a6c087260a604046242af71ea1162107b8a2fefd725",
+ "parent_version": "v0",
+ "sha256": "2670a1e65675cf1a254bd74140e1607cc208a74d74db0961e7a8350830d54d61",
+ "version": "v2"
+}

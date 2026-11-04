@@ -1,0 +1,40 @@
+{
+ "args": {
+  "anchor": "dist",
+  "batch": 256,
+  "beta": 10.0,
+  "data": "rescue_targets_bsup",
+  "lr": 0.0001,
+  "n_rows": 87,
+  "neg_uids": null,
+  "objective": "bc",
+  "params": [
+   "blocks.1",
+   "blocks.2",
+   "out"
+  ],
+  "steps": 3000
+ },
+ "arrays": [
+  "blocks.1.fc1.bias",
+  "blocks.1.fc1.weight",
+  "blocks.1.fc2.bias",
+  "blocks.1.fc2.weight",
+  "blocks.1.norm.bias",
+  "blocks.1.norm.weight",
+  "blocks.2.fc1.bias",
+  "blocks.2.fc1.weight",
+  "blocks.2.fc2.bias",
+  "blocks.2.fc2.weight",
+  "blocks.2.norm.bias",
+  "blocks.2.norm.weight",
+  "out.bias",
+  "out.weight"
+ ],
+ "call": "targeted_train",
+ "id": "p0011",
+ "npz_sha256": "5295765aad948823a2925bd6f91755c937d9fae38fcc68d223c10ce73af6c08e",
+ "parent_version": "v0",
+ "sha256": "08f54ca56cb2a45aff80ce43e6c0ca8c9cf40ee13e31c230273e4652471beb33",
+ "version": "v11"
+}
