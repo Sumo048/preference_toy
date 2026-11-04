@@ -98,20 +98,133 @@ class Decode:
     n_decodes: float = 0.0
 
 
+class DecodeCounter:
+    """Process-wide decode counter (6.1: the policy server counts decodes per run).
+
+    ``total``: decodes since the last ``reset``; ``by_version``: {version id: decodes}. Callers
+    that need per-run totals read ``total`` before and after a tool call (or ``reset`` first)."""
+
+    def __init__(self):
+        self.total = 0.0
+        self.by_version: Dict[str, float] = {}
+
+    def add(self, version_id: str, n: float) -> None:
+        self.total += float(n)
+        self.by_version[version_id] = self.by_version.get(version_id, 0.0) + float(n)
+
+    def reset(self) -> float:
+        """Zero the counter; returns the total before the reset."""
+        t = self.total
+        self.total = 0.0
+        self.by_version = {}
+        return t
+
+
+counter = DecodeCounter()
+
+
+# ---------------------------------------------------------------- network introspection
+def _core(net: nn.Module) -> Tuple[nn.Module, str]:
+    """(module that owns inp/blocks/out, its name prefix). The unconditional wrapper
+    (``toyrepair.cell._UncondNet``) keeps the toypref VelocityNet in ``.inner``."""
+    if hasattr(net, "inp") and hasattr(net, "blocks"):
+        return net, ""
+    inner = getattr(net, "inner", None)
+    if isinstance(inner, nn.Module) and hasattr(inner, "inp"):
+        return inner, "inner."
+    raise ValueError("unknown velocity-network layout (no inp/blocks)")
+
+
+def _is_cond(net: nn.Module) -> bool:
+    return hasattr(_core(net)[0], "c_mlp")
+
+
+class _Capture:
+    """Forward hooks that record captured layers at every network call (bit-identical: hooks
+    only copy outputs). ``out_act`` is SiLU(out_norm) recomputed with the same functional op as
+    the forward; ``cond`` is cat(time_mlp, c_mlp) (time only for the unconditional net)."""
+
+    def __init__(self, net: nn.Module, names: Sequence[str]):
+        self.net = net
+        self.names = tuple(names)
+        bad = [n for n in self.names if n not in CAPTURE_LAYERS]
+        if bad:
+            raise ValueError(f"unknown capture layers {bad}; choose from {CAPTURE_LAYERS}")
+        self.calls: Dict[str, List[torch.Tensor]] = {n: [] for n in self.names}
+        self._handles = []
+        self._tmp: Dict[str, torch.Tensor] = {}
+
+    def __enter__(self):
+        core, _ = _core(self.net)
+        for n in self.names:
+            if n == "cond":
+                self._hook(core.time_mlp, "_t")
+                if hasattr(core, "c_mlp"):
+                    self._hook(core.c_mlp, "_c")
+                    self._handles.append(core.c_mlp.register_forward_hook(self._cond_done_cond))
+                else:
+                    self._handles.append(core.time_mlp.register_forward_hook(self._cond_done_uncond))
+            elif n == "out_act":
+                self._handles.append(core.out_norm.register_forward_hook(
+                    lambda m, i, o: self.calls["out_act"].append(torch.nn.functional.silu(o).detach().clone())))
+            else:
+                mod = core.get_submodule(n)
+                self._handles.append(mod.register_forward_hook(
+                    lambda m, i, o, n=n: self.calls[n].append(o.detach().clone())))
+        return self
+
+    def _hook(self, mod, key):
+        self._handles.append(mod.register_forward_hook(lambda m, i, o, key=key: self._tmp.__setitem__(key, o.detach())))
+
+    def _cond_done_cond(self, m, i, o):
+        self.calls["cond"].append(torch.cat([self._tmp.pop("_t"), self._tmp.pop("_c")], -1).clone())
+
+    def _cond_done_uncond(self, m, i, o):
+        self.calls["cond"].append(self._tmp.pop("_t").clone())
+
+    def __exit__(self, *exc):
+        for h in self._handles:
+            h.remove()
+        self._handles = []
+        return False
+
+
+def _net_call(net: nn.Module, x, t, c, capture: Sequence[str]):
+    """net(x, t, c) plus captured activations of this one call."""
+    if not capture:
+        return net(x, t, c), {}
+    fc = getattr(net, "forward_capture", None)
+    if callable(fc):                       # optional protocol for nets that do their own capture
+        return fc(x, t, c, tuple(capture))
+    with _Capture(net, capture) as cap:
+        v = net(x, t, c)
+    return v, {n: cap.calls[n][-1] for n in capture}
+
+
+# ---------------------------------------------------------------- public API
 def base_version(cell) -> Version:
     """v0: pi_ref of ``cell`` (``cell.ref.net``, deep-copied), no patches."""
-    raise NotImplementedError
+    import copy
+    net = copy.deepcopy(cell.ref.net).eval()
+    for p in net.parameters():
+        p.requires_grad_(False)
+    return Version(id="v0", parent=None, patches=(), net=net, grid=cell.grid)
 
 
+@torch.no_grad()
 def velocity(version: Version, x: torch.Tensor, t: torch.Tensor, c: torch.Tensor,
              capture: Sequence[str] = ()) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
     """One network call. x (B, 2), t (B,), c (B,) float32 -> (v (B, 2), {layer: (B, d)}).
     Bit-identical to ``version.net(x, t, c)``. Counts 1/20 decode per row."""
-    raise NotImplementedError
+    v, acts = _net_call(version.net, x, t, c, capture)
+    counter.add(version.id, x.shape[0] / N_STEPS)
+    return v, acts
 
 
+@torch.no_grad()
 def decode(version: Version, xi: torch.Tensor, c: torch.Tensor, save_states: bool = False,
-           capture: Sequence[str] = (), start_step: int = 0, batch: int = 65536) -> Decode:
+           capture: Sequence[str] = (), start_step: int = 0, batch: int = 65536,
+           after_step=None, count: bool = True) -> Decode:
     """Decode noises to actions with the toypref Euler sampler.
 
     xi: (B, 2) float32 state at ``start_step`` (the noise if 0); c: (B,) float32.
@@ -119,19 +232,119 @@ def decode(version: Version, xi: torch.Tensor, c: torch.Tensor, save_states: boo
     ``CondFlow.sample(xi, c)`` bit for bit (same op order, same batch split).
     capture: layer names from CAPTURE_LAYERS. Counts B decodes.
 
+    Extra keywords (W1-A1): ``after_step(k, x, rows) -> x`` is called after the Euler update of
+    step k (x is then x_{k+1}; rows is the slice of the batch) and may return a modified x
+    (primitives use it); ``count=False`` skips the decode counter (tests only).
+    With ``start_step > 0`` the entries of ``states`` / ``v`` / ``acts`` before start_step are NaN.
+
     Batch caveat (measured in W0): CPU matmuls are not batch-size invariant. pi_ref decoding
     the same (xi, c) inside a batch of 200,000 and inside a batch of 4 differs by up to ~4e-7.
     Bit-identity tests (branch validity, graft identity) must compare decodes made with the
     same batch composition and size."""
-    raise NotImplementedError
+    if not 0 <= start_step <= N_STEPS:
+        raise ValueError("start_step must be in 0..20")
+    B = xi.shape[0]
+    net = version.net
+    capture = tuple(capture)
+    outs, st_chunks, v_chunks = [], [], []
+    act_chunks: Dict[str, List[torch.Tensor]] = {n: [] for n in capture}
+    K, dt = N_STEPS, 1.0 / N_STEPS
+    for i in range(0, B, batch):
+        x = xi[i:i + batch].clone().float()
+        cc = c[i:i + batch].float()
+        n = x.shape[0]
+        rows = slice(i, i + n)
+        if save_states:
+            st = torch.full((K + 1, n, 2), float("nan"))
+            vv = torch.full((K, n, 2), float("nan"))
+            st[start_step] = x
+        acts_k: Dict[str, List[Optional[torch.Tensor]]] = {nm: [None] * K for nm in capture}
+        for k in range(start_step, K):
+            t = torch.full((n,), 1.0 - k * dt)
+            v, a = _net_call(net, x, t, cc, capture)
+            x = x - dt * v
+            if after_step is not None:
+                x = after_step(k, x, rows)
+            if save_states:
+                vv[k] = v
+                st[k + 1] = x
+            for nm in capture:
+                acts_k[nm][k] = a[nm]
+        outs.append(x)
+        if save_states:
+            st_chunks.append(st)
+            v_chunks.append(vv)
+        for nm in capture:
+            d = next(z.shape[1] for z in acts_k[nm] if z is not None) if start_step < K else 0
+            full = torch.full((K, n, d), float("nan"))
+            for k in range(start_step, K):
+                full[k] = acts_k[nm][k]
+            act_chunks[nm].append(full)
+    if B == 0:
+        action = xi.clone().float()
+    else:
+        action = torch.cat(outs)
+    if count:
+        counter.add(version.id, B)
+    res = Decode(action=action, n_decodes=float(B))
+    if save_states and B:
+        res.states = torch.cat(st_chunks, 1)
+        res.v = torch.cat(v_chunks, 1)
+    res.acts = {nm: torch.cat(act_chunks[nm], 1) for nm in capture} if B else {}
+    return res
 
 
 def layers(version: Version) -> List[LayerInfo]:
     """All capture layers of ``version`` with sizes, in forward order (grafted paths appear as
-    ``<layer>.graft{j}`` with kind "graft")."""
-    raise NotImplementedError
+    ``<layer>.graft{j}`` with kind "graft"). A layer wrapped by a graft (a module exposing the
+    original Linear as ``.base``) reports the original Linear's sizes."""
+    core, prefix = _core(version.net)
+    width = int(core.out_norm.normalized_shape[0])
+    cond_dim = core.time_mlp[-1].out_features + (core.c_mlp[-1].out_features if hasattr(core, "c_mlp") else 0)
+    out: List[LayerInfo] = []
+    for n in CAPTURE_LAYERS:
+        if n == "cond":
+            out.append(LayerInfo(n, "cond", 0, cond_dim))
+        elif n == "out_act" or n.endswith(".act"):
+            out.append(LayerInfo(n, "act", 0, width))
+        elif n == "out_norm":
+            out.append(LayerInfo(n, "norm", 0, width))
+        elif n.startswith("blocks.") and n.count(".") == 1:
+            out.append(LayerInfo(n, "block", 0, width))
+        else:
+            m = core.get_submodule(n)
+            lin = m if isinstance(m, nn.Linear) else getattr(m, "base", None)
+            if not isinstance(lin, nn.Linear):
+                raise ValueError(f"layer {n} is not a Linear (and has no .base Linear)")
+            out.append(LayerInfo(n, "linear", lin.in_features, lin.out_features))
+    for name, m in version.net.named_modules():     # W1-B graft modules: name part contains "graft"
+        tail = name[len(prefix):] if prefix and name.startswith(prefix) else name
+        if tail and "graft" in tail.split(".")[-1]:
+            out.append(LayerInfo(tail, "graft", 0, int(getattr(m, "n_units", 0) or 0)))
+    return out
 
 
 def load_version(run_dir: str, version_id: str, cell) -> Version:
-    """Rebuild a version from pi_ref and its patch stack on disk (``toyrepair.patches.rebuild``)."""
-    raise NotImplementedError
+    """Rebuild a version from pi_ref and its patch stack on disk (``toyrepair.patches.rebuild``).
+
+    The patch stack is found by walking ``parent_version`` links of the patch JSON files in
+    ``<run_dir>/patches/`` from ``version_id`` back to v0."""
+    import json
+    import os
+    if version_id == "v0":
+        return base_version(cell)
+    pdir = os.path.join(run_dir, "patches")
+    by_version = {}
+    for f in sorted(os.listdir(pdir)) if os.path.isdir(pdir) else []:
+        if f.endswith(".json"):
+            with open(os.path.join(pdir, f)) as fh:
+                d = json.load(fh)
+            by_version[d["version"]] = (d["id"], d["parent_version"])
+    chain, v = [], version_id
+    while v != "v0":
+        if v not in by_version:
+            raise FileNotFoundError(f"no patch makes version {v} in {pdir}")
+        pid, v = by_version[v]
+        chain.append(pid)
+    from . import patches
+    return patches.rebuild(cell, run_dir, list(reversed(chain)), version_id)

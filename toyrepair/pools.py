@@ -13,6 +13,17 @@ The logged negatives and pi_ref come from toypref's own seed rule, not from thes
 toypref method-map metrics (``toyrepair.oracle.metrics``) use toypref's own fixed eval bank.
 
 Final-evaluation draws never feed back into any loop.
+
+Sub-streams (W1-A1). Tools that need more than one kind of draw from the mining pool use child
+streams of the same SeedSequence, ``SeedSequence([pool, cell_index, check_index],
+spawn_key=(stream,))`` (= child ``stream`` of the root). The root stream itself is ``draw``.
+Mining-pool use, all at check index 0:
+
+    root      ``draw(cell, MINING, 4096)``           quick_check drift pairs (c, xi)
+    stream 1  ``noise(cell, MINING, 256, stream=1)``  residual-basin-mass noises (same 256 for every
+                                                     negative and every version: common random numbers)
+    stream 2  ``torch_generator(cell, MINING, stream=2, salt=seed)``  branch-tool renoise eps
+    stream 3  ``torch_generator(cell, MINING, stream=3)``             hop-search directions
 """
 
 from __future__ import annotations
@@ -68,3 +79,29 @@ def draw(cell, pool: int, n: int, index: int = 0) -> Tuple[torch.Tensor, torch.T
     mining and final; other indices are allowed for sub-streams but must be documented by the
     caller.)"""
     return draw_index(pool, int(cell.index), n, index)
+
+
+# ---------------------------------------------------------------- sub-streams (W1-A1)
+STREAM_RESIDUAL, STREAM_BRANCH, STREAM_HOP = 1, 2, 3
+N_DRIFT_PAIRS = 4096
+
+
+def sub_sequence(pool: int, cell_index: int, check_index: int = 0, stream: int = 0) -> np.random.SeedSequence:
+    """Child ``stream`` of ``seed_sequence(pool, cell_index, check_index)`` (stream 0 here is a
+    child too, not the root; the root is ``seed_sequence``)."""
+    root = seed_sequence(pool, cell_index, check_index)
+    return np.random.SeedSequence(root.entropy, spawn_key=(int(stream),))
+
+
+def noise(cell, pool: int, n: int, stream: int, index: int = 0) -> torch.Tensor:
+    """(n, 2) float32 standard normals from child ``stream`` of (pool, cell.index, index)."""
+    g = np.random.default_rng(sub_sequence(pool, int(cell.index), index, stream))
+    return torch.from_numpy(g.standard_normal((n, 2), dtype=np.float32))
+
+
+def torch_generator(cell, pool: int, stream: int, index: int = 0, salt: int = 0) -> torch.Generator:
+    """A ``torch.Generator`` seeded from child ``stream`` of (pool, cell.index, index); ``salt``
+    (e.g. a tool call's seed argument) selects an independent generator inside that stream."""
+    ss = sub_sequence(pool, int(cell.index), index, stream)
+    st = np.random.SeedSequence(ss.entropy, spawn_key=ss.spawn_key + (int(salt),)).generate_state(2, np.uint32)
+    return torch.Generator().manual_seed(int(st[0]) << 31 ^ int(st[1]))
