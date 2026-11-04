@@ -1,0 +1,3 @@
+=== start 2026-11-04 02:55:19 cmd=['python', 'scripts/harness_sim_report.py', 'cell', '--grid', 'cond', '--setting', 'alt', '--seed', '4', '--npm', '16']
+{"cell": "cond_alt_s4_n16", "n_clusters": 6, "n_open": 6, "largest": 17, "k_commit": 12, "class": "R", "cpu": {"load": 41.908274257, "mine": 5.231149627999997, "branch": 2.5840606319999964}}
+=== end rc=0 52.3s 
