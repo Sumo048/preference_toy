@@ -9,10 +9,12 @@ import numpy as np
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 seeds = [int(s) for s in (sys.argv[1] if len(sys.argv) > 1 else "0,1,2").split(",")]
+npms = [int(s) for s in (sys.argv[2] if len(sys.argv) > 2 else "4,16").split(",")]
+only = sys.argv[3].split(",") if len(sys.argv) > 3 else None
 recs = defaultdict(dict)   # method -> (setting, seed, npm) -> rec
 for f in glob.glob(os.path.join(ROOT, "results", "*", "*", "*.json")):
     r = json.load(open(f))
-    if r["seed"] in seeds:
+    if r["seed"] in seeds and r["npm"] in npms and (only is None or r["method"] in only):
         recs[r["method"]][(r["setting"], r["seed"], r["npm"])] = r
 
 
@@ -36,7 +38,7 @@ hdr = ("| Method | cells | D | Removed | Collateral | mass_off | ΔD vs B1a (± 
        "|---|---|---|---|---|---|---|---|")
 order = sorted(recs, key=lambda m: (m not in ("B0", "B1a"), m != "B0", np.mean([v["D"] for v in recs[m].values()])))
 for setting in (None, "k4", "alt"):
-    print(f"\n### {'pooled k4+alt' if setting is None else setting} (seeds {seeds}, npm 4 and 16)\n")
+    print(f"\n### {'pooled k4+alt' if setting is None else setting} (seeds {seeds}, npm {npms})\n")
     print(hdr)
     for m in order:
         r = row(m, setting)
