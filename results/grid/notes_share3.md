@@ -31,3 +31,5 @@
 - 20:45 UTC g3_cond_b3p1_s5_n16_A3_rep1 s002: surgeon RESULT line claimed 'accepted v4', but the gate ledger records v4 (and v1, v3) as rejected; run stays at v0. Ledger is authoritative; recorded as-is.
 - 21:24 UTC g3_cond_b3p1_s5_n16_A3_rep1 s010: surgeon reports its v13 targeted_train hit the 120 s Bash timeout and went to background; it submitted v13 without seeing the train output (gate rejected, 5 tests failed). Logged as surgeon process error; ledger is authoritative, no rerun (the gate result is valid).
 - 21:24 UTC rep1 DONE: b3p1 s7n4 (no_open_cluster); 21:26 b3p1 s5n4 (no_open_cluster).
+- 21:31 UTC code arm g3_cond_k4_s8_n64_R0 failed (rc 1, 255 s): `ValueError: unknown velocity-network layout (no inp/blocks)` in policy._core while R0's detector_data captured a layer on its round-2 current version. Marked invalid (failed record kept, log saved as .attempt1.log); rerun once per protocol at 21:31. Looks deterministic, not a method/threshold change; no code edited.
+- 21:45 UTC rerun of g3_cond_k4_s8_n64_R0 failed again with the same ValueError (379 s). Final: INVALID (two attempts, protocol max). Report as missing R0 cell k4 s8 n64 in DONE.
