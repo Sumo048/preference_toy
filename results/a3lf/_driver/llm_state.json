@@ -20,17 +20,17 @@
    "agent": "surgeon",
    "token": "6QQ3fa5qmWCnGCZ6"
   },
-  "a3lf_cond_k4_s5_n16": {
-   "agent": "triage",
-   "token": "wGychuyg2iifAhpi"
-  },
   "a3lf_cond_k4_s6_n16": {
-   "agent": "triage",
-   "token": "eAWNynU5hSCtPJcx"
+   "agent": "surgeon",
+   "token": "MvaJRXrohWPC96BC"
   },
   "a3lf_cond_k4_s9_n16": {
-   "agent": "triage",
-   "token": "zUnFJHjsrUworMUX"
+   "agent": "surgeon",
+   "token": "dRBd5vB6xynLCrCk"
+  },
+  "a3lf_cond_k4_s5_n16": {
+   "agent": "surgeon",
+   "token": "3Ac7Ugx6oh44ETqA"
   }
  },
  "done": [
