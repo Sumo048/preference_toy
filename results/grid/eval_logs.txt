@@ -19,3 +19,4 @@
 /home/user/preference_toy/results/grid/b3p1/s8/n4/A3/result.json D 0.1377 removed 0.947 collateral 0.0979 stop no_open_cluster sessions 3 cost 1.08
 /home/user/preference_toy/results/grid/k4/s8/n16/A3-nogate/result.json D 0.2715 removed 0.92 collateral 0.1481 stop no_open_cluster sessions 6 cost 2.51
 /home/user/preference_toy/results/grid/b3p1/s7/n16/A3/result.json D 0.1636 removed 0.895 collateral 0.1245 stop no_open_cluster sessions 4 cost 1.51
+/home/user/preference_toy/results/grid/b3p1/s5/n16/A3/result.json D 0.1348 removed 0.97 collateral 0.1229 stop no_open_cluster sessions 9 cost 4.49
