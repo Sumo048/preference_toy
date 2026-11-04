@@ -16,4 +16,4 @@ Prereg: `docs/A3LF_PREREG.md`, pushed at cb7575c before any seed 5-9 cell was lo
 - After the 20 main cells: `tick --extra` (k1, contig, b3p1 at npm 4).
 
 ## Status
-- 19:55 UTC: done k4 s8n16, s8n4, s7n4, s6n16, s5n16, s7n16. Running k4 s5n4 s6n4 s9n4 s9n16, alt s5n4 s5n16 s6n4 s6n16.
+- 20:20 UTC: 10 runs done (k4 s5n4 s5n16 s6n4 s6n16 s7n4 s7n16 s8n4 s8n16, alt s5n4). Running k4 s9 n4,n16; alt s5n16 s6n4 s6n16 s7n4 s7n16 s8n4.

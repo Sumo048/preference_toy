@@ -1,0 +1,29 @@
+{
+ "id": "a3lf_cond_k4_s6_n4",
+ "dir": "/home/user/preference_toy/runs/repair/a3lf_cond_k4_s6_n4",
+ "arm": "A3-LF",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 6,
+ "npm": 4,
+ "current": "v22",
+ "n_first_clusters": 5,
+ "cooldown": {
+  "0": 2
+ },
+ "backend": "real",
+ "phase4_tools": true,
+ "gate_cfg": {},
+ "cost_cap_usd": 8.0,
+ "iteration": 9,
+ "next_session": 19,
+ "next_version": 26,
+ "next_patch": 26,
+ "pending": null,
+ "target": null,
+ "stop": "cost_cap",
+ "invalid": null,
+ "created": "2026-11-04T17:56:00+00:00",
+ "pilot_cluster": null,
+ "max_sessions": null
+}
