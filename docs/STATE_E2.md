@@ -5,13 +5,16 @@ Code: `explore/E2/` (lib.py, fit.py, run_edit.py, probe*.py, clusters.py, queue.
 Baselines: `explore/E2/run_baselines.sh` -> `runs/cond/cells*/` (not committed; numbers summarised in docs/explore/E2.md).
 
 ## Done
-- Env: torch 2.14.0 from PyPI (cu130 build, CPU use); pandas 2.2.2 has no py3.13 wheel, newer pandas is used.
-- B0 + B1a on k4/alt x npm 4/16 x seeds 0-4 (running/near done).
-- Global probe k4 s0 n16: AUC 0.64-0.72 -> one global direction separates bad trajectories poorly.
-- r1_out_r2 (s1000) k4 s0 n16: D 0.237, Rem 0.73, Col 0.04, off 0.10 (B1a 0.139).
+- Env: torch 2.14.0 from PyPI; pandas 2.2.2 has no py3.13 wheel, newer pandas used.
+- B0 + B1a on k4/alt x npm 4/16 x seeds 0-4 (runs/cond, via cond_cell.py). k4 B1a 0.281, alt 0.446 (s0-4).
+- Probes: global direction AUC 0.64-0.72; per-cluster (miner affinity) AUC 0.95-0.99 already at step 0 (b0.z).
+- Sweep k4 s0 n16 (q1-q4): ablation fails (abl no effect; ablc destroys -> off mass); learned rank-k works;
+  early t-gate cuts between-mode mass; best: r1_fc2.0+fc2.1+fc2.2_r4_t0.4-1 D 0.142 (B1a 0.139).
+- 12 cells (q5): best edit matches B1a (k4 0.258 vs 0.261, alt 0.426 vs 0.421); r1pc (probe-fixed) worse.
+- B1a SVD k4 s0 n16: truncating B1a's change to rank 4/layer gives D 0.124 < 0.139 (less collateral).
 
 ## Running
-- q1 sweep of edit structures on k4 s0 n16; per-cluster probe.
+- q6: window/rank sweep on 12 cells; q7: best edit on seeds 3-4; run_trunc.sh 0 1 2 (B1a low-rank projection).
 
 ## Next
-- Pick best structures, run on 12 cells (k4/alt, npm 4/16, seeds 0-2), best on seeds 3-4; write docs/explore/E2.md, DONE_E2.
+- trunc on seeds 3-4 if it wins; write docs/explore/E2.md, DONE_E2; push (also try art/explore-E2).

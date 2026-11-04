@@ -43,7 +43,8 @@ for p in parts[1:]:
 gated = (lo, hi) != (0.0, 1.0)
 gate = (lambda t: lib.tgate(t, lo, hi)) if gated else None
 
-lk, _, lj = layer.partition(".")
+LAYERS = layer.split("+")
+lk, _, lj = LAYERS[0].partition(".")
 src = {"fc2": f"b{lj}.z", "out": "phi", "fc1": f"b{lj}.in"}[lk]
 din = {"fc2": 128, "out": 128, "fc1": 256}[lk]
 dout = {"fc2": 128, "out": 2, "fc1": 128}[lk]
@@ -135,6 +136,28 @@ elif kind == "r1pc":
 elif kind == "abl":
     v, mgood, mall = probe_direction()
     edits = [lib.Ablate(src, v, gate=gate, mean=mgood)]
+elif kind == "r1" and len(LAYERS) > 1:
+    # rank-r learned edits on several layers at once
+    g = torch.Generator().manual_seed(1234 + args.seed)
+    params, dims = {}, {}
+    for L in LAYERS:
+        k_, _, _ = L.partition(".")
+        di, do = {"fc2": 128, "out": 128, "fc1": 256}[k_], {"fc2": 128, "out": 2, "fc1": 128}[k_]
+        params[f"{L}|u".replace(".", "_")] = 1e-3 * torch.randn(rank, do, generator=g)
+        params[f"{L}|v".replace(".", "_")] = torch.randn(rank, di, generator=g) / di ** 0.5
+        params[f"{L}|b".replace(".", "_")] = torch.zeros(rank)
+
+    def build(P):
+        out = []
+        for L in LAYERS:
+            q = L.replace(".", "_")
+            out += [lib.Rank1(L, P[q + "|u"][i], P[q + "|v"][i], 1.0, beta=P[q + "|b"][i], gate=gate)
+                    for i in range(rank)]
+        return out
+    tr = fit.Trainable(params, build)
+    logs = []
+    edits = fit.train_edit(cell, tr, steps=steps, lr=args.lr, log=lambda s: (logs.append(s), print(s, flush=True)))
+    info["train_log"] = logs
 elif kind in ("r1", "r1p"):
     g = torch.Generator().manual_seed(1234 + args.seed)
     params = {"u": 1e-3 * torch.randn(rank, dout, generator=g), "beta": torch.zeros(rank)}

@@ -1,0 +1,6 @@
+0 random 16 r1_fc2.0+fc2.1+fc2.2_r4
+0 random 16 r1_fc2.0+fc2.1+fc2.2_r4_t0.4-1
+0 random 16 r1_fc2.2_r8_s4000
+0 random 16 r1_fc2.2_r16
+0 random 16 r1_fc2.2_r8_t0.4-1
+0 random 16 r1_fc2.0+fc2.2+out_r4

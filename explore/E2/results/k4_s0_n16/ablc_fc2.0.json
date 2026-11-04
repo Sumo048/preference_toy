@@ -1,0 +1,1 @@
+{"method": "ablc_fc2.0", "kind": "ablc", "layer": "fc2.0", "t_window": [0.0, 1.0], "rank": 1, "n_clusters": 7, "cluster_sizes_used": [4, 12, 2, 14, 7, 16, 9], "ablc_n_dirs": 7, "D": 0.8209, "Removed": 0.8081520073551947, "Collateral": 0.16375623598832922, "off": 0.727, "D_ref": 0.51595, "sec": 13.7}
