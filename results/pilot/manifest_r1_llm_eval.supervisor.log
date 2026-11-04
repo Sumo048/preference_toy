@@ -40,3 +40,17 @@
 2026-11-04 06:30:34 [15412] eval_pilot_r1_cond_k4_s1_n4_A1 wrapper exit 0
 2026-11-04 06:30:34 [15412] eval_pilot_r1_cond_k4_s1_n4_A2 wrapper exit 0
 2026-11-04 06:30:34 [15412] exit
+2026-11-04 06:41:08 [17717] start workers=1 retry_failed=False
+2026-11-04 06:41:08 [17717] eval_pilot_r1_cond_k4_s1_n16_A1 launched
+2026-11-04 06:42:34 [17717] eval_pilot_r1_cond_k4_s1_n16_A1 wrapper exit 0
+2026-11-04 06:42:34 [17717] eval_pilot_r1_cond_k4_s2_n16_A2 launched
+2026-11-04 06:43:54 [17717] eval_pilot_r1_cond_k4_s2_n16_A2 wrapper exit 0
+2026-11-04 06:43:54 [17717] eval_pilot_r1_cond_k4_s2_n4_A1 launched
+2026-11-04 06:44:53 [17717] eval_pilot_r1_cond_k4_s2_n4_A1 wrapper exit 0
+2026-11-04 06:44:53 [17717] eval_pilot_r1_cond_k4_s2_n4_A2 launched
+2026-11-04 06:46:10 [17717] eval_pilot_r1_cond_k4_s2_n4_A2 wrapper exit 0
+2026-11-04 06:46:10 [17717] exit
+2026-11-04 06:50:09 [19073] start workers=1 retry_failed=False
+2026-11-04 06:50:09 [19073] eval_pilot_r1_cond_k4_s2_n16_A1 launched
+2026-11-04 06:51:34 [19073] eval_pilot_r1_cond_k4_s2_n16_A1 wrapper exit 0
+2026-11-04 06:51:34 [19073] exit

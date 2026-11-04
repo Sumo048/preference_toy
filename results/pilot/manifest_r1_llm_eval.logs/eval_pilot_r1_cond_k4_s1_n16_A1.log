@@ -1,0 +1,3 @@
+=== start 2026-11-04 06:41:08 cmd=['python', 'scripts/pilot.py', 'eval_llm', '--round', 'r1', '--arm', 'A1', '--cell', 'cond_k4_s1_n16', '--run', 'pilot_r1_cond_k4_s1_n16_A1']
+/home/user/preference_toy/results/pilot/r1/k4/s1/n16/A1_r1.json D 0.5141 target_removed 0.0 collateral 0.0
+=== end rc=0 86.0s 

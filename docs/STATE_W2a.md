@@ -17,13 +17,15 @@ Note: a second W2a session exists (claude/session-w2a-5zzqkv). The user said to 
 - Miner rule -> agglomerative (DEV_LOG). Pilot mode: run_arm --cluster/--targets; orchestrate --pilot_cluster/--max_sessions.
 - scripts/pilot.py (targets, manifest, eval_llm, report).
 
+- Integration smoke (k4 s0 n4): code arms ran; A1 and A2 one session each ($0.84, $0.93), no accept.
+- Gate calibration: B4 0/12 at dev thresholds; loosened once (0.15/0.02/0.02) -> 1/12 (results/pilot/calibration.md).
+- Pilot r1 done: Table 2 in results/pilot/r1/table2.md. Rule FAIL (A1 0/12, A2 2/12; A2 4 accepts).
+- Improvement round r2 prompt changes (DEV_LOG); r2 running (code arms reused from r1, deterministic).
+
 ## Running
-- Full test suite (scratchpad/pytest_full.log). Pilot targets: results/pilot/manifest_targets.jsonl (jobs.py).
+- r2 surgeon sessions (pilot_runs_r2.txt in scratchpad; 16 issued of 24).
 
 ## Next
-1. Tests green -> push agentic-repair-toy.
-2. Integration smoke k4 s0 n4: B4/R0/D1 + one A1 and one A2 session; cost.
-3. Gate calibration: B4 first repair on 12 cells; loosen 3-5 once if < 6 pass.
-4. Pilot r1: code arms via jobs.py; A1/A2 surgeons (<= 8 at a time). report -> results/pilot.md.
-5. If decision rule fails: one improvement round (prompts/tools), r2. DONE_W2a.md.
+1. Finish r2 (sessions 17-24), eval (scripts/pilot_eval_manifest.py r2 + jobs), report --round r2 (copy code arms).
+2. results/pilot.md: Table 2 both rounds, cost per session/run. Full test suite, push agentic-repair-toy. DONE_W2a.md.
 - Hard deadline: Wed 12:00 ET (16:00 UTC).
