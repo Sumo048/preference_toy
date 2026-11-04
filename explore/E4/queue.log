@@ -119,3 +119,23 @@ unit pairs s9 n4 exit 0
 unit b3p1 s9 n4 exit 0
 unit k1 s9 n16 exit 0
 unit k2 s9 n16 exit 0
+unit k4 s9 n16 exit 0
+unit contig s9 n16 exit 0
+unit alt s9 n16 exit 0
+unit pairs s9 n16 exit 0
+unit k1 s9 n1 exit 0
+unit b3p1 s9 n16 exit 0
+unit k2 s9 n1 exit 0
+unit k4 s9 n1 exit 0
+unit contig s9 n1 exit 0
+unit alt s9 n1 exit 0
+unit pairs s9 n1 exit 0
+unit b3p1 s9 n1 exit 0
+unit k1 s9 n64 exit 0
+unit k2 s9 n64 exit 0
+unit k4 s9 n64 exit 0
+unit contig s9 n64 exit 0
+unit alt s9 n64 exit 0
+unit pairs s9 n64 exit 0
+unit b3p1 s9 n64 exit 0
+QUEUE_DONE
