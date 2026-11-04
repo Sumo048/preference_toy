@@ -242,6 +242,35 @@ def _load_npy(path: str):
 
 # ----------------------------------------------------------------------------- backends
 
+def cached_cell(run, cache_dir: Optional[str] = None):
+    """``load_cell(*run.cell_args)`` with the basins/vote built, cached in
+    ``<cache_dir>/cell_cache.pt`` (default ``$TOYPREF_RUNS/cells/<cell key>/``; W2a): each CLI
+    call is a new process, and a fresh cond cell costs ~40 s (pool decode + basins). The file
+    sits in the mode-700 repo, so the sandbox user cannot read it; the surgeon reaches it only
+    through this CLI. The cell is deterministic, so all runs on a cell share one file."""
+    import torch
+    from .cell import cell_key, load_cell
+    if cache_dir is None:
+        cache_dir = os.path.join(os.environ["TOYPREF_RUNS"], "cells", cell_key(*run.cell_args))
+    os.makedirs(cache_dir, exist_ok=True)
+    path = os.path.join(cache_dir, "cell_cache.pt")
+    if os.path.exists(path):
+        try:
+            return torch.load(path, map_location="cpu", weights_only=False)
+        except Exception:
+            pass
+    cell = load_cell(*run.cell_args)
+    cell.vote                                    # build basins + vote once
+    tmp = f"{path}.{os.getpid()}.tmp"
+    try:
+        torch.save(cell, tmp)
+        os.replace(tmp, path)
+    except Exception:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+    return cell
+
+
 class RealBackend:
     """Calls the harness modules (W1-A1, W1-A2, W1-B). Every method returns (text, decodes)."""
 
@@ -251,8 +280,7 @@ class RealBackend:
     # -- shared
     def cell(self, run):
         if self._cell is None:
-            from .cell import load_cell
-            self._cell = load_cell(*run.cell_args)
+            self._cell = cached_cell(run)
         return self._cell
 
     def version(self, run, vid: str):
@@ -301,7 +329,17 @@ class RealBackend:
         fn = getattr(flowstate, "inspect", None)
         if fn is None:
             raise ToolError("inspect is not available yet (flowstate.inspect missing)")
-        res = fn(self.cell(run), self.version(run, vid), uid, units)
+        pairs = []                       # "LAYER:i,j" -> [(LAYER, i), (LAYER, j)] (flowstate.inspect's form)
+        for part in filter(None, (units or "").split(";")):
+            layer, _, idx = part.partition(":")
+            try:
+                pairs += [(layer.strip(), int(j)) for j in idx.split(",") if j.strip()]
+            except ValueError:
+                raise ToolError(f"bad --units {part!r}; use LAYER:i,j")
+        try:
+            res = fn(self.cell(run), self.version(run, vid), uid, pairs)
+        except (ValueError, KeyError) as e:
+            raise ToolError(f"inspect: {e}")
         text = res.render() if hasattr(res, "render") else str(res)
         return text, float(getattr(res, "n_decodes", 1))
 
@@ -330,6 +368,7 @@ class RealBackend:
         """-> (EditResult-like with .version/.patch/.record)."""
         from . import edits
         parent = self.version(run, parent_vid)
+        pid = getattr(args, "_patch_id", None)
         if call == "graft_gated_path":
             w = _load_npy(paths["det_w"]).reshape(-1)
             k_range = None
@@ -341,14 +380,16 @@ class RealBackend:
             return edits.graft_gated_path(parent, new_vid, args.layer, det, args.n_units, _load_npy(paths["w_in"]),
                                           _load_npy(paths["w_out"]),
                                           b_in=_load_npy(paths["b_in"]) if "b_in" in paths else None,
-                                          src=args.src, act=args.act)
+                                          src=args.src, act=args.act, patch_id=pid)
         if call == "rank1":
-            return edits.rank1(parent, new_vid, args.layer, _load_npy(paths["u"]), _load_npy(paths["v"]), args.s)
+            return edits.rank1(parent, new_vid, args.layer, _load_npy(paths["u"]), _load_npy(paths["v"]), args.s,
+                               patch_id=pid)
         if call == "ablate_direction":
-            return edits.ablate_direction(parent, new_vid, args.layer, _load_npy(paths["v"]), args.side)
+            return edits.ablate_direction(parent, new_vid, args.layer, _load_npy(paths["v"]), args.side,
+                                          patch_id=pid)
         if call == "set_units":
             return edits.set_units(parent, new_vid, args.layer, args.idx, _load_npy(paths["w_in"]),
-                                   _load_npy(paths["b"]), _load_npy(paths["w_out"]))
+                                   _load_npy(paths["b"]), _load_npy(paths["w_out"]), patch_id=pid)
         if call == "targeted_train":
             import numpy as np
             import torch
@@ -374,7 +415,7 @@ class RealBackend:
             spec = train.TrainSpec(params=tuple(p for p in args.params.split(",") if p), objective=args.objective,
                                    steps=int(args.steps), anchor=args.anchor.replace("local_map", "local+map"),
                                    beta=args.beta, lr=args.lr)
-            return train.targeted_train(cell, parent, new_vid, spec, data)
+            return train.targeted_train(cell, parent, new_vid, spec, data, patch_id=pid)
         raise ToolError(f"unknown edit call {call}")
 
     def save_patch(self, run, res, pid):
@@ -640,12 +681,16 @@ def execute(run, sess, args, stdin_text: str = "") -> (str, Dict):
     if cmd in EDIT_COMMANDS:
         parent = _version_arg(run, sess, args.parent)
         new_vid = f"v{run.next_version}"
+        # the patch id is fixed before the edit: a graft's id is part of the version hash, so
+        # renaming the patch afterwards would break the rebuild check (W2a fix)
+        args._patch_id = f"p{run.next_patch:04d}"
         res = be.edit(run, cmd, parent, new_vid, args, paths)
         rec = res.record
         if not getattr(rec, "ok", True) or res.version is None:
             raise ToolError(f"edit rejected: {getattr(rec, 'error', '') or 'unknown reason'}")
         data = dict(orc._jsonable(rec))
         pid = orc.new_patch_id(run)
+        assert pid == args._patch_id
         be.save_patch(run, res, pid)
         vid = orc.register_version(run, parent, pid, sess.session, cmd)
         assert vid == new_vid

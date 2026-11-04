@@ -220,7 +220,9 @@ def repair(ctx: RepairContext):
         yield ver
 
 
-def run(cell, run, svc: Optional[Services] = None, max_rounds: Optional[int] = None) -> ArmOutput:
+def run(cell, run, svc: Optional[Services] = None, max_rounds: Optional[int] = None,
+        target_cluster: Optional[int] = None) -> ArmOutput:
     """Run the arm on ``cell`` inside run context ``run`` (toyrepair.orchestrate.Run).
     ``max_rounds=1`` is the pilot (one repair, no recursion)."""
-    return iterate("R0", cell, run, svc, repair, needs_branch=True, max_rounds=max_rounds)
+    return iterate("R0", cell, run, svc, repair, needs_branch=True, max_rounds=max_rounds,
+                   target_cluster=target_cluster)

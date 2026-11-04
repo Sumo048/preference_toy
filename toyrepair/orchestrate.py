@@ -116,6 +116,9 @@ class Run:
     stop: Optional[str] = None
     invalid: Optional[str] = None
     created: str = ""
+    # --- W2a additions (pilot) ---
+    pilot_cluster: Optional[int] = None   # fixed target cluster (no triage); Phase 3 pilot
+    max_sessions: Optional[int] = None    # stop after this many surgeon sessions (pilot: 1)
 
     @property
     def scratch(self) -> str:
@@ -378,7 +381,8 @@ def get_atlas(run: Run, vid: Optional[str] = None):
 
 def init_run(run_id: str, arm: str, grid: str, setting: str, seed: int, npm: int,
              backend: str = "real", phase4_tools: bool = False, gate_cfg: Optional[Dict] = None,
-             runs_root: Optional[str] = None, cost_cap_usd: float = RUN_COST_CAP_USD) -> Run:
+             runs_root: Optional[str] = None, cost_cap_usd: float = RUN_COST_CAP_USD,
+             pilot_cluster: Optional[int] = None, max_sessions: Optional[int] = None) -> Run:
     if arm not in ARMS:
         raise ValueError(f"unknown arm {arm!r}")
     if backend not in ("real", "mock"):
@@ -390,13 +394,16 @@ def init_run(run_id: str, arm: str, grid: str, setting: str, seed: int, npm: int
         os.makedirs(os.path.join(d, sub), exist_ok=True)
     run = Run(id=run_id, dir=d, arm=arm, grid=grid, setting=setting, seed=int(seed), npm=int(npm),
               backend=backend, phase4_tools=phase4_tools, gate_cfg=dict(gate_cfg or {}),
-              cost_cap_usd=cost_cap_usd, created=now())
+              cost_cap_usd=cost_cap_usd, created=now(),
+              pilot_cluster=None if pilot_cluster is None else int(pilot_cluster),
+              max_sessions=None if max_sessions is None else int(max_sessions))
     with run_lock(d):
         save_run(run)
         _atomic_write(os.path.join(d, "versions.json"), json.dumps(versions(run), indent=1))
         save_budget(run, load_budget(run))
         ledger_append(run, "run", {"event": "init", "arm": arm, "cell": [grid, setting, seed, npm],
-                                   "backend": backend, "phase4_tools": phase4_tools, "gate_cfg": run.gate_cfg})
+                                   "backend": backend, "phase4_tools": phase4_tools, "gate_cfg": run.gate_cfg,
+                                   "pilot_cluster": run.pilot_cluster, "max_sessions": run.max_sessions})
     return run
 
 
@@ -450,6 +457,8 @@ def next_action(run: Run) -> str:
         return _stop(run, "cost_cap")
     if b["no_accept_streak"] >= NO_ACCEPT_STREAK_STOP:
         return _stop(run, "no_accept_streak")
+    if run.max_sessions is not None and b["sessions"] >= run.max_sessions:
+        return _stop(run, "max_sessions")
     atlas = get_atlas(run)
     if run.n_first_clusters is None:
         run.n_first_clusters = len(atlas.cards)
@@ -461,6 +470,11 @@ def next_action(run: Run) -> str:
         return _stop(run, "no_open_cluster")
     if b["gate_cap"] and b["gate_checks"] >= b["gate_cap"]:
         return _stop(run, "gate_cap")
+    if run.target is None and run.pilot_cluster is not None:
+        if run.pilot_cluster not in atlas.open_ids():
+            return _stop(run, "target_not_open")
+        run.target = run.pilot_cluster          # pilot: the target is fixed by code, no triage
+        ledger_append(run, "triage", {"event": "pilot_target", "cluster": run.target})
     if run.target is None:
         # every open cluster on cool-down: let iterations pass (no session is spent)
         while not _eligible(run, atlas):
@@ -619,6 +633,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--phase4", action="store_true")
     p.add_argument("--gate_cfg", default="", help="JSON overrides of gate.GateConfig")
     p.add_argument("--cost_cap", type=float, default=RUN_COST_CAP_USD)
+    p.add_argument("--pilot_cluster", type=int, default=None, help="pilot: fixed target cluster, no triage")
+    p.add_argument("--max_sessions", type=int, default=None, help="pilot: stop after N surgeon sessions")
     sub.add_parser("next").add_argument("--run", required=True)
     sub.add_parser("status")
     p = sub.add_parser("record")
@@ -629,7 +645,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.cmd == "init":
         r = init_run(args.run, args.arm, args.grid, args.setting, args.seed, args.npm, backend=args.backend,
                      phase4_tools=args.phase4, gate_cfg=json.loads(args.gate_cfg) if args.gate_cfg else None,
-                     cost_cap_usd=args.cost_cap)
+                     cost_cap_usd=args.cost_cap, pilot_cluster=args.pilot_cluster,
+                     max_sessions=args.max_sessions)
         print(f"INIT {r.id} {r.dir}")
     elif args.cmd == "next":
         d = run_dir(args.run)

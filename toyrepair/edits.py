@@ -633,7 +633,7 @@ def apply_call(net: nn.Module, call: str, args: Dict, arrays: Dict[str, np.ndarr
         if "w_out" in arrays:
             linear(net, args["layer"][:-1] + "2").weight[:, ix] = T(arrays["w_out"])
         return net
-    if call == "targeted_train":
+    if call in ("targeted_train", "toypref_train"):   # toypref_train: W1-C's B1a/B1b/B5 full-tensor patches
         params = dict(net.named_parameters())
         for k, a in arrays.items():
             if k not in params:
@@ -683,7 +683,13 @@ def graft_identity(base, new, n_states: int = N_IDENTITY_STATES, seed: int = 0) 
 
 def unit_tests(new, current) -> UnitTestResult:
     """Gate test 6 hook, called by ``toyrepair.gate.gate_check``: shapes, finite parameters
-    and outputs, legal detectors, graft identity for each graft new relative to current."""
+    and outputs, legal detectors, graft identity for each graft new relative to current.
+    A sampling-time controller (``toyrepair.arms.r0.ControlledNet``, arm R0) is not a weight
+    edit and brings its own checks (``controller_unit_tests``; INTERFACE_REQUESTS_W1-C item 8)."""
+    hook = getattr(new.net, "controller_unit_tests", None)
+    if hook is not None:
+        r = hook(current)
+        return UnitTestResult(passed=r["passed"], checks=r["checks"], detail=r["detail"])
     checks, detail = {}, {}
     nnet, cnet = new.net, current.net
     # shapes: same parameter names and shapes as current; graft arrays consistent

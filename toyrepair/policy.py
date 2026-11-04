@@ -126,7 +126,12 @@ counter = DecodeCounter()
 # ---------------------------------------------------------------- network introspection
 def _core(net: nn.Module) -> Tuple[nn.Module, str]:
     """(module that owns inp/blocks/out, its name prefix). The unconditional wrapper
-    (``toyrepair.cell._UncondNet``) keeps the toypref VelocityNet in ``.inner``."""
+    (``toyrepair.cell._UncondNet``) keeps the toypref VelocityNet in ``.inner``; a grafted
+    ``toyrepair.edits.EditedNet`` keeps its weight-edited base net in ``.base``."""
+    from .edits import EditedNet
+    if isinstance(net, EditedNet):
+        core, prefix = _core(net.base)
+        return core, "base." + prefix
     if hasattr(net, "inp") and hasattr(net, "blocks"):
         return net, ""
     inner = getattr(net, "inner", None)
@@ -193,6 +198,9 @@ def _net_call(net: nn.Module, x, t, c, capture: Sequence[str]):
     """net(x, t, c) plus captured activations of this one call."""
     if not capture:
         return net(x, t, c), {}
+    from .edits import EditedNet, run_forward
+    if isinstance(net, EditedNet):          # grafted: hooks cannot see the gated paths
+        return run_forward(net, x, t, c, capture=tuple(capture))
     fc = getattr(net, "forward_capture", None)
     if callable(fc):                       # optional protocol for nets that do their own capture
         return fc(x, t, c, tuple(capture))
@@ -317,10 +325,9 @@ def layers(version: Version) -> List[LayerInfo]:
             if not isinstance(lin, nn.Linear):
                 raise ValueError(f"layer {n} is not a Linear (and has no .base Linear)")
             out.append(LayerInfo(n, "linear", lin.in_features, lin.out_features))
-    for name, m in version.net.named_modules():     # W1-B graft modules: name part contains "graft"
-        tail = name[len(prefix):] if prefix and name.startswith(prefix) else name
-        if tail and "graft" in tail.split(".")[-1]:
-            out.append(LayerInfo(tail, "graft", 0, int(getattr(m, "n_units", 0) or 0)))
+    from .edits import grafts_of            # W1-B graft modules (EditedNet.grafts)
+    for g in grafts_of(version.net):
+        out.append(LayerInfo(f"{g.layer}.graft_{g.gid}", "graft", 0, int(g.n_units)))
     return out
 
 

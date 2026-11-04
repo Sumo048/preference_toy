@@ -53,12 +53,13 @@ class _Sampler:
         return torch.cat(out)
 
 
-def final_eval(cell, out, arm):
+def final_eval(cell, out, arm, target_uids=None):
     try:
         from toyrepair import eval_final
-        r = eval_final.evaluate(cell, out.final, arm)
+        r = eval_final.evaluate(cell, out.final, arm, target_clusters=[target_uids] if target_uids else None)
         return {"source": "eval_final", "D": r.D, "removed": r.removed, "collateral": r.collateral,
                 "mass_off": r.mass_off, "toypref": r.toypref, "target_removed": r.target_removed,
+                "target_modes": r.target_modes, "collateral_plan": r.collateral_plan,
                 "final_pool": r.final_pool}
     except NotImplementedError:
         from toypref.cond import experiment as E
@@ -67,6 +68,13 @@ def final_eval(cell, out, arm):
         met = E.compute(bank, _Sampler(out.final.net))
         return {"source": "toypref_compute_adapter", "D": met["tv_to_ideal"], "removed": 1.0 - met["neg_mass_ratio"],
                 "collateral": met["retain_tv"], "mass_off": met["mass_off"], "toypref": met}
+
+
+def cached_cell_for(grid, setting, seed, npm):
+    """``load_cell`` through the shared cache ``runs/cells/<key>/cell_cache.pt`` (W2a)."""
+    import types
+    from toyrepair.cli import cached_cell
+    return cached_cell(types.SimpleNamespace(cell_args=(grid, setting, seed, npm)))
 
 
 def make_run(run_id: str, arm: str, grid: str, setting: str, seed: int, npm: int):
@@ -84,6 +92,9 @@ def main(argv=None):
     ap.add_argument("--npm", type=int, required=True)
     ap.add_argument("--grid", default="cond")
     ap.add_argument("--max_rounds", type=int, default=None, help="iterative arms: 1 = pilot (one repair)")
+    ap.add_argument("--cluster", type=int, default=None, help="iterative arms: repair only this cluster (pilot target)")
+    ap.add_argument("--targets", default=None, help="pilot target JSON (scripts/pilot.py targets): "
+                    "repair its cluster and evaluate the removed share of its modes")
     ap.add_argument("--measure_gate", action="store_true", help="B1a/B1b: log one global gate check")
     ap.add_argument("--out", default="results/arms")
     ap.add_argument("--tag", default="")
@@ -94,19 +105,23 @@ def main(argv=None):
     if out_path.exists() and not a.force:
         print(f"exists: {out_path}")
         return 0
-    from toyrepair.cell import load_cell
     t0, c0 = time.time(), time.process_time()
-    cell = load_cell(a.grid, a.setting, a.seed, a.npm)
+    tgt = json.load(open(a.targets)) if a.targets else None
+    if tgt is not None and a.cluster is None:
+        a.cluster = int(tgt["cluster"])
+    cell = cached_cell_for(a.grid, a.setting, a.seed, a.npm)
     run_id = f"{a.arm}{a.tag}_{cell.key}"
     run = make_run(run_id, a.arm, a.grid, a.setting, a.seed, a.npm)
     kw = {}
     if a.max_rounds is not None and a.arm in ("B4", "R0", "D1"):
         kw["max_rounds"] = a.max_rounds
+    if a.cluster is not None and a.arm in ("B4", "R0", "D1"):
+        kw["target_cluster"] = a.cluster
     if a.measure_gate and a.arm in ("B1a", "B1b"):
         kw["measure_gate"] = True
     out = get(a.arm)(cell, run, **kw)
     t_arm = time.time() - t0
-    ev = final_eval(cell, out, a.arm)
+    ev = final_eval(cell, out, a.arm, target_uids=tgt["uids"] if tgt else None)
     rec = {"arm": a.arm, "cell": cell.key, "grid": a.grid, "setting": a.setting, "seed": a.seed, "npm": a.npm,
            "run_id": run_id, "run_dir": run.dir, "output": out.to_json(), "final": ev,
            "wall_s_arm": round(t_arm, 1), "wall_s_total": round(time.time() - t0, 1),

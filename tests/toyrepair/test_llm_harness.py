@@ -201,11 +201,16 @@ def test_variable_part_cap_with_long_ledger(runs, capsys):
     for i in range(400):
         orc.ledger_append(run, "edit", {"call": "rank1", "frac_weights_changed": 0.1, "units_added": 0},
                           session="s002", version=f"v{i}")
+        sv = {"accepted": i % 2 == 0, "passed": {"target": True, "other_forgotten": False},
+              "target_fall": 0.1, "target_fall_ci": [0.05, 0.15]}
+        orc.ledger_append(run, "gate", {"cluster": 1, "surgeon_view": sv}, session="s002", version=f"v{i}")
     rc, out = _call(capsys, "dossier", "--token", tok)
     assert rc == 0
     var = out.rsplit("\n[calls left", 1)[0]
     assert dossier.estimate_tokens(var) <= dossier.VARIABLE_TOKEN_CAP
-    assert "older lines cut]" in var
+    # W1-A2's Ledger.summary ("rows cut") or dossier's fallback ("older lines cut")
+    assert "rows cut" in var or "older lines cut]" in var
+    assert "forgotten" not in var and "4_other" in var
     order = [var.index(h) for h in ("## Failure card", "## Branch table", "## Ledger summary", "## Budget")]
     assert order == sorted(order)
     assert not WORDS_ONLY.search(var)

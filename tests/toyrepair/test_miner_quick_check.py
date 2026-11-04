@@ -25,7 +25,8 @@ def _block(sizes, inside=0.95, outside=0.05):
     return A
 
 
-def test_cluster_blocks_hdbscan():
+def test_cluster_blocks_hdbscan(monkeypatch):
+    monkeypatch.setattr(miner, "CLUSTER_RULE", "hdbscan")      # W2a set the default to agglomerative
     A = _block([4, 5, 3])
     uids = np.arange(100, 112)[::-1].copy()
     cls = miner.cluster(A, uids)

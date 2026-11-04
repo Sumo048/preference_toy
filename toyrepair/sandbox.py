@@ -48,7 +48,7 @@ from typing import Dict, Optional
 
 SANDBOX_USER = "sandbox"
 OUTPUT_TOKEN_CAP = 2000
-CHARS_PER_TOKEN = 4.0          # W1-D measures the real ratio; the cap is in characters here
+CHARS_PER_TOKEN = 1.8          # measured by W1-D on real surgeon transcripts; the cap is in characters here
 TIMEOUT_S = 300
 BLOCKED_MODULES = ("toypref", "toyrepair.oracle", "toyrepair")
 BLOCKED_EVENTS = ("socket.connect", "socket.bind", "subprocess.Popen", "os.system", "os.exec",

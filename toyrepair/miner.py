@@ -31,8 +31,8 @@ HDBSCAN_MIN_SAMPLES = 1
 #: "hdbscan" = PLAN 6.2 (HDBSCAN, agglomerative fallback); "agglomerative" = the fallback rule only.
 #: W1-A1 found HDBSCAN merges forgotten modes on k4 npm 16 (largest-cluster purity 0.33-0.52) while
 #: average linkage at 0.7 keeps them apart (see docs/DONE_W1-A1.md). Change only before Phase 5.
-CLUSTER_RULE = "hdbscan"
-CHARS_PER_TOKEN = 3.5            # conservative estimate for the caps (W1-D measures the real ratio)
+CLUSTER_RULE = "agglomerative"   # W2a decision (docs/DEV_LOG.md, 2026-11-04): purity; PLAN 6.2 fallback rule
+CHARS_PER_TOKEN = 1.8            # measured by W1-D on real surgeon transcripts (dossier.CHARS_PER_TOKEN)
 
 
 def est_tokens(text: str) -> int:
@@ -234,23 +234,10 @@ def residual_mass(cell, version, rows: Optional[np.ndarray] = None, n: int = N_R
     return out
 
 
-def _purity_adapter(cell, uids) -> float:
-    """LOCAL ADAPTER until W1-A2's ``oracle.purity`` is merged (docs/INTERFACE_REQUESTS_W1-A1.md):
-    the same definition, majority-mode share of the members' oracle modes. Used only for the
-    purity CSV."""
-    rows = [int(np.flatnonzero(cell.neg.uid == int(u))[0]) for u in uids]
-    modes = np.asarray(cell._oracle.neg_modes)[rows]       # noqa: SLF001 (adapter; replaced by oracle.purity)
-    _, cnt = np.unique(modes, return_counts=True)
-    return float(cnt.max() / len(modes))
-
-
 def purity_of(cell, uids) -> float:
-    """``toyrepair.oracle.purity`` (lazy import), or the local adapter while it is a stub."""
-    from . import oracle                                    # lazy: never on an LLM-facing path
-    try:
-        return float(oracle.purity(cell, list(map(int, uids))))
-    except NotImplementedError:
-        return _purity_adapter(cell, uids)
+    """``toyrepair.oracle.purity`` (lazy import; never on an LLM-facing path)."""
+    from . import oracle
+    return float(oracle.purity(cell, list(map(int, uids))))
 
 
 def log_purity(cell, atlas: Atlas, path: str) -> None:

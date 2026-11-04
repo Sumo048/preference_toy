@@ -78,3 +78,22 @@ in that order until one is class R (a class-U cluster goes on cool-down); 2-iter
 after an attempt without an accept; stop on no open cluster, 3 attempts in a row without an
 accept, gate checks at 3 x (first-atlas clusters + 2), no class-R cluster left (R0, D1), or
 `max_rounds` (pilot: 1).
+
+## W2a decisions (2026-11-04, seeds 0-4, before Phase 5)
+
+### Miner clustering rule: agglomerative (`miner.CLUSTER_RULE = "agglomerative"`)
+
+PLAN 6.2 clusters with HDBSCAN and falls back to average linkage cut at 0.7. W1-A1 found that
+HDBSCAN merges different oracle modes on k4 npm 16: the largest cluster has purity 0.33-0.52 and
+cohesion about 0.25, and no HDBSCAN setting fixed it. The fallback alone gives weighted purity
+0.85 on k4 n16 and 0.89-0.99 on k4 n4 and alt; its largest k4 n16 cluster still mixes modes
+(purity 0.56-0.62 on 4 of 5 seeds), but less. The pilot repairs the largest cluster, so W2a uses
+the fallback rule alone for the pilot and later phases. Purity is still logged to `purity.csv`
+only. Phase 5 freezes this choice in PREREG.md.
+
+### Pilot target and mode
+
+Every pilot arm repairs the same cluster per cell, fixed by `scripts/pilot.py targets`: the open
+cluster with the largest residual mass in the v0 atlas whose branch class is R (else the next class-R
+cluster). Code arms get it through `scripts/run_arm.py --cluster`; A1/A2 through
+`orchestrate init --pilot_cluster <id> --max_sessions 1` (no triage, one session).

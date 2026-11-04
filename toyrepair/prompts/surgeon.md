@@ -18,7 +18,7 @@ A flow-matching policy maps noise to 2-D actions under a scalar condition. Logge
 
 - Bad basin B_i: the group of 128 policy samples at c_i that contains a_i. Residual r_i: share of 256 fresh decodes at c_i that land in B_i; a cluster is open while its mean r_i >= 0.02.
 - Branch from step k: renoise x' = t_k eps + (1 - t_k) x_hat, then decode on. Rescue: ends outside B_i at a typical action. p(k): rescue share. k_commit: earliest step after which every later p(k) < 0.2.
-- Primitives: `push(u, alpha, k, h)` adds alpha along unit u over steps k..k+h-1 (alpha in basin radii r); `hop(tau, u)` moves the noise. Class R: a primitive at or before k_commit rescues >= 50% of members; else U.
+- Primitives: `push(u, alpha, k, h)` adds alpha along unit u (dJ: angle J·45°) over steps k..k+h-1 (alpha in basin radii r); `hop(tau, u)` moves the noise. Class R: a primitive at or before k_commit rescues >= 50% of members; else U.
 - `v0` is the original policy; each edit call makes a new candidate version.
 
 ## Commands

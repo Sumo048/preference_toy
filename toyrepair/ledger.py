@@ -31,7 +31,7 @@ KINDS = ("run", "atlas", "triage", "session", "tool", "edit", "gate", "quick_che
          "invalidate", "final", "note")
 SUMMARY_TOKEN_CAP = 2000
 #: chars per token used for caps here; W1-D's dossier measures the real ratio and may pass its own
-CHARS_PER_TOKEN = 3.5
+CHARS_PER_TOKEN = 1.8            # measured by W1-D on real surgeon transcripts (dossier.CHARS_PER_TOKEN)
 RECENT_ATTEMPTS = 6
 
 
@@ -196,7 +196,9 @@ class Ledger:
 
 def _attempt_line(d: Dict, sv: Dict, edit: Dict) -> str:
     passed = sv.get("passed") or {}
-    fails = [k for k, v in passed.items() if not v]
+    labels = {"target": "1_target", "progress": "2_progress", "drift": "3_drift",   # = cli.GATE_TEST_LABELS
+              "other_forgotten": "4_other", "between": "5_between", "unit": "6_unit"}
+    fails = [labels.get(k, k) for k, v in passed.items() if not v]
     ci = sv.get("target_fall_ci") or [None, None]
     fmt = lambda x: "nan" if x is None else f"{x:.4f}"  # noqa: E731
     call = edit.get("call", "?")

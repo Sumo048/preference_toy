@@ -285,8 +285,12 @@ class RepairContext:
 
 def iterate(arm: str, cell, run, svc: Optional[Services],
             repair: Callable[[RepairContext], Iterable], needs_branch: bool,
-            max_rounds: Optional[int] = None, max_candidates: int = MAX_CANDIDATES_PER_CLUSTER) -> ArmOutput:
+            max_rounds: Optional[int] = None, max_candidates: int = MAX_CANDIDATES_PER_CLUSTER,
+            target_cluster: Optional[int] = None) -> ArmOutput:
     """The code loop shared by B4, R0 and D1 (see module doc).
+
+    ``target_cluster`` (pilot, W2a): repair only this first-atlas cluster (the pilot target:
+    the open class-R cluster with the largest residual mass, fixed per cell for every arm).
 
     ``repair(ctx)`` yields up to ``max_candidates`` candidate Versions (lazily, so a later
     variant is only built if the earlier one was rejected). ``needs_branch``: the arm needs a
@@ -296,7 +300,8 @@ def iterate(arm: str, cell, run, svc: Optional[Services],
     io = RunIO(run, svc)
     base = svc.base_version(cell)
     current = base
-    io.log("run", {"arm": arm, "cell": cell.key, "needs_branch": needs_branch, "max_rounds": max_rounds})
+    io.log("run", {"arm": arm, "cell": cell.key, "needs_branch": needs_branch, "max_rounds": max_rounds,
+                   "target_cluster": target_cluster})
     atlas = svc.mine(cell, current)
     n_first = len(atlas.cards)
     cap = 3 * (n_first + 2)
@@ -325,6 +330,11 @@ def iterate(arm: str, cell, run, svc: Optional[Services],
             out.stop = "gate_cap"
             break
         cands = [c for c in atlas.cards if c.cluster not in cooldown]
+        if target_cluster is not None:
+            cands = [c for c in cands if c.cluster == int(target_cluster)]
+            if not cands:
+                out.stop = "target_not_open"
+                break
         if not cands:
             tick()
             continue
