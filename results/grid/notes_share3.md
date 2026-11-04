@@ -16,3 +16,5 @@
 - 14:50 UTC: resume message to the k4s8 nogate surgeon (idle 10 min).
 - Observed (W3-3, no change made): `targeted_train --params grafts` retrains every graft of the current version, not only the newest one (k4s9 nobranch s012: v13 cancelled v6's earlier graft, target_fall -0.111). Listed for the report.
 - 14:58 UTC: resume message to the b3p1 s7 n16 A3 surgeon (idle 10 min).
+- 15:15 UTC: resume message to the k4s8 nogate surgeon s012 (idle 10 min).
+- 15:15 UTC: resume message to the b3p1 s8 n16 A3 surgeon (idle 10 min).

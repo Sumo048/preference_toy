@@ -1,0 +1,1 @@
+=== start 2026-11-04 15:19:30 cmd=python scripts/run_arm.py --arm R0 --setting b3p1 --seed 9 --npm 4 --out results/grid_raw --tag _g3 && mkdir -p results/grid/b3p1/s9/n4/R0 && cp results/grid_raw/b3p1/s9/n4/R0_g3.json results/grid/b3p1/s9/n4/R0/result.json

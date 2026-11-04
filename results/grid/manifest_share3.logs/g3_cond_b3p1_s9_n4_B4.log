@@ -1,0 +1,3 @@
+=== start 2026-11-04 15:11:45 cmd=python scripts/run_arm.py --arm B4 --setting b3p1 --seed 9 --npm 4 --out results/grid_raw --tag _g3 && mkdir -p results/grid/b3p1/s9/n4/B4 && cp results/grid_raw/b3p1/s9/n4/B4_g3.json results/grid/b3p1/s9/n4/B4/result.json
+[B4 cond_b3p1_s9_n4] D 0.2504 removed 0.604 collateral 0.143 stop no_accept_streak gate_checks 4 (461.2s)
+=== end rc=0 464.4s 
