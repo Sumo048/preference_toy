@@ -1,0 +1,219 @@
+{
+ "arm": "D1",
+ "cell": "cond_k4_s7_n64",
+ "grid": "cond",
+ "setting": "k4",
+ "seed": 7,
+ "npm": 64,
+ "run_id": "D1_g3_cond_k4_s7_n64",
+ "run_dir": "/home/user/preference_toy/runs/repair/D1_g3_cond_k4_s7_n64",
+ "output": {
+  "arm": "D1",
+  "version": "v5",
+  "accepted": [
+   "v4",
+   "v5"
+  ],
+  "gate_checks": 14,
+  "decodes": 237665.0,
+  "stop": "no_accept_streak",
+  "meta": {
+   "n_first_clusters": 9,
+   "gate_cap": 33,
+   "rounds": [
+    {
+     "cluster": 2,
+     "r_cur": 0.12091064453125,
+     "tried": [
+      {
+       "version": "v1",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v2",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v3",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 12,
+     "primitive": "hop(1.85,n265)"
+    },
+    {
+     "cluster": 1,
+     "r_cur": 0.11795479910714286,
+     "tried": [
+      {
+       "version": "v4",
+       "variant": "all_5000",
+       "accepted": true
+      }
+     ],
+     "accepted": "v4",
+     "k_commit": 12,
+     "primitive": "hop(1.20,n62)"
+    },
+    {
+     "cluster": 7,
+     "r_cur": 0.123046875,
+     "tried": [
+      {
+       "version": "v5",
+       "variant": "all_5000",
+       "accepted": true
+      }
+     ],
+     "accepted": "v5",
+     "k_commit": 16,
+     "primitive": "push(d3,0.5r,k12,h3)"
+    },
+    {
+     "cluster": 5,
+     "r_cur": 0.10363051470588236,
+     "tried": [
+      {
+       "version": "v6",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v7",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v8",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(0.55,n173)"
+    },
+    {
+     "cluster": 8,
+     "r_cur": 0.09821428571428571,
+     "tried": [
+      {
+       "version": "v9",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v10",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v11",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "hop(1.05,n437)"
+    },
+    {
+     "cluster": 6,
+     "r_cur": 0.064453125,
+     "tried": [
+      {
+       "version": "v12",
+       "variant": "all_5000",
+       "accepted": false
+      },
+      {
+       "version": "v13",
+       "variant": "all_1500",
+       "accepted": false
+      },
+      {
+       "version": "v14",
+       "variant": "late_5000",
+       "accepted": false
+      }
+     ],
+     "accepted": null,
+     "k_commit": 16,
+     "primitive": "push(d0,0.5r,k12,h3)"
+    }
+   ]
+  }
+ },
+ "final": {
+  "source": "eval_final",
+  "D": 0.23074999999999998,
+  "removed": 0.6972778633795582,
+  "collateral": 0.14914848776346007,
+  "mass_off": 0.0444,
+  "toypref": {
+   "mass_m0": 0.2304,
+   "mass_m1": 0.0843,
+   "mass_m2": 0.13595,
+   "mass_m3": 0.0445,
+   "mass_m4": 0.00115,
+   "mass_m5": 0.0174,
+   "mass_m6": 0.1529,
+   "mass_m7": 0.289,
+   "mass_off": 0.0444,
+   "neg_mass_ratio": 0.30272213662044173,
+   "retain_tv": 0.14914848776346007,
+   "tv_to_ideal": 0.23074999999999998,
+   "tv_to_ideal_ref": 0.51345,
+   "retain_noise_flip": 0.4278080361730552,
+   "neg_noise_to_retain": 0.7182331792501284,
+   "neg_noise_still_forget": 0.22352336928608116,
+   "disp_retain_mean": 1.0962893962860107,
+   "neg_still_forget_near": 0.22347699958557812,
+   "n_eval_neg_near": 9652.0,
+   "neg_still_forget_far": NaN,
+   "n_eval_neg_far": 0.0
+  },
+  "target_removed": null,
+  "target_modes": [],
+  "collateral_plan": 0.14140798083188627,
+  "final_pool": {
+   "D": 0.2254791259765625,
+   "removed": 0.7032235788945039,
+   "collateral": 0.13085884675215606,
+   "mass_off": 0.0448455810546875,
+   "retain_tv": 0.13693542278381954,
+   "n": 65536,
+   "mass": [
+    0.229888916015625,
+    0.0837249755859375,
+    0.13836669921875,
+    0.0421142578125,
+    0.001434326171875,
+    0.016998291015625,
+    0.1562652587890625,
+    0.2863616943359375,
+    0.0448455810546875
+   ],
+   "mass_ref": [
+    0.121002197265625,
+    0.121429443359375,
+    0.1227264404296875,
+    0.1223297119140625,
+    0.1204833984375,
+    0.12188720703125,
+    0.1203155517578125,
+    0.12176513671875,
+    0.0280609130859375
+   ]
+  }
+ },
+ "wall_s_arm": 1441.9,
+ "wall_s_total": 1503.2,
+ "cpu_s": 982.7,
+ "max_rss_mb": 994.9,
+ "threads": 1
+}
