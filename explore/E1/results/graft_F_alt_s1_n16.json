@@ -1,0 +1,60 @@
+{
+ "cell": "alt_s1_n16",
+ "seed": 1,
+ "layout": "alt",
+ "npm": 16,
+ "tag": "F",
+ "cfg": {
+  "det_layer": "b2.z",
+  "feat_layer": "b2.z",
+  "out_layer": "out",
+  "k_gate": 8,
+  "det_steps": 6,
+  "det_q": 0.5,
+  "n_units": 128,
+  "n_train": 8192,
+  "iters": 1500,
+  "lr": 0.003,
+  "w_good": 4.0,
+  "hop_dirs": 16,
+  "hop_max": 2.5,
+  "hop_step": 0.1,
+  "per_track": true,
+  "balance": true,
+  "rounds": 1
+ },
+ "tracker": {
+  "n_tracks": 278,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.8709810387469085,
+  "flag_frac": 0.4226
+ },
+ "det_tpr0": 0.8299869621903521,
+ "det_fpr0": 0.13288960293780125,
+ "fit_s": 703.8,
+ "target_s": 225.1,
+ "n_bad": 3835,
+ "hop_ok": 1.0,
+ "quick": {
+  "bad_frac_ref": 0.4837646484375,
+  "bad_frac_new": 0.0740966796875,
+  "good_moved": 0.16623315204540082,
+  "off_new": 0.0421142578125,
+  "off_ref": 0.0533447265625,
+  "good_fill": {
+   "0": 0.2118,
+   "2": 0.2311,
+   "7": 0.22,
+   "8": 0.2209
+  }
+ },
+ "units": 128,
+ "params_added": 19072,
+ "rounds": [],
+ "D": 0.0971,
+ "Removed": 0.8413025556471558,
+ "Collateral": 0.010641700434317142,
+ "off": 0.0201,
+ "D_ref": 0.5114000000000001
+}

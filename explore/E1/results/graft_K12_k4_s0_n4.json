@@ -1,0 +1,60 @@
+{
+ "cell": "k4_s0_n4",
+ "seed": 0,
+ "layout": "random",
+ "npm": 4,
+ "tag": "K12",
+ "cfg": {
+  "det_layer": "b2.z",
+  "feat_layer": "b2.z",
+  "out_layer": "out",
+  "k_gate": 12,
+  "det_steps": 10,
+  "det_q": 0.5,
+  "n_units": 128,
+  "n_train": 8192,
+  "iters": 1500,
+  "lr": 0.003,
+  "w_good": 4.0,
+  "hop_dirs": 16,
+  "hop_max": 2.5,
+  "hop_step": 0.1,
+  "per_track": true,
+  "balance": true,
+  "rounds": 1
+ },
+ "tracker": {
+  "n_tracks": 467,
+  "n_bad_tracks": 4,
+  "precision": 1.0,
+  "recall": 0.8515680866278476,
+  "flag_frac": 0.4168
+ },
+ "det_tpr0": 0.8268672472948008,
+ "det_fpr0": 0.09311832841244606,
+ "fit_s": 497.3,
+ "target_s": 13.6,
+ "n_bad": 3789,
+ "hop_ok": 0.9981525468461335,
+ "quick": {
+  "bad_frac_ref": 0.464599609375,
+  "bad_frac_new": 0.02734375,
+  "good_moved": 0.1429548563611491,
+  "off_new": 0.0977783203125,
+  "off_ref": 0.066650390625,
+  "good_fill": {
+   "2": 0.2126,
+   "3": 0.2268,
+   "4": 0.2078,
+   "5": 0.2277
+  }
+ },
+ "units": 128,
+ "params_added": 19072,
+ "rounds": [],
+ "D": 0.08465000000000002,
+ "Removed": 0.9209316579834508,
+ "Collateral": 0.02991682556888052,
+ "off": 0.04595,
+ "D_ref": 0.51595
+}
