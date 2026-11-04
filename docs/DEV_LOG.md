@@ -126,3 +126,53 @@ Round r1 (24 sessions) showed four problems, read from the surgeons' one-line re
    note says `basin(i)` takes the row of `negatives()`, not the uid.
 No limit, threshold, gate test or decision rule changed. Round r1's static prompts are archived
 in `results/pilot/r1/prompts/`. EDIT_REFERENCE's synthetic budget in the cap test is 1,200 tokens.
+
+## W2b decisions (2026-11-04, seeds 0-4, before Phase 5)
+
+### Phase 4 tools: `contrast` and `unit_card` (`toyrepair/act_tools.py`, `toyrepair/tracks.py`)
+
+Sources. (a) The pilot's sandbox code (the committed smoke ledgers `results/pilot/smoke_llm/*_ledger.jsonl`;
+the r1/r2 run directories were not committed): surgeons sampled pi_ref at many c, labelled the target behaviour
+at every c by hand (fitting the ring phase), fitted logistic probes on `blocks.1.act` and reported recall and
+false-fire rate, then compared a candidate graft's target share per c bin. (b) E1-E3 (seeds 0-4): the
+destination is linearly readable from step 0 per failure cluster (AUC 0.95-0.99), not with one global
+direction (E2 0.64-0.72); a detector pooled over steps up to k_commit works best (E1); label-free behaviour
+tracks across c give near-perfect bad/good labels at all c (E1, E3). W2a's main A2 failure was test 1 at
+conditions outside the card's c range.
+
+Design. The "target" of a cluster = decodes whose action lies in a behaviour track its members mark.
+Tracks: pi_ref decodes of 512 fixed noises at 101 conditions, typical decodes clustered by toypref's basin
+rule, clusters linked by mutual nearest centroids across neighbouring conditions (E3's method). Label-free:
+pi_ref decodes and the logged negatives only. Both tools use 4,096 mining-pool pairs (check index 11) over
+all c, so calls on different versions see the same noises.
+- `contrast --layer L --k K [--cluster ID] [--version V]`: target share per c decile (also for a candidate
+  version: the "target at all c" view W2a asked for), probe held-out AUC by step (0..14), a probe pooled over
+  steps 0..K saved as `contrast_c<ID>_<L>_k<K>.npy` in raw activation units (fires where acts.w + b > 0, so it
+  is a legal graft detector as is), its recall and false-fire rates, top 10 units by effect size at K, and the
+  velocity mean difference at K. PLAN 6.5 says "decodes at nearby conditions that end outside"; the
+  comparison set is all other decodes at all c instead, because the gate tests every c and a detector must
+  stay off everywhere else.
+- `unit_card --layer L --idx I [--version V]`: by step, the unit's mean, sd, and correlations with x_k, c,
+  the final target label and whether x_hat is in the target behaviour.
+Static prompt: only the two USAGE lines (and a shorter sandbox line); no exploration finding enters it.
+A3 + Phase 4 static part: 4,000 tokens (cap 4,000).
+
+Oracle diagnostic (not shown to any LLM; `k4 s1 n4`, `k4 s2 n16`, `alt s0 n16`, all open clusters): when
+the members mark one track, precision of the target label against the cluster's oracle target modes is
+0.99-1.00 and recall 0.94-0.99; when they mark two tracks (a cluster that mixes modes, or a member near a
+boundary), precision is about 0.5. `contrast` prints how many tracks the members mark.
+
+### Code arms in Phase 4
+
+B4, R0 and D1 already run the full loop (`arms/base.iterate`, `max_rounds=None`). Phase 4 runs them through
+`scripts/phase4.py manifest` with `jobs.py --timeout 5400`: a full recursive run can exceed rule 9's
+20-minute unit (one pilot round took up to 278 s, and a run can make up to 3 x (clusters + 2) gate checks).
+
+### Triage hand-back (harness bug, fixed in the driver)
+
+`orchestrate record` reads the triage choice from the subagent transcript's final text. In this session the
+subagents return their reply through a hand-back call, so the final text is empty and `record` fell back to
+the largest-residual cluster. That happened for the first triage of 6 Phase 4 A3 runs (s0 n4, s1 n4, s3 n4,
+s4 n4, s1 n16, s4 n16; the fallback matched triage's choice in 2). From then on the main agent passes the
+triage JSON (and the surgeon's RESULT line) to `record --summary`. The fallback is PLAN 7.1's own rule, so
+those runs stay valid; the ledger marks them `fallback: true`. W3 must pass `--summary` the same way.
