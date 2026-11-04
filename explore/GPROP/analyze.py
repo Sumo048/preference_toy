@@ -100,3 +100,57 @@ if __name__ == "__main__":
                 if r:
                     print(f"{st:7s} {g:10s} - {ref:9s}: dD {r['mean']:+.4f} se {r['se']:.4f} lower {r['lower']}/{r['n']} | "
                           f"dCol {c['mean']:+.4f} | dflips {f['mean']:+.4f}")
+
+
+# ------------------------------------------------------------------ stage-2 report (docs/GPROP.md tables)
+def tests(rows, g, st, seeds):
+    a = paired(rows, g, "E1-stored", st, seeds)
+    b = paired(rows, g, "B6", st, seeds)
+    out = {}
+    if a:
+        out["a"] = {**a, "pass": a["n"] >= 3 and a["mean"] < -2 * a["se"]}
+    if b:
+        cg = np.mean([rows[(g, st, s)]["Collateral"] for s in seeds if (g, st, s) in rows and ("B6", st, s) in rows])
+        cb = np.mean([rows[("B6", st, s)]["Collateral"] for s in seeds if (g, st, s) in rows and ("B6", st, s) in rows])
+        fg = np.mean([rows[(g, st, s)]["flips"] for s in seeds if (g, st, s) in rows and ("B6", st, s) in rows])
+        fb = np.mean([rows[("B6", st, s)]["flips"] for s in seeds if (g, st, s) in rows and ("B6", st, s) in rows])
+        out["b"] = {**b, "col_g": float(cg), "col_b6": float(cb), "pass": abs(b["mean"]) <= 0.01 and cg <= cb + 0.01}
+        out["c"] = {"flips_g": float(fg), "flips_b6": float(fb), "pass": bool(fg <= fb)}
+    return out
+
+
+def report(rows, seeds=(5, 6, 7, 8, 9)):
+    arms = ["GP1-C1", "GP2-gK12L", "GP2-gC", "GP3-nA", "E1-stored", "B6", "B1a"]
+    L = ["| setting | arm | N | D | Removed | Collateral | off | flips | gate (retained) | params | D < E1 | D < B6 |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    T = {}
+    for st in SETTINGS:
+        for a in arms:
+            rr = [rows[(a, st, s)] for s in seeds if (a, st, s) in rows]
+            if not rr:
+                continue
+            m = lambda k: np.nanmean([r[k] if r[k] is not None else np.nan for r in rr])
+            sd = np.std([r["D"] for r in rr], ddof=1) / np.sqrt(len(rr)) if len(rr) > 1 else float("nan")
+            pa = rr[0]["params"] or "all 163,458"
+            pe = paired(rows, a, "E1-stored", st, seeds) if a != "E1-stored" else None
+            pb = paired(rows, a, "B6", st, seeds) if a != "B6" else None
+            L.append(f"| {st} | {a} | {len(rr)} | {m('D'):.4f} ± {sd:.4f} | {m('Removed'):.3f} | {m('Collateral'):.4f} | "
+                     f"{m('off'):.4f} | {m('flips'):.4f} | {m('gate'):.3f} | {pa} | "
+                     + (f"{pe['lower']}/{pe['n']}" if pe else "–") + " | "
+                     + (f"{pb['lower']}/{pb['n']}" if pb else "–") + " |")
+        T[st] = {g: tests(rows, g, st, seeds) for g in ("GP1-C1", "GP2-gK12L", "GP2-gC", "GP3-nA")}
+    M = ["| setting | arm | (a) dD vs E1 (± SE) | (a) | (b) dD vs B6 (± SE) | Col vs B6 | (b) | flips vs B6 | (c) |",
+         "|---|---|---|---|---|---|---|---|---|"]
+    for st in SETTINGS:
+        for g, t in T[st].items():
+            if not t:
+                continue
+            a, b, c = t.get("a"), t.get("b"), t.get("c")
+            M.append(f"| {st} | {g} | " + (f"{a['mean']:+.4f} ± {a['se']:.4f} (N {a['n']})" if a else "–") + " | " +
+                     ("PASS" if a and a["pass"] else "FAIL" if a else "–") + " | " +
+                     (f"{b['mean']:+.4f} ± {b['se']:.4f} (N {b['n']})" if b else "–") + " | " +
+                     (f"{b['col_g']:.4f} vs {b['col_b6']:.4f}" if b else "–") + " | " +
+                     ("PASS" if b and b["pass"] else "FAIL" if b else "–") + " | " +
+                     (f"{c['flips_g']:.4f} vs {c['flips_b6']:.4f}" if c else "–") + " | " +
+                     ("PASS" if c and c["pass"] else "FAIL" if c else "–") + " |")
+    return "\n".join(L), "\n".join(M), T

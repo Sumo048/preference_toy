@@ -1,0 +1,32 @@
+{
+ "arm": "E1",
+ "cfgname": "stored",
+ "cell": "contig_s9_n4",
+ "setting": "contig",
+ "seed": 9,
+ "npm": 4,
+ "source": "explore/GPROP/ref/E5/grafts/grafts_K10c_contig_s9_n4.pt",
+ "stored_D": 0.10325000000000001,
+ "params_added": 38144,
+ "buffers_added": 2344,
+ "D": 0.10325000000000001,
+ "Removed": 0.9593163468595994,
+ "Collateral": 0.07240807193878682,
+ "off": 0.0442,
+ "D_ref": 0.50575,
+ "flips": 0.010622154779969651,
+ "neg_to_retain": 0.9074132326727482,
+ "disp_retain": 0.06325080990791321,
+ "masses": [
+  0.00815,
+  0.0024,
+  0.00205,
+  0.0068,
+  0.2525,
+  0.21965,
+  0.1771,
+  0.28715
+ ],
+ "gate_retained": 0.4283257460799191,
+ "gate_forget": 0.9885708294012793
+}

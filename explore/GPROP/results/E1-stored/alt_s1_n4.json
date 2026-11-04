@@ -1,0 +1,32 @@
+{
+ "arm": "E1",
+ "cfgname": "stored",
+ "cell": "alt_s1_n4",
+ "setting": "alt",
+ "seed": 1,
+ "npm": 4,
+ "source": "explore/E1/grafts/grafts_K10c_alt_s1_n4.pt",
+ "stored_D": 0.11195000000000001,
+ "params_added": 38144,
+ "buffers_added": 2344,
+ "D": 0.11195000000000001,
+ "Removed": 0.8226504534212695,
+ "Collateral": 0.011494297907383225,
+ "off": 0.0259,
+ "D_ref": 0.5114000000000001,
+ "flips": 0.008595988538681949,
+ "neg_to_retain": 0.7938994229183842,
+ "disp_retain": 0.10668499022722244,
+ "masses": [
+  0.2374,
+  0.02,
+  0.21185,
+  0.0267,
+  0.22175,
+  0.02125,
+  0.21705,
+  0.0181
+ ],
+ "gate_retained": 0.7053827261563651,
+ "gate_forget": 0.9840272052761748
+}

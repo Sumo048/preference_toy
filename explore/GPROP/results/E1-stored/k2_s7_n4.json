@@ -1,0 +1,32 @@
+{
+ "arm": "E1",
+ "cfgname": "stored",
+ "cell": "k2_s7_n4",
+ "setting": "k2",
+ "seed": 7,
+ "npm": 4,
+ "source": "explore/GPROP/ref/E5/grafts/grafts_K10c_k2_s7_n4.pt",
+ "stored_D": 0.09006666666666666,
+ "params_added": 38144,
+ "buffers_added": 1756,
+ "D": 0.09006666666666666,
+ "Removed": 0.9773055498246338,
+ "Collateral": 0.04764532040172767,
+ "off": 0.0739,
+ "D_ref": 0.26905,
+ "flips": 0.026609207196114645,
+ "neg_to_retain": 0.7831648442335465,
+ "disp_retain": 0.08132414519786835,
+ "masses": [
+  0.145,
+  0.13535,
+  0.14355,
+  0.1729,
+  0.0026,
+  0.0029,
+  0.1711,
+  0.1527
+ ],
+ "gate_retained": 0.3972227922566523,
+ "gate_forget": 0.9969053022488137
+}

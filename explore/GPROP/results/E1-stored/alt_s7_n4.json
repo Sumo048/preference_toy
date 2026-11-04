@@ -1,0 +1,32 @@
+{
+ "arm": "E1",
+ "cfgname": "stored",
+ "cell": "alt_s7_n4",
+ "setting": "alt",
+ "seed": 7,
+ "npm": 4,
+ "source": "explore/GPROP/ref/E5/grafts/grafts_K10c_alt_s7_n4.pt",
+ "stored_D": 0.11675,
+ "params_added": 38144,
+ "buffers_added": 2344,
+ "D": 0.11675,
+ "Removed": 0.8219428107888866,
+ "Collateral": 0.01770576770481873,
+ "off": 0.02895,
+ "D_ref": 0.5198,
+ "flips": 0.009371095376926281,
+ "neg_to_retain": 0.7873656459136078,
+ "disp_retain": 0.10494782775640488,
+ "masses": [
+  0.02035,
+  0.2165,
+  0.01895,
+  0.22075,
+  0.02855,
+  0.21755,
+  0.01995,
+  0.22845
+ ],
+ "gate_retained": 0.7052269887546856,
+ "gate_forget": 0.9952342324072196
+}
