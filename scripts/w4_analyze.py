@@ -55,7 +55,7 @@ def _invalid(d, path):
         v = d.get(k) if d.get(k) is not None else out.get(k)
         if v:
             return str(v)
-    for m in ("INVALID", "INVALID.md", "invalid.txt", "invalid.json"):
+    for m in ("INVALID", "INVALID.json", "INVALID.md", "INVALID.txt", "invalid.txt", "invalid.json"):
         p = os.path.join(os.path.dirname(path), m)
         if os.path.exists(p):
             return open(p).read().strip()[:200] or m
