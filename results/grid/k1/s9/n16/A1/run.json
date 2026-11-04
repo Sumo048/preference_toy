@@ -1,0 +1,29 @@
+{
+ "id": "grid_cond_k1_s9_n16_A1",
+ "dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s9_n16_A1",
+ "arm": "A1",
+ "grid": "cond",
+ "setting": "k1",
+ "seed": 9,
+ "npm": 16,
+ "current": "v15",
+ "n_first_clusters": 2,
+ "cooldown": {
+  "1": 2
+ },
+ "backend": "real",
+ "phase4_tools": true,
+ "gate_cfg": {},
+ "cost_cap_usd": 8.0,
+ "iteration": 6,
+ "next_session": 13,
+ "next_version": 32,
+ "next_patch": 32,
+ "pending": null,
+ "target": null,
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "created": "2026-11-04T14:43:51+00:00",
+ "pilot_cluster": null,
+ "max_sessions": null
+}

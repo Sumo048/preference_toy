@@ -62,3 +62,11 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 20:10 UTC code unit cond_contig_s8_n4_R0 failed (ValueError unknown velocity-network layout in policy._core); retrying once per W3 rule
 - 20:15 UTC pairs started. in flight: ae6cd k1s9n16A1, ad710 c-s8n16; triage a2343 c-s5n16, ab652 c-s8n4, a1f01 c-s9n4, a70d4 c-s9n16, ae4ce pairs s5n4, a5bd4 c-s6n16
 - 20:30 UTC in flight: ad710 c-s8n16, a1709 c-s5n16, afade c-s6n16, a904c c-s8n4, a4a5b c-s9n4, a8cdf c-s9n16, a8afa pairs s5n4; triage a5053 k1s9n16A1
+- (11:20 ET) +af489 k1s9n16A1. NOTE earlier 'UTC' stamps in this file are approximate
+- (11:35 ET) in flight: a8cdf c-s9n16 (bg wait), af489 k1s9n16A1; triage a3ce8 c-s5n16, ae314 c-s8n4, a123a c-s8n16, a7d69 c-s9n4, af32e pairs s5n4, aef65 c-s6n16
+- (11:45 ET) resumed a8cdf c-s9n16
+- (11:50 ET) k1 all 30 LLM runs done. in flight: a8cdf c-s9n16, a6a38 c-s5n16, a1f16 c-s6n16, a4b07 c-s8n4, a4332 c-s8n16, a3df3 c-s9n4, acd46 pairs s5n4; triage a3b96 pairs s5n16
+- (11:55 ET) +aa772 pairs s5n16
+- (12:05 ET) in flight: a8cdf c-s9n16 (bg), a1f16 c-s6n16, a4b07 c-s8n4 (bg), a4332 c-s8n16, a3df3 c-s9n4, aa772 pairs s5n16; triage a857a pairs s6n4, a2687 pairs s5n4
+- (12:15 ET) resumed a8cdf c-s9n16 and a4b07 c-s8n4
+- (12:20 ET) in flight: a8cdf c-s9n16, a4b07 c-s8n4, aa772 pairs s5n16, ac0cb pairs s5n4, a570a pairs s6n4; triage a6dbf c-s6n16, a37b2 c-s8n16, a8793 pairs s6n16

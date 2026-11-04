@@ -1,0 +1,473 @@
+{
+ "arm": "A1",
+ "cell": "cond_k1_s9_n16",
+ "setting": "k1",
+ "seed": 9,
+ "npm": 16,
+ "run_id": "grid_cond_k1_s9_n16_A1",
+ "run_dir": "/home/user/preference_toy/runs/repair/grid_cond_k1_s9_n16_A1",
+ "output": {
+  "version": "v15",
+  "stop": "no_accept_streak",
+  "invalid": null,
+  "accepted_chain": [
+   {
+    "version": "v13",
+    "call": "targeted_train",
+    "patches": [
+     "p0013"
+    ]
+   },
+   {
+    "version": "v15",
+    "call": "targeted_train",
+    "patches": [
+     "p0013",
+     "p0015"
+    ]
+   }
+  ],
+  "gate_checks": 11,
+  "gate_cap": 12,
+  "decodes": 3832443.0,
+  "sessions": 6,
+  "cost_usd": 2.6911699999999996,
+  "n_first_clusters": 2
+ },
+ "sessions": [
+  {
+   "session": "s002",
+   "cluster": 0,
+   "summary": "RESULT no-accept - bc hopB on inp,out (lr 1e-3, dist anchor) passed target/drift/other; between test failed on v4 and v6.",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": null,
+   "cost_usd": 0.414787,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s004",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc split-neighbour and hopB targets, map/local anchors; between test failed, all-params runs also failed target",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.449402,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s006",
+   "cluster": 0,
+   "summary": "RESULT accepted v15 bc toypref:hopVB, all params, dist anchor (v13), then 1500-step nhood fine-tune fixed between-mass",
+   "calls": 20,
+   "submissions": 3,
+   "accepted": "v15",
+   "cost_usd": 0.479485,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s008",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc hopB and npo/kto on blocks.2,out from v15; remaining bad mass at c>0.9 untouched, gate rejected",
+   "calls": 19,
+   "submissions": 2,
+   "accepted": null,
+   "cost_usd": 0.270887,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s010",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc rescue targets, hopVB bc, then chained npo (v24-v26); gate rejected v26 on target and progress tests.",
+   "calls": 20,
+   "submissions": 1,
+   "accepted": null,
+   "cost_usd": 0.449006,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  },
+  {
+   "session": "s012",
+   "cluster": 1,
+   "summary": "RESULT no-accept - bc rescue (down-mode targets, bsup/nhood support) from v15; best v29 cut cluster mass only ~28%; did not submit",
+   "calls": 18,
+   "submissions": 0,
+   "accepted": null,
+   "cost_usd": 0.551854,
+   "usage": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "cache_creation_input_tokens": null,
+    "cache_read_input_tokens": null,
+    "peak_context": null,
+    "requests": null,
+    "context_exceeded": false
+   }
+  }
+ ],
+ "triage": [
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.015943
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010219
+  },
+  {
+   "cluster": 0,
+   "fallback": false,
+   "cost_usd": 0.010732
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.01687
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.010856
+  },
+  {
+   "cluster": 1,
+   "fallback": false,
+   "cost_usd": 0.011129
+  }
+ ],
+ "gates": [
+  {
+   "version": "v2",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": false,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.04736328125,
+    "target_fall_ci": [
+     0.04315185546875,
+     0.05151519775390624
+    ]
+   }
+  },
+  {
+   "version": "v4",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.08807373046875,
+    "target_fall_ci": [
+     0.0833740234375,
+     0.09271240234375
+    ]
+   }
+  },
+  {
+   "version": "v6",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.09014892578125,
+    "target_fall_ci": [
+     0.08544921875,
+     0.09491119384765624
+    ]
+   }
+  },
+  {
+   "version": "v9",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.034423828125,
+    "target_fall_ci": [
+     0.03051605224609375,
+     0.03826904296875
+    ]
+   }
+  },
+  {
+   "version": "v10",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.041015625,
+    "target_fall_ci": [
+     0.03680419921875,
+     0.045166015625
+    ]
+   }
+  },
+  {
+   "version": "v11",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.03619384765625,
+    "target_fall_ci": [
+     0.03191986083984375,
+     0.04065093994140624
+    ]
+   }
+  },
+  {
+   "version": "v13",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": false,
+     "unit": true
+    },
+    "target_fall": 0.10107421875,
+    "target_fall_ci": [
+     0.0960693359375,
+     0.10595703125
+    ]
+   }
+  },
+  {
+   "version": "v15",
+   "cluster": 0,
+   "call": "targeted_train",
+   "view": {
+    "accepted": true,
+    "passed": {
+     "target": true,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.103271484375,
+    "target_fall_ci": [
+     0.09814453125,
+     0.10833740234375
+    ]
+   }
+  },
+  {
+   "version": "v16",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": true,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": -0.00042724609375,
+    "target_fall_ci": [
+     -0.0025634765625,
+     0.00164794921875
+    ]
+   }
+  },
+  {
+   "version": "v21",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.0093994140625,
+    "target_fall_ci": [
+     0.00762939453125,
+     0.01123046875
+    ]
+   }
+  },
+  {
+   "version": "v26",
+   "cluster": 1,
+   "call": "targeted_train",
+   "view": {
+    "accepted": false,
+    "passed": {
+     "target": false,
+     "progress": false,
+     "drift": true,
+     "other_forgotten": true,
+     "between": true,
+     "unit": true
+    },
+    "target_fall": 0.007568359375,
+    "target_fall_ci": [
+     0.005859375,
+     0.009095764160156242
+    ]
+   }
+  }
+ ],
+ "final": {
+  "source": "eval_final",
+  "D": 0.11266428571428572,
+  "removed": 0.8460891505466779,
+  "collateral": 0.10313126639604907,
+  "mass_off": 0.04215,
+  "collateral_plan": 0.10161542425455174,
+  "toypref": {
+   "mass_m0": 0.1496,
+   "mass_m1": 0.1475,
+   "mass_m2": 0.0676,
+   "mass_m3": 0.0183,
+   "mass_m4": 0.10545,
+   "mass_m5": 0.14475,
+   "mass_m6": 0.1575,
+   "mass_m7": 0.16715,
+   "mass_off": 0.04215,
+   "neg_mass_ratio": 0.15391084945332212,
+   "retain_tv": 0.10313126639604907,
+   "tv_to_ideal": 0.11266428571428572,
+   "tv_to_ideal_ref": 0.14779999999999996,
+   "retain_noise_flip": 0.330145505749824,
+   "neg_noise_to_retain": 0.8166526492851135,
+   "neg_noise_still_forget": 0.10218671152228764,
+   "disp_retain_mean": 0.7722570300102234,
+   "neg_still_forget_near": 0.09705882352941177,
+   "n_eval_neg_near": 680.0,
+   "neg_still_forget_far": 0.12238325281803543,
+   "n_eval_neg_far": 621.0
+  },
+  "final_pool": {
+   "D": 0.10520281110491073,
+   "removed": 0.8509615384615384,
+   "collateral": 0.09395879954798553,
+   "mass_off": 0.0440673828125,
+   "retain_tv": 0.0945743047411276,
+   "n": 65536,
+   "mass": [
+    0.1516876220703125,
+    0.144012451171875,
+    0.07171630859375,
+    0.0184478759765625,
+    0.108795166015625,
+    0.1461639404296875,
+    0.1548614501953125,
+    0.160247802734375,
+    0.0440673828125
+   ],
+   "mass_ref": [
+    0.119140625,
+    0.121795654296875,
+    0.12109375,
+    0.123779296875,
+    0.12237548828125,
+    0.1218414306640625,
+    0.1212005615234375,
+    0.120513916015625,
+    0.02825927734375
+   ]
+  }
+ }
+}
