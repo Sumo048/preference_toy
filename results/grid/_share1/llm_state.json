@@ -25,12 +25,12 @@
    "token": "B2QgNMeJrmU97oBu"
   },
   "grid_cond_alt_s5_n16_A3": {
-   "agent": "triage",
-   "token": "8NkRmba3NjpgQmTF"
+   "agent": "surgeon",
+   "token": "8jHKFmQJjLGLcvuh"
   },
   "grid_cond_alt_s6_n4_A2": {
-   "agent": "triage",
-   "token": "SXSw2yzN9M9cbvn8"
+   "agent": "surgeon",
+   "token": "9HuNKyf9yi7zsfKw"
   }
  },
  "done": [
