@@ -10,6 +10,7 @@ Method spec (string, '-'-separated key=value; defaults reproduce B1a = R_hopB_bs
   a=<anchor>    dist | map | local | lmap (local+map) | none | full (unmasked anchor pool, fresh noise)
                 | dist20k (vote mask over all 20k anchor samples) | omask / omaskmap (PRIVILEGED:
                 anchor = anchor-pool samples whose oracle label is retained; fresh / own noise)
+                | track / track60k (LABEL-FREE behaviour tracks across c, tracks.py; anchor pool 20k / fresh 60k)
                 w=1 drops the method term (anchor-only training, e.g. PSEUDO_vote_dist = a=dist-w=1)
   w=<float>     anchor weight; loss = (1-w)*method + w*anchor  (0.5 = B1a)
   st=<int>      steps (5000)
@@ -35,6 +36,7 @@ import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(ROOT, "src"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("TOYPREF_RUNS", os.path.join(ROOT, "runs"))
 
 import numpy as np
@@ -149,6 +151,14 @@ class Cell:
         self.bank = E.Bank(self.ref, seed, self.ed)
         self._rows = {}
         self._oracle = None
+        self._tracks = None
+        self.diag = {}
+
+    def tracks(self):
+        if self._tracks is None:
+            import tracks as TR
+            self._tracks = TR.Tracks(self.ref, self.seed)
+        return self._tracks
 
     def rows(self, rule, mine):
         key = (rule, mine)
@@ -190,6 +200,31 @@ def anchor_fn(cell: Cell, kind: str):
             j = E._pick(P.c.shape[0], B, g)
             t = FlowPolicy.sample_time(B, g)
             return pol.flow_loss(P.a[j], torch.randn(P.a[j].shape, generator=g), t, P.c[j]).mean()
+        return loss
+    if kind.startswith("track"):
+        # label-free behaviour tracks across c (tracks.py): anchor on samples whose track is not bad
+        import tracks as TR
+        P, B = ctx.anchor, ctx.batch
+        if kind == "track60k":
+            P = E.make_pool(ctx.ref, ctx.seed, 60_000, purpose=P_ORACLE + 1)
+        tr = cell.tracks()
+        bad, miss = TR.bad_tracks(tr, cell.ed.c, cell.ed.a)
+        t = tr.assign(P.a, P.c)
+        keep_np = (t >= 0) & ~np.isin(t, bad)
+        flag = np.isin(t, bad)
+        badm = np.isin(P.mode, cell.ed.forget)       # oracle: diagnostics only
+        cell.diag.update({"track_n": int(tr.n_tracks), "track_bad": len(bad), "track_neg_miss": miss,
+                          "track_keep": int(keep_np.sum()), "track_unassigned": float((t < 0).mean()),
+                          "diag_track_flag_precision": float(badm[flag].mean()) if flag.any() else float("nan"),
+                          "diag_track_flag_recall": float(flag[badm].mean()),
+                          "diag_track_keep_frac_bad": float(badm[keep_np].mean())})
+        keep = torch.from_numpy(keep_np)
+        c, a = P.c[keep], P.a[keep]
+
+        def loss(pol, g):
+            j = E._pick(c.shape[0], B, g)
+            t_ = FlowPolicy.sample_time(B, g)
+            return pol.flow_loss(a[j], torch.randn(a[j].shape, generator=g), t_, c[j]).mean()
         return loss
     if kind in ("omask", "dist20k", "omaskmap"):
         # omask: PRIVILEGED anchor mask = oracle label is retained (the perfect bad-detector).
@@ -272,7 +307,8 @@ def run_method(cell: Cell, spec: str):
     nch = sum(int((new_sd[k] != ref_sd[k]).sum()) for k in ref_sd)
     ntot = sum(v.numel() for v in ref_sd.values())
     met = E.compute(cell.bank, pol)
-    return {"method": spec, **d, "setting": cell.setting, "seed": cell.seed, "npm": cell.npm,
+    diag, cell.diag = cell.diag, {}
+    return {"method": spec, **d, **diag, "setting": cell.setting, "seed": cell.seed, "npm": cell.npm,
             "forget": cell.ed.forget, "D": met["tv_to_ideal"], "Removed": 1 - met["neg_mass_ratio"],
             "Collateral": met["retain_tv"], "mass_off": met["mass_off"], "n_trainable": n_train,
             "frac_changed": nch / ntot, "frob": math.sqrt(dn), "train_s": round(time.time() - t0, 1),
