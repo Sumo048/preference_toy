@@ -2,35 +2,35 @@
  "inflight": {
   "grid_cond_contig_s5_n4_A3_rep1": {
    "agent": "triage",
-   "token": "dVQ6NYUmCsSp4ZBY"
+   "token": "ZHjDkSGHr6j5z7aX"
   },
-  "grid_cond_contig_s7_n16_A3_rep1": {
-   "agent": "surgeon",
-   "token": "yamSvxy34Kp2y3zT"
+  "grid_cond_pairs_s6_n4_A3_rep1": {
+   "agent": "triage",
+   "token": "Pdu47xouCAKbqmjf"
+  },
+  "grid_cond_pairs_s6_n16_A3_rep1": {
+   "agent": "triage",
+   "token": "7pCx2wTX6krAC3no"
   },
   "grid_cond_contig_s8_n4_A3_rep1": {
    "agent": "surgeon",
-   "token": "SZSn6WLf9ynPtsf3"
-  },
-  "grid_cond_contig_s8_n16_A3_rep1": {
-   "agent": "surgeon",
-   "token": "gUGq8rJ7GA5PnWwr"
+   "token": "rg6oZG7ma7Fp9sZh"
   },
   "grid_cond_contig_s9_n4_A3_rep1": {
    "agent": "surgeon",
-   "token": "mdqM69yQtJpig6Wo"
+   "token": "AfMdZsNUeWjsWY48"
   },
   "grid_cond_contig_s9_n16_A3_rep1": {
    "agent": "surgeon",
-   "token": "QPDPUKELzgTa2TiC"
+   "token": "7aSaExgrzbAbWKCu"
   },
   "grid_cond_pairs_s5_n4_A3_rep1": {
    "agent": "surgeon",
-   "token": "TSvxAns22iwQfdan"
+   "token": "nCrvDVVWsqMzfMKK"
   },
   "grid_cond_pairs_s5_n16_A3_rep1": {
    "agent": "surgeon",
-   "token": "SKHyXPQ2Dh4fpj4h"
+   "token": "EpRMe6P9AjexrP3b"
   }
  },
  "done": [
@@ -97,7 +97,9 @@
   "grid_cond_contig_s6_n16_A3_rep1",
   "grid_cond_contig_s5_n16_A3_rep1",
   "grid_cond_contig_s6_n4_A3_rep1",
-  "grid_cond_contig_s7_n4_A3_rep1"
+  "grid_cond_contig_s7_n4_A3_rep1",
+  "grid_cond_contig_s7_n16_A3_rep1",
+  "grid_cond_contig_s8_n16_A3_rep1"
  ],
  "eval_started": [
   "grid_cond_k1_s5_n4_A2",
@@ -163,6 +165,8 @@
   "grid_cond_contig_s6_n16_A3_rep1",
   "grid_cond_contig_s5_n16_A3_rep1",
   "grid_cond_contig_s6_n4_A3_rep1",
-  "grid_cond_contig_s7_n4_A3_rep1"
+  "grid_cond_contig_s7_n4_A3_rep1",
+  "grid_cond_contig_s7_n16_A3_rep1",
+  "grid_cond_contig_s8_n16_A3_rep1"
  ]
 }
