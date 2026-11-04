@@ -1,0 +1,16 @@
+{
+ "run_id": "B4_p4_cond_k4_s0_n16",
+ "arm": "B4",
+ "cell": [
+  "cond",
+  "k4",
+  0,
+  16
+ ],
+ "version": "v3",
+ "patches": [
+  "p0003"
+ ],
+ "state_sha256": "252a01b65b3e94d79f849facc8226686c2017565eb0dc3f50838412deec9291f",
+ "final_D": 0.25299999999999995
+}
