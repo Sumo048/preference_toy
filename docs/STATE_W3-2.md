@@ -110,3 +110,5 @@ Share 2: k1 npm 4,16 (A3, A2, A1); contig npm 4,16 (A3); pairs npm 4,16 (A3); co
 - 19:40Z: ALL 50 SHARE LLM RUNS DONE (pairs_s8_n16 last, v14). Reps recorded: contig s6n4 v8, s7n4 v6, s5n4 v9, s7n16 v3, s6n16 v8; no-accept contig s5n16, k1 s9n16. 8 rep triages launched (k1 s9n16; contig s5n4,s5n16,s6n4,s6n16,s7n4,s7n16,s8n4).
 - 19:40Z: share complete (pairs s8n16 eval written). Surgeons for 8 reps (k1 s9n16; contig s5n4,s5n16,s6n4,s6n16,s7n4,s7n16,s8n4).
 - 19:41Z: wrote draft docs/DONE_W3-2.md + share2_table (regenerate with scratchpad/done.py at the end).
+- 19:52Z: reps accepted k1 s9n16 v12, contig s7n16 v4, s5n16 v11, s8n4 v1, s6n16 v10, s7n4 v8, s6n4 v9. 7 triages launched; contig s5n4 surgeon a7e8e96f still running.
+- 19:58Z: 7 rep triages recorded + contig s5n4 rep no-accept. Surgeons: k1 s9n16=af0b84dc, contig s5n16=a71e5a64, s6n4=ae81a717, s6n16=abfb23d9, s7n4=a9eba9af, s7n16=a821c77c, s8n4=ad54e208; triage contig s5n4=a7815556.
