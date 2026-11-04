@@ -1,0 +1,31 @@
+{
+ "run_id": "g3_cond_b3p1_s9_n4_A3",
+ "version": "v10",
+ "stop": "no_accept_streak",
+ "invalid": null,
+ "patches": [
+  "p0005",
+  "p0010"
+ ],
+ "chain": [
+  {
+   "version": "v5",
+   "parent": "v0",
+   "call": "graft_gated_path",
+   "session": "s004",
+   "patches": [
+    "p0005"
+   ]
+  },
+  {
+   "version": "v10",
+   "parent": "v5",
+   "call": "graft_gated_path",
+   "session": "s008",
+   "patches": [
+    "p0005",
+    "p0010"
+   ]
+  }
+ ]
+}
