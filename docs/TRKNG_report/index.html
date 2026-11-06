@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRKNG: behaviour tracks without a condition grid</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e3e0d8;--card:#ffffff;--pass:#2e7d32;--fail:#b3261e;--accent:#2e5e8c;--src:#8a8780}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--fg:#ecebe6;--muted:#a5a39b;--line:#34332f;--card:#1f1f1d;--pass:#7bc67e;--fail:#f08a80;--accent:#8db8e3;--src:#8f8d86}}
+:root[data-theme="dark"]{--bg:#171716;--fg:#ecebe6;--muted:#a5a39b;--line:#34332f;--card:#1f1f1d;--pass:#7bc67e;--fail:#f08a80;--accent:#8db8e3;--src:#8f8d86}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1060px;margin:0 auto;padding:28px 16px 64px}
+h1{font-size:1.65rem;line-height:1.25;margin:0 0 4px}
+h2{font-size:1.2rem;margin:40px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+p{margin:0 0 10px;max-width:75ch}
+.sub{color:var(--muted);margin-bottom:22px}
+.verdict{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+.verdict p{margin:4px 0}
+.pass{color:var(--pass);font-weight:600}.fail{color:var(--fail);font-weight:600}
+.src{color:var(--src);font-size:.8rem;font-family:ui-monospace,Menlo,monospace}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.88em}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{padding:5px 9px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{position:sticky;top:0;background:var(--card);font-weight:600}
+td:nth-child(-n+2),th:nth-child(-n+2){text-align:left}
+tr.best td{font-weight:600}
+tr.gap td{border-top:2px solid var(--line)}
+figure{margin:14px 0}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+figcaption{color:var(--muted);font-size:.85rem;margin-top:4px}
+ul{padding-left:20px;max-width:75ch}li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>TRKNG: behaviour tracks without a condition grid</h1>
+<p class="sub">Confirmation stage, seeds 5–9, 7 settings × 10 cells. Branch <code>art/trkng</code>. Pre-registration: <code>docs/TRKNG_PREREG.md</code>.</p>
+
+<h2>Verdict</h2>
+<div class="verdict">
+<p>Best no-grid builder: <b>TC</b>. The pre-registered tests give the same result in all 7 settings.</p>
+<p>(a) TC vs B6, equivalence within 0.01: <span class="fail">NOT EQUIVALENT in 7 of 7</span>. TC's D is higher by +0.030 (k1) to +0.073 (alt).</p>
+<p>(b) TC vs B1a, lower by more than 2 SE: <span class="pass">PASS in 7 of 7</span>. ΔD ranges from −0.069 (k1) to −0.381 (alt).</p>
+<p>(c) TC mask precision ≥ 0.95: <span class="pass">PASS in 7 of 7</span>. Mean precision is 0.999 in every setting. <span class="src">explore/TRKNG/analyze_out.txt</span></p>
+</div>
+
+<h2>Question and setup</h2>
+<p>B6 removes forgotten behaviours by building tracks on a grid over the condition c. pi0.5 conditions on images and language, so no such grid exists there.</p>
+<p>TRKNG asks whether tracks built from the policy's own activations, with no grid over c, can replace B6's mask.</p>
+<p>Each builder takes N = 8,000 decodes, reads the <code>blocks.2</code> activations at the last Euler step (<code>f=s19</code>), and flags the group that holds a logged negative. The kept pool samples feed B6's frozen training step unchanged.</p>
+<p><b>TA</b> = k-means, k chosen by silhouette (<code>TA-f=s19-N8000</code>). <b>TB</b> = PCA-32 + HDBSCAN, typicality filter q 0.9 (<code>TB-f=s19-mcs_frac=0.01-min_samples=10-typ=0.9-N8000</code>). <b>TC</b> = kNN graph, edges shorter than τ = 1.75 × the median negative distance, typicality filter (<code>TC-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000</code>).</p>
+<p>The configs were frozen on dev seeds 0–2 before any seed 5–9 cell ran. TC was named the best builder for tests (a)–(c) in advance. <span class="src">explore/TRKNG/frozen.json, docs/TRKNG_PREREG.md</span></p>
+
+<h2>Results per setting</h2>
+<p>Means over the 10 (seed, npm) cells per setting. "Lower than" counts the cells where the arm's D is below the baseline's. B6 and B1a numbers come from E4, as pre-registered.</p>
+<div class="tw"><table>
+<thead><tr><th>Setting</th><th>Arm</th><th>Mask prec</th><th>Mask rec</th><th>D</th><th>Removed</th><th>Collateral</th><th>Lower than B6</th><th>Lower than B1a</th></tr></thead>
+<tbody>
+<tr class="gap"><td>k1</td><td>B6</td><td>1.000</td><td>0.862</td><td>0.018</td><td>0.993</td><td>0.012</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>k1</td><td>B1a</td><td>—</td><td>—</td><td>0.117</td><td>0.508</td><td>0.063</td><td>—</td><td>—</td></tr>
+<tr><td>k1</td><td>TA</td><td>0.481</td><td>0.690</td><td>0.120</td><td>0.662</td><td>0.093</td><td>0 of 10</td><td>6 of 10</td></tr>
+<tr><td>k1</td><td>TB</td><td>0.999</td><td>0.640</td><td>0.062</td><td>0.658</td><td>0.015</td><td>0 of 10</td><td>10 of 10</td></tr>
+<tr class="best"><td>k1</td><td>TC</td><td>0.999</td><td>0.749</td><td>0.048</td><td>0.767</td><td>0.015</td><td>1 of 10</td><td>10 of 10</td></tr>
+<tr class="gap"><td>k2</td><td>B6</td><td>1.000</td><td>0.858</td><td>0.019</td><td>0.996</td><td>0.012</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>k2</td><td>B1a</td><td>—</td><td>—</td><td>0.180</td><td>0.474</td><td>0.093</td><td>—</td><td>—</td></tr>
+<tr><td>k2</td><td>TA</td><td>0.584</td><td>0.718</td><td>0.184</td><td>0.638</td><td>0.136</td><td>0 of 10</td><td>5 of 10</td></tr>
+<tr><td>k2</td><td>TB</td><td>0.999</td><td>0.635</td><td>0.104</td><td>0.655</td><td>0.018</td><td>0 of 10</td><td>9 of 10</td></tr>
+<tr class="best"><td>k2</td><td>TC</td><td>0.999</td><td>0.784</td><td>0.067</td><td>0.818</td><td>0.019</td><td>0 of 10</td><td>10 of 10</td></tr>
+<tr class="gap"><td>k4</td><td>B6</td><td>1.000</td><td>0.857</td><td>0.027</td><td>0.995</td><td>0.021</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>k4</td><td>B1a</td><td>—</td><td>—</td><td>0.336</td><td>0.395</td><td>0.074</td><td>—</td><td>—</td></tr>
+<tr><td>k4</td><td>TA</td><td>0.742</td><td>0.796</td><td>0.279</td><td>0.660</td><td>0.172</td><td>0 of 10</td><td>7 of 10</td></tr>
+<tr><td>k4</td><td>TB</td><td>0.999</td><td>0.643</td><td>0.210</td><td>0.608</td><td>0.019</td><td>0 of 10</td><td>9 of 10</td></tr>
+<tr class="best"><td>k4</td><td>TC</td><td>0.999</td><td>0.859</td><td>0.070</td><td>0.910</td><td>0.025</td><td>0 of 10</td><td>10 of 10</td></tr>
+<tr class="gap"><td>contig</td><td>B6</td><td>1.000</td><td>0.857</td><td>0.035</td><td>0.998</td><td>0.030</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>contig</td><td>B1a</td><td>—</td><td>—</td><td>0.328</td><td>0.407</td><td>0.071</td><td>—</td><td>—</td></tr>
+<tr><td>contig</td><td>TA</td><td>0.815</td><td>0.889</td><td>0.205</td><td>0.809</td><td>0.138</td><td>0 of 10</td><td>9 of 10</td></tr>
+<tr><td>contig</td><td>TB</td><td>0.999</td><td>0.672</td><td>0.188</td><td>0.666</td><td>0.025</td><td>0 of 10</td><td>9 of 10</td></tr>
+<tr class="best"><td>contig</td><td>TC</td><td>0.999</td><td>0.848</td><td>0.089</td><td>0.882</td><td>0.029</td><td>2 of 10</td><td>9 of 10</td></tr>
+<tr class="gap"><td>alt</td><td>B6</td><td>1.000</td><td>0.863</td><td>0.018</td><td>0.994</td><td>0.011</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>alt</td><td>B1a</td><td>—</td><td>—</td><td>0.471</td><td>0.166</td><td>0.144</td><td>—</td><td>—</td></tr>
+<tr><td>alt</td><td>TA*</td><td>0.487</td><td>0.712</td><td>0.602</td><td>0.005</td><td>0.440</td><td>0 of 8</td><td>0 of 8</td></tr>
+<tr><td>alt</td><td>TB</td><td>0.999</td><td>0.661</td><td>0.198</td><td>0.629</td><td>0.012</td><td>2 of 10</td><td>10 of 10</td></tr>
+<tr class="best"><td>alt</td><td>TC</td><td>0.999</td><td>0.832</td><td>0.091</td><td>0.851</td><td>0.012</td><td>2 of 10</td><td>10 of 10</td></tr>
+<tr class="gap"><td>pairs</td><td>B6</td><td>1.000</td><td>0.859</td><td>0.017</td><td>0.996</td><td>0.013</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>pairs</td><td>B1a</td><td>—</td><td>—</td><td>0.361</td><td>0.353</td><td>0.051</td><td>—</td><td>—</td></tr>
+<tr><td>pairs</td><td>TA</td><td>0.700</td><td>0.800</td><td>0.220</td><td>0.643</td><td>0.085</td><td>0 of 10</td><td>9 of 10</td></tr>
+<tr><td>pairs</td><td>TB</td><td>0.999</td><td>0.649</td><td>0.210</td><td>0.603</td><td>0.012</td><td>0 of 10</td><td>10 of 10</td></tr>
+<tr class="best"><td>pairs</td><td>TC</td><td>0.999</td><td>0.853</td><td>0.077</td><td>0.879</td><td>0.013</td><td>1 of 10</td><td>10 of 10</td></tr>
+<tr class="gap"><td>b3p1</td><td>B6</td><td>1.000</td><td>0.857</td><td>0.034</td><td>0.996</td><td>0.026</td><td>—</td><td>10 of 10</td></tr>
+<tr><td>b3p1</td><td>B1a</td><td>—</td><td>—</td><td>0.365</td><td>0.348</td><td>0.076</td><td>—</td><td>—</td></tr>
+<tr><td>b3p1</td><td>TA</td><td>0.687</td><td>0.784</td><td>0.240</td><td>0.597</td><td>0.115</td><td>1 of 10</td><td>9 of 10</td></tr>
+<tr><td>b3p1</td><td>TB</td><td>0.999</td><td>0.648</td><td>0.212</td><td>0.606</td><td>0.019</td><td>2 of 10</td><td>10 of 10</td></tr>
+<tr class="best"><td>b3p1</td><td>TC</td><td>0.999</td><td>0.822</td><td>0.101</td><td>0.834</td><td>0.019</td><td>3 of 10</td><td>10 of 10</td></tr>
+</tbody></table></div>
+<p class="src">explore/TRKNG/analyze_out.txt (from <code>analyze.py confirm</code>); per-cell rows in explore/TRKNG/cells_confirm.csv. * alt TA: D, Removed, Collateral over 8 cells (see Issues).</p>
+<p>TC's gap to B6 comes from bad samples it keeps, not from good samples it drops. TC keeps 2.9–8.7% bad samples; B6 keeps 0–0.2%. <span class="src">analyze_out.txt, "Kept bad" column</span></p>
+<p>More negatives help TC most. Its D falls from 0.110 at npm 1 to 0.045 at npm 4; B6 stays at 0.024. <span class="src">analyze_out.txt, npm table</span></p>
+
+<h2>D per setting</h2>
+<figure><img src="d_by_setting.png" alt="Grouped bar chart of mean D per setting for B1a, B6, TA, TB and TC">
+<figcaption>Mean D ± SE over the 10 cells of each setting. Lower is better. <span class="src">explore/TRKNG/cells_confirm.csv, drawn by explore/TRKNG/render.py report</span></figcaption></figure>
+
+<h2>Label-free checks against oracle precision</h2>
+<figure><img src="checks_scatter.png" alt="Four scatter plots of each label-free check against oracle mask precision, coloured by builder">
+<figcaption>One point per (builder, cell), 210 points. <span class="src">explore/TRKNG/cells_confirm.csv</span></figcaption></figure>
+<div class="tw"><table>
+<thead><tr><th>Check</th><th>Pooled ρ (n)</th><th>TA ρ</th><th>TB ρ</th><th>TC ρ</th></tr></thead>
+<tbody>
+<tr><td>stab_ari</td><td>−0.61 (210)</td><td>−0.07</td><td>+0.13</td><td>+0.26</td></tr>
+<tr><td>stab_jacc</td><td>−0.70 (210)</td><td>+0.26</td><td>−0.26</td><td>−0.00</td></tr>
+<tr><td>balance</td><td>−0.63 (210)</td><td>+0.05</td><td>−0.11</td><td>+0.04</td></tr>
+<tr><td>agree</td><td>+0.35 (210)</td><td>+0.81</td><td>−0.29</td><td>−0.06</td></tr>
+</tbody></table></div>
+<p class="src">explore/TRKNG/analyze_out.txt, checks table (Spearman ρ against oracle precision)</p>
+<p>No check ranks masks by precision within TC. Within-TC ρ lies between −0.06 and +0.26.</p>
+<p>The pooled correlations come from TA. TA is stable (stab_ari 0.998) but imprecise (0.642), so stability and balance correlate negatively with precision across builders. The dev stage showed the same signs.</p>
+<p>Agreement with the other builders tracks precision within TA (ρ +0.81) only.</p>
+
+<h2>Rendered outputs</h2>
+<figure><img src="render_alt_s5_n4.png" alt="Sampled actions for B0, B1a, B6 and TC on alt seed 5 npm 4 in four condition bands, with mass per mode">
+<figcaption>alt s5 n4. Forgotten modes 0, 2, 4, 6. <span class="src">docs/TRKNG_report/render_alt_s5_n4.png, render_check_alt_s5_n4.json</span></figcaption></figure>
+<p><b>What you see.</b> The forgotten modes 0, 2, 4, 6 alternate with retained ones, so every forgotten mode borders two retained neighbours. B0 puts about 1/8 of its mass in each mode. B1a thins the forgotten modes but leaves 0.06–0.10 mass in each, and it drains mode 5 to 0.06 (Removed 0.32, Collateral 0.157). B6 and TC both empty the forgotten modes in all four bands, and every retained mode sits near the ideal 0.25. TC's D here is 0.019 against B6's 0.017. This cell is one of TC's best: its alt mean is 0.091 over 10 cells.</p>
+<figure><img src="render_k4_s5_n4.png" alt="Sampled actions for B0, B1a, B6 and TC on k4 seed 5 npm 4 in four condition bands, with mass per mode">
+<figcaption>k4 s5 n4. <span class="src">docs/TRKNG_report/render_k4_s5_n4.png, render_check_k4_s5_n4.json</span></figcaption></figure>
+<p><b>What you see.</b> The forgotten modes are 0, 2, 3, 4, a block of three plus one. B1a keeps 0.04–0.08 mass in each forgotten mode and shifts mass between the retained modes (Collateral 0.057). B6 and TC give nearly identical pictures: forgotten modes empty, retained modes 1, 5, 6, 7 between 0.23 and 0.26. TC's D is 0.035 against B6's 0.029; its k4 mean is 0.070 over 10 cells.</p>
+
+<h2>Recommendation</h2>
+<p>Carry TC to pi0.5. It needs no grid over c, it never flags a retained behaviour (precision 0.999 in every setting), and it beats B1a in 69 of 70 cells. It does not match B6: TC's D is 0.03–0.07 higher, because it keeps 3–9% bad samples where B6 keeps almost none. On pi0.5, give TC as many negatives per mode as possible, since its D halves from npm 1 to npm 4. Do not use the label-free checks to tune τ; none of them predicts TC's precision. <span class="src">analyze_out.txt</span></p>
+
+<h2>Issues</h2>
+<ul>
+<li><b>Interrupted first run.</b> The first queue run on the login node was cancelled by mistake at 126/284 units. SLURM job 4069868 resumed it; the queue skips finished units, so no unit ran twice.</li>
+<li><b>Job 4069868 shows FAILED.</b> Its last step called <code>analyze.py</code> without the stage argument. The queue itself finished. <code>analyze.py confirm</code> then ran separately. <span class="src">explore/TRKNG/logs/slurm_4069868.out</span></li>
+<li><b>k1 s9 n1 rerun.</b> On node grogu-1-20 the masks unit failed its check that the hooked decode reproduces <code>pi_ref.sample</code>, and the cell's three TC/TB/TA trainings timed out waiting for the masks. Job 4070546 reran the same frozen units on grogu-0-25, where they passed in 5 minutes. <span class="src">explore/TRKNG/logs/k1_s9_n1.log, slurm_4070546.out</span></li>
+<li><b>alt TA, 2 cells without a trained policy.</b> In alt s5 n4 and alt s9 n4, TA flagged all 60,000 pool samples (precision 0.485 and 0.491, recall 1.0). The kept set is empty, so B6's training step has nothing to train on and stops. The pre-registration has no rule for an empty mask; this report follows its rule "whatever is finished is reported, with n" and reports alt TA with n = 8. The tests use only TC, so they are unaffected. <span class="src">explore/TRKNG/results/alt/s5_n4/masks_TA_N8000.json, s9_n4/masks_TA_N8000.json</span></li>
+<li><b>Time box.</b> The pre-registration expected tier 3 (TA and TB at npm 1) to run out of the 8-hour box with 4 workers. With 32 workers on SLURM every tier finished, so all three builders cover all 70 cells (except the 2 above).</li>
+<li><b>Rendered policies are retrained.</b> The figures retrain each policy with its frozen config on SLURM node grogu-0-25 (<code>explore/TRKNG/render.py</code>, job log in <code>explore/TRKNG/logs/</code>). TC reproduces its committed D exactly in both cells, and B6 does on alt s5 n4. B6 on k4 s5 n4 differs from E4 by 0.0014 (0.0292 vs 0.0278), and B1a by 0.0011 (alt) and 0.0012 (k4). These exceed the pre-registration's 1e-4 match rule; together with the k1 s9 n1 decode check, they point to floating-point results that vary by node. The figure labels show the retrained numbers; the tables and tests use the committed JSONs. <span class="src">docs/TRKNG_report/render_check_alt_s5_n4.json, render_check_k4_s5_n4.json</span></li>
+</ul>
+</main>
+</body>
+</html>

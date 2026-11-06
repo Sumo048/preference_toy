@@ -1,0 +1,20 @@
+{
+ "B1a": {
+  "D_rerun": 0.24695,
+  "D_committed": 0.24815000000000004,
+  "source": "explore/E4/results/k4/s5_n4/B1a.json",
+  "abs_diff": 0.0012000000000000344
+ },
+ "B6": {
+  "D_rerun": 0.029200000000000004,
+  "D_committed": 0.027800000000000012,
+  "source": "explore/E4/results/k4/s5_n4/a=track60k-w=1-st=20000.json",
+  "abs_diff": 0.0013999999999999915
+ },
+ "TC (best no-grid)": {
+  "D_rerun": 0.035400000000000015,
+  "D_committed": 0.035400000000000015,
+  "source": "explore/TRKNG/results/k4/s5_n4/TC-f=s19-knn=10-tau_mult=1.75-typ=0.9-N8000.json",
+  "abs_diff": 0.0
+ }
+}
